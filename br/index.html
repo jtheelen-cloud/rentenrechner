@@ -1,0 +1,365 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2b3440">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>BR-Nachschlagen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: eine Spalte, Kopf mit Suche, Inhalte je Reiter, Reiterleiste unten fixiert */
+:root{
+  --bg:#f2f3f5; --surface:#fff; --ink:#1c232b; --muted:#5d6874; --line:#d8dce1;
+  --accent:#2b3440; --accent2:#b5651d; --accent-soft:#f6ece2; --mark:#ffe8a3;
+  --ok:#1e7a43; --bad:#b0302a; --input:#fff;
+  --f-head:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#12161b; --surface:#1b2128; --ink:#e6eaee; --muted:#9aa6b2; --line:#2c353f;
+  --accent:#c9d3dd; --accent2:#e3a265; --accent-soft:#3a2a1c; --mark:#5c4a12; --input:#1b2128; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 96px}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-head);line-height:1.15;text-wrap:balance}
+h1{font-size:28px;margin:18px 0 2px}
+h2{font-size:22px;margin:22px 0 8px}
+h3{font-size:18px;margin:14px 0 6px}
+.eyebrow{font-family:var(--f-head);text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--accent2);font-weight:700}
+.sub{color:var(--muted);font-size:14px;margin:0}
+input,select{font:inherit;font-size:16px;color:var(--ink);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.btn{font:inherit;font-size:15px;padding:10px 16px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--surface);border-color:var(--accent);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+a{color:var(--accent2)}
+mark{background:var(--mark);color:inherit;border-radius:2px}
+
+/* Gate */
+.gate{min-height:100vh;display:grid;place-items:center;padding-block:40px}
+.gate form{padding:24px 20px;max-width:380px;width:100%;display:grid;gap:12px}
+.gate input{text-transform:uppercase;letter-spacing:.12em;font-size:20px;text-align:center}
+.err{color:var(--bad);font-size:14px;min-height:1.2em;margin:0}
+.devid{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
+.devid b{font-family:var(--f-head);font-size:24px;letter-spacing:.1em}
+
+/* Kopf + Suche */
+.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);padding-block:10px}
+.searchbar input{padding-left:40px;background-image:none}
+.sicon{position:relative}
+.sicon::before{content:"⌕";position:absolute;left:13px;top:50%;transform:translateY(-52%);font-size:20px;color:var(--muted);pointer-events:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+
+/* Listen */
+.list{display:grid;gap:8px}
+.item{display:block;text-align:left;width:100%;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;text-decoration:none}
+.item .k{font-family:var(--f-head);font-weight:700;font-size:17px}
+.item .n{color:var(--muted);font-size:14px}
+.item .s{font-size:14px;margin-top:4px;color:var(--ink)}
+.lawgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.grp{font-family:var(--f-head);font-weight:600;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 4px}
+.prow{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:baseline}
+.prow .pn{font-family:var(--f-head);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* Paragraf */
+.norm{padding:16px}
+.norm .head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.norm .ptitle{font-family:var(--f-head);font-size:22px;font-weight:700;margin:0}
+.norm .law{color:var(--muted);font-size:14px}
+.norm .text p{margin:0 0 10px}
+.norm .text p.li{padding-left:22px;text-indent:-22px}
+.star{font-size:22px;background:none;border:0;cursor:pointer;color:var(--accent2);padding:4px}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.back{background:none;border:0;color:var(--accent2);font:inherit;font-weight:600;cursor:pointer;padding:6px 0}
+
+/* Fristen */
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--f-head);font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tw{overflow-x:auto} .tw table{min-width:520px}
+td .d{font-weight:600}
+
+/* Tarif */
+.tbox{padding:14px 16px;margin-bottom:10px}
+.tbox ul{margin:6px 0;padding-left:18px}
+.note{font-size:13px;color:var(--muted)}
+
+/* Admin */
+.admin{padding:14px 16px;display:grid;gap:10px;margin-top:16px}
+.admin .out{font-family:var(--f-head);font-size:26px;letter-spacing:.1em;color:var(--accent2);font-weight:700;min-height:1.2em}
+
+/* Reiter */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);z-index:5;
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabs a{display:grid;justify-items:center;gap:1px;text-decoration:none;color:var(--muted);font-size:12px;padding:4px 0;border-radius:8px}
+.tabs a .ic{font-size:19px;line-height:1}
+.tabs a[aria-current="page"]{color:var(--accent2);font-weight:700}
+.loading{color:var(--muted);font-size:14px;padding:10px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+
+<div class="gate" id="gate"><form class="card" id="gateForm">
+  <div class="eyebrow">Betriebsrat</div>
+  <h1 style="margin:0">BR-Nachschlagen</h1>
+  <p class="sub">Bitte den Zugangscode eingeben, den du bekommen hast. Danach merkt sich dieses Handy den Code.</p>
+  <label for="gateCode" class="sub">Zugangscode</label>
+  <input id="gateCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX">
+  <p class="err" id="gateErr" aria-live="polite"></p>
+  <button class="btn primary" type="submit">Freischalten</button>
+  <div class="devid"><span class="sub">Gerätenummer dieses Handys</span><b id="devId">–</b><span class="sub">Noch keinen Code? Nenne diese Nummer der Person, von der du den Link hast.</span></div>
+</form></div>
+
+<div id="app" hidden>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Betriebsrat · Nachschlagen</div>
+    <h1>BR-Nachschlagen</h1>
+    <p class="sub" id="standLine">Gesetze werden geladen …</p>
+  </header>
+
+  <!-- SUCHE -->
+  <section id="v-suche" class="view">
+    <div class="searchbar"><div class="sicon"><input id="q" type="search" placeholder="Stichwort oder z. B. „§ 102 BetrVG“" autocomplete="off" aria-label="Suche"></div>
+      <div class="chips" id="quick"></div></div>
+    <p class="sub" id="qInfo"></p>
+    <div class="list" id="results"></div>
+  </section>
+
+  <!-- GESETZE -->
+  <section id="v-gesetze" class="view" hidden>
+    <h2>Gesetze</h2>
+    <div class="lawgrid" id="laws"></div>
+  </section>
+
+  <!-- EIN GESETZ -->
+  <section id="v-gesetz" class="view" hidden>
+    <button class="back" type="button" data-go="gesetze">‹ Alle Gesetze</button>
+    <h2 id="lawTitle" style="margin-top:4px"></h2>
+    <p class="sub" id="lawMeta"></p>
+    <div style="margin:10px 0"><input id="lawFilter" type="search" placeholder="In diesem Gesetz filtern" aria-label="In diesem Gesetz filtern"></div>
+    <div id="lawList"></div>
+  </section>
+
+  <!-- PARAGRAF -->
+  <section id="v-norm" class="view" hidden>
+    <button class="back" type="button" id="normBack">‹ Zurück</button>
+    <article class="card norm" id="normCard"></article>
+    <div class="nav"><button class="btn" type="button" id="prevN">‹ vorheriger</button><button class="btn" type="button" id="nextN">nächster ›</button></div>
+  </section>
+
+  <!-- FRISTEN -->
+  <section id="v-fristen" class="view" hidden>
+    <h2>Fristen und Zahlen</h2>
+    <p class="sub">Kurzübersicht der wichtigsten gesetzlichen Fristen. Tarifvertrag oder Betriebsvereinbarung können abweichen – immer den Gesetzestext prüfen.</p>
+    <div id="fristen"></div>
+  </section>
+
+  <!-- TARIF -->
+  <section id="v-tarif" class="view" hidden>
+    <h2>Tarif Eisen und Stahl</h2>
+    <div id="tarif"></div>
+  </section>
+
+  <!-- MERKLISTE -->
+  <section id="v-merk" class="view" hidden>
+    <h2>Merkliste</h2>
+    <p class="sub">Mit ☆ gemerkte Paragrafen. Die Liste liegt nur auf diesem Handy.</p>
+    <div class="list" id="merk" style="margin-top:10px"></div>
+
+    <section class="card admin" id="admin" hidden>
+      <h2 style="margin:0">Code für ein anderes Handy</h2>
+      <p class="sub" style="margin:0">Nur für dich sichtbar, weil du mit deinem Hauptcode angemeldet bist.</p>
+      <div><label for="admName" class="sub">Für wen?</label><input id="admName" autocomplete="off" placeholder="Name"></div>
+      <div><label for="admDev" class="sub">Gerätenummer</label><input id="admDev" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></div>
+      <div class="out" id="admOut" aria-live="polite"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="admCopy" hidden>Code kopieren</button><button class="btn primary" type="button" id="admSave" hidden>In Liste speichern</button></div>
+      <p class="sub" id="admMsg" style="margin:0" aria-live="polite"></p>
+      <h3 style="margin:6px 0 0">Vergebene Codes</h3>
+      <div class="tw"><table id="admList"></table></div>
+    </section>
+    <p class="note" style="margin-top:18px">Gesetzestexte: <a href="https://www.gesetze-im-internet.de/" target="_blank" rel="noopener">gesetze-im-internet.de</a> (Bundesministerium der Justiz), wöchentlich automatisch abgeglichen. Keine Rechtsberatung.</p>
+  </section>
+</div>
+</div>
+
+<nav class="tabs" id="tabs" hidden><div class="in">
+  <a href="#suche" data-v="suche"><span class="ic">⌕</span>Suche</a>
+  <a href="#gesetze" data-v="gesetze"><span class="ic">§</span>Gesetze</a>
+  <a href="#fristen" data-v="fristen"><span class="ic">⏱</span>Fristen</a>
+  <a href="#tarif" data-v="tarif"><span class="ic">€</span>Tarif</a>
+  <a href="#merk" data-v="merk"><span class="ic">☆</span>Merkliste</a>
+</div></nav>
+
+<script>
+const FRISTEN = [{"g": "Personelle Maßnahmen", "f": "Zustimmung verweigern (Einstellung, Eingruppierung, Umgruppierung, Versetzung)", "d": "1 Woche nach Unterrichtung, schriftlich mit Gründen – sonst gilt die Zustimmung als erteilt", "n": "§ 99 Abs. 3 BetrVG", "l": "betrvg", "p": "§ 99"}, {"g": "Personelle Maßnahmen", "f": "Bedenken / Widerspruch gegen ordentliche Kündigung", "d": "1 Woche, schriftlich – sonst gilt die Zustimmung als erteilt", "n": "§ 102 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 102"}, {"g": "Personelle Maßnahmen", "f": "Bedenken gegen außerordentliche Kündigung", "d": "unverzüglich, spätestens 3 Tage, schriftlich", "n": "§ 102 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 102"}, {"g": "Personelle Maßnahmen", "f": "Vorläufige personelle Maßnahme bestreiten", "d": "unverzüglich dem Arbeitgeber mitteilen; Arbeitgeber muss dann binnen 3 Tagen das Arbeitsgericht anrufen", "n": "§ 100 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 100"}, {"g": "Kündigung (Beschäftigte)", "f": "Kündigungsschutzklage", "d": "3 Wochen nach Zugang der schriftlichen Kündigung", "n": "§ 4 KSchG", "l": "kschg", "p": "§ 4"}, {"g": "Kündigung (Beschäftigte)", "f": "Einspruch beim Betriebsrat gegen Kündigung", "d": "1 Woche nach der Kündigung", "n": "§ 3 KSchG", "l": "kschg", "p": "§ 3"}, {"g": "Kündigung (Beschäftigte)", "f": "Außerordentliche Kündigung durch den Arbeitgeber", "d": "nur innerhalb von 2 Wochen ab Kenntnis der Gründe", "n": "§ 626 Abs. 2 BGB", "l": "bgb", "p": "§ 626"}, {"g": "Kündigung (Beschäftigte)", "f": "Befristung gerichtlich angreifen", "d": "3 Wochen nach dem vereinbarten Ende", "n": "§ 17 TzBfG", "l": "tzbfg", "p": "§ 17"}, {"g": "Kündigung (Beschäftigte)", "f": "Schwerbehinderte: außerordentliche Kündigung – Antrag beim Integrationsamt", "d": "2 Wochen ab Kenntnis der Gründe", "n": "§ 174 Abs. 2 SGB IX", "l": "sgb9", "p": "§ 174"}, {"g": "Kündigung (Beschäftigte)", "f": "Schwangerschaft nachträglich mitteilen", "d": "2 Wochen nach Zugang der Kündigung", "n": "§ 17 Abs. 1 MuSchG", "l": "muschg", "p": "§ 17"}, {"g": "Diskriminierung", "f": "Ansprüche nach AGG geltend machen", "d": "2 Monate, schriftlich", "n": "§ 15 Abs. 4 AGG", "l": "agg", "p": "§ 15"}, {"g": "Diskriminierung", "f": "Klage auf Entschädigung nach AGG", "d": "3 Monate nach schriftlicher Geltendmachung", "n": "§ 61b ArbGG", "l": "arbgg", "p": "§ 61b"}, {"g": "Betriebsrat", "f": "Betriebsratswahl anfechten", "d": "2 Wochen ab Bekanntgabe des Wahlergebnisses", "n": "§ 19 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 19"}, {"g": "Betriebsrat", "f": "Regelmäßige Betriebsratswahlen", "d": "alle 4 Jahre zwischen 1. März und 31. Mai (nächste: 2030)", "n": "§ 13 Abs. 1 BetrVG", "l": "betrvg", "p": "§ 13"}, {"g": "Betriebsrat", "f": "Betriebsversammlung", "d": "einmal in jedem Kalendervierteljahr", "n": "§ 43 Abs. 1 BetrVG", "l": "betrvg", "p": "§ 43"}, {"g": "Betriebsrat", "f": "Bezahlte Bildungsveranstaltungen je BR-Mitglied", "d": "3 Wochen je Amtszeit, 4 Wochen beim erstmaligen Amt", "n": "§ 37 Abs. 7 BetrVG", "l": "betrvg", "p": "§ 37"}, {"g": "Betriebsrat", "f": "Einigungsstelle: Spruch anfechten wegen Ermessensüberschreitung", "d": "2 Wochen nach Zuleitung des Beschlusses", "n": "§ 76 Abs. 5 BetrVG", "l": "betrvg", "p": "§ 76"}, {"g": "Arbeitszeit & Urlaub", "f": "Höchstarbeitszeit werktäglich", "d": "8 Stunden, bis 10 Stunden bei Ausgleich im Schnitt von 6 Monaten / 24 Wochen", "n": "§ 3 ArbZG", "l": "arbzg", "p": "§ 3"}, {"g": "Arbeitszeit & Urlaub", "f": "Ruhezeit nach Arbeitsende", "d": "mindestens 11 Stunden ununterbrochen", "n": "§ 5 Abs. 1 ArbZG", "l": "arbzg", "p": "§ 5"}, {"g": "Arbeitszeit & Urlaub", "f": "Pausen", "d": "30 Minuten bei mehr als 6 bis 9 Stunden, 45 Minuten bei mehr als 9 Stunden", "n": "§ 4 ArbZG", "l": "arbzg", "p": "§ 4"}, {"g": "Arbeitszeit & Urlaub", "f": "Übertragung von Urlaub ins Folgejahr", "d": "Urlaub muss grundsätzlich bis 31. März des Folgejahres genommen werden (bei Übertragung)", "n": "§ 7 Abs. 3 BUrlG", "l": "burlg", "p": "§ 7"}, {"g": "Elternzeit & Pflege", "f": "Elternzeit verlangen (bis zum 3. Geburtstag)", "d": "spätestens 7 Wochen vor Beginn, schriftlich", "n": "§ 16 Abs. 1 BEEG", "l": "beeg", "p": "§ 16"}, {"g": "Elternzeit & Pflege", "f": "Pflegezeit ankündigen", "d": "spätestens 10 Arbeitstage vor Beginn, schriftlich", "n": "§ 3 Abs. 3 PflegeZG", "l": "pflegezg", "p": "§ 3"}];
+const TARIF = {"stand": "November 2026", "bereich": "Nordwestdeutsche Eisen- und Stahlindustrie (IG Metall)", "aktuell": [{"t": "Laufende Tarifrunde 2026/27", "x": "Die Tarifkommission fordert 5 % mehr Lohn und Gehalt für 12 Monate sowie höhere Ausbildungsvergütungen. Erste Verhandlung: 18. Dezember 2026. Die Friedenspflicht endet zum Jahreswechsel.", "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "abschluesse": [{"d": "1. Oktober 2025", "t": "Tarifabschluss 2025", "x": ["Entgelte +1,75 % ab 1. Januar 2026", "Ausbildungsvergütungen +75 € im Monat", "Laufzeit bis 31. Dezember 2026", "Tarifverträge zur Beschäftigungssicherung, zu Werkverträgen und zur Altersteilzeit verlängert", "u. a. Übernahme von Auszubildenden, Arbeitszeitabsenkung bis 28 Stunden mit Teilentgeltausgleich, Arbeitszeitkonten"], "q": "ZDFheute", "u": "https://www.zdfheute.de/wirtschaft/stahl-industrie-einigung-tarifstreit-lohn-100.html"}, {"d": "Dezember 2023", "t": "Tarifabschluss 2023", "x": ["1.500 € Inflationsausgleich im Januar 2024, weitere 1.500 € in Raten", "Entgelte +5,5 % ab Januar 2025", "Arbeitszeit kann zur Beschäftigungssicherung auf bis zu 32 Stunden verkürzt werden, mit teilweisem Lohnausgleich"], "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "hinweis": "Hier stehen nur öffentlich bekannte Eckdaten. Den Wortlaut von Manteltarifvertrag, Entgelttabellen und Betriebsvereinbarungen bekommst du bei deiner IG-Metall-Geschäftsstelle oder im Betrieb."};
+const $ = id => document.getElementById(id);
+const esc = t => String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls = {get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+
+/* ---------- Daten ---------- */
+let INDEX=null; const LAWS={};
+async function loadIndex(){ if(INDEX) return INDEX;
+  const r=await fetch("data/index.json",{cache:"no-cache"}); INDEX=await r.json(); return INDEX; }
+async function loadLaw(id){ if(LAWS[id]) return LAWS[id];
+  const r=await fetch(`data/${id}.json`); const j=await r.json();
+  j.normen.forEach((n,i)=>{n.i=i;n.low=(n.p+" "+n.t+" "+n.x).toLowerCase()}); LAWS[id]=j; return j; }
+async function loadAll(progress){ const idx=await loadIndex(); let k=0;
+  await Promise.all(idx.gesetze.map(g=>loadLaw(g.id).then(()=>{k++;progress&&progress(k,idx.gesetze.length)}).catch(()=>{}))); }
+
+/* ---------- Ansicht ---------- */
+const VIEWS=["suche","gesetze","gesetz","norm","fristen","tarif","merk"];
+let cur={law:null,i:null,from:"suche"};
+function show(v){ VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
+  const tab=v==="gesetz"||v==="norm"?(cur.from==="suche"||cur.from==="merk"?cur.from:"gesetze"):v;
+  document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===tab?"page":"false"));
+  window.scrollTo(0,0); }
+function route(){ const h=(location.hash||"#suche").slice(1);
+  if(h.startsWith("p-")){ const [,law,...rest]=h.split("-"); openNorm(law,parseInt(rest.join("-"),10),false); return; }
+  if(h.startsWith("g-")){ openLaw(h.slice(2),false); return; }
+  if(VIEWS.includes(h)){ cur.from=h; show(h); if(h==="merk") renderMerk(); if(h==="gesetze") renderLaws(); }
+  else show("suche"); }
+window.addEventListener("hashchange",route);
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.go}));
+
+/* ---------- Gesetze ---------- */
+async function renderLaws(){ const idx=await loadIndex();
+  $("laws").innerHTML=idx.gesetze.map(g=>`<a class="item" href="#g-${g.id}"><div class="k">${esc(g.kurz)}</div><div class="n">${esc(g.name)}</div></a>`).join(""); }
+async function openLaw(id,push=true){ if(push){location.hash="g-"+id;return}
+  show("gesetz"); $("lawTitle").textContent="…"; $("lawList").innerHTML='<p class="loading">Wird geladen …</p>';
+  const L=await loadLaw(id); cur.law=id;
+  $("lawTitle").textContent=L.kurz; $("lawMeta").innerHTML=`${esc(L.name)} · ${L.normen.length} Vorschriften<br>${esc(L.stand||"")} · <a href="${esc(L.quelle)}" target="_blank" rel="noopener">Quelle</a>`;
+  $("lawFilter").value=""; renderLawList(L,""); }
+function renderLawList(L,f){ f=f.trim().toLowerCase(); let g="",h="";
+  L.normen.forEach(n=>{ if(f&&!n.low.includes(f)) return;
+    if(n.g!==g&&!f){g=n.g; if(g) h+=`<div class="grp">${esc(g)}</div>`;}
+    h+=`<a class="item prow" href="#p-${L.id}-${n.i}" style="margin-bottom:6px"><span class="pn">${esc(n.p)}</span><span>${esc(n.t||"")}</span></a>`; });
+  $("lawList").innerHTML=h||'<p class="sub">Keine Treffer.</p>'; }
+$("lawFilter").addEventListener("input",()=>{ if(cur.law&&LAWS[cur.law]) renderLawList(LAWS[cur.law],$("lawFilter").value) });
+
+/* ---------- Paragraf ---------- */
+function fmtText(x,hl){ return x.split("\n").map(l=>{ let t=esc(l); if(hl) t=highlight(t,hl);
+  return `<p class="${/^\s*(\d+[a-z]?\.|[a-z]\))\s/.test(l)?"li":""}">${t}</p>`; }).join(""); }
+async function openNorm(id,i,push=true){ if(push){location.hash=`p-${id}-${i}`;return}
+  show("norm"); const L=await loadLaw(id); const n=L.normen[i]; if(!n) return; cur.law=id; cur.i=i;
+  const fav=isFav(id,n.p); const hl=lastQuery;
+  $("normCard").innerHTML=`<div class="head"><div><div class="law">${esc(L.kurz)}${n.g?" · "+esc(n.g):""}</div><h2 class="ptitle">${esc(n.p)} ${esc(n.t||"")}</h2></div>
+    <button class="star" id="favBtn" type="button" aria-label="Merken" aria-pressed="${fav}">${fav?"★":"☆"}</button></div>
+    <div class="text">${fmtText(n.x||"(ohne Text)",hl)}</div><p class="note"><a href="${esc(L.quelle)}" target="_blank" rel="noopener">Zum Gesetz bei gesetze-im-internet.de</a></p>`;
+  $("favBtn").addEventListener("click",()=>{toggleFav(id,n.p,L.kurz,n.t,i);openNorm(id,i,false)});
+  $("prevN").disabled=i<=0; $("nextN").disabled=i>=L.normen.length-1; }
+$("prevN").addEventListener("click",()=>openNorm(cur.law,cur.i-1));
+$("nextN").addEventListener("click",()=>openNorm(cur.law,cur.i+1));
+$("normBack").addEventListener("click",()=>history.length>1?history.back():(location.hash=cur.from));
+
+/* ---------- Merkliste ---------- */
+const KEY_FAV="br.merkliste";
+const isFav=(id,p)=>ls.get(KEY_FAV,[]).some(f=>f.id===id&&f.p===p);
+function toggleFav(id,p,kurz,t,i){ let l=ls.get(KEY_FAV,[]); if(l.some(f=>f.id===id&&f.p===p)) l=l.filter(f=>!(f.id===id&&f.p===p)); else l.push({id,p,kurz,t,i}); ls.set(KEY_FAV,l); }
+function renderMerk(){ const l=ls.get(KEY_FAV,[]);
+  $("merk").innerHTML=l.length?l.map(f=>`<a class="item" href="#p-${f.id}-${f.i}"><div class="k">${esc(f.p)} ${esc(f.kurz)}</div><div class="n">${esc(f.t||"")}</div></a>`).join(""):'<p class="sub">Noch nichts gemerkt.</p>'; }
+
+/* ---------- Suche ---------- */
+let lastQuery="";
+function highlight(html,q){ const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>2&&!/^§/.test(w)); if(!words.length) return html;
+  const re=new RegExp("("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","gi"); return html.replace(re,"<mark>$1</mark>"); }
+function snippet(x,q){ const low=x.toLowerCase(); const w=q.toLowerCase().split(/\s+/).find(w=>w.length>2&&low.includes(w));
+  if(!w) return esc(x.slice(0,140))+(x.length>140?" …":""); const at=low.indexOf(w); const s=Math.max(0,at-60);
+  return (s?"… ":"")+highlight(esc(x.slice(s,at+120)),q)+(at+120<x.length?" …":""); }
+let searchTimer=null, allLoaded=false;
+async function search(){ const q=$("q").value.trim(); lastQuery=q;
+  if(!q){ $("results").innerHTML=""; $("qInfo").textContent=""; return }
+  if(!allLoaded){ $("qInfo").textContent="Gesetze werden geladen …"; await loadAll((k,n)=>$("qInfo").textContent=`Gesetze werden geladen … ${k}/${n}`); allLoaded=true; }
+  const idx=INDEX.gesetze; let hits=[];
+  // Direkter Paragraf: "§ 102 BetrVG", "102 betrvg"
+  const m=q.match(/^§?\s*(\d+[a-z]?)\s+([\wäöüÄÖÜ\- ]+)$/i)||q.match(/^([\wäöüÄÖÜ\-]+)\s+§?\s*(\d+[a-z]?)$/i);
+  if(m){ const [num,lawq]=/\d/.test(m[1])?[m[1],m[2]]:[m[2],m[1]];
+    idx.forEach(g=>{ if(g.kurz.toLowerCase().replace(/[^a-zäöü]/g,"").startsWith(lawq.toLowerCase().replace(/[^a-zäöü]/g,""))&&LAWS[g.id]){
+      LAWS[g.id].normen.forEach(n=>{ if(n.p.replace(/\s/g,"").toLowerCase()==="§"+num.toLowerCase()||n.p.replace(/\s/g,"").toLowerCase()==="art"+num.toLowerCase()) hits.push({g,n,score:1000}) }) } }) }
+  const words=q.toLowerCase().replace(/§/g," ").split(/\s+/).filter(Boolean);
+  idx.forEach(g=>{ const L=LAWS[g.id]; if(!L) return;
+    L.normen.forEach(n=>{ if(!words.every(w=>n.low.includes(w)||g.kurz.toLowerCase().includes(w))) return;
+      let s=0; const tl=(n.t||"").toLowerCase(); words.forEach(w=>{ if(tl.includes(w)) s+=10; if(n.p.toLowerCase().includes(w)) s+=5; s+=Math.min(5,n.low.split(w).length-1) });
+      if(g.id==="betrvg") s+=3; if(!hits.some(h=>h.n===n)) hits.push({g,n,score:s}); }) });
+  hits.sort((a,b)=>b.score-a.score); const total=hits.length; hits=hits.slice(0,80);
+  $("qInfo").textContent=total?`${total} Treffer${total>80?" (die besten 80)":""}`:"Keine Treffer. Andere Schreibweise oder weniger Wörter versuchen.";
+  $("results").innerHTML=hits.map(h=>`<a class="item" href="#p-${h.g.id}-${h.n.i}"><div class="k">${esc(h.n.p)} ${esc(h.g.kurz)}</div><div class="n">${highlight(esc(h.n.t||""),q)}</div><div class="s">${snippet(h.n.x||"",q)}</div></a>`).join(""); }
+$("q").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(search,250)});
+["Mitbestimmung","Kündigung","Überstunden","Versetzung","Urlaub","Schwerbehindert","Betriebsänderung","§ 87 BetrVG"].forEach(t=>{
+  const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.addEventListener("click",()=>{$("q").value=t;search()});$("quick").appendChild(b)});
+
+/* ---------- Fristen & Tarif ---------- */
+function renderFristen(){ const groups=[...new Set(FRISTEN.map(f=>f.g))];
+  $("fristen").innerHTML=groups.map(g=>`<h3>${esc(g)}</h3><div class="card tw"><table><thead><tr><th>Was</th><th>Frist / Regel</th><th>Vorschrift</th></tr></thead><tbody>`+
+    FRISTEN.filter(f=>f.g===g).map(f=>`<tr><td>${esc(f.f)}</td><td class="d">${esc(f.d)}</td><td><a href="#" data-law="${f.l}" data-p="${esc(f.p)}">${esc(f.n)}</a></td></tr>`).join("")+`</tbody></table></div>`).join("");
+  $("fristen").querySelectorAll("[data-law]").forEach(a=>a.addEventListener("click",async e=>{e.preventDefault();
+    try{const L=await loadLaw(a.dataset.law);const n=L.normen.find(n=>n.p.replace(/\s/g,"")===a.dataset.p.replace(/\s/g,""));cur.from="fristen";if(n)openNorm(L.id,n.i);else openLaw(L.id)}catch(err){}})); }
+function renderTarif(){ const T=TARIF;
+  $("tarif").innerHTML=`<p class="sub">${esc(T.bereich)} · Stand ${esc(T.stand)}</p>`+
+    T.aktuell.map(a=>`<div class="card tbox" style="border-left:4px solid var(--accent2)"><h3 style="margin-top:0">${esc(a.t)}</h3><p style="margin:0">${esc(a.x)}</p><p class="note">Quelle: <a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.q)}</a></p></div>`).join("")+
+    T.abschluesse.map(a=>`<div class="card tbox"><h3 style="margin-top:0">${esc(a.t)} <span class="note">· ${esc(a.d)}</span></h3><ul>${a.x.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p class="note">Quelle: <a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.q)}</a></p></div>`).join("")+
+    `<p class="note">${esc(T.hinweis)}</p>`; }
+
+/* ---------- Start nach Freischaltung ---------- */
+let started=false;
+async function start(){ if(started) return; started=true;
+  renderFristen(); renderTarif(); renderAdminList();
+  try{ const idx=await loadIndex(); $("standLine").textContent=`${idx.gesetze.length} Gesetze · abgeglichen am ${new Date(idx.abgerufen).toLocaleDateString("de-DE")}`; }
+  catch(e){ $("standLine").textContent="Gesetze konnten nicht geladen werden. Bitte Internetverbindung prüfen."; }
+  route(); }
+
+/* ---------- Zugang (wie Rentenrechner, eigener Schlüssel) ---------- */
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const DEV_SECRET="f79494342ca27ba833673da8f60b12cd";
+const KEY_OK="br.zugang", KEY_DEV="br.geraet", KEY_LIST="br.vergeben";
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+
+const ALPH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const fmt8=x=>x.slice(0,4)+"-"+x.slice(4,8);
+const normCode=v=>{v=String(v||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");return v.length===8?fmt8(v):v};
+function devCode(id){const h=sha256js(DEV_SECRET+":"+normCode(id));let o="";for(let i=0;i<8;i++)o+=ALPH[parseInt(h.substr(i*2,2),16)%32];return fmt8(o)}
+function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
+  if(!id){const a=new Uint8Array(8);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<8;i++)a[i]=Math.floor(Math.random()*256)}
+    id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
+  return id}
+const DEV=deviceId(); $("devId").textContent=DEV;
+function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;start()}
+(function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
+  if(ok==="M:"+CODE_HASH) unlock(true);
+  else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();
+$("gateForm").addEventListener("submit",e=>{e.preventDefault();const c=normCode($("gateCode").value);
+  if(sha256js("rentenrechner:"+c)===CODE_HASH){try{localStorage.setItem(KEY_OK,"M:"+CODE_HASH)}catch(err){} unlock(true);return}
+  if(c===devCode(DEV)){try{localStorage.setItem(KEY_OK,"D:|"+DEV+"|"+c)}catch(err){} unlock(false);return}
+  $("gateErr").textContent="Der Code stimmt nicht oder gehört zu einem anderen Handy.";});
+/* Codeliste */
+let delArmed=null;
+function renderAdminList(){const l=ls.get(KEY_LIST,[]);const t=$("admList");
+  if(!l.length){t.innerHTML='<tbody><tr><td class="sub">Noch keine Einträge.</td></tr></tbody>';return}
+  t.innerHTML='<thead><tr><th>Name</th><th>Gerätenummer</th><th>Code</th><th>Datum</th><th></th></tr></thead><tbody>'+
+    l.map((e,i)=>`<tr><td>${esc(e.name)}</td><td>${esc(e.dev)}</td><td><b>${esc(e.code)}</b></td><td>${esc(e.datum)}</td><td><button class="btn" type="button" data-del="${i}" style="padding:4px 10px;font-size:13px">${delArmed===i?"Wirklich löschen?":"Löschen"}</button></td></tr>`).join("")+'</tbody>';
+  t.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{const i=+b.dataset.del;
+    if(delArmed!==i){delArmed=i;renderAdminList();setTimeout(()=>{if(delArmed===i){delArmed=null;renderAdminList()}},4000);return}
+    const l2=ls.get(KEY_LIST,[]);l2.splice(i,1);ls.set(KEY_LIST,l2);delArmed=null;renderAdminList()}))}
+$("admDev").addEventListener("input",()=>{const id=normCode($("admDev").value);const ok=/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);
+  $("admOut").textContent=ok?devCode(id):"";$("admCopy").hidden=!ok;$("admSave").hidden=!ok;$("admMsg").textContent=""});
+$("admSave").addEventListener("click",()=>{const id=normCode($("admDev").value),name=$("admName").value.trim()||"ohne Namen";
+  const l=ls.get(KEY_LIST,[]);const entry={name,dev:id,code:devCode(id),datum:new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})};
+  const ex=l.findIndex(e=>e.dev===id);if(ex>=0)l[ex]=entry;else l.push(entry);
+  $("admMsg").textContent=ls.set(KEY_LIST,l)?"In der Liste gespeichert.":"Speichern nicht möglich – bitte Code notieren.";renderAdminList()});
+$("admCopy").addEventListener("click",()=>{const t=$("admOut").textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>{$("admCopy").textContent="Kopiert"},()=>{});
+  setTimeout(()=>{$("admCopy").textContent="Code kopieren"},2000)});
+</script>
+</body></html>
