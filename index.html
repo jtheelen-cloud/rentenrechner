@@ -245,9 +245,14 @@ input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline
 <section class="admin" id="admin" hidden>
   <h2 style="margin:0">Code für ein anderes Handy</h2>
   <p class="sub" style="margin:0">Nur für dich sichtbar, weil du mit deinem Hauptcode angemeldet bist. Trag die Gerätenummer ein, die das andere Handy anzeigt. Der Code funktioniert nur auf diesem einen Handy.</p>
+  <div class="f"><label for="admName">Für wen?</label><input id="admName" autocomplete="off" placeholder="Name"></div>
   <div class="f"><label for="admDev">Gerätenummer</label><input id="admDev" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></div>
   <div class="out" id="admOut" aria-live="polite"></div>
-  <div><button class="btn" type="button" id="admCopy" hidden>Code kopieren</button></div>
+  <div class="btnrow" style="margin:0"><button class="btn" type="button" id="admCopy" hidden>Code kopieren</button><button class="btn primary" type="button" id="admSave" hidden>In Liste speichern</button></div>
+  <p class="sub" id="admMsg" style="margin:0" aria-live="polite"></p>
+  <h3 style="font-family:var(--f-head);margin:8px 0 0">Vergebene Codes</h3>
+  <p class="sub" style="margin:0">Diese Liste liegt nur auf diesem Gerät.</p>
+  <div class="types" style="border-top:0"><table id="admList"></table></div>
 </section>
 <div class="btnrow"><button class="btn" id="btnClear" type="button">Alle Felder leeren</button><button class="btn" id="btnExample" type="button">Beispielwerte laden</button></div>
 <p class="sub" id="clearConfirm" hidden></p>
@@ -609,8 +614,27 @@ $("gateForm").addEventListener("submit",e=>{e.preventDefault();
   if(c===devCode(DEV)){try{localStorage.setItem(KEY_OK,"D:|"+DEV+"|"+c)}catch(err){} unlock(false);return}
   $("gateErr").textContent="Der Code stimmt nicht oder gehört zu einem anderen Handy.";
 });
-$("admDev").addEventListener("input",()=>{const id=normCode($("admDev").value);
-  const ok=/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);$("admOut").textContent=ok?devCode(id):"";$("admCopy").hidden=!ok});
+const KEY_LIST="rentenrechner.vergeben";
+function getList(){try{return JSON.parse(localStorage.getItem(KEY_LIST)||"[]")}catch(e){return []}}
+function setList(l){try{localStorage.setItem(KEY_LIST,JSON.stringify(l));return true}catch(e){return false}}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let delArmed=null;
+function renderList(){const l=getList();const t=$("admList");
+  if(!l.length){t.innerHTML='<tbody><tr><td class="sub">Noch keine Einträge. Name und Gerätenummer eingeben, dann „In Liste speichern“.</td></tr></tbody>';return}
+  t.innerHTML='<thead><tr><th>Name</th><th>Gerätenummer</th><th>Code</th><th>Datum</th><th></th></tr></thead><tbody>'+
+    l.map((e,i)=>`<tr><td>${esc(e.name)}</td><td class="num">${esc(e.dev)}</td><td class="num"><b>${esc(e.code)}</b></td><td class="num">${esc(e.datum)}</td><td><button class="btn" type="button" data-del="${i}" style="padding:4px 10px;font-size:13px">${delArmed===i?"Wirklich löschen?":"Löschen"}</button></td></tr>`).join("")+'</tbody>';
+  t.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{const i=+b.dataset.del;
+    if(delArmed!==i){delArmed=i;renderList();setTimeout(()=>{if(delArmed===i){delArmed=null;renderList()}},4000);return}
+    const l2=getList();l2.splice(i,1);setList(l2);delArmed=null;renderList()}));}
+function admUpdate(){const id=normCode($("admDev").value);
+  const ok=/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);$("admOut").textContent=ok?devCode(id):"";$("admCopy").hidden=!ok;$("admSave").hidden=!ok;$("admMsg").textContent=""}
+$("admDev").addEventListener("input",admUpdate);
+$("admSave").addEventListener("click",()=>{const id=normCode($("admDev").value),name=$("admName").value.trim()||"ohne Namen";
+  const l=getList();const code=devCode(id);const datum=new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+  const ex=l.findIndex(e=>e.dev===id);const entry={name,dev:id,code,datum};
+  if(ex>=0)l[ex]=entry;else l.push(entry);
+  $("admMsg").textContent=setList(l)?(ex>=0?"Eintrag aktualisiert.":"In der Liste gespeichert."):"Speichern nicht möglich – bitte Code notieren.";renderList()});
+renderList();
 $("admCopy").addEventListener("click",()=>{const t=$("admOut").textContent;
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{$("admCopy").textContent="Kopiert"},()=>{selectOut()})}else selectOut();
   setTimeout(()=>{$("admCopy").textContent="Code kopieren"},2000)});
