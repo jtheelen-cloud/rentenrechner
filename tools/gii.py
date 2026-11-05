@@ -97,10 +97,13 @@ def parse(xml_bytes, law):
     return normen, stand
 
 def fetch(slug):
+    import subprocess
     url = f"https://www.gesetze-im-internet.de/{slug}/xml.zip"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (BR-Nachschlagen)"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        z = zipfile.ZipFile(io.BytesIO(r.read()))
+    r = subprocess.run(["curl", "-sSfL", "--max-time", "90", "--connect-timeout", "20", "--retry", "2",
+                        "-A", "Mozilla/5.0 (BR-Nachschlagen)", url], capture_output=True)
+    if r.returncode != 0:
+        raise RuntimeError(f"curl {r.returncode}: {r.stderr.decode(errors='ignore').strip()[:120]}")
+    z = zipfile.ZipFile(io.BytesIO(r.stdout))
     name = next(n for n in z.namelist() if n.endswith(".xml"))
     return z.read(name), url.replace("/xml.zip", "/")
 
@@ -111,8 +114,8 @@ def main():
     old = {}
     if (OUT / "index.json").exists():
         old = {l["id"]: l for l in json.load(open(OUT / "index.json", encoding="utf-8")).get("gesetze", [])}
-    for law in laws:
-        ok = False
+    from concurrent.futures import ThreadPoolExecutor
+    def work(law):
         for slug in law["slugs"]:
             try:
                 xml, src = fetch(slug)
@@ -120,13 +123,16 @@ def main():
                 if not normen: raise ValueError("keine Paragrafen")
                 json.dump({"id": law["id"], "kurz": law["kurz"], "name": law["name"], "quelle": src, "stand": stand, "normen": normen},
                           open(OUT / f"{law['id']}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-                index.append({"id": law["id"], "kurz": law["kurz"], "name": law["name"], "quelle": src, "stand": stand, "anzahl": len(normen)})
-                print(f"OK   {law['kurz']:<22} {slug:<16} {len(normen)} Normen")
-                ok = True
-                break
+                print(f"OK   {law['kurz']:<22} {slug:<16} {len(normen)} Normen", flush=True)
+                return {"id": law["id"], "kurz": law["kurz"], "name": law["name"], "quelle": src, "stand": stand, "anzahl": len(normen)}
             except Exception as e:
-                print(f"FAIL {law['kurz']:<22} {slug:<16} {e}")
-        if not ok:
+                print(f"FAIL {law['kurz']:<22} {slug:<16} {e}", flush=True)
+        return None
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        results = list(ex.map(work, laws))
+    for law, res in zip(laws, results):
+        if res: index.append(res)
+        else:
             errors.append(law["kurz"])
             if law["id"] in old and (OUT / f"{law['id']}.json").exists():
                 index.append(old[law["id"]])
