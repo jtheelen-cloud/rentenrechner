@@ -95,11 +95,25 @@ td .d{font-weight:600}
 /* Reiter */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);z-index:5;
   padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabs a{display:grid;justify-items:center;gap:1px;text-decoration:none;color:var(--muted);font-size:12px;padding:4px 0;border-radius:8px}
 .tabs a .ic{font-size:19px;line-height:1}
 .tabs a[aria-current="page"]{color:var(--accent2);font-weight:700}
 .loading{color:var(--muted);font-size:14px;padding:10px 0}
+.calc{padding:14px 16px;display:grid;gap:10px;margin-bottom:8px}
+.calc label{font-weight:600;font-size:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:440px){.row2{grid-template-columns:1fr}}
+select{font:inherit;font-size:16px;color:var(--ink);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+.res{border-left:4px solid var(--accent2);background:var(--accent-soft);border-radius:8px;padding:12px 14px}
+.res .big{font-family:var(--f-head);font-size:26px;font-weight:700}
+.warn{font-size:14px;margin-top:6px}
+textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%;min-height:90px}
+.out{white-space:pre-wrap;font-size:15px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-height:120px}
+.cb{display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:400!important}
+.cb input{width:auto;margin-top:4px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.offline{display:inline-block;font-size:12px;background:var(--accent-soft);border-radius:6px;padding:2px 8px;margin-left:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head><body>
@@ -152,9 +166,45 @@ td .d{font-weight:600}
 
   <!-- FRISTEN -->
   <section id="v-fristen" class="view" hidden>
+    <h2>Fristenrechner</h2>
+    <div class="card calc">
+      <div><label for="fTyp">Welche Frist?</label><select id="fTyp"></select></div>
+      <div class="row2">
+        <div><label for="fDatum" id="fDatumLbl">Eingang beim Betriebsrat</label><input type="date" id="fDatum"></div>
+        <div><label for="fName">Betreff (optional)</label><input id="fName" placeholder="z. B. Kündigung Müller"></div>
+      </div>
+      <div id="fRes"></div>
+      <div class="btnrow" id="fBtns" hidden>
+        <a class="btn primary" id="fGcal" target="_blank" rel="noopener">In Google Kalender eintragen</a>
+        <button class="btn" type="button" id="fIcs">Kalenderdatei (.ics)</button>
+      </div>
+      <p class="note" style="margin:0">Berechnung nach §§ 187, 188, 193 BGB mit NRW-Feiertagen. Fällt das Ende auf Samstag, Sonntag oder Feiertag, endet die Frist am nächsten Werktag. Sicherer ist es, vorher abzugeben.</p>
+    </div>
     <h2>Fristen und Zahlen</h2>
     <p class="sub">Kurzübersicht der wichtigsten gesetzlichen Fristen. Tarifvertrag oder Betriebsvereinbarung können abweichen – immer den Gesetzestext prüfen.</p>
     <div id="fristen"></div>
+  </section>
+
+  <!-- VORLAGEN -->
+  <section id="v-vorlagen" class="view" hidden>
+    <h2>Musterschreiben</h2>
+    <p class="sub">Felder ausfüllen, Text kopieren und in Mail oder Word einfügen. Vorher immer einen Beschluss im Gremium fassen (§ 33 BetrVG). Gründe müssen konkret auf den Einzelfall bezogen sein – das bloße Wiederholen des Gesetzes reicht nicht.</p>
+    <div class="card calc">
+      <div><label for="vTyp">Vorlage</label><select id="vTyp">
+        <option value="v99">Zustimmungsverweigerung (§ 99 BetrVG)</option>
+        <option value="v102w">Widerspruch gegen ordentliche Kündigung (§ 102 Abs. 3)</option>
+        <option value="v102b">Bedenken gegen Kündigung (§ 102 Abs. 2)</option>
+        <option value="vEinl">Einladung zur Betriebsratssitzung (§ 29)</option>
+        <option value="vBeschl">Beschluss des Betriebsrats (§ 33)</option>
+      </select></div>
+      <div class="row2">
+        <div><label for="vAn">An (Arbeitgeber / Personalabteilung)</label><input id="vAn" placeholder="z. B. Personalabteilung, Herr Schmidt"></div>
+        <div><label for="vVon">Unterschrift (BR-Vorsitz)</label><input id="vVon" placeholder="Name"></div>
+      </div>
+      <div id="vFields"></div>
+      <div><label>Fertiger Text</label><div class="out" id="vOut"></div></div>
+      <div class="btnrow"><button class="btn primary" type="button" id="vCopy">Text kopieren</button><a class="btn" id="vMail">Als E-Mail öffnen</a></div>
+    </div>
   </section>
 
   <!-- TARIF -->
@@ -189,13 +239,14 @@ td .d{font-weight:600}
   <a href="#suche" data-v="suche"><span class="ic">⌕</span>Suche</a>
   <a href="#gesetze" data-v="gesetze"><span class="ic">§</span>Gesetze</a>
   <a href="#fristen" data-v="fristen"><span class="ic">⏱</span>Fristen</a>
+  <a href="#vorlagen" data-v="vorlagen"><span class="ic">✎</span>Vorlagen</a>
   <a href="#tarif" data-v="tarif"><span class="ic">€</span>Tarif</a>
   <a href="#merk" data-v="merk"><span class="ic">☆</span>Merkliste</a>
 </div></nav>
 
 <script>
 const FRISTEN = [{"g": "Personelle Maßnahmen", "f": "Zustimmung verweigern (Einstellung, Eingruppierung, Umgruppierung, Versetzung)", "d": "1 Woche nach Unterrichtung, schriftlich mit Gründen – sonst gilt die Zustimmung als erteilt", "n": "§ 99 Abs. 3 BetrVG", "l": "betrvg", "p": "§ 99"}, {"g": "Personelle Maßnahmen", "f": "Bedenken / Widerspruch gegen ordentliche Kündigung", "d": "1 Woche, schriftlich – sonst gilt die Zustimmung als erteilt", "n": "§ 102 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 102"}, {"g": "Personelle Maßnahmen", "f": "Bedenken gegen außerordentliche Kündigung", "d": "unverzüglich, spätestens 3 Tage, schriftlich", "n": "§ 102 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 102"}, {"g": "Personelle Maßnahmen", "f": "Vorläufige personelle Maßnahme bestreiten", "d": "unverzüglich dem Arbeitgeber mitteilen; Arbeitgeber muss dann binnen 3 Tagen das Arbeitsgericht anrufen", "n": "§ 100 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 100"}, {"g": "Kündigung (Beschäftigte)", "f": "Kündigungsschutzklage", "d": "3 Wochen nach Zugang der schriftlichen Kündigung", "n": "§ 4 KSchG", "l": "kschg", "p": "§ 4"}, {"g": "Kündigung (Beschäftigte)", "f": "Einspruch beim Betriebsrat gegen Kündigung", "d": "1 Woche nach der Kündigung", "n": "§ 3 KSchG", "l": "kschg", "p": "§ 3"}, {"g": "Kündigung (Beschäftigte)", "f": "Außerordentliche Kündigung durch den Arbeitgeber", "d": "nur innerhalb von 2 Wochen ab Kenntnis der Gründe", "n": "§ 626 Abs. 2 BGB", "l": "bgb", "p": "§ 626"}, {"g": "Kündigung (Beschäftigte)", "f": "Befristung gerichtlich angreifen", "d": "3 Wochen nach dem vereinbarten Ende", "n": "§ 17 TzBfG", "l": "tzbfg", "p": "§ 17"}, {"g": "Kündigung (Beschäftigte)", "f": "Schwerbehinderte: außerordentliche Kündigung – Antrag beim Integrationsamt", "d": "2 Wochen ab Kenntnis der Gründe", "n": "§ 174 Abs. 2 SGB IX", "l": "sgb9", "p": "§ 174"}, {"g": "Kündigung (Beschäftigte)", "f": "Schwangerschaft nachträglich mitteilen", "d": "2 Wochen nach Zugang der Kündigung", "n": "§ 17 Abs. 1 MuSchG", "l": "muschg", "p": "§ 17"}, {"g": "Diskriminierung", "f": "Ansprüche nach AGG geltend machen", "d": "2 Monate, schriftlich", "n": "§ 15 Abs. 4 AGG", "l": "agg", "p": "§ 15"}, {"g": "Diskriminierung", "f": "Klage auf Entschädigung nach AGG", "d": "3 Monate nach schriftlicher Geltendmachung", "n": "§ 61b ArbGG", "l": "arbgg", "p": "§ 61b"}, {"g": "Betriebsrat", "f": "Betriebsratswahl anfechten", "d": "2 Wochen ab Bekanntgabe des Wahlergebnisses", "n": "§ 19 Abs. 2 BetrVG", "l": "betrvg", "p": "§ 19"}, {"g": "Betriebsrat", "f": "Regelmäßige Betriebsratswahlen", "d": "alle 4 Jahre zwischen 1. März und 31. Mai (nächste: 2030)", "n": "§ 13 Abs. 1 BetrVG", "l": "betrvg", "p": "§ 13"}, {"g": "Betriebsrat", "f": "Betriebsversammlung", "d": "einmal in jedem Kalendervierteljahr", "n": "§ 43 Abs. 1 BetrVG", "l": "betrvg", "p": "§ 43"}, {"g": "Betriebsrat", "f": "Bezahlte Bildungsveranstaltungen je BR-Mitglied", "d": "3 Wochen je Amtszeit, 4 Wochen beim erstmaligen Amt", "n": "§ 37 Abs. 7 BetrVG", "l": "betrvg", "p": "§ 37"}, {"g": "Betriebsrat", "f": "Einigungsstelle: Spruch anfechten wegen Ermessensüberschreitung", "d": "2 Wochen nach Zuleitung des Beschlusses", "n": "§ 76 Abs. 5 BetrVG", "l": "betrvg", "p": "§ 76"}, {"g": "Arbeitszeit & Urlaub", "f": "Höchstarbeitszeit werktäglich", "d": "8 Stunden, bis 10 Stunden bei Ausgleich im Schnitt von 6 Monaten / 24 Wochen", "n": "§ 3 ArbZG", "l": "arbzg", "p": "§ 3"}, {"g": "Arbeitszeit & Urlaub", "f": "Ruhezeit nach Arbeitsende", "d": "mindestens 11 Stunden ununterbrochen", "n": "§ 5 Abs. 1 ArbZG", "l": "arbzg", "p": "§ 5"}, {"g": "Arbeitszeit & Urlaub", "f": "Pausen", "d": "30 Minuten bei mehr als 6 bis 9 Stunden, 45 Minuten bei mehr als 9 Stunden", "n": "§ 4 ArbZG", "l": "arbzg", "p": "§ 4"}, {"g": "Arbeitszeit & Urlaub", "f": "Übertragung von Urlaub ins Folgejahr", "d": "Urlaub muss grundsätzlich bis 31. März des Folgejahres genommen werden (bei Übertragung)", "n": "§ 7 Abs. 3 BUrlG", "l": "burlg", "p": "§ 7"}, {"g": "Elternzeit & Pflege", "f": "Elternzeit verlangen (bis zum 3. Geburtstag)", "d": "spätestens 7 Wochen vor Beginn, schriftlich", "n": "§ 16 Abs. 1 BEEG", "l": "beeg", "p": "§ 16"}, {"g": "Elternzeit & Pflege", "f": "Pflegezeit ankündigen", "d": "spätestens 10 Arbeitstage vor Beginn, schriftlich", "n": "§ 3 Abs. 3 PflegeZG", "l": "pflegezg", "p": "§ 3"}];
-const TARIF = {"stand": "November 2026", "bereich": "Nordwestdeutsche Eisen- und Stahlindustrie (IG Metall)", "aktuell": [{"t": "Laufende Tarifrunde 2026/27", "x": "Die Tarifkommission fordert 5 % mehr Lohn und Gehalt für 12 Monate sowie höhere Ausbildungsvergütungen. Erste Verhandlung: 18. Dezember 2026. Die Friedenspflicht endet zum Jahreswechsel.", "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "abschluesse": [{"d": "1. Oktober 2025", "t": "Tarifabschluss 2025", "x": ["Entgelte +1,75 % ab 1. Januar 2026", "Ausbildungsvergütungen +75 € im Monat", "Laufzeit bis 31. Dezember 2026", "Tarifverträge zur Beschäftigungssicherung, zu Werkverträgen und zur Altersteilzeit verlängert", "u. a. Übernahme von Auszubildenden, Arbeitszeitabsenkung bis 28 Stunden mit Teilentgeltausgleich, Arbeitszeitkonten"], "q": "ZDFheute", "u": "https://www.zdfheute.de/wirtschaft/stahl-industrie-einigung-tarifstreit-lohn-100.html"}, {"d": "Dezember 2023", "t": "Tarifabschluss 2023", "x": ["1.500 € Inflationsausgleich im Januar 2024, weitere 1.500 € in Raten", "Entgelte +5,5 % ab Januar 2025", "Arbeitszeit kann zur Beschäftigungssicherung auf bis zu 32 Stunden verkürzt werden, mit teilweisem Lohnausgleich"], "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "hinweis": "Hier stehen nur öffentlich bekannte Eckdaten. Den Wortlaut von Manteltarifvertrag, Entgelttabellen und Betriebsvereinbarungen bekommst du bei deiner IG-Metall-Geschäftsstelle oder im Betrieb."};
+let TARIF = {"stand": "November 2026", "bereich": "Nordwestdeutsche Eisen- und Stahlindustrie (IG Metall)", "aktuell": [{"t": "Laufende Tarifrunde 2026/27", "x": "Die Tarifkommission fordert 5 % mehr Lohn und Gehalt für 12 Monate sowie höhere Ausbildungsvergütungen. Erste Verhandlung: 18. Dezember 2026. Die Friedenspflicht endet zum Jahreswechsel.", "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "abschluesse": [{"d": "1. Oktober 2025", "t": "Tarifabschluss 2025", "x": ["Entgelte +1,75 % ab 1. Januar 2026", "Ausbildungsvergütungen +75 € im Monat", "Laufzeit bis 31. Dezember 2026", "Tarifverträge zur Beschäftigungssicherung, zu Werkverträgen und zur Altersteilzeit verlängert", "u. a. Übernahme von Auszubildenden, Arbeitszeitabsenkung bis 28 Stunden mit Teilentgeltausgleich, Arbeitszeitkonten"], "q": "ZDFheute", "u": "https://www.zdfheute.de/wirtschaft/stahl-industrie-einigung-tarifstreit-lohn-100.html"}, {"d": "Dezember 2023", "t": "Tarifabschluss 2023", "x": ["1.500 € Inflationsausgleich im Januar 2024, weitere 1.500 € in Raten", "Entgelte +5,5 % ab Januar 2025", "Arbeitszeit kann zur Beschäftigungssicherung auf bis zu 32 Stunden verkürzt werden, mit teilweisem Lohnausgleich"], "q": "IG Metall Niedersachsen und Sachsen-Anhalt", "u": "https://nieder-sachsen-anhalt.igmetall.de/Tarif/stahlindustrie"}], "hinweis": "Hier stehen nur öffentlich bekannte Eckdaten. Den Wortlaut von Manteltarifvertrag, Entgelttabellen und Betriebsvereinbarungen bekommst du bei deiner IG-Metall-Geschäftsstelle oder im Betrieb."};
 const $ = id => document.getElementById(id);
 const esc = t => String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls = {get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
@@ -214,7 +265,7 @@ function pLink(g,nr,t){ return `<div class="item prow" style="margin-bottom:6px;
 function wireStars(root){ root.querySelectorAll("[data-fav]").forEach(b=>b.addEventListener("click",()=>{const [id,nr,t]=b.dataset.fav.split("|");toggleFav(id,nr,t);const f=isFav(id,nr);b.textContent=f?"★":"☆";b.setAttribute("aria-pressed",f)})); }
 
 /* ---------- Ansicht ---------- */
-const VIEWS=["suche","gesetze","gesetz","fristen","tarif","merk"];
+const VIEWS=["suche","gesetze","gesetz","fristen","vorlagen","tarif","merk"];
 let cur={law:null,from:"suche"};
 function show(v){ VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
   const tab=v==="gesetz"?"gesetze":v;
@@ -278,10 +329,125 @@ function renderTarif(){ const T=TARIF;
     T.abschluesse.map(a=>`<div class="card tbox"><h3 style="margin-top:0">${esc(a.t)} <span class="note">· ${esc(a.d)}</span></h3><ul>${a.x.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p class="note">Quelle: <a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.q)}</a></p></div>`).join("")+
     `<p class="note">${esc(T.hinweis)}</p>`; }
 
+/* ---------- Fristenrechner ---------- */
+const FTYPEN=[
+ {id:"99",t:"Zustimmungsverweigerung § 99 BetrVG",n:1,u:"w",lbl:"Eingang beim Betriebsrat",was:"Zustimmungsverweigerung nach § 99 abgeben"},
+ {id:"102o",t:"Bedenken/Widerspruch ordentliche Kündigung § 102",n:1,u:"w",lbl:"Eingang beim Betriebsrat",was:"Stellungnahme nach § 102 (ordentliche Kündigung)"},
+ {id:"102a",t:"Bedenken außerordentliche Kündigung § 102",n:3,u:"d",lbl:"Eingang beim Betriebsrat",was:"Stellungnahme nach § 102 (außerordentliche Kündigung)"},
+ {id:"3ks",t:"Einspruch beim BR gegen Kündigung § 3 KSchG",n:1,u:"w",lbl:"Zugang der Kündigung",was:"Kündigungseinspruch beim Betriebsrat"},
+ {id:"4ks",t:"Kündigungsschutzklage § 4 KSchG",n:3,u:"w",lbl:"Zugang der Kündigung",was:"Kündigungsschutzklage einreichen"},
+ {id:"17tz",t:"Befristungskontrollklage § 17 TzBfG",n:3,u:"w",lbl:"Vereinbartes Vertragsende",was:"Entfristungsklage einreichen"},
+ {id:"626",t:"Außerordentliche Kündigung § 626 Abs. 2 BGB",n:2,u:"w",lbl:"Kenntnis des Arbeitgebers vom Grund",was:"Ende der Kündigungserklärungsfrist (Arbeitgeber)"},
+ {id:"19",t:"Wahlanfechtung § 19 BetrVG",n:2,u:"w",lbl:"Bekanntgabe des Wahlergebnisses",was:"Wahlanfechtung beim Arbeitsgericht"},
+ {id:"76",t:"Spruch der Einigungsstelle anfechten § 76 Abs. 5",n:2,u:"w",lbl:"Zuleitung des Spruchs",was:"Anfechtung des Einigungsstellenspruchs"},
+ {id:"agg",t:"Ansprüche nach AGG geltend machen § 15 Abs. 4",n:2,u:"m",lbl:"Kenntnis der Benachteiligung",was:"AGG-Ansprüche schriftlich geltend machen"},
+ {id:"agg2",t:"Klage nach AGG § 61b ArbGG",n:3,u:"m",lbl:"Schriftliche Geltendmachung",was:"AGG-Klage einreichen"},
+ {id:"eig",t:"Eigene Frist (Tage)",n:7,u:"d",lbl:"Fristbeginn (Ereignis)",was:"Frist",custom:true}
+];
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return new Date(y,mo-1,da)}
+const addD=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const HCACHE={};
+function holidays(y){ if(HCACHE[y]) return HCACHE[y]; const E=easter(y); const m={};
+  [[new Date(y,0,1),"Neujahr"],[addD(E,-2),"Karfreitag"],[addD(E,1),"Ostermontag"],[new Date(y,4,1),"Tag der Arbeit"],[addD(E,39),"Christi Himmelfahrt"],
+   [addD(E,50),"Pfingstmontag"],[addD(E,60),"Fronleichnam"],[new Date(y,9,3),"Tag der Deutschen Einheit"],[new Date(y,10,1),"Allerheiligen"],
+   [new Date(y,11,25),"1. Weihnachtstag"],[new Date(y,11,26),"2. Weihnachtstag"]].forEach(([d,n])=>m[key(d)]=n); return HCACHE[y]=m; }
+const freiGrund=d=>d.getDay()===6?"Samstag":d.getDay()===0?"Sonntag":holidays(d.getFullYear())[key(d)]||null;
+function fristEnde(start,n,u){ let e;
+  if(u==="d") e=addD(start,n);
+  else if(u==="w") e=addD(start,7*n);
+  else { const y=start.getFullYear(),mo=start.getMonth()+n,last=new Date(y,mo+1,0).getDate(); e=new Date(y,mo,Math.min(start.getDate(),last)); }
+  const roh=e; const verschoben=[]; while(freiGrund(e)){verschoben.push(`${fmtD(e)} (${freiGrund(e)})`); e=addD(e,1);} return {roh,ende:e,verschoben}; }
+const WT=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+const fmtD=d=>d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+let fLast=null;
+function renderFrist(){ const t=FTYPEN.find(x=>x.id===$("fTyp").value); $("fDatumLbl").textContent=t.lbl;
+  const v=$("fDatum").value; if(!v){$("fRes").innerHTML="";$("fBtns").hidden=true;return}
+  const [y,m,d]=v.split("-").map(Number); const start=new Date(y,m-1,d);
+  let n=t.n; if(t.custom){ n=parseInt(prompt2(),10)||7; }
+  const r=fristEnde(start,n,t.u); fLast={t,r,start};
+  const unit=t.u==="d"?(n===1?"Tag":"Tage"):t.u==="w"?(n===1?"Woche":"Wochen"):(n===1?"Monat":"Monate");
+  $("fRes").innerHTML=`<div class="res"><div class="sub">${esc(t.t)} · ${n} ${unit}</div><div class="big">${WT[r.ende.getDay()]}, ${fmtD(r.ende)}</div>
+    <div class="sub">Fristende 24:00 Uhr</div>${r.verschoben.length?`<div class="warn">Rechnerisches Ende ${r.verschoben[0]} – verschoben auf den nächsten Werktag (§ 193 BGB). ${lastWork(r.roh)>start?`Sicherer: bis ${fmtD(lastWork(r.roh))} abgeben.`:"Sicherer: so schnell wie möglich abgeben."}</div>`:""}</div>`;
+  const title=`Fristende: ${t.was}${$("fName").value?" – "+$("fName").value:""}`;
+  const d1=key(r.ende).replace(/-/g,""), d2=key(addD(r.ende,1)).replace(/-/g,"");
+  const details=`${t.t}. Fristbeginn: ${fmtD(start)}. Fristende ${fmtD(r.ende)}, 24:00 Uhr.`;
+  $("fGcal").href=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${d1}/${d2}&details=${encodeURIComponent(details)}`;
+  $("fBtns").hidden=false; fLast.title=title; fLast.details=details; }
+function lastWork(d){ let e=addD(d,-1); while(freiGrund(e)) e=addD(e,-1); return e; }
+function prompt2(){ const el=$("fTage"); return el?el.value:"7"; }
+function initFristen(){ $("fTyp").innerHTML=FTYPEN.map(t=>`<option value="${t.id}">${esc(t.t)}</option>`).join("");
+  $("fTyp").addEventListener("change",()=>{ const t=FTYPEN.find(x=>x.id===$("fTyp").value);
+    const box=$("fTageBox"); if(t.custom&&!box){ const div=document.createElement("div"); div.id="fTageBox"; div.innerHTML='<label for="fTage">Anzahl Tage</label><input id="fTage" type="number" inputmode="numeric" value="7" min="1">';
+      $("fDatum").parentElement.parentElement.after(div); $("fTage").addEventListener("input",renderFrist);} else if(!t.custom&&box) box.remove(); renderFrist(); });
+  ["fDatum","fName"].forEach(i=>$(i).addEventListener("input",renderFrist));
+  $("fDatum").value=key(new Date()); renderFrist();
+  $("fIcs").addEventListener("click",()=>{ if(!fLast) return; const r=fLast.r; const stamp=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+    const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//BR-Nachschlagen//DE","BEGIN:VEVENT",`UID:${Date.now()}@br-nachschlagen`,`DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${key(r.ende).replace(/-/g,"")}`,`DTEND;VALUE=DATE:${key(addD(r.ende,1)).replace(/-/g,"")}`,`SUMMARY:${fLast.title.replace(/[,;]/g," ")}`,`DESCRIPTION:${fLast.details.replace(/[,;]/g," ")}`,
+      "BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY","DESCRIPTION:Frist läuft morgen ab","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar"})); a.download="Frist.ics"; document.body.appendChild(a); a.click(); a.remove(); }); }
+
+/* ---------- Musterschreiben ---------- */
+const G99=["die Maßnahme gegen ein Gesetz, eine Verordnung, eine Unfallverhütungsvorschrift, einen Tarifvertrag, eine Betriebsvereinbarung, eine gerichtliche Entscheidung oder eine behördliche Anordnung verstoßen würde (§ 99 Abs. 2 Nr. 1 BetrVG)",
+ "die Maßnahme gegen eine Auswahlrichtlinie nach § 95 BetrVG verstoßen würde (§ 99 Abs. 2 Nr. 2 BetrVG)",
+ "die durch Tatsachen begründete Besorgnis besteht, dass infolge der Maßnahme im Betrieb beschäftigte Arbeitnehmer gekündigt werden oder sonstige Nachteile erleiden, ohne dass dies aus betrieblichen oder persönlichen Gründen gerechtfertigt ist (§ 99 Abs. 2 Nr. 3 BetrVG)",
+ "der betroffene Arbeitnehmer durch die Maßnahme benachteiligt wird, ohne dass dies aus betrieblichen oder in seiner Person liegenden Gründen gerechtfertigt ist (§ 99 Abs. 2 Nr. 4 BetrVG)",
+ "eine nach § 93 BetrVG erforderliche Ausschreibung im Betrieb unterblieben ist (§ 99 Abs. 2 Nr. 5 BetrVG)",
+ "die durch Tatsachen begründete Besorgnis besteht, dass der in Aussicht genommene Bewerber oder Arbeitnehmer den Betriebsfrieden durch gesetzwidriges Verhalten oder durch grobe Verletzung der in § 75 Abs. 1 BetrVG enthaltenen Grundsätze stören wird (§ 99 Abs. 2 Nr. 6 BetrVG)"];
+const G102=["der Arbeitgeber bei der Auswahl des zu kündigenden Arbeitnehmers soziale Gesichtspunkte nicht oder nicht ausreichend berücksichtigt hat (§ 102 Abs. 3 Nr. 1 BetrVG)",
+ "die Kündigung gegen eine Auswahlrichtlinie nach § 95 BetrVG verstößt (§ 102 Abs. 3 Nr. 2 BetrVG)",
+ "der zu kündigende Arbeitnehmer an einem anderen Arbeitsplatz im selben Betrieb oder in einem anderen Betrieb des Unternehmens weiterbeschäftigt werden kann (§ 102 Abs. 3 Nr. 3 BetrVG)",
+ "die Weiterbeschäftigung des Arbeitnehmers nach zumutbaren Umschulungs- oder Fortbildungsmaßnahmen möglich ist (§ 102 Abs. 3 Nr. 4 BetrVG)",
+ "eine Weiterbeschäftigung des Arbeitnehmers unter geänderten Vertragsbedingungen möglich ist und der Arbeitnehmer sein Einverständnis hiermit erklärt hat (§ 102 Abs. 3 Nr. 5 BetrVG)"];
+const MASSN=["Einstellung","Versetzung","Eingruppierung","Umgruppierung"];
+const KEY_V="br.vorlagen";
+function f(id,label,type="text",ph=""){ return `<div><label for="${id}">${label}</label>${type==="area"?`<textarea id="${id}" placeholder="${ph}"></textarea>`:`<input id="${id}" type="${type}" placeholder="${ph}">`}</div>`; }
+function vFieldsHtml(t){
+  if(t==="v99") return `<div class="row2"><div><label for="vMass">Maßnahme</label><select id="vMass">${MASSN.map(m=>`<option>${m}</option>`).join("")}</select></div>${f("vPers","Betroffene Person")}</div>
+    <div class="row2">${f("vDatU","Unterrichtung vom","date")}${f("vDatB","Beschluss des BR vom","date")}</div>
+    <div><label>Gründe (§ 99 Abs. 2)</label>${G99.map((g,i)=>`<label class="cb"><input type="checkbox" class="vG" value="${i}"> Nr. ${i+1}: ${esc(g.split(" (§")[0].replace(/^die Maßnahme |^der betroffene |^eine nach |^die durch Tatsachen begründete Besorgnis besteht, dass /,""))}</label>`).join("")}</div>
+    ${f("vBeg","Konkrete Begründung (Tatsachen aus dem Einzelfall)","area","z. B. Herr X ist seit 2019 als Schlosser befristet beschäftigt und gleich geeignet …")}`;
+  if(t==="v102w") return `<div class="row2">${f("vPers","Betroffene Person")}${f("vDatU","Anhörung vom","date")}</div>${f("vDatB","Beschluss des BR vom","date")}
+    <div><label>Widerspruchsgründe (§ 102 Abs. 3)</label>${G102.map((g,i)=>`<label class="cb"><input type="checkbox" class="vG" value="${i}"> Nr. ${i+1}: ${esc(g.split(" (§")[0])}</label>`).join("")}</div>
+    ${f("vBeg","Konkrete Begründung (z. B. welcher freie Arbeitsplatz, welche Vergleichsperson)","area")}`;
+  if(t==="v102b") return `<div class="row2">${f("vPers","Betroffene Person")}${f("vDatU","Anhörung vom","date")}</div>${f("vDatB","Beschluss des BR vom","date")}${f("vBeg","Bedenken (Begründung)","area")}`;
+  if(t==="vEinl") return `<div class="row2">${f("vSDat","Datum der Sitzung","date")}${f("vSZeit","Uhrzeit","time")}</div>${f("vSOrt","Ort","text","z. B. BR-Büro, Raum 12")}${f("vTO","Tagesordnung (ein Punkt pro Zeile)","area","Genehmigung des Protokolls\nAnhörung nach § 102 – Kündigung …\nVerschiedenes")}`;
+  if(t==="vBeschl") return `<div class="row2">${f("vSDat","Sitzung vom","date")}${f("vAnw","Anwesende Mitglieder","number")}</div><div class="row2">${f("vJa","Ja-Stimmen","number")}${f("vNein","Nein-Stimmen","number")}</div>${f("vEnth","Enthaltungen","number")}${f("vText","Beschlusstext","area","Der Betriebsrat beschließt, …")}`;
+}
+const dv=id=>{const e=$(id);if(!e||!e.value)return "…";const [y,m,d]=e.value.split("-");return `${d}.${m}.${y}`};
+const tv=(id,def="…")=>{const e=$(id);return e&&e.value.trim()?e.value.trim():def};
+function vBuild(){ const t=$("vTyp").value, an=tv("vAn","Geschäftsleitung / Personalabteilung"), von=tv("vVon","Vorsitzende/r des Betriebsrats"), heute=fmtD(new Date());
+  const gs=[...document.querySelectorAll(".vG:checked")].map(c=>+c.value); let subj="",body="";
+  if(t==="v99"){ const mass=$("vMass").value; subj=`Zustimmungsverweigerung zur ${mass} von ${tv("vPers")}`;
+    body=`An: ${an}\n\n${subj}\nIhre Unterrichtung vom ${dv("vDatU")}\n\nSehr geehrte Damen und Herren,\n\nder Betriebsrat hat in seiner Sitzung vom ${dv("vDatB")} beschlossen, der beabsichtigten ${mass} von ${tv("vPers")} gemäß § 99 Abs. 3 BetrVG die Zustimmung zu verweigern.\n\nDie Zustimmung wird verweigert, weil\n${gs.length?gs.map(i=>"– "+G99[i]).join(",\n"):"– [bitte Grund auswählen]"}.\n\nBegründung im Einzelnen:\n${tv("vBeg","[konkrete Tatsachen aus dem Einzelfall]")}\n\nFür Rückfragen stehen wir zur Verfügung.\n\nMit freundlichen Grüßen\n\n${von}\nfür den Betriebsrat\n${heute}`; }
+  else if(t==="v102w"){ subj=`Widerspruch gegen die ordentliche Kündigung von ${tv("vPers")}`;
+    body=`An: ${an}\n\n${subj}\nIhre Anhörung vom ${dv("vDatU")} gemäß § 102 BetrVG\n\nSehr geehrte Damen und Herren,\n\nder Betriebsrat hat in seiner Sitzung vom ${dv("vDatB")} beschlossen, der beabsichtigten ordentlichen Kündigung von ${tv("vPers")} gemäß § 102 Abs. 3 BetrVG zu widersprechen.\n\nDer Widerspruch wird darauf gestützt, dass\n${gs.length?gs.map(i=>"– "+G102[i]).join(",\n"):"– [bitte Grund auswählen]"}.\n\nBegründung im Einzelnen:\n${tv("vBeg","[konkrete Tatsachen aus dem Einzelfall]")}\n\nWir weisen darauf hin, dass der Arbeitnehmer bei einer Kündigung eine Abschrift dieser Stellungnahme erhalten muss (§ 102 Abs. 4 BetrVG) und unter den Voraussetzungen des § 102 Abs. 5 BetrVG Anspruch auf Weiterbeschäftigung hat.\n\nMit freundlichen Grüßen\n\n${von}\nfür den Betriebsrat\n${heute}`; }
+  else if(t==="v102b"){ subj=`Bedenken gegen die Kündigung von ${tv("vPers")}`;
+    body=`An: ${an}\n\n${subj}\nIhre Anhörung vom ${dv("vDatU")} gemäß § 102 BetrVG\n\nSehr geehrte Damen und Herren,\n\nder Betriebsrat hat in seiner Sitzung vom ${dv("vDatB")} beschlossen, gegen die beabsichtigte Kündigung von ${tv("vPers")} gemäß § 102 Abs. 2 BetrVG Bedenken zu erheben.\n\nBegründung:\n${tv("vBeg","[Begründung]")}\n\nWir bitten Sie, von der Kündigung Abstand zu nehmen.\n\nMit freundlichen Grüßen\n\n${von}\nfür den Betriebsrat\n${heute}`; }
+  else if(t==="vEinl"){ subj=`Einladung zur Betriebsratssitzung am ${dv("vSDat")}`; const to=tv("vTO","").split("\n").filter(x=>x.trim());
+    body=`An: alle Mitglieder des Betriebsrats\n\n${subj}\n\nLiebe Kolleginnen und Kollegen,\n\nhiermit lade ich gemäß § 29 Abs. 2 BetrVG zur Sitzung des Betriebsrats ein.\n\nDatum: ${dv("vSDat")}\nUhrzeit: ${tv("vSZeit")} Uhr\nOrt: ${tv("vSOrt")}\n\nTagesordnung:\n${to.length?to.map((x,i)=>`${i+1}. ${x.trim()}`).join("\n"):"1. …"}\n\nWer verhindert ist, teilt dies bitte unverzüglich unter Angabe des Grundes mit, damit ein Ersatzmitglied geladen werden kann (§ 29 Abs. 2 Satz 6 BetrVG).\n\nMit kollegialen Grüßen\n\n${von}\nVorsitzende/r des Betriebsrats\n${heute}`; }
+  else if(t==="vBeschl"){ subj=`Beschluss des Betriebsrats vom ${dv("vSDat")}`;
+    body=`${subj}\n\nAnwesende Mitglieder: ${tv("vAnw")}\nAbstimmung: ${tv("vJa","0")} Ja, ${tv("vNein","0")} Nein, ${tv("vEnth","0")} Enthaltungen\n\nBeschluss:\n${tv("vText","Der Betriebsrat beschließt, …")}\n\nDer Beschluss wurde mit der Mehrheit der Stimmen der anwesenden Mitglieder gefasst (§ 33 Abs. 1 BetrVG).\n\n${von}\nVorsitzende/r des Betriebsrats`; }
+  $("vOut").textContent=body; $("vMail").href=`mailto:?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  ls.set(KEY_V,{an:$("vAn").value,von:$("vVon").value}); }
+function initVorlagen(){ const st=ls.get(KEY_V,{}); $("vAn").value=st.an||""; $("vVon").value=st.von||"";
+  const render=()=>{ $("vFields").innerHTML=vFieldsHtml($("vTyp").value); $("vFields").querySelectorAll("input,select,textarea").forEach(e=>{e.addEventListener("input",vBuild);e.addEventListener("change",vBuild)}); vBuild(); };
+  $("vTyp").addEventListener("change",render); ["vAn","vVon"].forEach(i=>$(i).addEventListener("input",vBuild)); render();
+  $("vCopy").addEventListener("click",()=>{ const t=$("vOut").textContent; const done=()=>{$("vCopy").textContent="Kopiert";setTimeout(()=>$("vCopy").textContent="Text kopieren",2000)};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done,()=>selectEl($("vOut"))); else selectEl($("vOut")); }); }
+function selectEl(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+
+/* ---------- Tarif nachladen ---------- */
+async function loadTarif(){ try{ const r=await fetch("tarif.json",{cache:"no-cache"}); if(r.ok){ const j=await r.json(); if(j&&j.abschluesse){TARIF=j; renderTarif();} } }catch(e){} }
+
+/* ---------- Offline ---------- */
+if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){ navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{}); }
+
 /* ---------- Start nach Freischaltung ---------- */
 let started=false;
 async function start(){ if(started) return; started=true;
-  renderFristen(); renderTarif(); renderAdminList(); renderLaws();
+  renderFristen(); renderTarif(); renderAdminList(); renderLaws(); initFristen(); initVorlagen(); loadTarif();
   $("standLine").textContent=`${GESETZE.length} Gesetze · Texte immer aktuell von gesetze-im-internet.de`;
   route(); }
 

@@ -597,6 +597,8 @@ $("btnClear").addEventListener("click",()=>{
 });
 $("btnExample").addEventListener("click",()=>{FIELDS.forEach(f=>$(f).value=EXAMPLE[f]??"");Object.keys(SEG).forEach(k=>state[k]=EXAMPLE[k]);syncSegs();save(true);$("exNote").hidden=false;calc()});
 
+/* Offline (nur auf der Webseite) */
+if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 /* Aktuelle Kennzahlen nachladen */
 fetch("kennzahlen.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{
   if(j&&j.est&&j.kassen){KZ=j;buildSelects();setStand(true);calc()}
