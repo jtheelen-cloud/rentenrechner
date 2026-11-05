@@ -38,101 +38,176 @@
  "hinweis": "Hier stehen nur öffentlich bekannte Eckdaten. Den Wortlaut von Manteltarifvertrag, Entgelttabellen und Betriebsvereinbarungen bekommst du bei deiner IG-Metall-Geschäftsstelle oder im Betrieb.",
  "entgelte": {
   "stand": "gültig ab 01.01.2026",
-  "hinweis": "Öffentliche Eckwerte. Die vollständigen Tabellen aller Lohn- und Gehaltsgruppen stehen im Entgelttarifvertrag.",
+  "hinweis": "Nordrhein-Westfalen. Stufen = Beschäftigungsjahre in der Gruppe.",
   "bloecke": [
    {
-    "t": "Lohn gewerblich (je Stunde)",
-    "q": "Tarifregister NRW",
+    "t": "Löhne gewerblich (€ je Stunde)",
+    "q": "Berechnet aus dem Tarifabschluss vom 01.10.2025 (+1,75 %), abgeglichen mit dem Tarifregister NRW",
     "u": "https://www.tarifregister.nrw.de/material/eisen_und_stahlindustrie2.pdf",
+    "kopf": [
+     "Lohngruppe",
+     "€/Std."
+    ],
     "z": [
      [
-      "Unterste Lohngruppe",
-      "14,69 €"
+      "LG 1",
+      "14,69"
      ],
      [
-      "Nach mehr als einwöchiger Anweisung",
-      "15,20 €"
+      "LG 2",
+      "15,20"
      ],
      [
-      "Lohngruppe 6 (Ecklohn), Einstieg nach Ausbildung",
-      "18,00 €"
+      "LG 3",
+      "15,65"
      ],
      [
-      "Höchste Lohngruppe",
-      "22,11 €"
+      "LG 4",
+      "16,40"
+     ],
+     [
+      "LG 5",
+      "17,12"
+     ],
+     [
+      "LG 6 (Ecklohn)",
+      "18,00"
+     ],
+     [
+      "LG 7",
+      "18,94"
+     ],
+     [
+      "LG 8",
+      "20,33"
+     ],
+     [
+      "LG 9",
+      "22,11"
      ]
     ]
    },
    {
-    "t": "Gehalt Angestellte (je Monat)",
-    "q": "Tarifregister NRW",
+    "t": "Gehälter kaufmännische und technische Angestellte (€ je Monat)",
+    "q": "Berechnet aus dem Tarifabschluss vom 01.10.2025 (+1,75 %), abgeglichen mit dem Tarifregister NRW",
     "u": "https://www.tarifregister.nrw.de/material/eisen_und_stahlindustrie2.pdf",
+    "kopf": [
+     "Gruppe",
+     "1. Jahr",
+     "2. Jahr",
+     "3. Jahr",
+     "danach"
+    ],
     "z": [
      [
-      "Unterste Gehaltsgruppe",
-      "2.112,80 – 2.435,70 €"
+      "K/T 1",
+      "1.992,00",
+      "2.139,90",
+      "2.295,99",
+      "2.435,70"
      ],
      [
-      "Nach der Ausbildung, 1. Jahr",
-      "2.493,18 €"
+      "K/T 2",
+      "2.243,95",
+      "2.415,60",
+      "2.579,91",
+      "2.747,87"
      ],
      [
-      "Nach der Ausbildung, 2. Jahr",
-      "2.679,40 €"
+      "K/T 3",
+      "2.493,18",
+      "2.679,40",
+      "2.867,47",
+      "3.057,39"
      ],
      [
-      "Nach der Ausbildung, 3. Jahr",
-      "2.867,47 €"
+      "K/T 4",
+      "3.194,34",
+      "3.428,94",
+      "3.673,61",
+      "3.914,63"
      ],
      [
-      "Nach der Ausbildung, ab 4. Jahr",
-      "3.057,39 €"
+      "K/T 5",
+      "4.040,62",
+      "4.346,39",
+      "4.645,89",
+      "4.946,23"
      ],
      [
-      "Höchste Gehaltsgruppe",
-      "5.108,69 – 5.875,53 €"
+      "K/T 6",
+      "5.108,69",
+      "5.493,93",
+      "5.875,53",
+      ""
      ]
-    ]
+    ],
+    "fuss": "K/T 6: Stufe 3 gilt nach dem 2. Beschäftigungsjahr."
    },
    {
-    "t": "Meister (je Monat)",
-    "q": "Tarifregister NRW",
+    "t": "Meister (€ je Monat)",
+    "q": "Berechnet aus dem Tarifabschluss vom 01.10.2025 (+1,75 %), abgeglichen mit dem Tarifregister NRW",
     "u": "https://www.tarifregister.nrw.de/material/eisen_und_stahlindustrie2.pdf",
+    "kopf": [
+     "Gruppe",
+     "1. Jahr",
+     "2. Jahr",
+     "3. Jahr",
+     "danach"
+    ],
     "z": [
      [
-      "Unterste Gruppe",
-      "3.950,18 – 4.525,33 €"
+      "M 2",
+      "3.950,18",
+      "4.141,02",
+      "4.332,72",
+      "4.525,33"
      ],
      [
-      "Höchste Gruppe",
-      "5.133,32 – 5.786,13 €"
+      "M 3",
+      "4.525,33",
+      "4.730,72",
+      "4.928,89",
+      "5.133,32"
+     ],
+     [
+      "M 4",
+      "5.133,32",
+      "5.454,72",
+      "5.786,13",
+      ""
      ]
-    ]
+    ],
+    "fuss": "M 4: Stufe 3 gilt nach dem 2. Beschäftigungsjahr."
    },
    {
-    "t": "Ausbildungsvergütung (je Monat)",
+    "t": "Ausbildungsvergütung (€ je Monat)",
     "q": "Tarifregister NRW",
     "u": "https://www.tarifregister.nrw.de/material/eisen_und_stahlindustrie2.pdf",
+    "kopf": [
+     "Ausbildungsjahr",
+     "€/Monat"
+    ],
     "z": [
      [
-      "1. Ausbildungsjahr",
-      "1.176,00 €"
+      "1. Jahr",
+      "1.176,00"
      ],
      [
-      "2. Ausbildungsjahr",
-      "1.231,00 €"
+      "2. Jahr",
+      "1.231,00"
      ],
      [
-      "3. Ausbildungsjahr",
-      "1.314,00 €"
+      "3. Jahr",
+      "1.314,00"
      ],
      [
-      "4. Ausbildungsjahr",
-      "1.420,00 €"
+      "4. Jahr",
+      "1.420,00"
      ],
      [
       "Zuschlag u. a. Former, Schmied, Hüttenfacharbeiter",
-      "+20,45 €"
+      "+20,45"
      ]
     ]
    },
