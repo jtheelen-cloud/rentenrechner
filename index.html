@@ -92,6 +92,8 @@ input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface);font-weight:600}
 .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
 .cond[hidden]{display:none}
+details.opt>summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:15px}
+details.opt>summary:focus-visible{outline:2px solid var(--accent)}
 .subbox{border-left:3px solid var(--accent-soft);padding-left:12px;display:grid;gap:14px}
 
 .info{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 16px 12px;margin:10px 0}
@@ -184,6 +186,15 @@ input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline
     <div class="f"><label for="j45">Davon für die 45 Jahre (optional)</label><input type="number" inputmode="decimal" step="0.1" id="j45" placeholder="wie links"><span class="help">Ohne Schule, Studium, Bürgergeld</span></div>
   </div>
   <div class="f"><label>Bis zum Rentenbeginn weiter arbeiten und einzahlen?</label><div class="seg" data-for="weiter"></div></div>
+  <details class="opt"><summary>Genauer rechnen mit Rentenpunkten (optional)</summary>
+    <div class="subbox" style="margin-top:12px">
+      <p class="help" style="margin:0">Nur ausfüllen, wenn sich dein Gehalt bis zur Rente deutlich ändert. Leer lassen = Rechnung mit den Beträgen oben.</p>
+      <div class="row2">
+        <div class="f"><label for="ep">Rentenpunkte bisher</label><input type="number" inputmode="decimal" step="0.0001" id="ep" placeholder="z. B. 27,0469"><span class="help">„Entgeltpunkte“ aus Rentenauskunft oder Versicherungsverlauf</span></div>
+        <div class="f"><label for="gehalt">Bruttogehalt künftig (€/Jahr)</label><input type="number" inputmode="decimal" id="gehalt" placeholder="z. B. 52000"><span class="help">Was du bis zur Rente im Schnitt pro Jahr verdienen wirst</span></div>
+      </div>
+    </div>
+  </details>
 </div>
 </details>
 
@@ -278,6 +289,7 @@ input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline
   <ul>
     <li>Abschlag 0,3 % je Monat vor dem abschlagsfreien Beginn, lebenslang. Zuschlag 0,5 % je Monat Aufschub nach der Regelaltersgrenze.</li>
     <li>Wer früher aufhört, hat weniger Beitragsjahre: Die Rente liegt dann zwischen „bereits erreicht“ und „wie bisher“.</li>
+    <li>Mit Rentenpunkten (optional): Rente = Rentenpunkte × aktueller Rentenwert. Jedes Arbeitsjahr bringt Bruttogehalt ÷ Durchschnittsentgelt neue Punkte.</li>
     <li>Arbeitslosengeld I: Die Arbeitsagentur zahlt Rentenbeiträge auf 80 % des früheren Bruttos.</li>
     <li>Aktivrente: Wer nach der Regelaltersgrenze angestellt weiterarbeitet, bekommt bis 2.000 € Lohn im Monat steuerfrei.</li>
     <li>Steuern werden nicht von der Rente abgezogen, sondern nach der Steuererklärung fällig. Die App rechnet sie auf den Monat um.</li>
@@ -300,10 +312,10 @@ const fmtD = d => d ? d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit
 
 /* ---------- Eingaben ---------- */
 const SEG = {weiter:"Ja",alo:"Nein",insolvenz:"Nein",job:"Nein",rvOpt:"Ja",merk:"Nein",kinder:"Ja",verh:"Nein",kist:"Nein"};
-const EXAMPLE = {geb:"1972-05-15",start:"2035-06-01",riDatum:"2026-07-01",anw:"1150",prog:"1680",j35:"32",j45:"",
+const EXAMPLE = {geb:"1972-05-15",start:"2035-06-01",riDatum:"2026-07-01",anw:"1150",prog:"1680",ep:"",gehalt:"",j35:"32",j45:"",
   aloAb:"2033-06-01",algMon:"",nettoLohn:"2400",lohn:"800",gdb:"0",kasse:"Durchschnitt aller Kassen",pkv:"",kinderU25:"0",partner:"",kistSatz:"0.09",sonst:"0",
   weiter:"Ja",alo:"Nein",insolvenz:"Nein",job:"Nein",rvOpt:"Ja",merk:"Nein",kinder:"Ja",verh:"Nein",kist:"Nein"};
-const FIELDS = ["geb","start","riDatum","anw","prog","j35","j45","aloAb","algMon","nettoLohn","lohn","gdb","kasse","pkv","kinderU25","partner","kistSatz","sonst"];
+const FIELDS = ["geb","start","riDatum","anw","prog","ep","gehalt","j35","j45","aloAb","algMon","nettoLohn","lohn","gdb","kasse","pkv","kinderU25","partner","kistSatz","sonst"];
 const state = {};
 
 function buildSelects(){
@@ -394,9 +406,14 @@ function compute(){
       else if(k==="alo"){ if(!for45) c++; }
     } return (for45?base45:base35)+c/12; }
   /* Rentenhöhe ohne Abschlag bei Beginn t */
-  const mRA=Math.max(0,RA-R); const g=mRA>0?(n("prog")-n("anw"))/mRA:0;
+  const mRA=Math.max(0,RA-R);
+  const useEP=$("ep").value!=="", useGeh=$("gehalt").value!=="";
+  const startBetrag=useEP?n("ep")*KZ.rentenwert:n("anw");
+  const epJahr=useGeh?Math.min(n("gehalt"),KZ.sv.bbgRv*12)/KZ.sv.durchschnittsentgelt:null;
+  const g=useGeh?epJahr/12*KZ.rentenwert:(mRA>0?(n("prog")-n("anw"))/mRA:0);
+  const methode=useEP||useGeh?"punkte":"betrag";
   function bruttoBase(t){let w=0;for(let m=R;m<t;m++){const k=kind(m);if(k==="work")w+=1;else if(k==="alg")w+=KZ.alg.rvBemessung}
-    return Math.max(0,n("anw")+g*w);}
+    return Math.max(0,startBetrag+g*w);}
   const W=KZ.wartezeit;
   const types=[
     {key:"regel",name:"Regelaltersrente",need:W.regel,free:RA,early:RA,for45:false,sb:false},
@@ -473,7 +490,8 @@ function compute(){
   /* ALG */
   let algEst=null; if(alo&&A!==null){const nl=n("nettoLohn"); if(nl>0) algEst=nl*(kinder?KZ.alg.satzKind:KZ.alg.satz);}
 
-  return {geb,S,R,RA,types,best,earliestAll,bBase,brutto,abz,factor,kv,pv,pkvB,pkvZ,priv,auszahlung,ba,rentenfrei,zveOhne,zveMit,stOhne,stMit,stRenteMon,stJobMon,
+  const epGesamt=bruttoBase(S)/KZ.rentenwert;
+  return {methode,useEP,useGeh,epJahr,epGesamt,geb,S,R,RA,types,best,earliestAll,bBase,brutto,abz,factor,kv,pv,pkvB,pkvZ,priv,auszahlung,ba,rentenfrei,zveOhne,zveMit,stOhne,stMit,stRenteMon,stJobMon,
     nettoRente,lohn,jobSV,jobSVsum,aktiv,nettoJob,rentenplus,rvPflicht,rvZahlt,nachRA,alo,A,algMonths,algAuto,algEst,insol,full:n("prog"),verh,gdbP,zus};
 }
 
@@ -500,6 +518,11 @@ function calc(){
   $("bruttoSide").textContent=eur(r.brutto);
 
   let h="";
+  if(r.methode==="punkte"){
+    h+=row("Rechenweg","Rentenpunkte","note");
+    if(r.useGeh) h+=row("Neue Rentenpunkte pro Arbeitsjahr",r.epJahr.toLocaleString("de-DE",{minimumFractionDigits:4,maximumFractionDigits:4}),"note");
+    h+=row("Rentenpunkte bei Rentenbeginn",r.epGesamt.toLocaleString("de-DE",{minimumFractionDigits:4,maximumFractionDigits:4}),"note");
+  }
   h+=row("Rente ohne Abschlag",eur(r.bBase));
   if(r.abz) h+=row(r.abz<0?"Abschlag":"Zuschlag",(r.abz>0?"+ ":"")+eur(r.abz),"minus");
   h+=row("Bruttorente",eur(r.brutto),"sum");
