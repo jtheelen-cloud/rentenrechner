@@ -306,7 +306,7 @@ function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
     id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
   return id}
 const DEV=deviceId(); $("devId").textContent=DEV;
-function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;start()}
+function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
 (function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
   if(ok==="M:"+CODE_HASH) unlock(true);
   else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();
@@ -315,7 +315,7 @@ $("gateForm").addEventListener("submit",e=>{e.preventDefault();const c=normCode(
   if(c===devCode(DEV)){try{localStorage.setItem(KEY_OK,"D:|"+DEV+"|"+c)}catch(err){} unlock(false);return}
   $("gateErr").textContent="Der Code stimmt nicht oder gehört zu einem anderen Handy.";});
 /* Codeliste */
-let delArmed=null;
+var delArmed=null;
 function renderAdminList(){const l=ls.get(KEY_LIST,[]);const t=$("admList");
   if(!l.length){t.innerHTML='<tbody><tr><td class="sub">Noch keine Einträge.</td></tr></tbody>';return}
   t.innerHTML='<thead><tr><th>Name</th><th>Gerätenummer</th><th>Code</th><th>Datum</th><th></th></tr></thead><tbody>'+
