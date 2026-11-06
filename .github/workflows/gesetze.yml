@@ -1,0 +1,24 @@
+name: Gesetzestexte aktualisieren
+on:
+  push:
+    paths: ['tools/gesetze_ris.py', '.github/workflows/gesetze.yml']
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Texte laden
+        run: python3 tools/gesetze_ris.py
+      - name: Speichern
+        if: always()
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add -A br/texte tools/gesetze_log.txt tools/debug_*.xml 2>/dev/null || true
+          git commit -m "Gesetzestexte aktualisiert (Rechtsinformationsportal des Bundes)" || echo "keine Änderung"
+          git pull --rebase origin main && git push
