@@ -1,0 +1,2801 @@
+{
+ "search": [
+  {
+   "slug": "betrvg",
+   "kurz": "BetrVG",
+   "total": 1,
+   "hits": [
+    [
+     "Betriebsverfassungsgesetz",
+     "BetrVG",
+     "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "kschg",
+   "kurz": "KSchG",
+   "total": 1,
+   "hits": [
+    [
+     "Kündigungsschutzgesetz",
+     "KSchG",
+     "/v1/legislation/eli/bund/bgbl-1/1951/s499/2021-06-14/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "arbzg",
+   "kurz": "ArbZG",
+   "total": 3,
+   "hits": [
+    [
+     "Arbeitszeitgesetz",
+     "ArbZG",
+     "/v1/legislation/eli/bund/bgbl-1/1994/s1171/2024-10-23/1/deu"
+    ],
+    [
+     "Gesetz zur Vereinheitlichung und Flexibilisierung des Arbeitszeitrechts",
+     "ArbZRG",
+     "/v1/legislation/eli/bund/bgbl-1/1994/s1170/1994-06-06/2/deu"
+    ],
+    [
+     "Fahrlehrer-Ausbildungsverordnung",
+     "FahrlAusbV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s15/2022-03-18/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "bgb",
+   "kurz": "BGB",
+   "total": 20,
+   "hits": [
+    [
+     "Verordnung über das Bewachungsgewerbe",
+     "BewachV",
+     "/v1/legislation/eli/bund/bgbl-1/2019/s692/2019-06-24/1/deu"
+    ],
+    [
+     "Verordnung über die Aufbewahrung und Speicherung von Justizakten",
+     "JAktAV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s4834/2026-03-29/1/deu"
+    ],
+    [
+     "Gesetz über Kosten der freiwilligen Gerichtsbarkeit für Gerichte und Notare",
+     "GNotKG",
+     "/v1/legislation/eli/bund/bgbl-1/2013/s2586/2025-12-10/2/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der Sozialkassenverfahren im Baugewerbe",
+     "SokaSiG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s1210/2017-05-16/1/deu"
+    ],
+    [
+     "Verordnung über die Abrechnung von Unterstützungsleistungen des Technischen Hilfswerks",
+     "THWAbrV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s4667/2021-10-13/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "tzbfg",
+   "kurz": "TzBfG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz über Teilzeitarbeit und befristete Arbeitsverträge",
+     "TzBfG",
+     "/v1/legislation/eli/bund/bgbl-1/2000/s1966/2022-07-20/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "burlg",
+   "kurz": "BUrlG",
+   "total": 3,
+   "hits": [
+    [
+     "Mindesturlaubsgesetz für Arbeitnehmer",
+     "BUrlG",
+     "/v1/legislation/eli/bund/bgbl-1/1963/s2/2013-04-20/1/deu"
+    ],
+    [
+     "Fahrlehrer-Ausbildungsverordnung",
+     "FahrlAusbV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s15/2022-03-18/1/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren",
+     "SokaSiG2",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s3356/2017-09-01/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "entgfg",
+   "kurz": "EntgFG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz über die Zahlung des Arbeitsentgelts an Feiertagen und im Krankheitsfall",
+     "EntgFG",
+     "/v1/legislation/eli/bund/bgbl-1/1994/s1065/2026-05-12/1/deu"
+    ],
+    [
+     "Fahrlehrer-Ausbildungsverordnung",
+     "FahrlAusbV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s15/2022-03-18/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "agg",
+   "kurz": "AGG",
+   "total": 1,
+   "hits": [
+    [
+     "Allgemeines Gleichbehandlungsgesetz",
+     "AGG",
+     "/v1/legislation/eli/bund/bgbl-1/2006/s1897/2023-12-22/2/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "arbschg",
+   "kurz": "ArbSchG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz über die Durchführung von Maßnahmen des Arbeitsschutzes zur Verbesserung der Sicherheit und des Gesundheitsschutzes der Beschäftigten bei der Arbeit",
+     "ArbSchG",
+     "/v1/legislation/eli/bund/bgbl-1/1996/s1246/2025-12-22/1/deu"
+    ],
+    [
+     "Besondere Gebührenverordnung des Bundesministeriums für Verkehr und digitale Infrastruktur für individuell zurechenbare öffentliche Leistungen des Eisenbahn-Bundesamtes, der benannten Stelle und der bestimmten Stelle",
+     "EBABGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s3182/2024-06-05/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "sgb_9_2018",
+   "kurz": "SGB IX",
+   "total": 9,
+   "hits": [
+    [
+     "Sozialgesetzbuch - Neuntes Buch - (SGB IX) Rehabilitation und Teilhabe behinderter Menschen",
+     "SGB9uaÄndG",
+     "/v1/legislation/eli/bund/bgbl-1/2001/s1046/2001-06-19/1/deu"
+    ],
+    [
+     "Verordnung über die Registrierung von beruflichen Betreuern",
+     "BtRegV",
+     "/v1/legislation/eli/bund/bgbl-1/2022/s1154/2022-07-13/1/deu"
+    ],
+    [
+     "Besondere Gebührenverordnung des Bundesministeriums der Verteidigung für individuell zurechenbare öffentliche Leistungen in seinem Zuständigkeitsbereich",
+     "BMVgBGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2026/268/2026-08-26/1/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren",
+     "SokaSiG2",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s3356/2017-09-01/1/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der Sozialkassenverfahren im Baugewerbe",
+     "SokaSiG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s1210/2017-05-16/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "muschg_2018",
+   "kurz": "MuSchG",
+   "total": 4,
+   "hits": [
+    [
+     "Gesetz zum Schutz von Müttern bei der Arbeit, in der Ausbildung und im Studium",
+     "MuSchG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s1228/2025-12-22/1/deu"
+    ],
+    [
+     "Verordnung zur Bezeichnung der als Einkommen geltenden sonstigen Einnahmen nach § 21 Abs. 3 Nr. 4 des Bundesausbildungsförderungsgesetzes",
+     "BAföG-EinkommensV",
+     "/v1/legislation/eli/bund/bgbl-1/1988/s505/2021-08-20/1/deu"
+    ],
+    [
+     "Verordnung über maritime medizinische Anforderungen auf Kauffahrteischiffen",
+     "MariMedV",
+     "/v1/legislation/eli/bund/bgbl-1/2014/s1383/2026-09-07/1/deu"
+    ],
+    [
+     "Fahrlehrer-Ausbildungsverordnung",
+     "FahrlAusbV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s15/2022-03-18/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "beeg",
+   "kurz": "BEEG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz zum Elterngeld und zur Elternzeit",
+     "BEEG",
+     "/v1/legislation/eli/bund/bgbl-1/2006/s2748/2025-12-22/1/deu"
+    ],
+    [
+     "Verordnung zur Bezeichnung der als Einkommen geltenden sonstigen Einnahmen nach § 21 Abs. 3 Nr. 4 des Bundesausbildungsförderungsgesetzes",
+     "BAföG-EinkommensV",
+     "/v1/legislation/eli/bund/bgbl-1/1988/s505/2021-08-20/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "pflegezg",
+   "kurz": "PflegeZG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz über die Pflegezeit",
+     "PflegeZG",
+     "/v1/legislation/eli/bund/bgbl-1/2008/s896/2025-12-22/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "nachwg",
+   "kurz": "NachwG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz über den Nachweis der für ein Arbeitsverhältnis geltenden wesentlichen Bedingungen",
+     "NachwG",
+     "/v1/legislation/eli/bund/bgbl-1/1995/s946/2024-10-23/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "tvg",
+   "kurz": "TVG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren",
+     "SokaSiG2",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s3356/2017-09-01/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "arbgg",
+   "kurz": "ArbGG",
+   "total": 0,
+   "hits": []
+  },
+  {
+   "slug": "milog",
+   "kurz": "MiLoG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz zur Regelung eines allgemeinen Mindestlohns",
+     "MiLoG",
+     "/v1/legislation/eli/bund/bgbl-1/2014/s1348/2026-05-12/1/deu"
+    ],
+    [
+     "Fahrlehrer-Ausbildungsverordnung",
+     "FahrlAusbV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s15/2022-03-18/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "a_g",
+   "kurz": "AÜG",
+   "total": 62,
+   "hits": [
+    [
+     "Gesetz zur Geltendmachung von Unterhaltsansprüchen im Verkehr mit ausländischen Staaten",
+     "AUG",
+     "/v1/legislation/eli/bund/bgbl-1/2011/s898/2021-08-10/3/deu"
+    ],
+    [
+     "Besondere Gebührenverordnung des Bundesministeriums für Arbeit und Soziales für individuell zurechenbare öffentliche Leistungen in dessen Zuständigkeitsbereich",
+     "BMASBGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s3376/2021-08-10/1/deu"
+    ],
+    [
+     "Gebührenordnung für Tierärztinnen und Tierärzte",
+     "GOT",
+     "/v1/legislation/eli/bund/bgbl-1/2022/s1401/2023-03-15/2/deu"
+    ],
+    [
+     "Verordnung zur Einführung der Lotsenordnung für den Oberrhein",
+     "ORheinLotsOEV",
+     "/v1/legislation/eli/bund/bgbl-2/1956/s703/2016-06-02/1/deu"
+    ],
+    [
+     "Verordnung zur Durchführung eines Monitorings auf das Virus der Klassischen und der Afrikanischen Schweinepest bei Wild- und Hausschweinen",
+     "SchwPestMonV",
+     "/v1/legislation/eli/bund/bgbl-1/2016/s2518/2016-11-09/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "asig",
+   "kurz": "ASiG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz über Betriebsärzte, Sicherheitsingenieure und andere Fachkräfte für Arbeitssicherheit",
+     "ASiG",
+     "/v1/legislation/eli/bund/bgbl-1/1973/s1885/2013-04-20/1/deu"
+    ],
+    [
+     "Verordnung über die Besatzung und über die Befähigungen der Besatzung von Fahrzeugen in der Binnenschifffahrt",
+     "BinSchPersV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s4982/2025-12-17/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "jarbschg",
+   "kurz": "JArbSchG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz zum Schutze der arbeitenden Jugend",
+     "JArbSchG",
+     "/v1/legislation/eli/bund/bgbl-1/1976/s965/2024-10-23/1/deu"
+    ],
+    [
+     "Verordnung über die ärztlichen Untersuchungen nach dem Jugendarbeitsschutzgesetz",
+     "JArbSchUV",
+     "/v1/legislation/eli/bund/bgbl-1/1990/s2221/2024-12-11/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "fpfzg",
+   "kurz": "FPfZG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz über die Familienpflegezeit",
+     "FPfZG",
+     "/v1/legislation/eli/bund/bgbl-1/2011/s2564/2024-10-23/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "bdsg_2018",
+   "kurz": "BDSG",
+   "total": 2,
+   "hits": [
+    [
+     "Bundesdatenschutzgesetz",
+     "BDSG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s2097/2026-07-03/1/deu"
+    ],
+    [
+     "Besondere Gebührenverordnung des Bundesministeriums des Innern, für Bau und Heimat für individuell zurechenbare öffentliche Leistungen in dessen Zuständigkeitsbereich",
+     "BMIBGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2019/s1359/2026-07-03/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "gewo",
+   "kurz": "GewO",
+   "total": 5,
+   "hits": [
+    [
+     "Besondere Gebührenverordnung des Bundesministeriums für Wirtschaft und Energie für individuell zurechenbare öffentliche Leistungen des Bundesamts für Wirtschaft und Ausfuhrkontrolle",
+     "BAFABGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s4317/2021-09-21/1/deu"
+    ],
+    [
+     "Besondere Gebührenverordnung für individuell zurechenbare öffentliche Leistungen der Physikalisch-Technischen Bundesanstalt",
+     "PTBBGebV",
+     "/v1/legislation/eli/bund/bgbl-1/2021/s1717/2025-03-19/1/deu"
+    ],
+    [
+     "Verordnung über die Versicherungsvermittlung und -beratung",
+     "VersVermV",
+     "/v1/legislation/eli/bund/bgbl-1/2018/s2483/2025-02-17/1/deu"
+    ],
+    [
+     "Verordnung über Anzeigen nach § 24 des Wertpapierinstitutsgesetzes",
+     "WpI-InhKontrollV",
+     "/v1/legislation/eli/bund/bgbl-1/2024/9/2026-02-04/1/deu"
+    ],
+    [
+     "Verordnung über die Anzeigen und die Vorlage von Unterlagen nach dem Kreditwesengesetz",
+     "AnzV",
+     "/v1/legislation/eli/bund/bgbl-1/2006/s3245/2026-03-25/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "betravg",
+   "kurz": "BetrAVG",
+   "total": 5,
+   "hits": [
+    [
+     "Gesetz zur Verbesserung der betrieblichen Altersversorgung",
+     "BetrAVG",
+     "/v1/legislation/eli/bund/bgbl-1/1974/s3610/2026-01-16/1/deu"
+    ],
+    [
+     "Satzung der Pensionskasse Deutscher Eisenbahnen und Straßenbahnen VVaG Köln (Anlage zur Verordnung über die Feststellung der Satzung der Pensionskasse Deutscher Eisenbahnen und Straßenbahnen VVaG)",
+     "PKDBSa",
+     "/v1/legislation/eli/bund/bgbl-1/2006/s167/2006-01-14/1/deu"
+    ],
+    [
+     "Verordnung über die Berichterstattung von Versicherungsunternehmen gegenüber der Bundesanstalt für Finanzdienstleistungsaufsicht",
+     "BerVersV",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s2858/2024-12-11/1/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren",
+     "SokaSiG2",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s3356/2017-09-01/1/deu"
+    ],
+    [
+     "Gesetz zur Sicherung der Sozialkassenverfahren im Baugewerbe",
+     "SokaSiG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s1210/2017-05-16/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "mitbestg",
+   "kurz": "MitbestG",
+   "total": 0,
+   "hits": []
+  },
+  {
+   "slug": "drittelbg",
+   "kurz": "DrittelbG",
+   "total": 1,
+   "hits": [
+    [
+     "Gesetz über die Drittelbeteiligung der Arbeitnehmer im Aufsichtsrat",
+     "DrittelbG",
+     "/v1/legislation/eli/bund/bgbl-1/2004/s974/2021-08-07/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "entgtranspg",
+   "kurz": "EntgTranspG",
+   "total": 2,
+   "hits": [
+    [
+     "Gesetz zur Förderung der Entgelttransparenz zwischen Frauen und Männern",
+     "EntgTranspG",
+     "/v1/legislation/eli/bund/bgbl-1/2017/s2152/2021-07-05/1/deu"
+    ],
+    [
+     "Gesetz über Kosten in Angelegenheiten der Justizverwaltung",
+     "JVKostG",
+     "/v1/legislation/eli/bund/bgbl-1/2013/s2655/2026-07-01/1/deu"
+    ]
+   ]
+  },
+  {
+   "slug": "hinschg",
+   "kurz": "HinSchG",
+   "total": 0,
+   "hits": []
+  }
+ ],
+ "item_list": {
+  "@type": "SearchResult",
+  "item": {
+   "@type": "Legislation",
+   "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu",
+   "name": "Betriebsverfassungsgesetz",
+   "legislationIdentifier": "eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu",
+   "exampleOfWork": {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13",
+    "legislationIdentifier": "eli/bund/bgbl-1/1972/s13",
+    "legislationDate": "1972-01-15",
+    "datePublished": "1972-01-15",
+    "isPartOf": {
+     "@type": "PublicationIssue",
+     "name": "BGBl I, 1972 13"
+    }
+   },
+   "temporalCoverage": null,
+   "abbreviation": "BetrVG",
+   "alternateName": null,
+   "legislationLegalForce": "InForce",
+   "encoding": [
+    {
+     "@type": "LegislationObject",
+     "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1/html",
+     "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1.html",
+     "encodingFormat": "text/html",
+     "inLanguage": "de"
+    },
+    {
+     "@type": "LegislationObject",
+     "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1/xml",
+     "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1.xml",
+     "encodingFormat": "application/xml",
+     "inLanguage": "de"
+    },
+    {
+     "@type": "LegislationObject",
+     "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/zip",
+     "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13.zip",
+     "encodingFormat": "application/zip",
+     "inLanguage": "de"
+    }
+   ]
+  },
+  "textMatches": [
+   {
+    "@type": "SearchResultMatch",
+    "name": "§ 128 Bestehende abweichende Tarifverträge",
+    "text": "Die im Zeitpunkt des Inkrafttretens dieses Gesetzes nach § 20 Abs. 3 des <mark>Betriebsverfassungsgesetzes</mark> vom 11.",
+    "location": "art-z128"
+   },
+   {
+    "@type": "SearchResultMatch",
+    "name": "§ 15 Zusammensetzung nach Beschäftigungsarten und Geschlechter *)",
+    "text": ". ----- Gemäß Artikel 14 Satz 2 des Gesetzes zur Reform des <mark>Betriebsverfassungsgesetzes</mark> (BetrVerf-Reformgesetz) vom 23. Juli 2001 (BGBl. I S. 1852) gilt § 15 (Artikel 1 Nr. 13 des BetrVerf-Reformgesetzes) für im Zeitraum des Inkrafftretens bestehende Betriebsräte erst bei deren Neuwahl.",
+    "location": "art-z15"
+   },
+   {
+    "@type": "SearchResultMatch",
+    "name": "§ 125 Erstmalige Wahlen nach diesem Gesetz",
+    "text": "Juli 2001 eingeleitet werden, finden die Erste Verordnung zur Durchführung des <mark>Betriebsverfassungsgesetzes</mark> vom 16. Januar 1972 (BGBl. I S. 49), zuletzt geändert durch die Verordnung vm 16. Januar 1995 (BGBl. I S. 43), die Zweite Verordnung zur Durchführung des <mark>Betriebsverfassungsgesetzes</mark> vom 24. Oktober 1972 (BGBl.",
+    "location": "art-z125"
+   },
+   {
+    "@type": "SearchResultMatch",
+    "name": "name",
+    "text": "<mark>Betriebsverfassungsgesetz</mark>",
+    "location": null
+   }
+  ]
+ },
+ "item": {
+  "@type": "Legislation",
+  "@context": "https://testphase.rechtsinformationen.bund.de/v1/context.jsonld",
+  "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu",
+  "name": "Betriebsverfassungsgesetz",
+  "abbreviation": "BetrVG",
+  "risAbbreviation": "BetrVG",
+  "alternateName": null,
+  "exampleOfWork": {
+   "@type": "Legislation",
+   "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13",
+   "legislationIdentifier": "eli/bund/bgbl-1/1972/s13",
+   "legislationDate": "1972-01-15",
+   "datePublished": "1972-01-15",
+   "isPartOf": {
+    "@type": "PublicationIssue",
+    "name": "BGBl I, 1972 13"
+   }
+  },
+  "legislationIdentifier": "eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu",
+  "temporalCoverage": null,
+  "legislationLegalForce": "InForce",
+  "hasPart": [
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n1",
+    "eId": "hauptteil-n1_teil-n1",
+    "name": "Erster Teil",
+    "headline": "Allgemeine Vorschriften",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z1",
+      "eId": "art-z1",
+      "name": "§ 1",
+      "headline": "Errichtung von Betriebsräten",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z2",
+      "eId": "art-z2",
+      "name": "§ 2",
+      "headline": "Stellung der Gewerkschaften und Vereinigungen der Arbeitgeber",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z3",
+      "eId": "art-z3",
+      "name": "§ 3",
+      "headline": "Abweichende Regelungen",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z4",
+      "eId": "art-z4",
+      "name": "§ 4",
+      "headline": "Betriebsteile, Kleinstbetriebe",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z5",
+      "eId": "art-z5",
+      "name": "§ 5",
+      "headline": "Arbeitnehmer",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z6",
+      "eId": "art-z6",
+      "name": "§ 6",
+      "headline": "",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2",
+    "eId": "hauptteil-n1_teil-n2",
+    "name": "Zweiter Teil",
+    "headline": "Betriebsrat, Betriebsversammlung, Gesamt- und Konzernbetriebsrat",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n1",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n1",
+      "name": "Erster Abschnitt",
+      "headline": "Zusammensetzung und Wahl des Betriebsrats",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z7",
+        "eId": "art-z7",
+        "name": "§ 7",
+        "headline": "Wahlberechtigung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z8",
+        "eId": "art-z8",
+        "name": "§ 8",
+        "headline": "Wählbarkeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z9",
+        "eId": "art-z9",
+        "name": "§ 9",
+        "headline": "Zahl der Betriebsratsmitglieder *)",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z10",
+        "eId": "art-z10",
+        "name": "§ 10",
+        "headline": "",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z11",
+        "eId": "art-z11",
+        "name": "§ 11",
+        "headline": "Ermäßigte Zahl der Betriebsratsmitglieder",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z12",
+        "eId": "art-z12",
+        "name": "§ 12",
+        "headline": "",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z13",
+        "eId": "art-z13",
+        "name": "§ 13",
+        "headline": "Zeitpunkt der Betriebsratswahlen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z14",
+        "eId": "art-z14",
+        "name": "§ 14",
+        "headline": "Wahlvorschriften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z14a",
+        "eId": "art-z14a",
+        "name": "§ 14a",
+        "headline": "Vereinfachtes Wahlverfahren für Kleinbetriebe",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z15",
+        "eId": "art-z15",
+        "name": "§ 15",
+        "headline": "Zusammensetzung nach Beschäftigungsarten und Geschlechter *)",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z16",
+        "eId": "art-z16",
+        "name": "§ 16",
+        "headline": "Bestellung des Wahlvorstands",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z17",
+        "eId": "art-z17",
+        "name": "§ 17",
+        "headline": "Bestellung des Wahlvorstands in Betrieben ohne Betriebsrat",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z17a",
+        "eId": "art-z17a",
+        "name": "§ 17a",
+        "headline": "Bestellung des Wahlvorstands im vereinfachten Wahlverfahren",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z18",
+        "eId": "art-z18",
+        "name": "§ 18",
+        "headline": "Vorbereitung und Durchführung der Wahl",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z18a",
+        "eId": "art-z18a",
+        "name": "§ 18a",
+        "headline": "Zuordnung der leitenden Angestellten bei Wahlen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z19",
+        "eId": "art-z19",
+        "name": "§ 19",
+        "headline": "Wahlanfechtung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z20",
+        "eId": "art-z20",
+        "name": "§ 20",
+        "headline": "Wahlschutz und Wahlkosten",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n2",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n2",
+      "name": "Zweiter Abschnitt",
+      "headline": "Amtszeit des Betriebsrats",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z21",
+        "eId": "art-z21",
+        "name": "§ 21",
+        "headline": "Amtszeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z21a",
+        "eId": "art-z21a",
+        "name": "§ 21a",
+        "headline": "Übergangsmandat *)",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z21b",
+        "eId": "art-z21b",
+        "name": "§ 21b",
+        "headline": "Restmandat",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z22",
+        "eId": "art-z22",
+        "name": "§ 22",
+        "headline": "Weiterführung der Geschäfte des Betriebsrats",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z23",
+        "eId": "art-z23",
+        "name": "§ 23",
+        "headline": "Verletzung gesetzlicher Pflichten",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z24",
+        "eId": "art-z24",
+        "name": "§ 24",
+        "headline": "Erlöschen der Mitgliedschaft",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z25",
+        "eId": "art-z25",
+        "name": "§ 25",
+        "headline": "Ersatzmitglieder",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n3",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n3",
+      "name": "Dritter Abschnitt",
+      "headline": "Geschäftsführung des Betriebsrats",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z26",
+        "eId": "art-z26",
+        "name": "§ 26",
+        "headline": "Vorsitzender",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z27",
+        "eId": "art-z27",
+        "name": "§ 27",
+        "headline": "Betriebsausschuss",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z28",
+        "eId": "art-z28",
+        "name": "§ 28",
+        "headline": "Übertragung von Aufgaben auf Ausschüsse",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z28a",
+        "eId": "art-z28a",
+        "name": "§ 28a",
+        "headline": "Übertragung von Aufgaben auf Arbeitsgruppen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z29",
+        "eId": "art-z29",
+        "name": "§ 29",
+        "headline": "Einberufung der Sitzungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z30",
+        "eId": "art-z30",
+        "name": "§ 30",
+        "headline": "Betriebsratssitzungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z31",
+        "eId": "art-z31",
+        "name": "§ 31",
+        "headline": "Teilnahme der Gewerkschaften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z32",
+        "eId": "art-z32",
+        "name": "§ 32",
+        "headline": "Teilnahme der Schwerbehindertenvertretung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z33",
+        "eId": "art-z33",
+        "name": "§ 33",
+        "headline": "Beschlüsse des Betriebsrats",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z34",
+        "eId": "art-z34",
+        "name": "§ 34",
+        "headline": "Sitzungsniederschrift",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z35",
+        "eId": "art-z35",
+        "name": "§ 35",
+        "headline": "Aussetzung von Beschlüssen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z36",
+        "eId": "art-z36",
+        "name": "§ 36",
+        "headline": "Geschäftsordnung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z37",
+        "eId": "art-z37",
+        "name": "§ 37",
+        "headline": "Ehrenamtliche Tätigkeit, Arbeitsversäumnis",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z38",
+        "eId": "art-z38",
+        "name": "§ 38",
+        "headline": "Freistellungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z39",
+        "eId": "art-z39",
+        "name": "§ 39",
+        "headline": "Sprechstunden",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z40",
+        "eId": "art-z40",
+        "name": "§ 40",
+        "headline": "Kosten und Sachaufwand des Betriebsrats",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z41",
+        "eId": "art-z41",
+        "name": "§ 41",
+        "headline": "Umlageverbot",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n4",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n4",
+      "name": "Vierter Abschnitt",
+      "headline": "Betriebsversammlung",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z42",
+        "eId": "art-z42",
+        "name": "§ 42",
+        "headline": "Zusammensetzung, Teilversammlung, Abteilungsversammlung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z43",
+        "eId": "art-z43",
+        "name": "§ 43",
+        "headline": "Regelmäßige Betriebs- und Abteilungsversammlungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z44",
+        "eId": "art-z44",
+        "name": "§ 44",
+        "headline": "Zeitpunkt und Verdienstausfall",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z45",
+        "eId": "art-z45",
+        "name": "§ 45",
+        "headline": "Themen der Betriebs- und Abteilungsversammlungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z46",
+        "eId": "art-z46",
+        "name": "§ 46",
+        "headline": "Beauftragte der Verbände",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n5",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n5",
+      "name": "Fünfter Abschnitt",
+      "headline": "Gesamtbetriebsrat",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z47",
+        "eId": "art-z47",
+        "name": "§ 47",
+        "headline": "Voraussetzungen der Errichtung, Mitgliederzahl, Stimmengewicht *)",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z48",
+        "eId": "art-z48",
+        "name": "§ 48",
+        "headline": "Ausschluss von Gesamtbetriebsratsmitgliedern",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z49",
+        "eId": "art-z49",
+        "name": "§ 49",
+        "headline": "Erlöschen der Mitgliedschaft",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z50",
+        "eId": "art-z50",
+        "name": "§ 50",
+        "headline": "Zuständigkeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z51",
+        "eId": "art-z51",
+        "name": "§ 51",
+        "headline": "Geschäftsführung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z52",
+        "eId": "art-z52",
+        "name": "§ 52",
+        "headline": "Teilnahme der Gesamtschwerbehindertenvertretung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z53",
+        "eId": "art-z53",
+        "name": "§ 53",
+        "headline": "Betriebsräteversammlung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n2_abschnitt-n6",
+      "eId": "hauptteil-n1_teil-n2_abschnitt-n6",
+      "name": "Sechster Abschnitt",
+      "headline": "Konzernbetriebsrat",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z54",
+        "eId": "art-z54",
+        "name": "§ 54",
+        "headline": "Errichtung des Konzernbetriebsrats",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z55",
+        "eId": "art-z55",
+        "name": "§ 55",
+        "headline": "Zusammensetzung des Konzernbetriebsrats, Stimmengewicht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z56",
+        "eId": "art-z56",
+        "name": "§ 56",
+        "headline": "Ausschluss von Konzernbetriebsratsmitgliedern",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z57",
+        "eId": "art-z57",
+        "name": "§ 57",
+        "headline": "Erlöschen der Mitgliedschaft",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z58",
+        "eId": "art-z58",
+        "name": "§ 58",
+        "headline": "Zuständigkeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z59",
+        "eId": "art-z59",
+        "name": "§ 59",
+        "headline": "Geschäftsführung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z59a",
+        "eId": "art-z59a",
+        "name": "§ 59a",
+        "headline": "Teilnahme der Konzernschwerbehindertenvertretung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n3",
+    "eId": "hauptteil-n1_teil-n3",
+    "name": "Dritter Teil",
+    "headline": "Jugend- und Auszubildendenvertretung",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n3_abschnitt-n1",
+      "eId": "hauptteil-n1_teil-n3_abschnitt-n1",
+      "name": "Erster Abschnitt",
+      "headline": "Betriebliche Jugend- und Auszubildendenvertretung",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z60",
+        "eId": "art-z60",
+        "name": "§ 60",
+        "headline": "Errichtung und Aufgabe",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z61",
+        "eId": "art-z61",
+        "name": "§ 61",
+        "headline": "Wahlberechtigung und Wählbarkeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z62",
+        "eId": "art-z62",
+        "name": "§ 62",
+        "headline": "Zahl der Jugend- und Auszubildendenvertreter, Zusammensetzung der Jugend- und Auszubildendenvertretung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z63",
+        "eId": "art-z63",
+        "name": "§ 63",
+        "headline": "Wahlvorschriften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z64",
+        "eId": "art-z64",
+        "name": "§ 64",
+        "headline": "Zeitpunkt der Wahlen und Amtszeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z65",
+        "eId": "art-z65",
+        "name": "§ 65",
+        "headline": "Geschäftsführung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z66",
+        "eId": "art-z66",
+        "name": "§ 66",
+        "headline": "Aussetzung von Beschlüssen des Betriebsrats",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z67",
+        "eId": "art-z67",
+        "name": "§ 67",
+        "headline": "Teilnahme an Betriebsratssitzungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z68",
+        "eId": "art-z68",
+        "name": "§ 68",
+        "headline": "Teilnahme an gemeinsamen Besprechungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z69",
+        "eId": "art-z69",
+        "name": "§ 69",
+        "headline": "Sprechstunden",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z70",
+        "eId": "art-z70",
+        "name": "§ 70",
+        "headline": "Allgemeine Aufgaben",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z71",
+        "eId": "art-z71",
+        "name": "§ 71",
+        "headline": "Jugend- und Auszubildendenversammlung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n3_abschnitt-n2",
+      "eId": "hauptteil-n1_teil-n3_abschnitt-n2",
+      "name": "Zweiter Abschnitt",
+      "headline": "Gesamt-Jugend- und Auszubildendenvertretung",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z72",
+        "eId": "art-z72",
+        "name": "§ 72",
+        "headline": "Voraussetzungen der Errichtung, Mitgliederzahl, Stimmengewicht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z73",
+        "eId": "art-z73",
+        "name": "§ 73",
+        "headline": "Geschäftsführung und Geltung sonstiger Vorschriften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n3_abschnitt-n3",
+      "eId": "hauptteil-n1_teil-n3_abschnitt-n3",
+      "name": "Dritter Abschnitt",
+      "headline": "Konzern-Jugend- und Auszubildendenvertretung",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z73a",
+        "eId": "art-z73a",
+        "name": "§ 73a",
+        "headline": "Voraussetzung der Errichtung, Mitgliederzahl, Stimmengewicht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z73b",
+        "eId": "art-z73b",
+        "name": "§ 73b",
+        "headline": "Geschäftsführung und Geltung sonstiger Vorschriften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4",
+    "eId": "hauptteil-n1_teil-n4",
+    "name": "Vierter Teil",
+    "headline": "Mitwirkung und Mitbestimmung der Arbeitnehmer",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n1",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n1",
+      "name": "Erster Abschnitt",
+      "headline": "Allgemeines",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z74",
+        "eId": "art-z74",
+        "name": "§ 74",
+        "headline": "Grundsätze für die Zusammenarbeit",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z75",
+        "eId": "art-z75",
+        "name": "§ 75",
+        "headline": "Grundsätze für die Behandlung der Betriebsangehörigen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z76",
+        "eId": "art-z76",
+        "name": "§ 76",
+        "headline": "Einigungsstelle",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z76a",
+        "eId": "art-z76a",
+        "name": "§ 76a",
+        "headline": "Kosten der Einigungsstelle",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z77",
+        "eId": "art-z77",
+        "name": "§ 77",
+        "headline": "Durchführung gemeinsamer Beschlüsse, Betriebsvereinbarungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z78",
+        "eId": "art-z78",
+        "name": "§ 78",
+        "headline": "Schutzbestimmungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z78a",
+        "eId": "art-z78a",
+        "name": "§ 78a",
+        "headline": "Schutz Auszubildender in besonderen Fällen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z79",
+        "eId": "art-z79",
+        "name": "§ 79",
+        "headline": "Geheimhaltungspflicht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z79a",
+        "eId": "art-z79a",
+        "name": "§ 79a",
+        "headline": "Datenschutz",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z80",
+        "eId": "art-z80",
+        "name": "§ 80",
+        "headline": "Allgemeine Aufgaben",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n2",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n2",
+      "name": "Zweiter Abschnitt",
+      "headline": "Mitwirkungs- und Beschwerderecht des Arbeitnehmers",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z81",
+        "eId": "art-z81",
+        "name": "§ 81",
+        "headline": "Unterrichtungs- und Erörterungspflicht des Arbeitgebers",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z82",
+        "eId": "art-z82",
+        "name": "§ 82",
+        "headline": "Anhörungs- und Erörterungsrecht des Arbeitnehmers",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z83",
+        "eId": "art-z83",
+        "name": "§ 83",
+        "headline": "Einsicht in die Personalakten",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z84",
+        "eId": "art-z84",
+        "name": "§ 84",
+        "headline": "Beschwerderecht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z85",
+        "eId": "art-z85",
+        "name": "§ 85",
+        "headline": "Behandlung von Beschwerden durch den Betriebsrat",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z86",
+        "eId": "art-z86",
+        "name": "§ 86",
+        "headline": "Ergänzende Vereinbarungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z86a",
+        "eId": "art-z86a",
+        "name": "§ 86a",
+        "headline": "Vorschlagsrecht der Arbeitnehmer",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n3",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n3",
+      "name": "Dritter Abschnitt",
+      "headline": "Soziale Angelegenheiten",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z87",
+        "eId": "art-z87",
+        "name": "§ 87",
+        "headline": "Mitbestimmungsrechte",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z88",
+        "eId": "art-z88",
+        "name": "§ 88",
+        "headline": "Freiwillige Betriebsvereinbarungen",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z89",
+        "eId": "art-z89",
+        "name": "§ 89",
+        "headline": "Arbeits- und betrieblicher Umweltschutz",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n4",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n4",
+      "name": "Vierter Abschnitt",
+      "headline": "Gestaltung von Arbeitsplatz, Arbeitsablauf und Arbeitsumgebung",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z90",
+        "eId": "art-z90",
+        "name": "§ 90",
+        "headline": "Unterrichtungs- und Beratungsrechte",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z91",
+        "eId": "art-z91",
+        "name": "§ 91",
+        "headline": "Mitbestimmungsrecht",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n5",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n5",
+      "name": "Fünfter Abschnitt",
+      "headline": "Personelle Angelegenheiten",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n1",
+        "eId": "hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n1",
+        "name": "Erster Unterabschnitt",
+        "headline": "Allgemeine personelle Angelegenheiten",
+        "temporalCoverage": "",
+        "partType": null,
+        "revision": null,
+        "encoding": [],
+        "hasPart": [
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z92",
+          "eId": "art-z92",
+          "name": "§ 92",
+          "headline": "Personalplanung",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z92a",
+          "eId": "art-z92a",
+          "name": "§ 92a",
+          "headline": "Beschäftigungssicherung",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z93",
+          "eId": "art-z93",
+          "name": "§ 93",
+          "headline": "Ausschreibung von Arbeitsplätzen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z94",
+          "eId": "art-z94",
+          "name": "§ 94",
+          "headline": "Personalfragebogen, Beurteilungsgrundsätze",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z95",
+          "eId": "art-z95",
+          "name": "§ 95",
+          "headline": "Auswahlrichtlinien",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         }
+        ]
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n2",
+        "eId": "hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n2",
+        "name": "Zweiter Unterabschnitt",
+        "headline": "Berufsbildung",
+        "temporalCoverage": "",
+        "partType": null,
+        "revision": null,
+        "encoding": [],
+        "hasPart": [
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z96",
+          "eId": "art-z96",
+          "name": "§ 96",
+          "headline": "Förderung der Berufsbildung",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z97",
+          "eId": "art-z97",
+          "name": "§ 97",
+          "headline": "Einrichtungen und Maßnahmen der Berufsbildung",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z98",
+          "eId": "art-z98",
+          "name": "§ 98",
+          "headline": "Durchführung betrieblicher Bildungsmaßnahmen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         }
+        ]
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n3",
+        "eId": "hauptteil-n1_teil-n4_abschnitt-n5_uabschnitt-n3",
+        "name": "Dritter Unterabschnitt",
+        "headline": "Personelle Einzelmaßnahmen",
+        "temporalCoverage": "",
+        "partType": null,
+        "revision": null,
+        "encoding": [],
+        "hasPart": [
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z99",
+          "eId": "art-z99",
+          "name": "§ 99",
+          "headline": "Mitbestimmung bei personellen Einzelmaßnahmen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z100",
+          "eId": "art-z100",
+          "name": "§ 100",
+          "headline": "Vorläufige personelle Maßnahmen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z101",
+          "eId": "art-z101",
+          "name": "§ 101",
+          "headline": "Zwangsgeld",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z102",
+          "eId": "art-z102",
+          "name": "§ 102",
+          "headline": "Mitbestimmung bei Kündigungen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z103",
+          "eId": "art-z103",
+          "name": "§ 103",
+          "headline": "Außerordentliche Kündigung und Versetzung in besonderen Fällen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z104",
+          "eId": "art-z104",
+          "name": "§ 104",
+          "headline": "Entfernung betriebsstörender Arbeitnehmer",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z105",
+          "eId": "art-z105",
+          "name": "§ 105",
+          "headline": "Leitende Angestellte",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n6",
+      "eId": "hauptteil-n1_teil-n4_abschnitt-n6",
+      "name": "Sechster Abschnitt",
+      "headline": "Wirtschaftliche Angelegenheiten",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n6_uabschnitt-n1",
+        "eId": "hauptteil-n1_teil-n4_abschnitt-n6_uabschnitt-n1",
+        "name": "Erster Unterabschnitt",
+        "headline": "Unterrichtung in wirtschaftlichen Angelegenheiten",
+        "temporalCoverage": "",
+        "partType": null,
+        "revision": null,
+        "encoding": [],
+        "hasPart": [
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z106",
+          "eId": "art-z106",
+          "name": "§ 106",
+          "headline": "Wirtschaftsausschuss",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z107",
+          "eId": "art-z107",
+          "name": "§ 107",
+          "headline": "Bestellung und Zusammensetzung des Wirtschaftsausschusses",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z108",
+          "eId": "art-z108",
+          "name": "§ 108",
+          "headline": "Sitzungen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z109",
+          "eId": "art-z109",
+          "name": "§ 109",
+          "headline": "Beilegung von Meinungsverschiedenheiten",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z109a",
+          "eId": "art-z109a",
+          "name": "§ 109a",
+          "headline": "Unternehmensübernahme",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z110",
+          "eId": "art-z110",
+          "name": "§ 110",
+          "headline": "Unterrichtung der Arbeitnehmer",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         }
+        ]
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n4_abschnitt-n6_uabschnitt-n2",
+        "eId": "hauptteil-n1_teil-n4_abschnitt-n6_uabschnitt-n2",
+        "name": "Zweiter Unterabschnitt",
+        "headline": "Betriebsänderungen",
+        "temporalCoverage": "",
+        "partType": null,
+        "revision": null,
+        "encoding": [],
+        "hasPart": [
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z111",
+          "eId": "art-z111",
+          "name": "§ 111",
+          "headline": "Betriebsänderungen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z112",
+          "eId": "art-z112",
+          "name": "§ 112",
+          "headline": "Interessenausgleich über die Betriebsänderung, Sozialplan",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z112a",
+          "eId": "art-z112a",
+          "name": "§ 112a",
+          "headline": "Erzwingbarer Sozialplan bei Personalabbau, Neugründungen",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         },
+         {
+          "@type": "Legislation",
+          "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z113",
+          "eId": "art-z113",
+          "name": "§ 113",
+          "headline": "Nachteilsausgleich",
+          "temporalCoverage": "1001-01-01/..",
+          "partType": "article",
+          "revision": null,
+          "encoding": [],
+          "hasPart": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n5",
+    "eId": "hauptteil-n1_teil-n5",
+    "name": "Fünfter Teil",
+    "headline": "Besondere Vorschriften für einzelne Betriebsarten",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n5_abschnitt-n1",
+      "eId": "hauptteil-n1_teil-n5_abschnitt-n1",
+      "name": "Erster Abschnitt",
+      "headline": "Seeschifffahrt",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z114",
+        "eId": "art-z114",
+        "name": "§ 114",
+        "headline": "Grundsätze",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z115",
+        "eId": "art-z115",
+        "name": "§ 115",
+        "headline": "Bordvertretung",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       },
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z116",
+        "eId": "art-z116",
+        "name": "§ 116",
+        "headline": "Seebetriebsrat",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n5_abschnitt-n2",
+      "eId": "hauptteil-n1_teil-n5_abschnitt-n2",
+      "name": "Zweiter Abschnitt",
+      "headline": "Luftfahrt",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z117",
+        "eId": "art-z117",
+        "name": "§ 117",
+        "headline": "Geltung für die Luftfahrt",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n5_abschnitt-n3",
+      "eId": "hauptteil-n1_teil-n5_abschnitt-n3",
+      "name": "Dritter Abschnitt",
+      "headline": "Tendenzbetriebe und Religionsgemeinschaften",
+      "temporalCoverage": "",
+      "partType": null,
+      "revision": null,
+      "encoding": [],
+      "hasPart": [
+       {
+        "@type": "Legislation",
+        "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z118",
+        "eId": "art-z118",
+        "name": "§ 118",
+        "headline": "Geltung für Tendenzbetriebe und Religionsgemeinschaften",
+        "temporalCoverage": "1001-01-01/..",
+        "partType": "article",
+        "revision": null,
+        "encoding": [],
+        "hasPart": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n6",
+    "eId": "hauptteil-n1_teil-n6",
+    "name": "Sechster Teil",
+    "headline": "Straf- und Bußgeldvorschriften",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z119",
+      "eId": "art-z119",
+      "name": "§ 119",
+      "headline": "Straftaten gegen Betriebsverfassungsorgane und ihre Mitglieder",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z120",
+      "eId": "art-z120",
+      "name": "§ 120",
+      "headline": "Verletzung von Geheimnissen",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z121",
+      "eId": "art-z121",
+      "name": "§ 121",
+      "headline": "Bußgeldvorschriften",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n7",
+    "eId": "hauptteil-n1_teil-n7",
+    "name": "Siebenter Teil",
+    "headline": "Änderung von Gesetzen",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z122",
+      "eId": "art-z122",
+      "name": "§ 122",
+      "headline": "",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z123",
+      "eId": "art-z123",
+      "name": "§ 123",
+      "headline": "",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z124",
+      "eId": "art-z124",
+      "name": "§ 124",
+      "headline": "",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     }
+    ]
+   },
+   {
+    "@type": "Legislation",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#hauptteil-n1_teil-n8",
+    "eId": "hauptteil-n1_teil-n8",
+    "name": "Achter Teil",
+    "headline": "Übergangs- und Schlussvorschriften",
+    "temporalCoverage": "",
+    "partType": null,
+    "revision": null,
+    "encoding": [],
+    "hasPart": [
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z125",
+      "eId": "art-z125",
+      "name": "§ 125",
+      "headline": "Erstmalige Wahlen nach diesem Gesetz",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z126",
+      "eId": "art-z126",
+      "name": "§ 126",
+      "headline": "Ermächtigung zum Erlass von Wahlordnungen",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z127",
+      "eId": "art-z127",
+      "name": "§ 127",
+      "headline": "Verweisungen",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z128",
+      "eId": "art-z128",
+      "name": "§ 128",
+      "headline": "Bestehende abweichende Tarifverträge",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z129",
+      "eId": "art-z129",
+      "name": "§ 129",
+      "headline": "Sonderregelungen aus Anlass der COVID-19-Pandemie",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z130",
+      "eId": "art-z130",
+      "name": "§ 130",
+      "headline": "Öffentlicher Dienst",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z131",
+      "eId": "art-z131",
+      "name": "§ 131",
+      "headline": "(Berlin-Klausel)",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     },
+     {
+      "@type": "Legislation",
+      "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu#art-z132",
+      "eId": "art-z132",
+      "name": "§ 132",
+      "headline": "",
+      "temporalCoverage": "1001-01-01/..",
+      "partType": "article",
+      "revision": null,
+      "encoding": [],
+      "hasPart": []
+     }
+    ]
+   }
+  ],
+  "encoding": [
+   {
+    "@type": "LegislationObject",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1/html",
+    "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1.html",
+    "encodingFormat": "text/html",
+    "inLanguage": "de"
+   },
+   {
+    "@type": "LegislationObject",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1/xml",
+    "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/regelungstext-1.xml",
+    "encodingFormat": "application/xml",
+    "inLanguage": "de"
+   },
+   {
+    "@type": "LegislationObject",
+    "@id": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13/zip",
+    "contentUrl": "/v1/legislation/eli/bund/bgbl-1/1972/s13/2024-07-19/1/deu/2026-07-13.zip",
+    "encodingFormat": "application/zip",
+    "inLanguage": "de"
+   }
+  ]
+ },
+ "openapi_/v3/api-docs": "HTTP Error 404: Not Found",
+ "openapi_/v1/openapi.json": "HTTP Error 404: Not Found",
+ "openapi_/api/v1/openapi.json": "HTTP Error 404: Not Found",
+ "openapi_/openapi.json": "{\n  \"openapi\" : \"3.1.0\",\n  \"info\" : {\n    \"title\" : \"RIS API\",\n    \"contact\" : {\n      \"name\" : \"DigitalService GmbH des Bundes\",\n      \"url\" : \"https://digitalservice.bund.de\"\n    },\n    \"version\" : "
+}
