@@ -13,17 +13,27 @@ def get(u, raw=False):
     r = urllib.request.urlopen(urllib.request.Request(B + u if u.startswith("/") else u,
         headers={"User-Agent": "BR-Nachschlagen (GitHub Pages)", "Accept": "application/json"}), timeout=60)
     d = r.read(); return d if raw else json.loads(d)
+NAMEN = {"bgb":["Bürgerliches Gesetzbuch"],"sgb_9_2018":["Rehabilitation und Teilhabe von Menschen mit Behinderungen","Neuntes Buch Sozialgesetzbuch"],
+  "a_g":["Arbeitnehmerüberlassung","Gesetz zur Regelung der Arbeitnehmerüberlassung"],"tvg":["Tarifvertragsgesetz"],"arbgg":["Arbeitsgerichtsgesetz"],
+  "gewo":["Gewerbeordnung"],"mitbestg":["Mitbestimmung der Arbeitnehmer","Mitbestimmungsgesetz"],"hinschg":["Hinweisgeberschutzgesetz","Schutz hinweisgebender Personen"]}
+def norm(x): return re.sub(r"[^a-z0-9äöüß]", "", (x or "").lower())
+def ok(it, slug, kurz, name):
+    ab = {norm(it.get("abbreviation")), norm(it.get("risAbbreviation")), norm(it.get("alternateName"))}
+    want = {norm(ABK.get(slug, kurz)), norm(kurz)}
+    return bool(ab & want) or norm(it.get("name")) == norm(name)
 def find(slug, kurz, name):
-    tries = [("abbreviation", ABK.get(slug, kurz)), ("risAbbreviation", ABK.get(slug, kurz)), ("abbreviation", kurz)]
-    for key, val in tries:
-        j = get("/v1/legislation?" + urllib.parse.urlencode({key: val, "mostRelevantOn": HEUTE, "size": 5}))
+    seen = []
+    qs = [{"abbreviation": ABK.get(slug, kurz)}, {"risAbbreviation": ABK.get(slug, kurz)}, {"abbreviation": kurz},
+          {"searchTerm": ABK.get(slug, kurz)}, {"searchTerm": name}] + [{"searchTerm": n} for n in NAMEN.get(slug, [])]
+    for q in qs:
+        q.update({"mostRelevantOn": HEUTE, "size": 10})
+        try: j = get("/v1/legislation?" + urllib.parse.urlencode(q))
+        except Exception as e: seen.append(("ERR", str(e)[:80])); continue
         for m in j.get("member", []):
-            it = m["item"]
-            if it.get("legislationLegalForce") == "InForce" or True:
+            it = m["item"]; seen.append((it.get("abbreviation"), it.get("risAbbreviation"), (it.get("name") or "")[:70]))
+            if ok(it, slug, kurz, name) or any(norm(n) and norm(n) in norm(it.get("name")) and len(norm(it.get("name"))) < len(norm(n)) + 40 and "änder" not in (it.get("name") or "").lower() for n in NAMEN.get(slug, [])):
                 return it
-    j = get("/v1/legislation?" + urllib.parse.urlencode({"searchTerm": name, "mostRelevantOn": HEUTE, "size": 5}))
-    for m in j.get("member", []):
-        if m["item"].get("name", "").lower() == name.lower(): return m["item"]
+    L("  Kandidaten", slug, json.dumps(list(dict.fromkeys(map(tuple, seen)))[:25], ensure_ascii=False))
     return None
 def ln(e): return e.tag.rsplit("}", 1)[-1]
 SKIP = {"authorialNote", "num", "heading", "subheading", "ref_skip"}
