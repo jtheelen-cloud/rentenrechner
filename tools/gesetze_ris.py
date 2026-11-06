@@ -1,7 +1,7 @@
 """Lädt die aktuellen Gesetzestexte aus dem amtlichen Rechtsinformationsportal des Bundes
 (testphase.rechtsinformationen.bund.de, DigitalService des Bundes) und speichert sie als
 br/texte/<id>.json für den Offline-Betrieb der BR-App."""
-import json, re, sys, os, datetime, urllib.request, urllib.parse
+import json, re, sys, os, datetime, urllib.request, urllib.parse, urllib.error
 import xml.etree.ElementTree as ET
 B = "https://testphase.rechtsinformationen.bund.de"
 HEUTE = datetime.date.today().isoformat()
@@ -15,7 +15,7 @@ def get(u, raw=False):
     d = r.read(); return d if raw else json.loads(d)
 NAMEN = {"bgb":["Bürgerliches Gesetzbuch"],"sgb_9_2018":["Rehabilitation und Teilhabe von Menschen mit Behinderungen","Neuntes Buch Sozialgesetzbuch"],
   "a_g":["Arbeitnehmerüberlassung","Gesetz zur Regelung der Arbeitnehmerüberlassung"],"tvg":["Tarifvertragsgesetz"],"arbgg":["Arbeitsgerichtsgesetz"],
-  "gewo":["Gewerbeordnung"],"mitbestg":["Mitbestimmung der Arbeitnehmer","Mitbestimmungsgesetz"],"hinschg":["Hinweisgeberschutzgesetz","Schutz hinweisgebender Personen"]}
+  "gewo":["Gewerbeordnung"],"mitbestg":["Gesetz über die Mitbestimmung der Arbeitnehmer"],"hinschg":["Hinweisgeberschutzgesetz","Schutz hinweisgebender Personen"]}
 def norm(x): return re.sub(r"[^a-z0-9äöüß]", "", (x or "").lower())
 def ok(it, slug, kurz, name):
     ab = {norm(it.get("abbreviation")), norm(it.get("risAbbreviation")), norm(it.get("alternateName"))}
@@ -31,7 +31,7 @@ def find(slug, kurz, name):
         except Exception as e: seen.append(("ERR", str(e)[:80])); continue
         for m in j.get("member", []):
             it = m["item"]; seen.append((it.get("abbreviation"), it.get("risAbbreviation"), (it.get("name") or "")[:70]))
-            if ok(it, slug, kurz, name) or any(norm(n) and norm(n) in norm(it.get("name")) and len(norm(it.get("name"))) < len(norm(n)) + 40 and "änder" not in (it.get("name") or "").lower() for n in NAMEN.get(slug, [])):
+            if ok(it, slug, kurz, name) or norm(it.get("name")) in {norm(n) for n in NAMEN.get(slug, [])}:
                 return it
     L("  Kandidaten", slug, json.dumps(list(dict.fromkeys(map(tuple, seen)))[:25], ensure_ascii=False))
     return None
@@ -95,7 +95,7 @@ def bgb_filter(cur):
 import html as _html, time
 from html.parser import HTMLParser
 O = "https://de.openlegaldata.io/api"
-OLD_CODES = {"bgb":["BGB"],"sgb_9_2018":["SGB 9","SGB IX","SGB 9 2018"],"a_g":["AÜG"],"arbgg":["ArbGG"],"gewo":["GewO"],"hinschg":["HinSchG"]}
+OLD_CODES = {"tvg":["TVG"],"mitbestg":["MitbestG"],"bgb":["BGB"],"sgb_9_2018":["SGB 9","SGB IX","SGB 9 2018"],"a_g":["AÜG"],"arbgg":["ArbGG"],"gewo":["GewO"],"hinschg":["HinSchG"]}
 class _P(HTMLParser):
     def __init__(s): super().__init__(); s.out=[]; s.cur=None; s.depth=0; s.skip=0
     def _new(s, pre=""): s._flush(); s.cur=[s.depth, pre]
@@ -130,11 +130,15 @@ class _P(HTMLParser):
 def html_lines(h):
     p=_P(); p.feed(h); p._flush(); return p.out
 def oget(u):
-    for k in range(3):
-        try: return get(u)
-        except Exception as e:
-            if k==2: raise
-            time.sleep(3)
+    for k in range(8):
+        try:
+            time.sleep(1.1); return get(u)
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and k < 7: time.sleep(45 + 15 * k); continue
+            raise
+        except Exception:
+            if k >= 3: raise
+            time.sleep(5)
 def old_fetch(g, want=None):
     slug=g["slug"]; book=None
     for c in OLD_CODES.get(slug,[g["kurz"]]):
@@ -161,7 +165,7 @@ def old_fetch(g, want=None):
         if want and not want(key): continue
         d=oget(O+f"/laws/{x['id']}/")
         body=html_lines(d.get("content") or "")
-        arts.append([key, sec, (x.get("title") or "").strip(), body]); time.sleep(0.15)
+        arts.append([key, sec, (x.get("title") or "").strip(), body])
     return {"id":g["id"],"kurz":book.get("code"),"name":book.get("title"),"eli":"","stand":book.get("revision_date",""),
             "abgerufen":HEUTE,"url":"https://www.gesetze-im-internet.de/"+slug+"/","quelle":"Open Legal Data (Daten von gesetze-im-internet.de)","p":arts}
 
