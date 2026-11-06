@@ -147,6 +147,13 @@
    "name": "Gesetz zur Förderung der Entgelttransparenz zwischen Frauen und Männern",
    "kurz": "EntgTranspG",
    "quelle": "Rechtsinformationsportal des Bundes"
+  },
+  "tvg": {
+   "stand": "2026-04-27",
+   "n": 15,
+   "name": "Tarifvertragsgesetz",
+   "kurz": "TVG",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   }
  }
 }
