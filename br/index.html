@@ -72,6 +72,9 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .norm .law{color:var(--muted);font-size:14px}
 .norm .text p{margin:0 0 10px}
 .norm .text p.li{padding-left:22px;text-indent:-22px}
+.norm .text p.l1{margin-left:18px}.norm .text p.l2{margin-left:36px}.norm .text p.l3{margin-left:54px}
+.norm .text{font-size:16px;line-height:1.55;overflow-wrap:anywhere}
+.ft{font-size:14px;color:var(--ink);margin-top:4px}
 .star{font-size:22px;background:none;border:0;cursor:pointer;color:var(--accent2);padding:4px}
 .nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
 .back{background:none;border:0;color:var(--accent2);font:inherit;font-weight:600;cursor:pointer;padding:6px 0}
@@ -161,9 +164,16 @@ textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--input);bo
     <form class="card" id="numForm" style="padding:14px 16px;margin:12px 0;display:grid;gap:8px">
       <label for="numIn" style="font-weight:600">Paragraf öffnen</label>
       <div style="display:flex;gap:8px"><input id="numIn" inputmode="text" autocomplete="off" placeholder="z. B. 87 oder 92a" style="flex:1"><button class="btn primary" type="submit">Öffnen</button></div>
-      <span class="sub">Öffnet den aktuellen Originaltext auf gesetze-im-internet.de</span>
+      <span class="sub" id="numHint">Zeigt den Gesetzestext – auch ohne Internet</span>
     </form>
     <div id="lawList"></div>
+  </section>
+
+  <!-- EIN PARAGRAF -->
+  <section id="v-norm" class="view" hidden>
+    <button class="back" type="button" id="normBack">‹ Zurück zum Gesetz</button>
+    <article class="card norm" id="normBox"></article>
+    <div class="nav"><button class="btn" type="button" id="normPrev">‹ Vorheriger</button><button class="btn" type="button" id="normNext">Nächster ›</button></div>
   </section>
 
   <!-- FRISTEN -->
@@ -232,7 +242,7 @@ textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--input);bo
       <h3 style="margin:6px 0 0">Vergebene Codes</h3>
       <div class="tw"><table id="admList"></table></div>
     </section>
-    <p class="note" style="margin-top:18px">Gesetzestexte: <a href="https://www.gesetze-im-internet.de/" target="_blank" rel="noopener">gesetze-im-internet.de</a> (Bundesministerium der Justiz), immer die aktuelle Fassung. Paragrafen-Überschriften zur Orientierung. Keine Rechtsberatung.</p>
+    <p class="note" style="margin-top:18px">Gesetzestexte: amtliches <a href="https://testphase.rechtsinformationen.bund.de/" target="_blank" rel="noopener">Rechtsinformationsportal des Bundes</a>; was dort noch fehlt, über <a href="https://de.openlegaldata.io/" target="_blank" rel="noopener">Open Legal Data</a> (Daten von gesetze-im-internet.de). Wöchentlich automatisch aktualisiert und auf dem Gerät gespeichert, damit sie auch ohne Internet lesbar sind. Verbindlich ist immer die amtliche Fassung. Keine Rechtsberatung.</p>
   </section>
 </div>
 </div>
@@ -258,23 +268,35 @@ const GESETZE = [{"id": "betrvg", "kurz": "BetrVG", "name": "Betriebsverfassungs
 const BASE="https://www.gesetze-im-internet.de/";
 const urlP=(slug,nr)=>`${BASE}${slug}/__${String(nr).toLowerCase().replace(/\s/g,"")}.html`;
 const urlL=slug=>`${BASE}${slug}/index.html`;
+/* ---------- Volltexte (offline) ---------- */
+const TEXTE={}; let TIDX=null;
+async function loadText(id){ if(TEXTE[id]) return TEXTE[id];
+  try{ const r=await fetch(`texte/${id}.json`); if(r.ok){ const j=await r.json(); TEXTE[id]=j; j.map={}; j.p.forEach((x,i)=>j.map[x[0].toLowerCase()]=i); return j; } }catch(e){}
+  return null; }
+async function loadAllTexts(){ try{ const r=await fetch("texte/index.json",{cache:"no-cache"}); if(r.ok) TIDX=await r.json(); }catch(e){}
+  let n=0; for(const g of GESETZE){ if(await loadText(g.id)) n++; }
+  $("standLine").textContent=n?`${GESETZE.length} Gesetze · ${n} als Volltext auf dem Gerät gespeichert (offline lesbar)${TIDX?` · geprüft am ${dDE(TIDX.stand)}`:""}`:`${GESETZE.length} Gesetze · Volltexte werden beim nächsten Öffnen mit Internet gespeichert`;
+  if($("q").value.trim()) search(); }
+const dDE=iso=>{const m=String(iso||"").match(/(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}.${m[2]}.${m[1]}`:iso||""};
 const ENTRIES=[]; GESETZE.forEach(g=>g.p.forEach(([nr,t,k])=>ENTRIES.push({g,nr,t,k,low:(`§ ${nr} ${g.kurz} ${t} ${k}`).toLowerCase()})));
 const findLaw=q=>{q=q.toLowerCase().replace(/[^a-zäöü0-9]/g,"");return GESETZE.find(g=>g.kurz.toLowerCase().replace(/[^a-zäöü0-9]/g,"")===q)||GESETZE.find(g=>g.kurz.toLowerCase().replace(/[^a-zäöü0-9]/g,"").startsWith(q)||g.id===q)};
-function pLink(g,nr,t){ return `<div class="item prow" style="margin-bottom:6px;grid-template-columns:72px 1fr auto">
-  <a href="${urlP(g.slug,nr)}" target="_blank" rel="noopener" class="pn" style="text-decoration:none;color:inherit">§ ${esc(nr)}</a>
-  <a href="${urlP(g.slug,nr)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${t?highlight(esc(t),lastQuery):'<span class="sub">Originaltext öffnen</span>'}<span class="n" style="display:block;font-size:13px">${esc(g.kurz)} ↗</span></a>
+function pHref(g,nr){ return `#p-${g.id}-${encodeURIComponent(String(nr).toLowerCase())}`; }
+function pLink(g,nr,t,snip){ return `<div class="item prow" style="margin-bottom:6px;grid-template-columns:72px 1fr auto">
+  <a href="${pHref(g,nr)}" class="pn" style="text-decoration:none;color:inherit">§ ${esc(nr)}</a>
+  <a href="${pHref(g,nr)}" style="text-decoration:none;color:inherit">${t?highlight(esc(t),lastQuery):'<span class="sub">Text anzeigen</span>'}<span class="n" style="display:block;font-size:13px">${esc(g.kurz)}</span>${snip?`<span class="ft">${snip}</span>`:""}</a>
   <button class="star" type="button" data-fav="${g.id}|${esc(nr)}|${esc(t||"")}" aria-label="Merken" aria-pressed="${isFav(g.id,nr)}">${isFav(g.id,nr)?"★":"☆"}</button></div>`; }
 function wireStars(root){ root.querySelectorAll("[data-fav]").forEach(b=>b.addEventListener("click",()=>{const [id,nr,t]=b.dataset.fav.split("|");toggleFav(id,nr,t);const f=isFav(id,nr);b.textContent=f?"★":"☆";b.setAttribute("aria-pressed",f)})); }
 
 /* ---------- Ansicht ---------- */
-const VIEWS=["suche","gesetze","gesetz","fristen","vorlagen","tarif","merk"];
+const VIEWS=["suche","gesetze","gesetz","norm","fristen","vorlagen","tarif","merk"];
 let cur={law:null,from:"suche"};
 function show(v){ VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
-  const tab=v==="gesetz"?"gesetze":v;
+  const tab=(v==="gesetz"||v==="norm")?"gesetze":v;
   document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===tab?"page":"false"));
   window.scrollTo(0,0); }
 function route(){ const h=(location.hash||"#suche").slice(1);
   if(h.startsWith("g-")){ openLaw(h.slice(2)); return; }
+  if(h.startsWith("p-")){ const m=h.slice(2).match(/^([a-z0-9_]+)-(.+)$/); if(m){ openNorm(m[1],decodeURIComponent(m[2])); return; } }
   if(VIEWS.includes(h)){ show(h); if(h==="merk") renderMerk(); if(h==="gesetze") renderLaws(); }
   else show("suche"); }
 window.addEventListener("hashchange",route);
@@ -286,9 +308,32 @@ function openLaw(id){ const g=GESETZE.find(x=>x.id===id); if(!g){show("gesetze")
   $("lawTitle").textContent=g.kurz;
   $("lawMeta").innerHTML=`${esc(g.name)} · <a href="${urlL(g.slug)}" target="_blank" rel="noopener">Inhaltsübersicht ↗</a>`;
   $("numIn").value="";
-  $("lawList").innerHTML=g.p.length?`<div class="grp">Wichtige Paragrafen</div>`+g.p.map(([nr,t])=>pLink(g,nr,t)).join(""):'<p class="sub">Paragrafennummer oben eingeben oder die Inhaltsübersicht öffnen.</p>';
-  wireStars($("lawList")); }
-$("numForm").addEventListener("submit",e=>{e.preventDefault();const nr=$("numIn").value.replace(/[^0-9a-zA-Z]/g,"");if(nr&&cur.law)window.open(urlP(cur.law.slug,nr),"_blank","noopener")||(location.href=urlP(cur.law.slug,nr))});
+  const drawList=T=>{ let h=g.p.length?`<div class="grp">Wichtige Paragrafen</div>`+g.p.map(([nr,t])=>pLink(g,nr,t)).join(""):"";
+    if(T){ h+=`<div class="grp">${g.id==="bgb"?"Arbeitsrecht im BGB (§§ 611–630 und weitere)":"Alle Paragrafen"} · ${T.p.length}</div>`+T.p.map(x=>pLink(g,x[0],x[2])).join("");
+      $("lawMeta").innerHTML=`${esc(T.name||g.name)} · Stand ${esc(dDE(T.stand))} · <a href="${urlL(g.slug)}" target="_blank" rel="noopener">Original ↗</a>`; }
+    else h+='<p class="sub">Volltext noch nicht auf dem Gerät – einmal mit Internet öffnen. Paragrafen öffnen dann den Originaltext.</p>';
+    $("lawList").innerHTML=h; wireStars($("lawList")); };
+  drawList(TEXTE[g.id]); if(!TEXTE[g.id]) loadText(g.id).then(T=>{ if(T&&cur.law===g) drawList(T); }); }
+async function openNorm(id,nr){ const g=GESETZE.find(x=>x.id===id); if(!g){show("gesetze");return}
+  cur.law=g; cur.nr=nr; show("norm");
+  const T=await loadText(id); const i=T?T.map[String(nr).toLowerCase()]:undefined;
+  const meta=(GESETZE.find(x=>x.id===id).p.find(p=>p[0].toLowerCase()===String(nr).toLowerCase())||[])[1]||"";
+  if(i===undefined){
+    $("normBox").innerHTML=`<div class="head"><div><p class="ptitle">§ ${esc(nr)} ${esc(g.kurz)}</p><div class="law">${esc(meta)}</div></div></div>
+      <p class="sub" style="margin-top:12px">${T?"Dieser Paragraf ist nicht im gespeicherten Text enthalten.":"Der Volltext ist noch nicht auf dem Gerät gespeichert."}</p>
+      <p><a class="btn primary" href="${urlP(g.slug,nr)}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Originaltext öffnen ↗</a></p>`;
+    $("normPrev").hidden=$("normNext").hidden=true; return; }
+  const x=T.p[i];
+  const body=x[3].map(l=>{const d=Math.min(3,Math.floor((l.length-l.trimStart().length)/2)); return `<p class="${d?"l"+d:""}">${highlight(esc(l.trim()),lastQuery)}</p>`}).join("")||'<p class="sub">(weggefallen)</p>';
+  $("normBox").innerHTML=`<div class="head"><div><p class="ptitle">${esc(x[1])} ${esc(g.kurz)}</p><div class="law">${esc(x[2]||meta)}</div></div>
+    <button class="star" type="button" data-fav="${g.id}|${esc(x[0])}|${esc(x[2]||meta)}" aria-label="Merken" aria-pressed="${isFav(g.id,x[0])}">${isFav(g.id,x[0])?"★":"☆"}</button></div>
+    <div class="text" style="margin-top:12px">${body}</div>
+    <p class="note">Stand ${esc(dDE(T.stand))} · Quelle: ${esc(T.quelle||"")} · <a href="${urlP(g.slug,x[0])}" target="_blank" rel="noopener">Original auf gesetze-im-internet.de ↗</a></p>`;
+  wireStars($("normBox"));
+  $("normPrev").hidden=i===0; $("normNext").hidden=i===T.p.length-1;
+  $("normPrev").onclick=()=>{location.hash=pHref(g,T.p[i-1][0])}; $("normNext").onclick=()=>{location.hash=pHref(g,T.p[i+1][0])}; }
+$("normBack").addEventListener("click",()=>{ if(cur.law) location.hash="#g-"+cur.law.id; else location.hash="#gesetze"; });
+$("numForm").addEventListener("submit",e=>{e.preventDefault();const nr=$("numIn").value.replace(/[^0-9a-zA-Z]/g,"");if(nr&&cur.law)location.hash=pHref(cur.law,nr)});
 
 /* ---------- Merkliste ---------- */
 const KEY_FAV="br.merkliste2";
@@ -313,8 +358,17 @@ function search(){ const q=$("q").value.trim(); lastQuery=q;
   hits.forEach(e=>{e.s=words.reduce((s,w)=>s+(e.t.toLowerCase().includes(w)?10:0)+(e.k.includes(w)?4:0),0)+(e.g.id==="betrvg"?2:0)});
   hits.sort((a,b)=>b.s-a.s);
   html+=hits.slice(0,60).map(e=>pLink(e.g,e.nr,e.t)).join("");
-  const n=hits.length+(direct?1:0);
-  $("qInfo").innerHTML=n?`${n} Treffer – ein Tipp öffnet den Originaltext`:`Keine Treffer in den Stichworten. Tipp: „§ 87 BetrVG“ eingeben oder im Reiter „Gesetze“ einen Paragrafen über seine Nummer öffnen.`;
+  // Volltext
+  const seen=new Set(hits.map(e=>e.g.id+"|"+e.nr.toLowerCase())); if(direct) seen.add("direct");
+  const ft=[]; const fw=words.filter(w=>w.length>2&&!/^\d/.test(w));
+  if(fw.length) for(const g of GESETZE){ const T=TEXTE[g.id]; if(!T) continue;
+    for(const x of T.p){ if(seen.has(g.id+"|"+x[0].toLowerCase())) continue; const full=(x[2]+" "+x[3].join(" ")).toLowerCase();
+      if(fw.every(w=>full.includes(w))){ const body=x[3].join(" "); const k=body.toLowerCase().indexOf(fw[0]); const a=Math.max(0,k-60);
+        ft.push({g,x,sn:(a?"… ":"")+highlight(esc(body.slice(a,a+170)),q)+" …",s:fw.reduce((s,w)=>s+(x[2].toLowerCase().includes(w)?10:0),0)+(g.id==="betrvg"?2:0)}); } } }
+  ft.sort((a,b)=>b.s-a.s);
+  if(ft.length) html+=`<div class="grp">Im Gesetzestext gefunden · ${ft.length}</div>`+ft.slice(0,40).map(f=>pLink(f.g,f.x[0],f.x[2],f.sn)).join("");
+  const n=hits.length+(direct?1:0)+ft.length;
+  $("qInfo").innerHTML=n?`${n} Treffer – ein Tipp öffnet den Gesetzestext`:`Keine Treffer in den Stichworten. Tipp: „§ 87 BetrVG“ eingeben oder im Reiter „Gesetze“ einen Paragrafen über seine Nummer öffnen.`;
   $("results").innerHTML=html; wireStars($("results")); }
 $("q").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(search,200)});
 ["Mitbestimmung","Kündigung","Überstunden","Versetzung","Urlaub","Schwerbehindert","Sozialplan","§ 87 BetrVG"].forEach(t=>{
@@ -323,7 +377,7 @@ $("q").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTi
 /* ---------- Fristen & Tarif ---------- */
 function renderFristen(){ const groups=[...new Set(FRISTEN.map(f=>f.g))];
   $("fristen").innerHTML=groups.map(g=>`<h3>${esc(g)}</h3><div class="card tw"><table><thead><tr><th>Was</th><th>Frist / Regel</th><th>Vorschrift</th></tr></thead><tbody>`+
-    FRISTEN.filter(f=>f.g===g).map(f=>`<tr><td>${esc(f.f)}</td><td class="d">${esc(f.d)}</td><td>${(()=>{const g=GESETZE.find(x=>x.id===f.l);return g?`<a href="${urlP(g.slug,f.p.replace(/[^0-9a-z]/gi,""))}" target="_blank" rel="noopener">${esc(f.n)} ↗</a>`:esc(f.n)})()}</td></tr>`).join("")+`</tbody></table></div>`).join("");
+    FRISTEN.filter(f=>f.g===g).map(f=>`<tr><td>${esc(f.f)}</td><td class="d">${esc(f.d)}</td><td>${(()=>{const g=GESETZE.find(x=>x.id===f.l);return g?`<a href="${pHref(g,f.p.replace(/[^0-9a-z]/gi,""))}">${esc(f.n)}</a>`:esc(f.n)})()}</td></tr>`).join("")+`</tbody></table></div>`).join("");
 }
 function renderTarif(){ const T=TARIF;
   $("tarif").innerHTML=`<p class="sub">${esc(T.bereich)} · Stand ${esc(T.stand)}</p>`+
@@ -452,7 +506,7 @@ if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){ nav
 let started=false;
 async function start(){ if(started) return; started=true;
   renderFristen(); renderTarif(); renderAdminList(); renderLaws(); initFristen(); initVorlagen(); loadTarif();
-  $("standLine").textContent=`${GESETZE.length} Gesetze · Texte immer aktuell von gesetze-im-internet.de`;
+  $("standLine").textContent=`${GESETZE.length} Gesetze · Volltexte werden geladen …`; loadAllTexts();
   route(); }
 
 /* ---------- Zugang (wie Rentenrechner, eigener Schlüssel) ---------- */
