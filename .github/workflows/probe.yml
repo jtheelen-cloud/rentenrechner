@@ -1,0 +1,28 @@
+name: Quellen-Test Gesetze
+on:
+  push:
+    paths: ['.github/workflows/probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Quellen testen
+        run: |
+          mkdir -p tools; R=tools/probe.txt; : > $R
+          t(){ echo "== $1" >> $R; curl -sS -L -m 25 -A "Mozilla/5.0" -o /tmp/o -w "code=%{http_code} size=%{size_download} type=%{content_type}\n" "$1" >> $R 2>&1 || echo "FEHLER" >> $R; head -c 600 /tmp/o 2>/dev/null | tr -d '\000' >> $R; echo >> $R; }
+          t "https://www.gesetze-im-internet.de/betrvg/xml.zip"
+          t "https://www.gesetze-im-internet.de/betrvg/__87.html"
+          t "https://testphase.rechtsinformationen.bund.de/v1/legislation?searchTerm=Betriebsverfassungsgesetz&size=3"
+          t "https://de.openlegaldata.io/api/laws/?book_code=betrvg&page_size=2"
+          t "https://de.openlegaldata.io/api/lawbooks/?code=betrvg"
+          t "https://raw.githubusercontent.com/bundestag/gesetze/master/b/betrvg/index.md"
+          t "https://api.github.com/repos/bundestag/gesetze/commits?per_page=1"
+      - name: Ergebnis speichern
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add tools/probe.txt; git commit -m "Quellen-Test Ergebnis" || true; git push
