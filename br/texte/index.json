@@ -92,13 +92,6 @@
    "kurz": "NachwG",
    "quelle": "Rechtsinformationsportal des Bundes"
   },
-  "tvg": {
-   "stand": "2026-07-10",
-   "n": 19,
-   "name": "Verordnung zur Durchführung des Tarifvertragsgesetzes",
-   "kurz": "TVGDV",
-   "quelle": "Rechtsinformationsportal des Bundes"
-  },
   "milog": {
    "stand": "2026-05-18",
    "n": 24,
@@ -139,13 +132,6 @@
    "n": 50,
    "name": "Gesetz zur Verbesserung der betrieblichen Altersversorgung",
    "kurz": "BetrAVG",
-   "quelle": "Rechtsinformationsportal des Bundes"
-  },
-  "mitbestg": {
-   "stand": "2022-05-18",
-   "n": 124,
-   "name": "Dritte Wahlordnung zum Mitbestimmungsgesetz",
-   "kurz": "3. WOMitbestG",
    "quelle": "Rechtsinformationsportal des Bundes"
   },
   "drittelbg": {
