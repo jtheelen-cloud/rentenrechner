@@ -5,7 +5,6 @@ def get(u):
     except Exception as e: return "ERR "+str(e)
 O="https://de.openlegaldata.io/api"
 res={}
-for u in [O+"/lawbooks/?code=BGB", O+"/lawbooks/?slug=bgb", O+"/lawbooks/?search=ArbGG", O+"/laws/?book__code=BGB&limit=2",
-          O+"/laws/?book_slug=bgb&limit=2", O+"/laws/?search=Arbeitsgerichtsgesetz&limit=2", O+"/", O+"/laws/?book=1&limit=1"]:
+for u in [O+"/law_books/?code=BGB", O+"/law_books/?slug=bgb&limit=3", O+"/law_books/?search=ArbGG&limit=3", O+"/laws/56326/", O+"/laws/search/?text=Arbeitsgerichtsgesetz", O+"/law_books/?limit=2"]:
     res[u]=get(u)[:1500]
 json.dump(res,open("tools/probe3.json","w"),ensure_ascii=False,indent=1)
