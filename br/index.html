@@ -271,6 +271,7 @@ const urlL=slug=>`${BASE}${slug}/index.html`;
 /* ---------- Volltexte (offline) ---------- */
 const TEXTE={}; let TIDX=null;
 async function loadText(id){ if(TEXTE[id]) return TEXTE[id];
+  if(TIDX&&TIDX.gesetze&&!TIDX.gesetze[id]) return null;
   try{ const r=await fetch(`texte/${id}.json`); if(r.ok){ const j=await r.json(); TEXTE[id]=j; j.map={}; j.p.forEach((x,i)=>j.map[x[0].toLowerCase()]=i); return j; } }catch(e){}
   return null; }
 async function loadAllTexts(){ try{ const r=await fetch("texte/index.json",{cache:"no-cache"}); if(r.ok) TIDX=await r.json(); }catch(e){}

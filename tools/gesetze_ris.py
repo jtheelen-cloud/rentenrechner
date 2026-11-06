@@ -130,7 +130,7 @@ class _P(HTMLParser):
 def html_lines(h):
     p=_P(); p.feed(h); p._flush(); return p.out
 def oget(u):
-    for k in range(8):
+    for k in range(1):
         try:
             time.sleep(1.1); return get(u)
         except urllib.error.HTTPError as e:
@@ -139,39 +139,80 @@ def oget(u):
         except Exception:
             if k >= 3: raise
             time.sleep(5)
+class Budget(Exception): pass
+OLD_LEFT = [int(os.environ.get("OLD_BUDGET", "45"))]
+def oreq(u):
+    if OLD_LEFT[0] <= 0: raise Budget()
+    OLD_LEFT[0] -= 1
+    try:
+        time.sleep(1.2); return get(u)
+    except urllib.error.HTTPError as e:
+        if e.code == 429: OLD_LEFT[0] = 0; raise Budget()
+        raise
+FILTER = {"sgb_9_2018": lambda n: 151 <= n <= 241, "gewo": lambda n: 105 <= n <= 110}
 def old_fetch(g, want=None):
-    slug=g["slug"]; book=None
-    for c in OLD_CODES.get(slug,[g["kurz"]]):
-        j=oget(O+"/law_books/?"+urllib.parse.urlencode({"code":c}))
-        bs=[b for b in j.get("results",[]) if b.get("latest")]
-        if bs: book=bs[0]; break
-    if not book: L("  OLD: kein Buch", slug); return None
-    laws=[]; u=None
-    for param in ("book_id","book"):
-        j=oget(O+"/laws/?"+urllib.parse.urlencode({param:book["id"],"limit":500}))
-        if j.get("results") and all(x.get("book")==book["id"] for x in j["results"]): u=j; break
-    if not u: L("  OLD: Filter geht nicht", slug, book); return None
-    while True:
-        laws+=u["results"]
-        if not u.get("next"): break
-        u=oget(u["next"])
-    laws.sort(key=lambda x:(x.get("order") or 0, x["id"]))
-    arts=[]
-    for x in laws:
-        sec=(x.get("section") or "").strip()
-        m=re.match(r"(§§?|Art\.?|Artikel)\s*([\dA-Za-z]+)", sec)
-        if not m: continue
-        key=m.group(2)
-        if want and not want(key): continue
-        d=oget(O+f"/laws/{x['id']}/")
-        body=html_lines(d.get("content") or "")
-        arts.append([key, sec, (x.get("title") or "").strip(), body])
-    return {"id":g["id"],"kurz":book.get("code"),"name":book.get("title"),"eli":"","stand":book.get("revision_date",""),
-            "abgerufen":HEUTE,"url":"https://www.gesetze-im-internet.de/"+slug+"/","quelle":"Open Legal Data (Daten von gesetze-im-internet.de)","p":arts}
+    """Lädt ein Gesetz von Open Legal Data schrittweise; Fortschritt in tools/olcache/<slug>.json."""
+    slug = g["slug"]; os.makedirs("tools/olcache", exist_ok=True)
+    cp = f"tools/olcache/{slug}.json"
+    c = json.load(open(cp)) if os.path.exists(cp) else {}
+    curated = {x[0] for x in g["p"]}
+    def wanted(key):
+        if want: return want(key)
+        f = FILTER.get(slug)
+        if not f: return True
+        mm = re.match(r"(\d+)", key); n = int(mm.group(1)) if mm else 0
+        return key in curated or f(n)
+    try:
+        if not c.get("book") or c.get("checked") != HEUTE:
+            book = None
+            for code in OLD_CODES.get(slug, [g["kurz"]]):
+                j = oreq(O + "/law_books/?" + urllib.parse.urlencode({"code": code}))
+                bs = [b for b in j.get("results", []) if b.get("latest")]
+                if bs: book = bs[0]; break
+            if not book: L("  OLD: kein Buch", slug); return None
+            if c.get("book", {}).get("id") != book["id"] or c.get("book", {}).get("revision_date") != book.get("revision_date"):
+                c = {"book": book, "list": None, "sec": {}}
+            c["checked"] = HEUTE
+        book = c["book"]
+        if not c.get("list"):
+            items, u = [], O + "/laws/?" + urllib.parse.urlencode({"book_id": book["id"], "limit": 500})
+            while u:
+                j = oreq(u)
+                if j.get("results") and not all(x.get("book") == book["id"] for x in j["results"]):
+                    L("  OLD: Filter geht nicht", slug); return None
+                items += [[x["id"], (x.get("section") or "").strip(), (x.get("title") or "").strip(), x.get("order") or 0] for x in j.get("results", [])]
+                u = j.get("next")
+            items.sort(key=lambda x: (x[3], x[0]))
+            lst = []
+            for lid, sec, title, _ in items:
+                m = re.match(r"(§§?|Art\.?|Artikel)\s*([\dA-Za-z]+)", sec)
+                if m and wanted(m.group(2)): lst.append([lid, m.group(2), sec, title])
+            c["list"] = lst
+        for lid, key, sec, title in c["list"]:
+            if str(lid) in c["sec"]: continue
+            d = oreq(O + f"/laws/{lid}/")
+            c["sec"][str(lid)] = html_lines(d.get("content") or "")
+    except Budget:
+        json.dump(c, open(cp, "w"), ensure_ascii=False)
+        done = len(c.get("sec", {})); tot = len(c.get("list") or [])
+        L(f"  OLD: Abruf-Limit erreicht bei {slug}, Fortschritt {done}/{tot or '?'} – geht beim nächsten Lauf weiter"); return None
+    json.dump(c, open(cp, "w"), ensure_ascii=False)
+    arts = [[key, sec, title, c["sec"][str(lid)]] for lid, key, sec, title in c["list"]]
+    return {"id": g["id"], "kurz": book.get("code"), "name": book.get("title"), "eli": "", "stand": book.get("revision_date", ""),
+            "abgerufen": HEUTE, "url": "https://www.gesetze-im-internet.de/" + slug + "/", "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)", "p": arts}
 
 os.makedirs("br/texte", exist_ok=True)
+def save(g, doc):
+    json.dump(doc, open(f"br/texte/{g['id']}.json", "w"), ensure_ascii=False, separators=(",", ":"))
+    index["gesetze"][g["id"]] = {"stand": doc["stand"], "n": len(doc["p"]), "name": doc["name"], "kurz": doc["kurz"], "quelle": doc["quelle"]}
+    L("OK", g["slug"], doc["kurz"], "|", (doc["name"] or "")[:60], "| Paragrafen:", len(doc["p"]), "| Stand", doc["stand"], "|", doc["quelle"],
+      "| Bytes", os.path.getsize(f"br/texte/{g['id']}.json"))
 liste = json.load(open("tools/gesetze_liste.json"))
 index = {"stand": HEUTE, "gesetze": {}}
+try: index["gesetze"] = json.load(open("br/texte/index.json")).get("gesetze", {})
+except Exception: pass
+PRIO = ["tvg", "hinschg", "a_g", "mitbestg", "arbgg", "gewo", "sgb_9_2018", "bgb"]
+spaeter = []
 fehler = 0
 for g in liste:
     slug, kurz, name = g["slug"], g["kurz"], g["name"].split(" (")[0]
@@ -190,14 +231,25 @@ for g in liste:
                            "stand": stand.group(1) if stand else "", "abgerufen": HEUTE, "url": B + xmlu[0].replace(".xml", ".html"),
                            "quelle": "Rechtsinformationsportal des Bundes", "p": arts}
         if not doc:
-            L("  Ersatzquelle für", slug)
-            doc = old_fetch(g, bgb_filter(g["p"]) if slug == "bgb" else None)
-        if not doc or not doc["p"]: L("NICHT GEFUNDEN", slug, kurz); fehler += 1; continue
-        json.dump(doc, open(f"br/texte/{g['id']}.json", "w"), ensure_ascii=False, separators=(",", ":"))
-        index["gesetze"][g["id"]] = {"stand": doc["stand"], "n": len(doc["p"]), "name": doc["name"], "kurz": doc["kurz"], "quelle": doc["quelle"]}
-        L("OK", slug, doc["kurz"], "|", (doc["name"] or "")[:60], "| Paragrafen:", len(doc["p"]), "| Stand", doc["stand"], "|", doc["quelle"],
-          "| Bytes", os.path.getsize(f"br/texte/{g['id']}.json"))
+            if slug in PRIO: spaeter.append(g)
+            else: L("PORTAL-FEHLER", slug, "– letzte gespeicherte Fassung bleibt"); fehler += 1
+            continue
+        save(g, doc)
     except Exception as e:
         L("FEHLER", slug, repr(e)[:300]); fehler += 1
+spaeter.sort(key=lambda g: PRIO.index(g["slug"]) if g["slug"] in PRIO else 99)
+for g in spaeter:
+    try:
+        doc = old_fetch(g, bgb_filter(g["p"]) if g["slug"] == "bgb" else None)
+        if doc and doc["p"]: save(g, doc)
+        else:
+            fehler += 1
+            if not os.path.exists(f"br/texte/{g['id']}.json"): L("NOCH NICHT DA", g["slug"], "(App öffnet Originaltext)")
+            else: L("BEHALTEN", g["slug"], "(letzte gespeicherte Fassung)")
+    except Exception as e:
+        L("FEHLER", g["slug"], repr(e)[:200]); fehler += 1
 json.dump(index, open("br/texte/index.json", "w"), ensure_ascii=False, indent=1)
+for f in os.listdir("br/texte"):
+    if f.endswith(".json") and f != "index.json" and f[:-5] not in index["gesetze"]:
+        os.remove("br/texte/" + f); L("ENTFERNT (nicht geprüft)", f)
 L("FERTIG, Fehler:", fehler)
