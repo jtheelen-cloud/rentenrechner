@@ -74,17 +74,17 @@
    "name": "Gesetz über den Nachweis der für ein Arbeitsverhältnis geltenden wesentlichen Bedingungen",
    "kurz": "NachwG"
   },
+  "tvg": {
+   "stand": "2026-07-10",
+   "n": 19,
+   "name": "Verordnung zur Durchführung des Tarifvertragsgesetzes",
+   "kurz": "TVGDV"
+  },
   "milog": {
    "stand": "2026-05-18",
    "n": 24,
    "name": "Gesetz zur Regelung eines allgemeinen Mindestlohns",
    "kurz": "MiLoG"
-  },
-  "aueg": {
-   "stand": "2021-12-20",
-   "n": 79,
-   "name": "Gesetz zur Geltendmachung von Unterhaltsansprüchen im Verkehr mit ausländischen Staaten",
-   "kurz": "AUG"
   },
   "asig": {
    "stand": "2020-12-17",
@@ -115,6 +115,12 @@
    "n": 50,
    "name": "Gesetz zur Verbesserung der betrieblichen Altersversorgung",
    "kurz": "BetrAVG"
+  },
+  "mitbestg": {
+   "stand": "2022-05-18",
+   "n": 124,
+   "name": "Dritte Wahlordnung zum Mitbestimmungsgesetz",
+   "kurz": "3. WOMitbestG"
   },
   "drittelbg": {
    "stand": "2022-03-11",
