@@ -1,0 +1,132 @@
+{
+ "stand": "2026-11-06",
+ "quelle": "Rechtsinformationsportal des Bundes (rechtsinformationen.bund.de)",
+ "gesetze": {
+  "betrvg": {
+   "stand": "2026-07-13",
+   "n": 148,
+   "name": "Betriebsverfassungsgesetz",
+   "kurz": "BetrVG"
+  },
+  "kschg": {
+   "stand": "2025-05-21",
+   "n": 28,
+   "name": "Kündigungsschutzgesetz",
+   "kurz": "KSchG"
+  },
+  "arbzg": {
+   "stand": "2026-01-26",
+   "n": 27,
+   "name": "Arbeitszeitgesetz",
+   "kurz": "ArbZG"
+  },
+  "tzbfg": {
+   "stand": "2022-09-14",
+   "n": 24,
+   "name": "Gesetz über Teilzeitarbeit und befristete Arbeitsverträge",
+   "kurz": "TzBfG"
+  },
+  "burlg": {
+   "stand": "2020-10-06",
+   "n": 17,
+   "name": "Mindesturlaubsgesetz für Arbeitnehmer",
+   "kurz": "BUrlG"
+  },
+  "entgfg": {
+   "stand": "2026-05-18",
+   "n": 15,
+   "name": "Gesetz über die Zahlung des Arbeitsentgelts an Feiertagen und im Krankheitsfall",
+   "kurz": "EntgFG"
+  },
+  "agg": {
+   "stand": "2023-12-29",
+   "n": 42,
+   "name": "Allgemeines Gleichbehandlungsgesetz",
+   "kurz": "AGG"
+  },
+  "arbschg": {
+   "stand": "2026-03-04",
+   "n": 29,
+   "name": "Gesetz über die Durchführung von Maßnahmen des Arbeitsschutzes zur Verbesserung der Sicherheit und des Gesundheitsschutzes der Beschäftigten bei der Arbeit",
+   "kurz": "ArbSchG"
+  },
+  "muschg": {
+   "stand": "2026-01-20",
+   "n": 34,
+   "name": "Gesetz zum Schutz von Müttern bei der Arbeit, in der Ausbildung und im Studium",
+   "kurz": "MuSchG"
+  },
+  "beeg": {
+   "stand": "2026-01-06",
+   "n": 39,
+   "name": "Gesetz zum Elterngeld und zur Elternzeit",
+   "kurz": "BEEG"
+  },
+  "pflegezg": {
+   "stand": "2026-01-22",
+   "n": 10,
+   "name": "Gesetz über die Pflegezeit",
+   "kurz": "PflegeZG"
+  },
+  "nachwg": {
+   "stand": "2024-12-17",
+   "n": 6,
+   "name": "Gesetz über den Nachweis der für ein Arbeitsverhältnis geltenden wesentlichen Bedingungen",
+   "kurz": "NachwG"
+  },
+  "milog": {
+   "stand": "2026-05-18",
+   "n": 24,
+   "name": "Gesetz zur Regelung eines allgemeinen Mindestlohns",
+   "kurz": "MiLoG"
+  },
+  "aueg": {
+   "stand": "2021-12-20",
+   "n": 79,
+   "name": "Gesetz zur Geltendmachung von Unterhaltsansprüchen im Verkehr mit ausländischen Staaten",
+   "kurz": "AUG"
+  },
+  "asig": {
+   "stand": "2020-12-17",
+   "n": 23,
+   "name": "Gesetz über Betriebsärzte, Sicherheitsingenieure und andere Fachkräfte für Arbeitssicherheit",
+   "kurz": "ASiG"
+  },
+  "jarbschg": {
+   "stand": "2024-12-17",
+   "n": 69,
+   "name": "Gesetz zum Schutze der arbeitenden Jugend",
+   "kurz": "JArbSchG"
+  },
+  "fpfzg": {
+   "stand": "2024-11-25",
+   "n": 18,
+   "name": "Gesetz über die Familienpflegezeit",
+   "kurz": "FPfZG"
+  },
+  "bdsg": {
+   "stand": "2026-07-10",
+   "n": 86,
+   "name": "Bundesdatenschutzgesetz",
+   "kurz": "BDSG"
+  },
+  "betravg": {
+   "stand": "2026-09-30",
+   "n": 50,
+   "name": "Gesetz zur Verbesserung der betrieblichen Altersversorgung",
+   "kurz": "BetrAVG"
+  },
+  "drittelbg": {
+   "stand": "2022-03-11",
+   "n": 16,
+   "name": "Gesetz über die Drittelbeteiligung der Arbeitnehmer im Aufsichtsrat",
+   "kurz": "DrittelbG"
+  },
+  "entgtranspg": {
+   "stand": "2021-08-13",
+   "n": 25,
+   "name": "Gesetz zur Förderung der Entgelttransparenz zwischen Frauen und Männern",
+   "kurz": "EntgTranspG"
+  }
+ }
+}

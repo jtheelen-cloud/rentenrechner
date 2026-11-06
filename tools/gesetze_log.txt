@@ -1,0 +1,29 @@
+OK betrvg BetrVG | Betriebsverfassungsgesetz | Paragrafen: 148 | Stand 2026-07-13 | Bytes 175941
+OK kschg KSchG | Kündigungsschutzgesetz | Paragrafen: 28 | Stand 2025-05-21 | Bytes 34623
+OK arbzg ArbZG | Arbeitszeitgesetz | Paragrafen: 27 | Stand 2026-01-26 | Bytes 39895
+NICHT GEFUNDEN bgb BGB
+OK tzbfg TzBfG | Gesetz über Teilzeitarbeit und befristete Arbeitsverträge | Paragrafen: 24 | Stand 2022-09-14 | Bytes 27234
+OK burlg BUrlG | Mindesturlaubsgesetz für Arbeitnehmer | Paragrafen: 17 | Stand 2020-10-06 | Bytes 11770
+OK entgfg EntgFG | Gesetz über die Zahlung des Arbeitsentgelts an Feiertagen un | Paragrafen: 15 | Stand 2026-05-18 | Bytes 21369
+OK agg AGG | Allgemeines Gleichbehandlungsgesetz | Paragrafen: 42 | Stand 2023-12-29 | Bytes 46232
+OK arbschg ArbSchG | Gesetz über die Durchführung von Maßnahmen des Arbeitsschutz | Paragrafen: 29 | Stand 2026-03-04 | Bytes 48902
+NICHT GEFUNDEN sgb_9_2018 SGB IX
+OK muschg_2018 MuSchG | Gesetz zum Schutz von Müttern bei der Arbeit, in der Ausbild | Paragrafen: 34 | Stand 2026-01-20 | Bytes 61140
+OK beeg BEEG | Gesetz zum Elterngeld und zur Elternzeit | Paragrafen: 39 | Stand 2026-01-06 | Bytes 78838
+OK pflegezg PflegeZG | Gesetz über die Pflegezeit | Paragrafen: 10 | Stand 2026-01-22 | Bytes 14078
+OK nachwg NachwG | Gesetz über den Nachweis der für ein Arbeitsverhältnis gelte | Paragrafen: 6 | Stand 2024-12-17 | Bytes 13168
+NICHT GEFUNDEN tvg TVG
+NICHT GEFUNDEN arbgg ArbGG
+OK milog MiLoG | Gesetz zur Regelung eines allgemeinen Mindestlohns | Paragrafen: 24 | Stand 2026-05-18 | Bytes 36460
+OK a_g AUG | Gesetz zur Geltendmachung von Unterhaltsansprüchen im Verkeh | Paragrafen: 79 | Stand 2021-12-20 | Bytes 77611
+OK asig ASiG | Gesetz über Betriebsärzte, Sicherheitsingenieure und andere  | Paragrafen: 23 | Stand 2020-12-17 | Bytes 21197
+OK jarbschg JArbSchG | Gesetz zum Schutze der arbeitenden Jugend | Paragrafen: 69 | Stand 2024-12-17 | Bytes 66572
+OK fpfzg FPfZG | Gesetz über die Familienpflegezeit | Paragrafen: 18 | Stand 2024-11-25 | Bytes 25282
+OK bdsg_2018 BDSG | Bundesdatenschutzgesetz | Paragrafen: 86 | Stand 2026-07-10 | Bytes 160194
+NICHT GEFUNDEN gewo GewO
+OK betravg BetrAVG | Gesetz zur Verbesserung der betrieblichen Altersversorgung | Paragrafen: 50 | Stand 2026-09-30 | Bytes 97156
+NICHT GEFUNDEN mitbestg MitbestG
+OK drittelbg DrittelbG | Gesetz über die Drittelbeteiligung der Arbeitnehmer im Aufsi | Paragrafen: 16 | Stand 2022-03-11 | Bytes 13872
+OK entgtranspg EntgTranspG | Gesetz zur Förderung der Entgelttransparenz zwischen Frauen  | Paragrafen: 25 | Stand 2021-08-13 | Bytes 26467
+NICHT GEFUNDEN hinschg HinSchG
+FERTIG, Fehler: 7
