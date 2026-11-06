@@ -90,30 +90,108 @@ def bgb_filter(cur):
         mm = re.match(r"(\d+)", k); n = int(mm.group(1)) if mm else 0
         return k in want or 611 <= n <= 630
     return f
+
+# ---------- Ersatzquelle: Open Legal Data (spiegelt gesetze-im-internet.de) ----------
+import html as _html, time
+from html.parser import HTMLParser
+O = "https://de.openlegaldata.io/api"
+OLD_CODES = {"bgb":["BGB"],"sgb_9_2018":["SGB 9","SGB IX","SGB 9 2018"],"a_g":["AÜG"],"arbgg":["ArbGG"],"gewo":["GewO"],"hinschg":["HinSchG"]}
+class _P(HTMLParser):
+    def __init__(s): super().__init__(); s.out=[]; s.cur=None; s.depth=0; s.skip=0
+    def _new(s, pre=""): s._flush(); s.cur=[s.depth, pre]
+    def _flush(s):
+        if s.cur is not None:
+            t=re.sub(r"\s+"," ",s.cur[1]).strip()
+            if t: s.out.append(("  "*s.cur[0])+t)
+        s.cur=None
+    def handle_starttag(s,t,a):
+        t=t.lower()
+        if t in ("sup","fnr"): s.skip+=1; return
+        if t=="dl": s._flush(); s.depth+=1
+        elif t=="dt": s._new("")
+        elif t=="dd": pass
+        elif t in ("p","tr","row"): s._new("")
+        elif t in ("entry","td"): 
+            if s.cur is None: s._new("")
+            else: s.cur[1]+=" | "
+        elif t=="br": 
+            if s.cur is not None: s.cur[1]+=" "
+    def handle_endtag(s,t):
+        t=t.lower()
+        if t in ("sup","fnr"): s.skip=max(0,s.skip-1); return
+        if t=="dl": s._flush(); s.depth=max(0,s.depth-1)
+        elif t=="dt":
+            if s.cur is not None: s.cur[1]+=" "
+        elif t in ("p","tr","row"): s._flush()
+    def handle_data(s,d):
+        if s.skip: return
+        if s.cur is None: s._new("")
+        s.cur[1]+=d
+def html_lines(h):
+    p=_P(); p.feed(h); p._flush(); return p.out
+def oget(u):
+    for k in range(3):
+        try: return get(u)
+        except Exception as e:
+            if k==2: raise
+            time.sleep(3)
+def old_fetch(g, want=None):
+    slug=g["slug"]; book=None
+    for c in OLD_CODES.get(slug,[g["kurz"]]):
+        j=oget(O+"/law_books/?"+urllib.parse.urlencode({"code":c}))
+        bs=[b for b in j.get("results",[]) if b.get("latest")]
+        if bs: book=bs[0]; break
+    if not book: L("  OLD: kein Buch", slug); return None
+    laws=[]; u=None
+    for param in ("book_id","book"):
+        j=oget(O+"/laws/?"+urllib.parse.urlencode({param:book["id"],"limit":500}))
+        if j.get("results") and all(x.get("book")==book["id"] for x in j["results"]): u=j; break
+    if not u: L("  OLD: Filter geht nicht", slug, book); return None
+    while True:
+        laws+=u["results"]
+        if not u.get("next"): break
+        u=oget(u["next"])
+    laws.sort(key=lambda x:(x.get("order") or 0, x["id"]))
+    arts=[]
+    for x in laws:
+        sec=(x.get("section") or "").strip()
+        m=re.match(r"(§§?|Art\.?|Artikel)\s*([\dA-Za-z]+)", sec)
+        if not m: continue
+        key=m.group(2)
+        if want and not want(key): continue
+        d=oget(O+f"/laws/{x['id']}/")
+        body=html_lines(d.get("content") or "")
+        arts.append([key, sec, (x.get("title") or "").strip(), body]); time.sleep(0.15)
+    return {"id":g["id"],"kurz":book.get("code"),"name":book.get("title"),"eli":"","stand":book.get("revision_date",""),
+            "abgerufen":HEUTE,"url":"https://www.gesetze-im-internet.de/"+slug+"/","quelle":"Open Legal Data (Daten von gesetze-im-internet.de)","p":arts}
+
 os.makedirs("br/texte", exist_ok=True)
 liste = json.load(open("tools/gesetze_liste.json"))
-index = {"stand": HEUTE, "quelle": "Rechtsinformationsportal des Bundes (rechtsinformationen.bund.de)", "gesetze": {}}
+index = {"stand": HEUTE, "gesetze": {}}
 fehler = 0
 for g in liste:
     slug, kurz, name = g["slug"], g["kurz"], g["name"].split(" (")[0]
     try:
         it = find(slug, kurz, name)
-        if not it: L("NICHT GEFUNDEN", slug, kurz); fehler += 1; continue
-        if not it.get("encoding"): it = get(it["@id"])
-        xmlu = [e["contentUrl"] for e in it.get("encoding", []) if e.get("encodingFormat") == "application/xml"]
-        if not xmlu: L("KEIN XML", slug, it.get("@id")); fehler += 1; continue
-        xml = get(xmlu[0], raw=True)
-        if slug == "sgb_9_2018" and len(sys.argv) > 1: open("tools/debug_sgb9.xml", "wb").write(xml[:20000])
-        if slug == "betrvg": open("tools/debug_betrvg.xml", "wb").write(xml[:15000])
-        arts = parse(xml, bgb_filter(g["p"]) if slug == "bgb" else None)
-        stand = re.search(r"/(\d{4}-\d{2}-\d{2})/regelungstext", xmlu[0])
-        doc = {"id": g["id"], "kurz": it.get("abbreviation") or kurz, "name": it.get("name"), "eli": it.get("legislationIdentifier"),
-               "stand": stand.group(1) if stand else "", "abgerufen": HEUTE,
-               "url": B + xmlu[0].replace(".xml", ".html"), "p": arts}
-        if not arts: L("LEER", slug); fehler += 1; continue
+        doc = None
+        if it:
+            if not it.get("encoding"): it = get(it["@id"])
+            xmlu = [e["contentUrl"] for e in it.get("encoding", []) if e.get("encodingFormat") == "application/xml"]
+            if xmlu:
+                xml = get(xmlu[0], raw=True)
+                arts = parse(xml, bgb_filter(g["p"]) if slug == "bgb" else None)
+                stand = re.search(r"/(\d{4}-\d{2}-\d{2})/regelungstext", xmlu[0])
+                if arts:
+                    doc = {"id": g["id"], "kurz": it.get("abbreviation") or kurz, "name": it.get("name"), "eli": it.get("legislationIdentifier"),
+                           "stand": stand.group(1) if stand else "", "abgerufen": HEUTE, "url": B + xmlu[0].replace(".xml", ".html"),
+                           "quelle": "Rechtsinformationsportal des Bundes", "p": arts}
+        if not doc:
+            L("  Ersatzquelle für", slug)
+            doc = old_fetch(g, bgb_filter(g["p"]) if slug == "bgb" else None)
+        if not doc or not doc["p"]: L("NICHT GEFUNDEN", slug, kurz); fehler += 1; continue
         json.dump(doc, open(f"br/texte/{g['id']}.json", "w"), ensure_ascii=False, separators=(",", ":"))
-        index["gesetze"][g["id"]] = {"stand": doc["stand"], "n": len(arts), "name": doc["name"], "kurz": doc["kurz"]}
-        L("OK", slug, doc["kurz"], "|", doc["name"][:60], "| Paragrafen:", len(arts), "| Stand", doc["stand"],
+        index["gesetze"][g["id"]] = {"stand": doc["stand"], "n": len(doc["p"]), "name": doc["name"], "kurz": doc["kurz"], "quelle": doc["quelle"]}
+        L("OK", slug, doc["kurz"], "|", (doc["name"] or "")[:60], "| Paragrafen:", len(doc["p"]), "| Stand", doc["stand"], "|", doc["quelle"],
           "| Bytes", os.path.getsize(f"br/texte/{g['id']}.json"))
     except Exception as e:
         L("FEHLER", slug, repr(e)[:300]); fehler += 1
