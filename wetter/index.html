@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>Wetterkarte Europa</title>
+<meta name="theme-color" content="#1d2733">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1d2733;background:#e9eef3}
+#map{position:fixed;inset:0}
+.bar{position:fixed;left:8px;right:8px;z-index:1000;background:rgba(255,255,255,.94);border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+#top{top:calc(8px + env(safe-area-inset-top));display:flex;gap:6px;padding:6px;align-items:center}
+#top button{flex:1;border:1px solid #cfd8e2;background:#fff;border-radius:10px;padding:8px 4px;font-size:14px;color:#41505f}
+#top button.on{background:#1f6fd1;border-color:#1f6fd1;color:#fff}
+#top #refresh{flex:0 0 40px}
+#bottom{bottom:calc(8px + env(safe-area-inset-bottom));padding:10px 12px}
+.row{display:flex;align-items:center;gap:10px}
+#play{width:42px;height:42px;border-radius:50%;border:0;background:#1f6fd1;color:#fff;font-size:18px;flex:0 0 42px}
+#sl{flex:1;accent-color:#1f6fd1;height:28px}
+.info{display:flex;justify-content:space-between;font-size:13px;margin-top:6px;gap:8px}
+#lbl{font-weight:600}
+#rel{color:#5b6875;text-align:right}
+#rel.g{color:#1a8a4c}#rel.m{color:#b7791f}#rel.b{color:#c0392b}
+#legend{margin-top:8px;font-size:11px;color:#5b6875;display:flex;flex-direction:column;gap:5px}
+.lg{display:flex;align-items:center;gap:6px}
+.lg .grad{flex:1;height:8px;border-radius:4px}
+.lg span.t{width:62px}
+#status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1100;background:rgba(29,39,51,.88);color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;max-width:85%;text-align:center}
+.pinw{background:none;border:0}
+.pin{position:absolute;white-space:nowrap;padding:2px 6px;border-radius:9px;font-size:12px;font-weight:600;color:#1d2733;border:1px solid rgba(0,0,0,.25);transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.pin.L{transform:translate(calc(-100% - 3px),-50%)}
+.pin.R{transform:translate(3px,-50%)}
+.pin.star{border:2px solid #1d2733}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:1200;background:#fff;border-radius:18px 18px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.25);max-height:78%;overflow:auto;padding:14px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .25s}
+#sheet.open{transform:none}
+#sheet .hd{display:flex;justify-content:space-between;align-items:center}
+#sheet h2{margin:0;font-size:18px}
+#close{border:0;background:#eef2f6;border-radius:50%;width:34px;height:34px;font-size:18px}
+.now{display:flex;align-items:center;gap:14px;margin:10px 0}
+.now .big{font-size:44px;font-weight:600;line-height:1}
+.now .ic{font-size:40px}
+.sub{color:#5b6875;font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid2 div{background:#f2f5f8;border-radius:10px;padding:8px 10px;font-size:13px}
+.grid2 b{display:block;font-size:15px}
+.hours{display:flex;overflow-x:auto;gap:4px;padding:6px 0}
+.hours div{flex:0 0 50px;text-align:center;font-size:12px}
+.hours .p{color:#1f6fd1}
+.day{display:flex;align-items:center;padding:7px 0;border-top:1px solid #eef2f6;font-size:14px;gap:8px}
+.day .n{width:34px;font-weight:600}.day .w{width:26px;text-align:center}.day .p{color:#1f6fd1;width:70px;font-size:12px}.day .mm{margin-left:auto}
+h3{font-size:14px;margin:14px 0 2px;color:#41505f}
+.leaflet-control-attribution{font-size:9px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="top" class="bar">
+  <button id="bR">🌧️ Regen</button>
+  <button id="bC">☁️ Wolken</button>
+  <button id="bT">🌡️ Temp.</button>
+  <button id="refresh" title="Neu laden">⟳</button>
+</div>
+
+<div id="bottom" class="bar">
+  <div class="row">
+    <button id="play" aria-label="Abspielen">▶</button>
+    <input type="range" id="sl" min="0" max="160" step="1" value="0">
+  </div>
+  <div class="info"><span id="lbl">Jetzt</span><span id="rel"></span></div>
+  <div id="legend"></div>
+</div>
+
+<div id="status">Lade Wetterdaten …</div>
+
+<div id="sheet">
+  <div class="hd"><h2 id="sName"></h2><button id="close" aria-label="Schließen">✕</button></div>
+  <div id="sBody"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+"use strict";
+// ---------- Einstellungen ----------
+const LAT0=26, LAT1=64, LON0=-20, LON1=32, STEP=2;     // Raster über Europa + Kanaren
+const NR=Math.round((LAT1-LAT0)/STEP)+1, NC=Math.round((LON1-LON0)/STEP)+1, NP=NR*NC;
+const CACHE_MIN=120;                                    // Rasterdaten 2 Std. zwischenspeichern
+const CITIES=[
+  ["Mülheim a. d. Ruhr",51.427,6.883,"",1],
+  ["Hamburg",53.55,9.99],["Berlin",52.52,13.40],["München",48.14,11.58],
+  ["London",51.51,-0.13],["Paris",48.86,2.35],["Madrid",40.42,-3.70],["Lissabon",38.72,-9.14],
+  ["Rom",41.90,12.50],["Wien",48.21,16.37],["Warschau",52.23,21.01],["Kopenhagen",55.68,12.57],
+  ["Oslo",59.91,10.75],["Stockholm",59.33,18.07],["Athen",37.98,23.73],
+  ["Teneriffa",28.47,-16.25,"L",1],["Gran Canaria",28.12,-15.43,"R",1]
+];
+
+// ---------- Hilfen ----------
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function status(t){const s=$("status");if(t){s.textContent=t;s.style.display="block"}else s.style.display="none"}
+const WD=["So","Mo","Di","Mi","Do","Fr","Sa"];
+function fmtT(u,tz){return new Date(u*1000).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",timeZone:tz})}
+function wmo(c){
+  if(c==null)return["","–"];
+  if(c===0)return["☀️","Klar"];if(c===1)return["🌤️","Überwiegend klar"];if(c===2)return["⛅","Teilweise bewölkt"];if(c===3)return["☁️","Bedeckt"];
+  if(c===45||c===48)return["🌫️","Nebel"];if(c>=51&&c<=57)return["🌦️","Nieselregen"];if(c>=61&&c<=67)return["🌧️","Regen"];
+  if(c>=71&&c<=77)return["🌨️","Schnee"];if(c>=80&&c<=82)return["🌦️","Regenschauer"];if(c===85||c===86)return["🌨️","Schneeschauer"];
+  if(c>=95)return["⛈️","Gewitter"];return["","–"];
+}
+function dirTxt(d){return["N","NO","O","SO","S","SW","W","NW"][Math.round(d/45)%8]}
+
+// Farbverläufe
+const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,196]],[10,[167,216,107]],[15,[242,216,75]],[20,[244,160,58]],[25,[232,97,60]],[30,[192,35,60]],[40,[122,13,43]]];
+function ramp(stops,v){if(v<=stops[0][0])return stops[0][1];for(let i=1;i<stops.length;i++){if(v<=stops[i][0]){const a=stops[i-1],b=stops[i],f=(v-a[0])/(b[0]-a[0]);return[0,1,2].map(k=>Math.round(a[1][k]+(b[1][k]-a[1][k])*f))}}return stops[stops.length-1][1]}
+const tCol=v=>{if(isNaN(v))return null;const c=ramp(TSTOPS,v);return[c[0],c[1],c[2],150]};
+const RSTOPS=[[0.1,[150,200,245]],[0.5,[80,150,235]],[1.5,[30,95,210]],[4,[20,40,160]],[8,[130,40,170]],[15,[200,30,120]]];
+const rCol=v=>{if(!(v>=0.1))return null;const c=ramp(RSTOPS,v);return[c[0],c[1],c[2],Math.min(235,120+v*40)]};
+const cCol=v=>{if(!(v>=15))return null;const a=Math.pow((v-15)/85,1.2)*175;return[105,115,130,a]};
+const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
+
+// ---------- Karte ----------
+const map=L.map("map",{zoomControl:false,minZoom:3,maxZoom:9,worldCopyJump:false,attributionControl:true});
+map.fitBounds([[27,-18],[61,30]]);
+map.createPane("field").style.zIndex=350;
+map.createPane("radar").style.zIndex=380;
+const lp=map.createPane("labels");lp.style.zIndex=450;lp.style.pointerEvents="none";
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",pane:"labels"}).addTo(map);
+map.attributionControl.addAttribution('Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> (DWD, ECMWF u. a.) · Radar: <a href="https://www.rainviewer.com/">RainViewer</a>');
+
+// ---------- Zustand ----------
+const on=Object.assign({r:true,c:false,t:true},store.get("wk_layers")||{});
+let G=null;          // Rasterdaten {times, t, p, c}
+let CD=null;         // Städtedaten
+let i0=0, radar=null, radarTime=null, playing=null;
+const BOUNDS=[[LAT0,LON0],[LAT1,LON1]];
+const ov={};
+
+// ---------- Daten laden ----------
+async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+
+async function loadGrid(force){
+  const c=store.get("wk_grid_v1");
+  if(!force&&c&&Date.now()-c.ts<CACHE_MIN*60000){return unpack(c)}
+  const pts=[];for(let r=0;r<NR;r++)for(let k=0;k<NC;k++)pts.push([LAT0+r*STEP,LON0+k*STEP]);
+  const chunks=[];for(let i=0;i<pts.length;i+=60)chunks.push(pts.slice(i,i+60));
+  const res=[];
+  for(let i=0;i<chunks.length;i++){
+    status(`Lade Wetterdaten … ${Math.round(i/chunks.length*100)} %`);
+    const ch=chunks[i];
+    const u="https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+
+      "&hourly=temperature_2m,precipitation,cloud_cover&forecast_days=7&timezone=GMT&timeformat=unixtime";
+    let j=await getJSON(u);if(!Array.isArray(j))j=[j];res.push(...j);
+  }
+  const times=res[0].hourly.time, NH=times.length;
+  const pack={ts:Date.now(),times,t:[],p:[],c:[]};
+  for(let h=0;h<NH;h++)for(let i=0;i<NP;i++){const H=res[i].hourly;
+    pack.t.push(Math.round((H.temperature_2m[h]??NaN)*10)/10);
+    pack.p.push(Math.round((H.precipitation[h]??0)*10)/10);
+    pack.c.push(H.cloud_cover[h]??0);}
+  store.set("wk_grid_v1",pack);
+  return unpack(pack);
+}
+function unpack(p){return{ts:p.ts,times:p.times,t:Float32Array.from(p.t,v=>v==null?NaN:v),p:Float32Array.from(p.p),c:Float32Array.from(p.c)}}
+
+async function loadCities(){
+  const u="https://api.open-meteo.com/v1/forecast?latitude="+CITIES.map(c=>c[1]).join(",")+"&longitude="+CITIES.map(c=>c[2]).join(",")+
+   "&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
+   "&hourly=temperature_2m,precipitation_probability,weather_code"+
+   "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,sunrise,sunset"+
+   "&forecast_days=7&timezone=auto&timeformat=unixtime";
+  let j=await getJSON(u);if(!Array.isArray(j))j=[j];return j;
+}
+
+async function loadRadar(){
+  try{
+    const j=await getJSON("https://api.rainviewer.com/public/weather-maps.json");
+    const f=j.radar&&j.radar.past&&j.radar.past[j.radar.past.length-1];if(!f)return;
+    const url=j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png";
+    radarTime=f.time;
+    if(radar)radar.setUrl(url);else radar=L.tileLayer(url,{pane:"radar",opacity:.8,maxNativeZoom:7,maxZoom:9});
+  }catch(e){radar=null}
+}
+
+// ---------- Rasterfeld zeichnen ----------
+function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
+function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
+const CW=300, CH=Math.round(CW*(merc(LAT1)-merc(LAT0))/((LON1-LON0)*Math.PI/180));
+const rowF=new Float32Array(CH), colF=new Float32Array(CW);
+for(let y=0;y<CH;y++){const lat=imerc(merc(LAT1)-(y+.5)/CH*(merc(LAT1)-merc(LAT0)));rowF[y]=Math.min(NR-1.0001,Math.max(0,(lat-LAT0)/STEP))}
+for(let x=0;x<CW;x++){const lon=LON0+(x+.5)/CW*(LON1-LON0);colF[x]=Math.min(NC-1.0001,Math.max(0,(lon-LON0)/STEP))}
+const cv=document.createElement("canvas");cv.width=CW;cv.height=CH;const ctx=cv.getContext("2d");
+
+function render(A,h,colFn){
+  const img=ctx.createImageData(CW,CH),d=img.data,b=h*NP;
+  for(let y=0;y<CH;y++){const fr=rowF[y],r=fr|0,dr=fr-r;
+    for(let x=0;x<CW;x++){const fc=colF[x],c=fc|0,dc=fc-c,i=b+r*NC+c;
+      const v=(A[i]*(1-dc)+A[i+1]*dc)*(1-dr)+(A[i+NC]*(1-dc)+A[i+NC+1]*dc)*dr;
+      const col=colFn(v);if(!col)continue;const o=(y*CW+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=col[3];}}
+  ctx.putImageData(img,0,0);return cv.toDataURL();
+}
+function setOv(k,url){
+  if(!url){if(ov[k]){map.removeLayer(ov[k]);delete ov[k]}return}
+  if(ov[k])ov[k].setUrl(url);else ov[k]=L.imageOverlay(url,BOUNDS,{pane:"field",className:"fld"}).addTo(map);
+}
+
+// ---------- Städte ----------
+const markers=[];
+function initMarkers(){
+  CITIES.forEach((c,i)=>{
+    const m=L.marker([c[1],c[2]],{icon:L.divIcon({className:"pinw",iconSize:[0,0],html:""}),keyboard:false}).addTo(map);
+    m.on("click",()=>openSheet(i));markers.push(m);
+  });
+}
+function cityTempAt(i,T){const H=CD[i].hourly,k=Math.round((T-H.time[0])/3600);return H.temperature_2m[k]}
+function updMarkers(T){
+  if(!CD)return;const z=map.getZoom();
+  CITIES.forEach((c,i)=>{const t=cityTempAt(i,T);if(t==null)return;const tr=Math.round(t);
+    const name=(z>=5||c[4])?c[0].replace(" a. d. Ruhr","")+" ":"";
+    const col=ramp(TSTOPS,t);
+    markers[i].setIcon(L.divIcon({className:"pinw",iconSize:[0,0],html:`<div class="pin ${c[3]||""} ${c[4]?"star":""}" style="background:rgba(${col[0]},${col[1]},${col[2]},.92)">${name}${tr}°</div>`}));
+  });
+}
+
+// ---------- Detailansicht ----------
+function openSheet(i){
+  const d=CD[i],tz=d.timezone,cu=d.current,c=CITIES[i];
+  $("sName").textContent=c[0];
+  const [ic,tx]=wmo(cu.weather_code);
+  let h=`<div class="now"><span class="ic">${ic}</span><div><div class="big">${Math.round(cu.temperature_2m)}°</div><div class="sub">${tx} · gefühlt ${Math.round(cu.apparent_temperature)}°</div></div>
+   <div class="sub" style="margin-left:auto;text-align:right">max ${Math.round(d.daily.temperature_2m_max[0])}°<br>min ${Math.round(d.daily.temperature_2m_min[0])}°</div></div>
+   <div class="grid2"><div>💨 Wind<b>${Math.round(cu.wind_speed_10m)} km/h ${dirTxt(cu.wind_direction_10m)}</b></div><div>🌬️ Böen<b>${Math.round(cu.wind_gusts_10m)} km/h</b></div>
+   <div>☔ Regen heute<b>${d.daily.precipitation_sum[0].toFixed(1)} mm · ${d.daily.precipitation_probability_max[0]??"–"} %</b></div><div>💧 Luftfeuchte<b>${cu.relative_humidity_2m} %</b></div>
+   <div>🌅 Aufgang<b>${fmtT(d.daily.sunrise[0],tz)}</b></div><div>🌇 Untergang<b>${fmtT(d.daily.sunset[0],tz)}</b></div></div>
+   <h3>Nächste 24 Stunden</h3><div class="hours">`;
+  const H=d.hourly,now=Date.now()/1000;let k=H.time.findIndex(t=>t>now-3600);if(k<0)k=0;
+  for(let j=k;j<k+25&&j<H.time.length;j+=2){h+=`<div>${fmtT(H.time[j],tz).slice(0,2)} h<br><span style="font-size:18px">${wmo(H.weather_code[j])[0]}</span><br><b>${Math.round(H.temperature_2m[j])}°</b><br><span class="p">${H.precipitation_probability[j]??"–"} %</span></div>`}
+  h+=`</div><h3>7 Tage</h3>`;
+  const D=d.daily;
+  for(let j=0;j<D.time.length;j++){const dt=new Date(D.time[j]*1000);
+    const wd=j===0?"Heute":WD[new Date(dt.toLocaleString("en-US",{timeZone:tz})).getDay()];
+    h+=`<div class="day"><span class="n">${wd}</span><span class="w">${wmo(D.weather_code[j])[0]}</span><span class="p">${D.precipitation_probability_max[j]??"–"} % · ${D.precipitation_sum[j].toFixed(1)}</span><span class="mm">${Math.round(D.temperature_2m_min[j])}° / <b>${Math.round(D.temperature_2m_max[j])}°</b></span></div>`}
+  h+=`<div class="sub" style="margin-top:10px">Ortszeit ${tz.replace("_"," ")} · Daten: Open-Meteo</div>`;
+  $("sBody").innerHTML=h;$("sheet").classList.add("open");
+}
+$("close").onclick=()=>$("sheet").classList.remove("open");
+map.on("click",()=>$("sheet").classList.remove("open"));
+
+// ---------- Anzeige ----------
+function draw(){
+  if(!G)return;
+  const off=+$("sl").value,h=i0+off,T=G.times[h];
+  const dt=new Date(T*1000);
+  const today=new Date();const dd=Math.round((new Date(dt.toDateString())-new Date(today.toDateString()))/864e5);
+  const dayTxt=dd===0?"Heute":dd===1?"Morgen":WD[dt.getDay()]+" "+dt.getDate()+".";
+  $("lbl").textContent=off===0?"Jetzt · "+dt.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}).slice(0,2)+" Uhr":dayTxt+" · "+String(dt.getHours()).padStart(2,"0")+" Uhr";
+  const rel=$("rel");
+  const useRadar=off===0&&on.r&&radar;
+  if(useRadar){rel.textContent="Radar live · "+new Date(radarTime*1000).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});rel.className="g"}
+  else if(off<=72){rel.textContent="Vorhersage · sehr zuverlässig";rel.className="g"}
+  else if(off<=120){rel.textContent="Vorhersage · gut";rel.className="m"}
+  else{rel.textContent="Vorhersage · nur grobe Richtung";rel.className="b"}
+
+  setOv("t",on.t?render(G.t,h,tCol):null);
+  setOv("c",on.c?render(G.c,h,cCol):null);
+  setOv("r",on.r&&!useRadar?render(G.p,h,rCol):null);
+  if(ov.t)ov.t.bringToBack();if(ov.r)ov.r.bringToFront();
+  if(radar){if(useRadar){if(!map.hasLayer(radar))radar.addTo(map)}else if(map.hasLayer(radar))map.removeLayer(radar)}
+  updMarkers(T);
+}
+function legend(){
+  let h="";
+  if(on.t)h+=`<div class="lg"><span class="t">Temperatur</span><span>-10°</span><span class="grad" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span></div>`;
+  if(on.r)h+=`<div class="lg"><span class="t">Regen</span><span>leicht</span><span class="grad" style="background:linear-gradient(90deg,${RSTOPS.map(s=>css(s[1])).join(",")})"></span><span>stark</span></div>`;
+  if(on.c)h+=`<div class="lg"><span class="t">Wolken</span><span>wenig</span><span class="grad" style="background:linear-gradient(90deg,rgba(105,115,130,.1),rgba(105,115,130,.75))"></span><span>dicht</span></div>`;
+  $("legend").innerHTML=h;
+}
+function btns(){[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).classList.toggle("on",!!on[k]))}
+[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).onclick=()=>{on[k]=!on[k];store.set("wk_layers",on);btns();legend();draw()});
+$("sl").oninput=draw;
+map.on("zoomend",()=>{if(G)updMarkers(G.times[i0+ +$("sl").value])});
+$("play").onclick=()=>{
+  if(playing){clearInterval(playing);playing=null;$("play").textContent="▶";return}
+  $("play").textContent="❚❚";
+  playing=setInterval(()=>{const s=$("sl");let v=+s.value+3;if(v>+s.max)v=0;s.value=v;draw()},650);
+};
+$("refresh").onclick=()=>start(true);
+
+// ---------- Start ----------
+async function start(force){
+  try{
+    status("Lade Wetterdaten …");
+    const [g,cd]=await Promise.all([loadGrid(force),loadCities(),loadRadar()]);
+    G=g;CD=cd;
+    const now=Date.now()/1000;i0=0;for(let i=0;i<G.times.length;i++)if(G.times[i]<=now)i0=i;
+    $("sl").max=G.times.length-1-i0;
+    if(+$("sl").value>+$("sl").max)$("sl").value=0;
+    if(!markers.length)initMarkers();
+    status(null);btns();legend();draw();
+  }catch(e){status("Wetterdaten konnten nicht geladen werden ("+e.message+"). Bitte später erneut versuchen.")}
+}
+btns();legend();start(false);
+setInterval(()=>{loadRadar().then(draw)},10*60000);
+if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{})}
+</script>
+</body>
+</html>
