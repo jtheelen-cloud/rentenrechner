@@ -123,6 +123,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#41505f}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 "use strict";
 // ---------- Einstellungen ----------
@@ -167,9 +168,10 @@ const map=L.map("map",{zoomControl:false,minZoom:3,maxZoom:9,worldCopyJump:false
 map.fitBounds([[27,-18],[61,30]]);
 map.createPane("field").style.zIndex=350;
 map.createPane("radar").style.zIndex=380;
+const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
 const lp=map.createPane("labels");lp.style.zIndex=450;lp.style.pointerEvents="none";
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",pane:"labels"}).addTo(map);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",pane:"labels"}).addTo(map);
 map.attributionControl.addAttribution('Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> (DWD, ECMWF u. a.) · Radar: <a href="https://www.rainviewer.com/">RainViewer</a>');
 
 // ---------- Zustand ----------
@@ -226,6 +228,24 @@ async function loadRadar(){
   }catch(e){radar=null}
 }
 
+// ---------- Grenzen, Küsten und Landmaske ----------
+let landPath=null;
+async function loadBorders(){
+  try{
+    const topo=await getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json");
+    const mesh=topojson.mesh(topo,topo.objects.countries);
+    L.geoJSON(mesh,{pane:"borders",interactive:false,style:{color:"#26323f",weight:1.4,opacity:.85,fill:false}}).addTo(map);
+    const land=topojson.feature(topo,topo.objects.land||topojson.merge(topo,topo.objects.countries.geometries));
+    const P=new Path2D(),ym1=merc(LAT1),yr=merc(LAT1)-merc(LAT0);
+    const px=(lon,lat)=>[(lon-LON0)/(LON1-LON0)*CW,(ym1-merc(Math.max(-85,Math.min(85,lat))))/yr*CH];
+    const polys=land.geometry?(land.geometry.type==="Polygon"?[land.geometry.coordinates]:land.geometry.coordinates):[];
+    for(const poly of polys)for(const ring of poly){
+      if(!ring.some(c=>c[0]>=LON0-5&&c[0]<=LON1+5&&c[1]>=LAT0-5&&c[1]<=LAT1+5))continue;
+      ring.forEach((c,i)=>{const q=px(c[0],c[1]);i?P.lineTo(q[0],q[1]):P.moveTo(q[0],q[1])});P.closePath();}
+    landPath=P;
+  }catch(e){landPath=null}
+}
+
 // ---------- Rasterfeld zeichnen ----------
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
@@ -235,13 +255,15 @@ for(let y=0;y<CH;y++){const lat=imerc(merc(LAT1)-(y+.5)/CH*(merc(LAT1)-merc(LAT0
 for(let x=0;x<CW;x++){const lon=LON0+(x+.5)/CW*(LON1-LON0);colF[x]=Math.min(NC-1.0001,Math.max(0,(lon-LON0)/STEP))}
 const cv=document.createElement("canvas");cv.width=CW;cv.height=CH;const ctx=cv.getContext("2d");
 
-function render(A,h,colFn){
+function render(A,h,colFn,landOnly){
   const img=ctx.createImageData(CW,CH),d=img.data,b=h*NP;
   for(let y=0;y<CH;y++){const fr=rowF[y],r=fr|0,dr=fr-r;
     for(let x=0;x<CW;x++){const fc=colF[x],c=fc|0,dc=fc-c,i=b+r*NC+c;
       const v=(A[i]*(1-dc)+A[i+1]*dc)*(1-dr)+(A[i+NC]*(1-dc)+A[i+NC+1]*dc)*dr;
       const col=colFn(v);if(!col)continue;const o=(y*CW+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=col[3];}}
-  ctx.putImageData(img,0,0);return cv.toDataURL();
+  ctx.putImageData(img,0,0);
+  if(landOnly&&landPath){ctx.globalCompositeOperation="destination-in";ctx.fillStyle="#000";ctx.fill(landPath);ctx.globalCompositeOperation="source-over"}
+  return cv.toDataURL();
 }
 function setOv(k,url){
   if(!url){if(ov[k]){map.removeLayer(ov[k]);delete ov[k]}return}
@@ -305,7 +327,7 @@ function draw(){
   else if(off<=120){rel.textContent="Vorhersage · gut";rel.className="m"}
   else{rel.textContent="Vorhersage · nur grobe Richtung";rel.className="b"}
 
-  setOv("t",on.t?render(G.t,h,tCol):null);
+  setOv("t",on.t?render(G.t,h,tCol,true):null);
   setOv("c",on.c?render(G.c,h,cCol):null);
   setOv("r",on.r&&!useRadar?render(G.p,h,rCol):null);
   if(ov.t)ov.t.bringToBack();if(ov.r)ov.r.bringToFront();
@@ -334,7 +356,7 @@ $("refresh").onclick=()=>start(true);
 async function start(force){
   try{
     status("Lade Wetterdaten …");
-    const [g,cd]=await Promise.all([loadGrid(force),loadCities(),loadRadar()]);
+    const [g,cd]=await Promise.all([loadGrid(force),loadCities(),loadRadar(),landPath?null:loadBorders()]);
     G=g;CD=cd;
     const now=Date.now()/1000;i0=0;for(let i=0;i<G.times.length;i++)if(G.times[i]<=now)i0=i;
     $("sl").max=G.times.length-1-i0;
