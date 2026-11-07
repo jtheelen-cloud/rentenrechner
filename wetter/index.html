@@ -44,6 +44,7 @@ html,body{overscroll-behavior:none}
 .pin{position:absolute;white-space:nowrap;padding:2px 6px;border-radius:9px;font-size:12px;font-weight:600;color:#1d2733;border:1px solid rgba(0,0,0,.25);transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .pin.L{transform:translate(calc(-100% - 3px),-50%)}
 .pin.R{transform:translate(3px,-50%)}
+.pin.U{transform:translate(-50%,calc(-100% - 3px))}
 .pin.star{border:2px solid #1d2733}
 #sheet{position:fixed;left:0;right:0;bottom:0;z-index:1200;background:#fff;border-radius:18px 18px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.25);max-height:78%;overflow:auto;padding:14px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .25s}
 #sheet.open{transform:none}
@@ -146,7 +147,7 @@ const CITIES=[
   ["London",51.51,-0.13],["Paris",48.86,2.35],["Madrid",40.42,-3.70],["Lissabon",38.72,-9.14],
   ["Rom",41.90,12.50],["Wien",48.21,16.37],["Warschau",52.23,21.01],["Kopenhagen",55.68,12.57],
   ["Oslo",59.91,10.75],["Stockholm",59.33,18.07],["Athen",37.98,23.73],
-  ["Teneriffa",28.47,-16.25,"L",1],["Gran Canaria",28.12,-15.43,"R",1]
+  ["Teneriffa",28.47,-16.25,"L",1],["Gran Canaria",28.12,-15.43,"R",1],["Corralejo",28.73,-13.87,"U",1]
 ];
 
 // ---------- Hilfen ----------
