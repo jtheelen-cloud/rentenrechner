@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-06",
+ "stand": "2026-11-07",
  "gesetze": {
   "betrvg": {
    "stand": "2026-07-13",
@@ -153,6 +153,13 @@
    "n": 15,
    "name": "Tarifvertragsgesetz",
    "kurz": "TVG",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+  },
+  "hinschg": {
+   "stand": "2025-12-02",
+   "n": 42,
+   "name": "Gesetz für einen besseren Schutz hinweisgebender Personen",
+   "kurz": "HinSchG",
    "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   }
  }
