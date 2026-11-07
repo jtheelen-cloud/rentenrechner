@@ -67,6 +67,9 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .pill.ja{background:var(--ok-soft);color:var(--ok)} .pill.nein{background:var(--bad-soft);color:var(--bad)}
 tr.best td{background:var(--accent-soft)}
 
+.docs{margin:10px 0 14px;padding:12px 14px;border-radius:10px;background:var(--warn-soft);border-left:4px solid var(--warn);font-size:15px;line-height:1.45;color:var(--ink)}
+.docs ol{margin:8px 0;padding-left:20px}.docs li{margin-bottom:6px}.docs span{display:block;font-size:14px;margin-top:4px}.docs .opt{color:var(--muted)}
+.docs a{color:inherit;font-weight:600}
 .hint{margin:12px 16px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--ink);font-size:14px;border-left:4px solid var(--warn)}
 .hint:empty{display:none}
 
@@ -162,6 +165,15 @@ details.opt>summary:focus-visible{outline:2px solid var(--accent)}
 
 <h2>Deine Angaben</h2>
 <p class="sub">Die Felder speichert die App nur auf diesem Gerät. <span class="example" id="exNote">Vorausgefüllt mit Beispielwerten – bitte überschreiben.</span></p>
+<div class="docs">
+  <b>📄 Diese Unterlagen brauchst du – sonst ist das Ergebnis nicht aussagekräftig</b>
+  <ol>
+    <li><b>Aktuelle Renteninformation</b> (kommt jährlich ab 27) oder <b>Rentenauskunft</b> (ab 55) der Deutschen Rentenversicherung – für die Rentenbeträge.</li>
+    <li><b>Versicherungsverlauf</b> – für die Versicherungsjahre. Sie entscheiden, ob du mit 63/64 oder abschlagsfrei nach 45 Jahren gehen kannst. <b>Die Jahre stehen nicht in der Renteninformation!</b></li>
+  </ol>
+  <span>Beides gibt es kostenlos bei der DRV: online unter <a href="https://www.deutsche-rentenversicherung.de" target="_blank" rel="noopener">deutsche-rentenversicherung.de</a> (Online-Dienste), am Servicetelefon 0800 1000 4800 oder in einer Beratungsstelle. Lücken im Verlauf (Ausbildung, Wehrdienst, Arbeitslosigkeit) vorher klären lassen.</span>
+  <span class="opt">Hilfreich: letzte Gehaltsabrechnung (für das künftige Bruttogehalt), Schwerbehindertenausweis, letzter Steuerbescheid (bei Verheirateten).</span>
+</div>
 
 <details class="sec" open>
 <summary><span class="n">1</span>Person & Wunschtermin<span class="chev">›</span></summary>
@@ -170,7 +182,7 @@ details.opt>summary:focus-visible{outline:2px solid var(--accent)}
     <div class="f"><label for="geb">Geburtsdatum</label><input type="date" id="geb"></div>
     <div class="f"><label for="start">Gewünschter Rentenbeginn</label><input type="date" id="start"><span class="help">Rente beginnt immer am 1. eines Monats.</span></div>
   </div>
-  <div class="f"><label for="riDatum">Datum der Renteninformation</label><input type="date" id="riDatum"></div>
+  <div class="f"><label for="riDatum">Datum der Renteninformation</label><input type="date" id="riDatum"><span class="help">Steht oben auf der Renteninformation bzw. Rentenauskunft</span></div>
 </div>
 </details>
 
@@ -182,7 +194,7 @@ details.opt>summary:focus-visible{outline:2px solid var(--accent)}
     <div class="f"><label for="prog">Künftige Regelaltersrente (€/Monat)</label><input type="number" inputmode="decimal" step="0.01" id="prog"><span class="help">„… wenn Sie wie bisher Beiträge zahlen“</span></div>
   </div>
   <div class="row2">
-    <div class="f"><label for="j35">Versicherungsjahre bisher</label><input type="number" inputmode="decimal" step="0.1" id="j35"><span class="help">Aus Versicherungsverlauf / Rentenauskunft</span></div>
+    <div class="f"><label for="j35">Versicherungsjahre bisher</label><input type="number" inputmode="decimal" step="0.1" id="j35"><span class="help">Nur aus dem <b>Versicherungsverlauf</b> / der Rentenauskunft – nicht schätzen</span></div>
     <div class="f"><label for="j45">Davon für die 45 Jahre (optional)</label><input type="number" inputmode="decimal" step="0.1" id="j45" placeholder="wie links"><span class="help">Ohne Schule, Studium, Bürgergeld</span></div>
   </div>
   <div class="f"><label>Bis zum Rentenbeginn weiter arbeiten und einzahlen?</label><div class="seg" data-for="weiter"></div></div>
