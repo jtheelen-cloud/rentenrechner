@@ -75,6 +75,12 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .norm .text p.l1{margin-left:18px}.norm .text p.l2{margin-left:36px}.norm .text p.l3{margin-left:54px}
 .norm .text{font-size:16px;line-height:1.55;overflow-wrap:anywhere}
 .ft{font-size:14px;color:var(--ink);margin-top:4px}
+.obadge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.02em;padding:1px 7px;border-radius:999px;background:#fdecc8;color:#7a4a00;vertical-align:middle;white-space:nowrap}
+.obadge.warn{background:#fbd5d0;color:#8a1f12}
+.obox{background:#fff7e6;border:1px solid #f0d7a1;border-left:4px solid #e0a020;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45;margin-top:10px}
+.obox.grund{background:#eef4fb;border-color:#c9daee;border-left-color:#3d6fa8}
+.obox a{color:var(--accent2);font-weight:600}
+@media (prefers-color-scheme:dark){.obadge{background:#5a3d06;color:#ffe2a8}.obadge.warn{background:#5c1d15;color:#ffc9c0}.obox{background:#2e2410;border-color:#5a4718}.obox.grund{background:#15222f;border-color:#2b4560}}
 .star{font-size:22px;background:none;border:0;cursor:pointer;color:var(--accent2);padding:4px}
 .nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
 .back{background:none;border:0;color:var(--accent2);font:inherit;font-weight:600;cursor:pointer;padding:6px 0}
@@ -153,7 +159,21 @@ textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--input);bo
   <!-- GESETZE -->
   <section id="v-gesetze" class="view" hidden>
     <h2>Gesetze</h2>
+    <a class="card obox" href="#oeffnung" style="display:block;text-decoration:none;color:inherit;margin-bottom:12px"><b>Öffnungsklauseln</b> – wo Tarifvertrag oder Betriebsvereinbarung vom Gesetz abweichen dürfen, auch zum Schlechteren ›</a>
     <div class="lawgrid" id="laws"></div>
+  </section>
+
+  <!-- ÖFFNUNGSKLAUSELN -->
+  <section id="v-oeffnung" class="view" hidden>
+    <button class="back" type="button" data-go="gesetze">‹ Alle Gesetze</button>
+    <h2 style="margin-top:4px">Öffnungsklauseln</h2>
+    <div class="card" style="padding:14px;margin-bottom:10px;font-size:15px">
+      <p style="margin:0 0 8px"><b>Grundsatz:</b> Arbeitnehmerschutzgesetze sind meist zwingend. Tarifvertrag, Betriebsvereinbarung und Arbeitsvertrag dürfen davon nur <b>zugunsten</b> der Beschäftigten abweichen.</p>
+      <p style="margin:0 0 8px"><b>Ausnahme – Öffnungsklausel:</b> Erlaubt das Gesetz es ausdrücklich, darf ein <b>Tarifvertrag</b> anders regeln, teils auch schlechter. Eine <b>Betriebsvereinbarung</b> darf das meist nur, wenn der Tarifvertrag es zulässt („auf Grund eines Tarifvertrags“).</p>
+      <p style="margin:0"><b>Für den BR wichtig:</b> Steht eine Abweichung in einer BV, zuerst prüfen, ob das Gesetz sie zulässt und ob der Tarifvertrag (bei euch MTV Eisen und Stahl) sie erlaubt. Sonst ist die Regelung unwirksam.</p>
+    </div>
+    <div id="oeffList"></div>
+    <p class="note">Ausgewählte Öffnungsklauseln der Gesetze in dieser App, geprüft am Gesetzestext. Keine abschließende Liste, keine Rechtsberatung.</p>
   </section>
 
   <!-- EIN GESETZ -->
@@ -279,23 +299,30 @@ async function loadAllTexts(){ try{ const r=await fetch("texte/index.json",{cach
   $("standLine").textContent=n?`${GESETZE.length} Gesetze · ${n} als Volltext auf dem Gerät gespeichert (offline lesbar)${TIDX?` · geprüft am ${dDE(TIDX.stand)}`:""}`:`${GESETZE.length} Gesetze · Volltexte werden beim nächsten Öffnen mit Internet gespeichert`;
   if($("q").value.trim()) search(); }
 const dDE=iso=>{const m=String(iso||"").match(/(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}.${m[2]}.${m[1]}`:iso||""};
+/* ---------- Öffnungsklauseln ---------- */
+const OEFF=[["arbzg", "7", "Tarifvertrag oder Betriebsvereinbarung auf Grund eines Tarifvertrags", "Abweichungen von Höchstarbeitszeit (§ 3), Ruhepausen (§ 4), Ruhezeit (§ 5) und Nachtarbeit (§ 6). Nicht tarifgebundene Arbeitgeber können solche Tarifregeln per BV übernehmen (Abs. 3).", false], ["arbzg", "12", "Tarifvertrag oder Betriebsvereinbarung auf Grund eines Tarifvertrags", "Abweichungen bei Sonn- und Feiertagsruhe, z. B. weniger beschäftigungsfreie Sonntage und andere Ersatzruhetage.", false], ["jarbschg", "21a", "Tarifvertrag oder Betriebsvereinbarung auf Grund eines Tarifvertrags", "Abweichungen bei Arbeitszeit, Ruhepausen, Schichtzeit und freien Tagen von Jugendlichen (§§ 8, 15, 16, 17, 18 und weitere).", false], ["burlg", "13", "Tarifvertrag", "Abweichung von allen Urlaubsregeln außer §§ 1, 2 und 3 Abs. 1 – der gesetzliche Mindesturlaub selbst bleibt zwingend.", true], ["entgfg", "4", "Tarifvertrag", "Abs. 4: andere Bemessungsgrundlage für die Entgeltfortzahlung im Krankheitsfall.", true], ["bgb", "622", "Tarifvertrag", "Abs. 4: andere Kündigungsfristen und Kündigungstermine, auch kürzere als im Gesetz.", true], ["tzbfg", "8", "Tarifvertrag", "Abs. 4: Gründe, aus denen der Arbeitgeber Teilzeit ablehnen darf, können tariflich festgelegt werden.", false], ["tzbfg", "9a", "Tarifvertrag", "Abs. 6: anderer Rahmen für die Dauer der Brückenteilzeit, ausdrücklich auch zuungunsten der Beschäftigten.", true], ["tzbfg", "12", "Tarifvertrag", "Abs. 6: Abweichungen bei Arbeit auf Abruf (Umfang, Ankündigungsfrist), ausdrücklich auch zuungunsten der Beschäftigten.", true], ["tzbfg", "13", "Tarifvertrag", "Abs. 4: Abweichungen bei der Arbeitsplatzteilung, ausdrücklich auch zuungunsten der Beschäftigten.", true], ["tzbfg", "14", "Tarifvertrag", "Abs. 2: andere Höchstdauer und Zahl der Verlängerungen bei der Befristung ohne Sachgrund.", true], ["tzbfg", "22", "Tarifvertrag", "Übersicht: Nur in den Fällen der §§ 9a Abs. 6, 12 Abs. 6, 13 Abs. 4 und 14 Abs. 2 darf zuungunsten abgewichen werden, sonst nicht.", false], ["aueg", "1", "Tarifvertrag der Einsatzbranche (oder BV auf Grund eines solchen Tarifvertrags)", "Abs. 1b: andere Überlassungshöchstdauer als 18 Monate für Leiharbeit.", true], ["aueg", "8", "Tarifvertrag", "Abs. 2 und 4: Abweichung vom Equal Pay (gleiche Bezahlung wie Stammbelegschaft) – beim Entgelt grundsätzlich nur für die ersten 9 Monate einer Überlassung.", true], ["betravg", "19", "Tarifvertrag", "Abweichung u. a. von Entgeltumwandlung, Unverfallbarkeit, Abfindung, Anpassung der Betriebsrenten (§§ 1a, 2, 2a, 3, 4, 5, 16 und weitere).", true], ["betravg", "20", "Tarifvertrag oder Betriebsvereinbarung auf Grund eines Tarifvertrags", "Abs. 2: automatische Entgeltumwandlung mit Widerspruchsrecht (Optionssystem). Abs. 1: Tarifliches Entgelt darf nur umgewandelt werden, wenn der Tarifvertrag es zulässt.", false], ["betrvg", "3", "Tarifvertrag (BV nur, wenn kein Tarifvertrag besteht)", "Andere Betriebsratsstrukturen, z. B. unternehmenseinheitlicher Betriebsrat oder Spartenbetriebsräte.", false], ["betrvg", "21a", "Tarifvertrag oder Betriebsvereinbarung", "Abs. 1: Verlängerung des Übergangsmandats um weitere 6 Monate.", false], ["betrvg", "38", "Tarifvertrag oder Betriebsvereinbarung", "Abs. 1: andere Regelungen über Freistellungen von Betriebsratsmitgliedern.", false], ["betrvg", "47", "Tarifvertrag oder Betriebsvereinbarung", "Abs. 4: andere Mitgliederzahl des Gesamtbetriebsrats.", false], ["betrvg", "55", "Tarifvertrag oder Betriebsvereinbarung", "Abs. 4: andere Mitgliederzahl des Konzernbetriebsrats.", false], ["betrvg", "72", "Tarifvertrag oder Betriebsvereinbarung", "Abs. 4: andere Mitgliederzahl der Gesamt-JAV.", false], ["betrvg", "76", "Tarifvertrag", "Abs. 8: tarifliche Schlichtungsstelle statt Einigungsstelle.", false], ["betrvg", "76a", "Tarifvertrag oder Betriebsvereinbarung (BV, wenn der Tarifvertrag es zulässt oder keiner besteht)", "Abs. 5: Vergütung der Mitglieder der Einigungsstelle.", false], ["betrvg", "86", "Tarifvertrag oder Betriebsvereinbarung", "Einzelheiten des Beschwerdeverfahrens, auch eine betriebliche Beschwerdestelle statt Einigungsstelle.", false]];
+const GRUNDS=[["tvg", "4", "Günstigkeitsprinzip: Vom Tarifvertrag darf nur abgewichen werden, wenn er es erlaubt oder die Abweichung für die Beschäftigten günstiger ist (Abs. 3)."], ["betrvg", "77", "Tarifvorrang: Was durch Tarifvertrag geregelt ist oder üblicherweise geregelt wird, darf keine Betriebsvereinbarung regeln – außer der Tarifvertrag lässt es ausdrücklich zu (Abs. 3)."], ["betrvg", "87", "Tarifvorbehalt: Mitbestimmung nur, soweit keine gesetzliche oder tarifliche Regelung besteht (Eingangssatz Abs. 1)."]];
+const oeff=(id,nr)=>OEFF.find(o=>o[0]===id&&o[1]===String(nr).toLowerCase());
+const grund=(id,nr)=>GRUNDS.find(o=>o[0]===id&&o[1]===String(nr).toLowerCase());
+const OBADGE='<span class="obadge">Öffnungsklausel</span>';
 const ENTRIES=[]; GESETZE.forEach(g=>g.p.forEach(([nr,t,k])=>ENTRIES.push({g,nr,t,k,low:(`§ ${nr} ${g.kurz} ${t} ${k}`).toLowerCase()})));
 const findLaw=q=>{q=q.toLowerCase().replace(/[^a-zäöü0-9]/g,"");return GESETZE.find(g=>g.kurz.toLowerCase().replace(/[^a-zäöü0-9]/g,"")===q)||GESETZE.find(g=>g.kurz.toLowerCase().replace(/[^a-zäöü0-9]/g,"").startsWith(q)||g.id===q)};
 function pHref(g,nr){ return `#p-${g.id}-${encodeURIComponent(String(nr).toLowerCase())}`; }
 function pLink(g,nr,t,snip){ return `<div class="item prow" style="margin-bottom:6px;grid-template-columns:72px 1fr auto">
   <a href="${pHref(g,nr)}" class="pn" style="text-decoration:none;color:inherit">§ ${esc(nr)}</a>
-  <a href="${pHref(g,nr)}" style="text-decoration:none;color:inherit">${t?highlight(esc(t),lastQuery):'<span class="sub">Text anzeigen</span>'}<span class="n" style="display:block;font-size:13px">${esc(g.kurz)}</span>${snip?`<span class="ft">${snip}</span>`:""}</a>
+  <a href="${pHref(g,nr)}" style="text-decoration:none;color:inherit">${t?highlight(esc(t),lastQuery):'<span class="sub">Text anzeigen</span>'}${oeff(g.id,nr)?" "+OBADGE:""}<span class="n" style="display:block;font-size:13px">${esc(g.kurz)}</span>${snip?`<span class="ft">${snip}</span>`:""}</a>
   <button class="star" type="button" data-fav="${g.id}|${esc(nr)}|${esc(t||"")}" aria-label="Merken" aria-pressed="${isFav(g.id,nr)}">${isFav(g.id,nr)?"★":"☆"}</button></div>`; }
 function wireStars(root){ root.querySelectorAll("[data-fav]").forEach(b=>b.addEventListener("click",()=>{const [id,nr,t]=b.dataset.fav.split("|");toggleFav(id,nr,t);const f=isFav(id,nr);b.textContent=f?"★":"☆";b.setAttribute("aria-pressed",f)})); }
 
 /* ---------- Ansicht ---------- */
-const VIEWS=["suche","gesetze","gesetz","norm","fristen","vorlagen","tarif","merk"];
+const VIEWS=["suche","gesetze","gesetz","norm","oeffnung","fristen","vorlagen","tarif","merk"];
 let cur={law:null,from:"suche"};
 function show(v){ VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
-  const tab=(v==="gesetz"||v==="norm")?"gesetze":v;
+  const tab=(v==="gesetz"||v==="norm"||v==="oeffnung")?"gesetze":v;
   document.querySelectorAll(".tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===tab?"page":"false"));
   window.scrollTo(0,0); }
 function route(){ const h=(location.hash||"#suche").slice(1);
+  if(h==="oeffnung"){ openOeff(); return; }
   if(h.startsWith("g-")){ openLaw(h.slice(2)); return; }
   if(h.startsWith("p-")){ const m=h.slice(2).match(/^([a-z0-9_]+)-(.+)$/); if(m){ openNorm(m[1],decodeURIComponent(m[2])); return; } }
   if(VIEWS.includes(h)){ show(h); if(h==="merk") renderMerk(); if(h==="gesetze") renderLaws(); }
@@ -315,6 +342,19 @@ function openLaw(id){ const g=GESETZE.find(x=>x.id===id); if(!g){show("gesetze")
     else h+='<p class="sub">Volltext noch nicht auf dem Gerät – einmal mit Internet öffnen. Paragrafen öffnen dann den Originaltext.</p>';
     $("lawList").innerHTML=h; wireStars($("lawList")); };
   drawList(TEXTE[g.id]); if(!TEXTE[g.id]) loadText(g.id).then(T=>{ if(T&&cur.law===g) drawList(T); }); }
+function oeffBox(id,nr){ const o=oeff(id,nr), gr=grund(id,nr);
+  if(o) return `<div class="obox"><b>Öffnungsklausel</b> – abweichen darf: <b>${esc(o[2])}</b>${o[4]?" · <b>auch zuungunsten der Beschäftigten</b>":""}<br>${esc(o[3])}<br><a href="#oeffnung">Was heißt das? Alle Öffnungsklauseln ›</a></div>`;
+  if(gr) return `<div class="obox grund"><b>Grundsatz</b> – ${esc(gr[2])}<br><a href="#oeffnung">Alle Öffnungsklauseln ›</a></div>`;
+  return ""; }
+function openOeff(){ show("oeffnung");
+  const by={}; OEFF.forEach(o=>{(by[o[0]]=by[o[0]]||[]).push(o)});
+  let h="";
+  for(const g of GESETZE){ const L=by[g.id]; if(!L) continue;
+    h+=`<div class="grp">${esc(g.kurz)} – ${esc(g.name.split(" (")[0])}</div>`+L.map(o=>`<a class="item" href="${pHref(g,o[1])}" style="display:block;text-decoration:none;color:inherit;margin-bottom:6px">
+      <span class="k">§ ${esc(o[1])} ${esc(g.kurz)}</span> ${o[4]?'<span class="obadge warn">auch zuungunsten</span>':""}
+      <span class="n" style="display:block">Abweichen darf: ${esc(o[2])}</span><span class="s" style="display:block">${esc(o[3])}</span></a>`).join(""); }
+  h+=`<div class="grp">Grundsätze</div>`+GRUNDS.map(o=>{const g=GESETZE.find(x=>x.id===o[0]);return g?`<a class="item" href="${pHref(g,o[1])}" style="display:block;text-decoration:none;color:inherit;margin-bottom:6px"><span class="k">§ ${esc(o[1])} ${esc(g.kurz)}</span><span class="s" style="display:block">${esc(o[2])}</span></a>`:""}).join("");
+  $("oeffList").innerHTML=h; }
 async function openNorm(id,nr){ const g=GESETZE.find(x=>x.id===id); if(!g){show("gesetze");return}
   cur.law=g; cur.nr=nr; show("norm");
   const T=await loadText(id); const i=T?T.map[String(nr).toLowerCase()]:undefined;
@@ -328,7 +368,7 @@ async function openNorm(id,nr){ const g=GESETZE.find(x=>x.id===id); if(!g){show(
   const body=x[3].map(l=>{const d=Math.min(3,Math.floor((l.length-l.trimStart().length)/2)); return `<p class="${d?"l"+d:""}">${highlight(esc(l.trim()),lastQuery)}</p>`}).join("")||'<p class="sub">(weggefallen)</p>';
   $("normBox").innerHTML=`<div class="head"><div><p class="ptitle">${esc(x[1])} ${esc(g.kurz)}</p><div class="law">${esc(x[2]||meta)}</div></div>
     <button class="star" type="button" data-fav="${g.id}|${esc(x[0])}|${esc(x[2]||meta)}" aria-label="Merken" aria-pressed="${isFav(g.id,x[0])}">${isFav(g.id,x[0])?"★":"☆"}</button></div>
-    <div class="text" style="margin-top:12px">${body}</div>
+    ${oeffBox(g.id,x[0])}<div class="text" style="margin-top:12px">${body}</div>
     <p class="note">Stand ${esc(dDE(T.stand))} · Quelle: ${esc(T.quelle||"")} · <a href="${urlP(g.slug,x[0])}" target="_blank" rel="noopener">Original auf gesetze-im-internet.de ↗</a></p>`;
   wireStars($("normBox"));
   $("normPrev").hidden=i===0; $("normNext").hidden=i===T.p.length-1;
@@ -351,6 +391,7 @@ let searchTimer=null;
 function search(){ const q=$("q").value.trim(); lastQuery=q;
   if(!q){ $("results").innerHTML=""; $("qInfo").textContent=""; return }
   let html="", direct=null;
+  if(/öffnung|tarifdispositiv|abweich/i.test(q)) html+=`<a class="card obox" href="#oeffnung" style="display:block;text-decoration:none;color:inherit;margin-bottom:8px"><b>Liste aller Öffnungsklauseln</b> ›</a>`;
   const m=q.match(/^(?:§|art\.?)?\s*(\d+[a-z]?)\s+(.+)$/i)||q.match(/^([a-zäöü][\wäöüÄÖÜ\- ]*?)\s+(?:§\s*)?(\d+[a-z]?)$/i);
   if(m){ const [nr,lq]=/^\d/.test(m[1])?[m[1],m[2]]:[m[2],m[1]]; const g=findLaw(lq);
     if(g){ const e=g.p.find(p=>p[0].toLowerCase()===nr.toLowerCase()); direct=g; html+=pLink(g,nr,e?e[1]:""); } }
