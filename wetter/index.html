@@ -330,15 +330,25 @@ function initMap(){
   map.on("zoomend",updLabels);
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(topo=>{
     const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
-    L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
-    L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
+    landL=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
+    bordL=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
     Object.values(EU).forEach(v=>{if(v.length<3)return;labels.push([L.marker([v[1],v[2]],{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"cl",iconSize:[0,0],html:`<span>${v[0]}</span>`})}),v[3]||5])});
     updLabels();
     buildLandPath(feats);if(layer==="t")drawField();
+    coarse=[landL,bordL];if(fineState===2)coarse.forEach(l=>map.removeLayer(l));
   }).catch(()=>{});
+  map.on("zoomend",fineCoast);fineCoast();
   arrowGroup=L.layerGroup().addTo(map);drawArrow();
   setLayer(layer);setInterval(()=>{if(layer==="r")loadRadar()},5*60000);
 }
+let landL=null,bordL=null,coarse=null,fineState=0;
+function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
+  getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json").then(topo=>{
+    const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
+    const nl=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
+    const nb=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
+    (coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
+  }).catch(()=>{fineState=0});}
 // ---------- Zugrichtung des Regens (Pfeil mit Zeitlinien) ----------
 let arrowGroup=null;
 function dest(lat,lon,brg,km){const b=brg*Math.PI/180;return[lat+km*Math.cos(b)/111.2,lon+km*Math.sin(b)/(111.2*Math.cos(lat*Math.PI/180))]}
@@ -366,7 +376,7 @@ document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.da
 function setLayer(l){layer=l;store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}loadRadar()}
-  else{Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;loadGrid().then(drawField).catch(()=>{$("rtime").textContent="Daten nicht erreichbar"})}
+  else{Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;loadGrid().then(drawField).catch(e=>{$("rtime").textContent=String(e.message).includes("429")?"Zu viele Abrufe – bitte in 1 Minute erneut":"Daten nicht erreichbar"})}
   legend();}
 const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,196]],[10,[167,216,107]],[15,[242,216,75]],[20,[244,160,58]],[25,[232,97,60]],[30,[192,35,60]],[40,[122,13,43]]];
 function ramp(st,v){if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++){if(v<=st[i][0]){const a=st[i-1],b=st[i],f=(v-a[0])/(b[0]-a[0]);return[0,1,2].map(k=>Math.round(a[1][k]+(b[1][k]-a[1][k])*f))}}return st[st.length-1][1]}
@@ -376,17 +386,17 @@ function legend(){const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
    layer==="c"?`<span>wenig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.15),#fff);border:1px solid #999"></span><span>dicht bewölkt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
-const LAT0=26,LAT1=70,LON0=-20,LON1=40,STEP=2,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
+const LAT0=25,LAT1=70,LON0=-20,LON1=40,STEP=2.5,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
 let G=null,gh=0,fieldOv=null,landPath=null;
 async function loadGrid(){
-  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid1");
+  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid2");
   if(c&&Date.now()-c.ts<90*60000){G=c;return}
   const pts=[];for(let r=0;r<NR;r++)for(let k=0;k<NC;k++)pts.push([LAT0+r*STEP,LON0+k*STEP]);
   const res=[];for(let i=0;i<pts.length;i+=60){$("rtime").textContent="Lade … "+Math.round(i/pts.length*100)+" %";const ch=pts.slice(i,i+60);
     let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover&forecast_hours=25&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
   const times=res[0].hourly.time,t=[],cc=[];for(let h=0;h<times.length;h++)for(let i=0;i<NP;i++){t.push(Math.round(res[i].hourly.temperature_2m[h]*10)/10);cc.push(res[i].hourly.cloud_cover[h])}
-  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid1",G);
+  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid2",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
