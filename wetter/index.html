@@ -230,7 +230,7 @@ function renderCd(){
   if(!u||!u.von){el.classList.add("hide");return}
   const t=dayNo(new Date()),a=isoNo(u.von),b=u.bis?isoNo(u.bis):a,ziel=escH(u.ziel||"Urlaub");
   let ico="🏝️",big,sm;
-  if(t<a){const n=a-t;big=n===1?"Morgen!":"Noch "+n+" Tage";sm=(n===1?"geht’s los nach ":"bis ")+ziel+" · Abreise "+fmtD(u.von);
+  if(t<a){const n=a-t;big=n===1?"Morgen!":"Noch "+n+" Tage";sm=(n===1?"geht’s los nach ":"bis ")+ziel+" · Hinreise "+fmtD(u.von);
     if(n>13)sm+=" · "+(Math.floor(n/7))+" Wochen "+(n%7?"und "+(n%7)+(n%7===1?" Tag":" Tage"):"");}
   else if(t===a){ico="✈️";big="Heute geht’s los!";sm="Gute Reise nach "+ziel}
   else if(t<=b){ico="🌴";const n=b-t;big=n===0?"Letzter Tag":"Noch "+n+(n===1?" Tag":" Tage");sm="Urlaub in "+ziel+(u.bis?" · bis "+fmtD(u.bis):"")}
@@ -242,14 +242,14 @@ function escH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 function cdEdit(){const u=store.get("wx_cd")||{};
   sheet("Urlaubs-Countdown",`<div class="cdf">
    <div><label class="sub" for="cdZ">Wohin?</label><input id="cdZ" placeholder="z. B. Fuerteventura" value="${escH(u.ziel||"")}"></div>
-   <div><label class="sub" for="cdV">Abreise</label><input id="cdV" type="date" value="${u.von||""}"></div>
-   <div><label class="sub" for="cdB">Rückreise (freiwillig)</label><input id="cdB" type="date" value="${u.bis||""}"></div>
+   <div><label class="sub" for="cdV">Hinreise</label><input id="cdV" type="date" value="${u.von||""}"></div>
+   <div><label class="sub" for="cdB">Rückreise</label><input id="cdB" type="date" value="${u.bis||""}"></div>
    <p class="err" id="cdE"></p>
    <div style="display:flex;gap:8px"><button class="btnp" type="button" id="cdS">Speichern</button>${u.von?'<button class="btn2" type="button" id="cdX">Löschen</button>':""}</div>
    <p class="sub" style="margin:0">Der Countdown steht oben auf der Seite „Vorhersage“. Er gilt nur für dieses Handy.</p></div>`);
   $("cdS").onclick=()=>{const z=$("cdZ").value.trim(),v=$("cdV").value,b=$("cdB").value;
-    if(!v){$("cdE").textContent="Bitte das Abreisedatum eintragen.";return}
-    if(b&&b<v){$("cdE").textContent="Die Rückreise liegt vor der Abreise.";return}
+    if(!v){$("cdE").textContent="Bitte das Datum der Hinreise eintragen.";return}
+    if(b&&b<v){$("cdE").textContent="Die Rückreise liegt vor der Hinreise.";return}
     store.set("wx_cd",{ziel:z,von:v,bis:b});renderCd();$("sheet").classList.remove("open")};
   if($("cdX"))$("cdX").onclick=()=>{try{localStorage.removeItem("wx_cd")}catch(e){}renderCd();$("sheet").classList.remove("open")};
 }
