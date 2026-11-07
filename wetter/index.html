@@ -454,11 +454,12 @@ function drawRainForecast(t){
 async function loadRadar(){
   if(layer!=="r")return;
   let past=[];
+  const eod=(()=>{const d=new Date();d.setHours(24,0,0,0);return d.getTime()/1000})();
   try{const j=await getJSON("https://api.rainviewer.com/public/weather-maps.json");
-    past=(j.radar&&j.radar.past||[]).map(f=>({k:"r",t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png"}));}catch(e){}
+    past=(j.radar&&j.radar.past||[]).slice(-1).map(f=>({k:"r",t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png"}));}catch(e){}
   Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};
   let fut=[];
-  try{await loadRainGrid();const last=past.length?past[past.length-1].t:Date.now()/1000;fut=R.times.filter(t=>t>last+600).slice(0,24).map(t=>({k:"f",t}))}
+  try{await loadRainGrid();const last=past.length?past[past.length-1].t:Date.now()/1000;const ft=R.times.filter(t=>t>last+600);fut=ft.filter((t,i)=>t<=eod||i<3).map(t=>({k:"f",t}))}
   catch(e){if(String(e.message).includes("429"))setTimeout(()=>{if(layer==="r")loadRadar()},61000)}
   TL=[...past,...fut];
   if(!TL.length){$("rtime").textContent="Regen nicht erreichbar";return}
@@ -468,18 +469,18 @@ function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
   if(f.k==="r"){if(rainOv)rainOv.setOpacity(0);
     if(!rlayers[f.t])rlayers[f.t]=L.tileLayer(f.url,{pane:"radar",opacity:0,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
     Object.entries(rlayers).forEach(([t,l])=>l.setOpacity(+t===f.t?.85:0));
-    const past=TL.filter(x=>x.k==="r"),isNow=f===past[past.length-1],old=Math.round((Date.now()/1000-f.t)/60);
-    $("rtime").textContent=isNow?"Radar "+hm(f.t):hm(f.t)+" (vor "+old+" min)";}
+    $("rtime").textContent="Jetzt · Radar "+hm(f.t);}
   else{Object.values(rlayers).forEach(l=>l.setOpacity(0));drawRainForecast(f.t);if(rainOv)rainOv.setOpacity(.85);
     $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";}
 }
-function fieldSlider(){const s=$("tsl");if(!G){s.max=0;return}s.min=0;s.max=G.times.length-2;s.value=gh}
+function fieldMax(){if(!G)return 0;const d=new Date();d.setHours(24,0,0,0);const eod=d.getTime()/1000,now=Date.now()/1000;let h0=0;G.times.forEach((t,i)=>{if(t<=now)h0=i});let n=0;G.times.forEach((t,i)=>{if(i>h0&&t<=eod)n=i-h0});return Math.max(3,Math.min(n,G.times.length-1-h0))}
+function fieldSlider(){const s=$("tsl");if(!G){s.max=0;return}s.min=0;s.max=fieldMax();s.value=gh}
 $("tsl").oninput=()=>{const v=+$("tsl").value;if(layer==="r")showT(v);else{gh=v;drawField()}};
 $("play").onclick=()=>{
   if(playing){clearInterval(playing);playing=null;$("play").textContent="▶";return}
   $("play").textContent="❚❚";
   if(layer==="r"){if(!TL.length)return;let i=ti>=TL.length-1?0:ti;showT(i);playing=setInterval(()=>{i=(i+1)%TL.length;showT(i)},700)}
-  else{if(!G)return;playing=setInterval(()=>{gh=(gh+1)%(G.times.length-1);$("tsl").value=gh;drawField()},700)}};
+  else{if(!G)return;playing=setInterval(()=>{gh=(gh+1)%(fieldMax()+1);$("tsl").value=gh;drawField()},700)}};
 
 // ---------- Start ----------
 let started=false;
