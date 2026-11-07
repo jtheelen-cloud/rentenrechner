@@ -393,29 +393,58 @@ let lastQuery="";
 function highlight(html,q){ const words=(q||"").toLowerCase().split(/\s+/).filter(w=>w.length>2&&!/^§/.test(w)&&!/^\d/.test(w)); if(!words.length) return html;
   const re=new RegExp("("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","gi"); return html.replace(re,"<mark>$1</mark>"); }
 let searchTimer=null;
+/* ---------- Schnellantworten + tolerante Suche ---------- */
+const LK=(id,nr,lab)=>{const g=GESETZE.find(x=>x.id===id);return g?`<a href="${pHref(g,nr)}">${lab||("§ "+nr+" "+g.kurz)}</a>`:(lab||"§ "+nr)};
+const FAQ=[
+ {re:/urlaub|ferien/, t:"Wie viel Urlaub steht mir zu?", a:()=>`<b>Gesetz:</b> mindestens 24 Werktage im Jahr (${LK("burlg","3")}). Werktage zählen inkl. Samstag – bei 5-Tage-Woche sind das <b>20 Arbeitstage</b>.<br><b>Tarif Eisen und Stahl NRW:</b> <b>30 Arbeitstage</b>, dazu 1 Tag, wenn zwei Drittel zwischen 1. Oktober und 31. März genommen werden (<a href="#tarif">Tarif</a>).<br><b>Schwerbehinderte:</b> 5 Arbeitstage Zusatzurlaub (${LK("sgb9","208")}). <b>Jugendliche:</b> 25 bis 30 Werktage je nach Alter (${LK("jarbschg","19")}).`},
+ {re:/pause/, t:"Wie lange muss die Pause sein?", a:()=>`Bei mehr als 6 bis 9 Stunden Arbeit mindestens <b>30 Minuten</b>, bei mehr als 9 Stunden <b>45 Minuten</b>; aufteilbar in Abschnitte von mindestens 15 Minuten (${LK("arbzg","4")}). Jugendliche: 30 Minuten ab 4,5 Stunden, 60 Minuten ab 6 Stunden (${LK("jarbschg","11")}).`},
+ {re:/ruhezeit|zwischen.*schicht|schicht.*zwischen/, t:"Wie lange Ruhezeit zwischen zwei Schichten?", a:()=>`Mindestens <b>11 Stunden</b> ununterbrochen (${LK("arbzg","5")}). Ein Tarifvertrag kann abweichen (${LK("arbzg","7")}, Öffnungsklausel).`},
+ {re:/arbeitszeit|stunden.*(tag|woche)|höchst|10 stunden|zehn stunden/, t:"Wie lange darf ich arbeiten?", a:()=>`<b>Gesetz:</b> 8 Stunden pro Werktag, bis 10 Stunden, wenn im Schnitt von 6 Monaten 8 Stunden nicht überschritten werden (${LK("arbzg","3")}).<br><b>Tarif Eisen und Stahl:</b> regelmäßig 35 Stunden pro Woche (<a href="#tarif">Tarif</a>).`},
+ {re:/krank|arbeitsunfähig|attest|krankschreib|\bau\b/, t:"Was gilt bei Krankheit?", a:()=>`<b>6 Wochen</b> Entgeltfortzahlung durch den Arbeitgeber (${LK("entgfg","3")}). Dauert die Krankheit länger als 3 Kalendertage, muss die AU spätestens am folgenden Arbeitstag vorliegen – der Arbeitgeber darf sie auch früher verlangen (${LK("entgfg","5")}).`},
+ {re:/kündigungsfrist|kündigen.*frist|frist.*kündig|wie lange.*kündig/, t:"Welche Kündigungsfrist gilt?", a:()=>`<b>Grundfrist:</b> 4 Wochen zum 15. oder zum Monatsende. <b>Kündigt der Arbeitgeber</b>, verlängert sie sich nach Betriebszugehörigkeit: ab 2 Jahren 1 Monat, 5 J. 2, 8 J. 3, 10 J. 4, 12 J. 5, 15 J. 6, 20 J. 7 Monate – jeweils zum Monatsende. <b>Probezeit</b> (max. 6 Monate): 2 Wochen (${LK("bgb","622")}).<br>Der Tarifvertrag darf andere Fristen regeln (Öffnungsklausel) – MTV prüfen.`},
+ {re:/kündig|entlass/, t:"Kündigung – was muss der Betriebsrat wissen?", a:()=>`Der BR ist <b>vor jeder Kündigung anzuhören</b>, sonst ist sie unwirksam. Bedenken: ordentliche Kündigung <b>1 Woche</b>, außerordentliche <b>3 Tage</b> (${LK("betrvg","102")}). Kündigungsschutz nach 6 Monaten im Betrieb mit mehr als 10 Beschäftigten (${LK("kschg","1")}, ${LK("kschg","23")}). Klagefrist für Beschäftigte: <b>3 Wochen</b> (${LK("kschg","4")}).`},
+ {re:/überstund|mehrarbeit/, t:"Überstunden – was darf der Betriebsrat?", a:()=>`Vorübergehende Verlängerung der Arbeitszeit ist <b>mitbestimmungspflichtig</b> (${LK("betrvg","87")} Abs. 1 Nr. 3). Zuschläge und Ausgleich regelt der Manteltarifvertrag; gesetzliche Grenzen: ${LK("arbzg","3")}.`},
+ {re:/probezeit/, t:"Was gilt in der Probezeit?", a:()=>`Höchstens 6 Monate, Kündigungsfrist 2 Wochen (${LK("bgb","622")} Abs. 3). Der Betriebsrat ist auch hier vor jeder Kündigung anzuhören (${LK("betrvg","102")}).`},
+ {re:/elternzeit/, t:"Wie lange Elternzeit?", a:()=>`Bis zu <b>3 Jahre</b> je Kind (${LK("beeg","15")}); schriftlich anmelden spätestens 7 Wochen vor Beginn (${LK("beeg","16")}). Kündigungsschutz ab Anmeldung (${LK("beeg","18")}).`},
+ {re:/schwanger|mutterschutz/, t:"Mutterschutz – wie lange?", a:()=>`Schutzfrist <b>6 Wochen vor</b> und <b>8 Wochen nach</b> der Geburt (${LK("muschg","3")}). Kündigungsverbot während der Schwangerschaft und bis 4 Monate nach der Geburt (${LK("muschg","17")}).`},
+ {re:/schwerbehindert|gdb|behinder/, t:"Schwerbehinderte – was ist besonders?", a:()=>`Kündigung nur mit <b>Zustimmung des Integrationsamts</b> (${LK("sgb9","168")}); die Schwerbehindertenvertretung ist vorher anzuhören (${LK("sgb9","178")} Abs. 2). Zusatzurlaub 5 Arbeitstage (${LK("sgb9","208")}).`},
+];
+const STOP=new Set("wie viel viele vielen wieviel wieviele was wer wo wann warum wieso weshalb ob muss müssen darf dürfen kann können soll sollen habe hab hat haben hast bin ist sind sein wird werden ich mir mich mein meine meinem meinen du dir dein er sie es wir uns ihr man der die das den dem des ein eine einen einem einer und oder aber auch noch schon nur bei beim mit von vom zu zum zur im in an am auf aus für über unter nach vor nicht kein keine gibt gilt steht stehen lange bekomme bekommt kriege kriegt denn da so ja bitte tun machen mache macht passiert jetzt eigentlich immer mal gerade dann wenn als bis seit sich sowie etwa ca".split(" "));
+const SYN={tag:["tag","werktag","arbeitstag"],krank:["krank","arbeitsunfähig","entgeltfortzahlung"],überstund:["überstund","mehrarbeit"],lohn:["lohn","entgelt","vergütung","gehalt"],gehalt:["gehalt","entgelt","vergütung"],geld:["entgelt","vergütung","lohn"],chef:["arbeitgeber"],firma:["arbeitgeber","betrieb","unternehmen"],pause:["pause","ruhepause"],azubi:["auszubild","jugend","ausbildung"],schwanger:["schwanger","mutter"],rauswurf:["kündig"],entlass:["kündig","entlass"],abmahn:["abmahn","verhalten"],homeoffice:["mobil","homeoffice"],schicht:["schicht","nacht"],nacht:["nacht"],frei:["frei","urlaub","ruhe"],gesundheit:["gesundheit","arbeitsschutz"],handy:["technisch","überwachung","einrichtung"],kamera:["überwachung","technisch","einrichtung"]};
+function stem(w){ w=w.replace(/[?!.,;:"„“()]/g,""); if(w.length>5) w=w.replace(/(ungen|en|er|e|n|s)$/,""); else if(w.length>4) w=w.replace(/(e|n|s)$/,""); return w; }
+function terms(q){ let ws=q.toLowerCase().replace(/§/g," ").split(/\s+/).map(w=>w.replace(/[?!.,;:"„“()]/g,"")).filter(Boolean);
+  const k=ws.filter(w=>!STOP.has(w)); if(k.length) ws=k;
+  return ws.map(w=>{ const st=/^\d/.test(w)?w:stem(w); const syn=Object.keys(SYN).find(x=>st.startsWith(x)); return [...new Set([st,...(syn?SYN[syn]:[])])]; }); }
+const hit=(txt,t)=>t.some(v=>txt.includes(v));
 function search(){ const q=$("q").value.trim(); lastQuery=q;
   if(!q){ $("results").innerHTML=""; $("qInfo").textContent=""; return }
   let html="", direct=null;
+  const ql=q.toLowerCase(); FAQ.filter(f=>f.re.test(ql)).slice(0,2).forEach(f=>{ html+=`<div class="card obox grund" style="margin-bottom:8px"><b>${esc(f.t)}</b><p style="margin:6px 0 0">${f.a()}</p></div>`; });
   if(/umkleid|umzieh|umzug.?zeit|waschzeit|arbeitskleidung|schutzkleidung/i.test(q)) html+=`<a class="card obox grund" href="#oeffnung" style="display:block;text-decoration:none;color:inherit;margin-bottom:8px"><b>Umkleidezeit – wird sie bezahlt?</b><br>Kurz: Nur wenn der Tarifvertrag sie nicht ausschließt. Erklärung öffnen ›</a>`;
   if(/öffnung|tarifdispositiv|abweich/i.test(q)) html+=`<a class="card obox" href="#oeffnung" style="display:block;text-decoration:none;color:inherit;margin-bottom:8px"><b>Liste aller Öffnungsklauseln</b> ›</a>`;
   const m=q.match(/^(?:§|art\.?)?\s*(\d+[a-z]?)\s+(.+)$/i)||q.match(/^([a-zäöü][\wäöüÄÖÜ\- ]*?)\s+(?:§\s*)?(\d+[a-z]?)$/i);
   if(m){ const [nr,lq]=/^\d/.test(m[1])?[m[1],m[2]]:[m[2],m[1]]; const g=findLaw(lq);
     if(g){ const e=g.p.find(p=>p[0].toLowerCase()===nr.toLowerCase()); direct=g; html+=pLink(g,nr,e?e[1]:""); } }
-  const words=q.toLowerCase().replace(/§/g," ").split(/\s+/).filter(Boolean);
-  let hits=ENTRIES.filter(e=>words.every(w=>e.low.includes(w))&&!(direct&&e.g===direct&&q.toLowerCase().includes(e.nr.toLowerCase())));
-  hits.forEach(e=>{e.s=words.reduce((s,w)=>s+(e.t.toLowerCase().includes(w)?10:0)+(e.k.includes(w)?4:0),0)+(e.g.id==="betrvg"?2:0)});
-  hits.sort((a,b)=>b.s-a.s);
+  const TT=terms(q); const words=TT.map(t=>t[0]); lastQuery=words.join(" ");
+  const notDirect=e=>!(direct&&e.g===direct&&q.toLowerCase().includes(e.nr.toLowerCase()));
+  let hits=ENTRIES.filter(e=>TT.every(t=>hit(e.low,t))&&notDirect(e)); let teil=false;
+  const W=TT.map(t=>1/Math.max(1,ENTRIES.filter(e=>hit(e.low,t)).length));
+  if(!hits.length&&TT.length>1&&!direct){ hits=ENTRIES.map(e=>({e,c:TT.filter(t=>hit(e.low,t)).length})).filter(x=>x.c>0&&notDirect(x.e));
+    hits=hits.map(x=>x.e); teil=hits.length>0; }
+  hits.forEach(e=>{e.s=TT.reduce((s,t,i)=>s+(hit(e.low,t)?W[i]*(hit(e.t.toLowerCase(),t)?3:1):0),0)+(e.g.id==="betrvg"?0.001:0)});
+  hits.sort((a,b)=>b.s-a.s); if(teil) hits=hits.filter(e=>e.s>=hits[0].s*0.5).slice(0,15);
+  if(teil) html+=`<div class="grp">Teilweise passend</div>`;
   html+=hits.slice(0,60).map(e=>pLink(e.g,e.nr,e.t)).join("");
   // Volltext
   const seen=new Set(hits.map(e=>e.g.id+"|"+e.nr.toLowerCase())); if(direct) seen.add("direct");
-  const ft=[]; const fw=words.filter(w=>w.length>2&&!/^\d/.test(w));
-  if(fw.length) for(const g of GESETZE){ const T=TEXTE[g.id]; if(!T) continue;
+  const ft=[]; const FT=TT.filter(t=>t[0].length>2&&!/^\d/.test(t[0]));
+  if(FT.length) for(const g of GESETZE){ const T=TEXTE[g.id]; if(!T) continue;
     for(const x of T.p){ if(seen.has(g.id+"|"+x[0].toLowerCase())) continue; const full=(x[2]+" "+x[3].join(" ")).toLowerCase();
-      if(fw.every(w=>full.includes(w))){ const body=x[3].join(" "); const k=body.toLowerCase().indexOf(fw[0]); const a=Math.max(0,k-60);
-        ft.push({g,x,sn:(a?"… ":"")+highlight(esc(body.slice(a,a+170)),q)+" …",s:fw.reduce((s,w)=>s+(x[2].toLowerCase().includes(w)?10:0),0)+(g.id==="betrvg"?2:0)}); } } }
+      if(FT.every(t=>hit(full,t))){ const body=x[3].join(" "); const v=FT[0].find(v=>body.toLowerCase().includes(v))||FT[0][0]; const k=body.toLowerCase().indexOf(v); const a=Math.max(0,k-60);
+        ft.push({g,x,sn:(a?"… ":"")+highlight(esc(body.slice(a,a+170)),FT.map(t=>t[0]).join(" "))+" …",s:FT.reduce((s,t)=>s+(hit(x[2].toLowerCase(),t)?10:0),0)+(g.id==="betrvg"?2:0)}); } } }
   ft.sort((a,b)=>b.s-a.s);
   if(ft.length) html+=`<div class="grp">Im Gesetzestext gefunden · ${ft.length}</div>`+ft.slice(0,40).map(f=>pLink(f.g,f.x[0],f.x[2],f.sn)).join("");
-  const n=hits.length+(direct?1:0)+ft.length;
+  const n=hits.length+(direct?1:0)+ft.length+(html.includes('obox grund')?1:0);
   $("qInfo").innerHTML=n?`${n} Treffer – ein Tipp öffnet den Gesetzestext`:`Keine Treffer in den Stichworten. Tipp: „§ 87 BetrVG“ eingeben oder im Reiter „Gesetze“ einen Paragrafen über seine Nummer öffnen.`;
   $("results").innerHTML=html; wireStars($("results")); }
 $("q").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(search,200)});
