@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+ <rect width="512" height="512" fill="#0f5c63"/>
+ <!-- Sonne über dem Horizont -->
+ <clipPath id="c"><rect x="0" y="0" width="512" height="318"/></clipPath>
+ <circle cx="256" cy="318" r="118" fill="#f2b84b" clip-path="url(#c)"/>
+ <g stroke="#f2b84b" stroke-width="16" stroke-linecap="round">
+  <line x1="256" y1="148" x2="256" y2="118"/>
+  <line x1="150" y1="210" x2="128" y2="190"/>
+  <line x1="362" y1="210" x2="384" y2="190"/>
+  <line x1="112" y1="290" x2="84" y2="284"/>
+  <line x1="400" y1="290" x2="428" y2="284"/>
+ </g>
+ <text x="256" y="298" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="128" fill="#0f5c63">€</text>
+ <!-- Horizont -->
+ <rect x="96" y="326" width="320" height="18" rx="9" fill="#e9f4f3"/>
+ <rect x="148" y="362" width="216" height="14" rx="7" fill="#e9f4f3" opacity=".75"/>
+ <rect x="200" y="394" width="112" height="12" rx="6" fill="#e9f4f3" opacity=".5"/>
+</svg>

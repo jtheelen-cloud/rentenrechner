@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+ <rect width="512" height="512" fill="#2b3440"/>
+ <!-- aufgeschlagenes Buch -->
+ <path d="M256 168 C214 140 160 134 106 142 L106 372 C160 364 214 370 256 398 Z" fill="#f5efe6"/>
+ <path d="M256 168 C298 140 352 134 406 142 L406 372 C352 364 298 370 256 398 Z" fill="#e8ddcd"/>
+ <path d="M256 168 L256 200 M256 370 L256 398" stroke="#c9b9a3" stroke-width="6"/>
+ <!-- Paragraf -->
+ <circle cx="256" cy="272" r="78" fill="#2b3440"/><text x="256" y="328" text-anchor="middle" font-family="DejaVu Serif, Georgia, serif" font-weight="700" font-size="150" fill="#f0a35e">§</text>
+ <!-- Lesezeichen -->
+ <path d="M352 142 L352 214 L372 198 L392 214 L392 140 Z" fill="#b5651d"/>
+</svg>
