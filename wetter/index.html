@@ -31,6 +31,10 @@ html,body{overscroll-behavior:none}
 #lbl{font-weight:600}
 #rel{color:#5b6875;text-align:right}
 #rel.g{color:#1a8a4c}#rel.m{color:#b7791f}#rel.b{color:#c0392b}
+#days{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+#days::-webkit-scrollbar{display:none}
+#days button{flex:0 0 auto;border:1px solid #cfd8e2;background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;color:#41505f}
+#days button.on{background:#1d2733;border-color:#1d2733;color:#fff}
 #legend{margin-top:8px;font-size:11px;color:#5b6875;display:flex;flex-direction:column;gap:5px}
 .lg{display:flex;align-items:center;gap:6px}
 .lg .grad{flex:1;height:8px;border-radius:4px}
@@ -106,6 +110,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#41505f}
     <button id="play" aria-label="Abspielen">▶</button>
     <input type="range" id="sl" min="0" max="160" step="1" value="0">
   </div>
+  <div id="days"></div>
   <div class="info"><span id="lbl">Jetzt</span><span id="rel"></span></div>
   <div id="legend"></div>
 </div>
@@ -321,10 +326,28 @@ function openSheet(i){
 $("close").onclick=()=>$("sheet").classList.remove("open");
 map.on("click",()=>$("sheet").classList.remove("open"));
 
+// ---------- Tage ----------
+let day=0;
+function dayRange(d){
+  const st=new Date();st.setHours(0,0,0,0);st.setDate(st.getDate()+d);const en=new Date(st);en.setDate(en.getDate()+1);
+  let a=-1,b=-1;for(let i=0;i<G.times.length;i++){const t=G.times[i]*1000;if(t>=st&&t<en){if(a<0)a=i;b=i}}
+  if(d===0&&a>=0)a=Math.max(a,i0);return[a,b];
+}
+function setDay(d,keep){
+  day=d;const [a,b]=dayRange(d),s=$("sl");s.min=a;s.max=b;
+  if(!keep||+s.value<a||+s.value>b)s.value=d===0?i0:Math.min(b,a+12);
+  let h="";for(let k=0;k<8;k++){const r=dayRange(k);if(r[0]<0||r[1]<r[0])continue;
+    const dt=new Date();dt.setDate(dt.getDate()+k);
+    const t=k===0?"Heute":k===1?"Morgen":WD[dt.getDay()]+" "+dt.getDate()+".";
+    h+=`<button data-d="${k}" class="${k===d?"on":""}">${t}</button>`}
+  $("days").innerHTML=h;$("days").querySelectorAll("button").forEach(b=>b.onclick=()=>setDay(+b.dataset.d));
+  draw();
+}
+
 // ---------- Anzeige ----------
 function draw(){
   if(!G)return;
-  const off=+$("sl").value,h=i0+off,T=G.times[h];
+  const h=+$("sl").value,off=h-i0,T=G.times[h];
   const dt=new Date(T*1000);
   const today=new Date();const dd=Math.round((new Date(dt.toDateString())-new Date(today.toDateString()))/864e5);
   const dayTxt=dd===0?"Heute":dd===1?"Morgen":WD[dt.getDay()]+" "+dt.getDate()+".";
@@ -353,11 +376,11 @@ function legend(){
 function btns(){[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).classList.toggle("on",!!on[k]))}
 [["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).onclick=()=>{on[k]=!on[k];if(on[k]&&k==="c")on.t=false;if(on[k]&&k==="t")on.c=false;theme();store.set("wk_layers",on);btns();legend();draw()});
 $("sl").oninput=draw;
-map.on("zoomend",()=>{if(G)updMarkers(G.times[i0+ +$("sl").value])});
+map.on("zoomend",()=>{if(G)updMarkers(G.times[+$("sl").value])});
 $("play").onclick=()=>{
   if(playing){clearInterval(playing);playing=null;$("play").textContent="▶";return}
   $("play").textContent="❚❚";
-  playing=setInterval(()=>{const s=$("sl");let v=+s.value+3;if(v>+s.max)v=0;s.value=v;draw()},650);
+  playing=setInterval(()=>{const s=$("sl");let v=+s.value+3;if(v>+s.max)v=+s.min;s.value=v;draw()},650);
 };
 $("refresh").onclick=()=>start(true);
 
@@ -368,9 +391,8 @@ async function start(force){
     const [g,cd]=await Promise.all([loadGrid(force),loadCities(),loadRadar(),landPath?null:loadBorders()]);
     G=g;CD=cd;
     const now=Date.now()/1000;i0=0;for(let i=0;i<G.times.length;i++)if(G.times[i]<=now)i0=i;
-    $("sl").max=G.times.length-1-i0;
-    if(+$("sl").value>+$("sl").max)$("sl").value=0;
     if(!markers.length)initMarkers();
+    if(dayRange(day)[0]<0)day=0;setDay(day,true);
     status(null);btns();legend();draw();
   }catch(e){status("Wetterdaten konnten nicht geladen werden ("+e.message+"). Bitte später erneut versuchen.")}
 }
