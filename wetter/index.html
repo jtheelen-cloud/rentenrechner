@@ -41,8 +41,8 @@ button{font:inherit;color:inherit}
 .day .n{width:52px;font-weight:600}.day .w{width:28px;text-align:center;font-size:18px}.day .p{color:#5fa8e6;flex:1;font-size:13px}.day .t{text-align:right}
 .now{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 2px;font-size:14px;color:#bbb}
 .now b{color:#fff}
-#map{position:absolute;inset:0;background:#7c7f7d}
-.leaflet-container{background:#7c7f7d;font:inherit}
+#map{position:absolute;inset:0;background:#4f86c2}
+.leaflet-container{background:#4f86c2;font:inherit}
 #mapbar{position:absolute;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;pointer-events:none}
 #mapbar>*{pointer-events:auto}
 .pill{border:1px solid #444;border-radius:28px;background:linear-gradient(#fafafa,#cfcfcf);color:#222;box-shadow:0 2px 6px rgba(0,0,0,.35)}
@@ -330,24 +330,28 @@ function initMap(){
   map.on("zoomend",updLabels);
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(topo=>{
     const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
+    const other=topojson.feature(topo,topo.objects.countries).features.filter(f=>!isEU(f));
+    otherL=L.geoJSON({type:"FeatureCollection",features:other},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     landL=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
     bordL=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
     Object.values(EU).forEach(v=>{if(v.length<3)return;labels.push([L.marker([v[1],v[2]],{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"cl",iconSize:[0,0],html:`<span>${v[0]}</span>`})}),v[3]||5])});
     updLabels();
     buildLandPath(feats);if(layer==="t")drawField();
-    coarse=[landL,bordL];if(fineState===2)coarse.forEach(l=>map.removeLayer(l));
+    landTheme();coarse=[otherL,landL,bordL];if(fineState===2)coarse.forEach(l=>map.removeLayer(l));
   }).catch(()=>{});
   map.on("zoomend",fineCoast);fineCoast();
   arrowGroup=L.layerGroup().addTo(map);drawArrow();
   setLayer(layer);setInterval(()=>{if(layer==="r")loadRadar()},5*60000);
 }
-let landL=null,bordL=null,coarse=null,fineState=0;
+let landL=null,bordL=null,otherL=null,coarse=null,fineState=0,fineLand=null;
+function landTheme(){const c=layer==="c"?"#6e8569":"#c3cfdb";[landL,fineLand].forEach(l=>l&&l.setStyle({fillColor:c}))}
 function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json").then(topo=>{
     const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
+    L.geoJSON({type:"FeatureCollection",features:topojson.feature(topo,topo.objects.countries).features.filter(f=>!isEU(f))},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     const nl=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
     const nb=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
-    (coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
+    fineLand=nl;landTheme();(coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
   }).catch(()=>{fineState=0});}
 // ---------- Zugrichtung des Regens (Pfeil mit Zeitlinien) ----------
 let arrowGroup=null;
@@ -374,7 +378,7 @@ function drawArrow(){
 let layer=store.get("wx_layer")||"r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
 function setLayer(l){layer=l;store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
-  document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));
+  document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}loadRadar()}
   else{Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;loadGrid().then(drawField).catch(e=>{$("rtime").textContent=String(e.message).includes("429")?"Zu viele Abrufe – bitte in 1 Minute erneut":"Daten nicht erreichbar"})}
   legend();}
