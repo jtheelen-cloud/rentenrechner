@@ -46,15 +46,16 @@ button{font:inherit;color:inherit}
 #mapbar{position:absolute;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;pointer-events:none}
 #mapbar>*{pointer-events:auto}
 .pill{border:1px solid #444;border-radius:28px;background:linear-gradient(#fafafa,#cfcfcf);color:#222;box-shadow:0 2px 6px rgba(0,0,0,.35)}
-#play{width:58px;height:46px;font-size:18px}
-#zoom{margin-left:auto;display:flex;height:46px;overflow:hidden}
-#zoom button{width:66px;border:0;background:none;font-size:26px;color:#333}
+#play{width:58px;height:46px;font-size:18px;flex:0 0 58px}
+#tsl{flex:1;min-width:60px;accent-color:#2b2b2b;height:30px}
+#zoom{margin-left:auto;display:flex;height:46px;overflow:hidden;flex:0 0 auto}
+#zoom button{width:50px;border:0;background:none;font-size:26px;color:#333}
 #zoom button+button{border-left:1px solid #888}
 #lsel{position:absolute;z-index:1000;left:10px;right:10px;top:10px;display:flex;border:1px solid #555;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 #lsel button{flex:1;border:0;border-left:1px solid #aaa;background:#f2f2f2;color:#333;padding:8px 4px;font-size:14px}#lsel button:first-child{border-left:0}#lsel button.on{background:#2b2b2b;color:#fff;font-weight:600}
 #leg{position:absolute;z-index:1000;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:6px;font-size:11px;color:#111;background:rgba(255,255,255,.8);border-radius:8px;padding:4px 8px}#leg .g{flex:1;height:8px;border-radius:4px}
 .arrw span{position:absolute;transform:translate(-50%,-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:7px;padding:1px 7px;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
-#rtime{position:absolute;z-index:1000;left:50%;top:58px;transform:translateX(-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:20px;font-variant-numeric:tabular-nums}
+#rtime{position:absolute;z-index:1000;left:50%;top:58px;white-space:nowrap;transform:translateX(-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:20px;font-variant-numeric:tabular-nums}
 #rnote{position:absolute;z-index:1000;left:12px;top:14px;font-size:12px;color:#222;background:rgba(255,255,255,.7);border-radius:6px;padding:2px 6px}
 .dot{width:16px;height:16px;border-radius:50%;background:#23239a;border:2px solid #fff;margin:-8px 0 0 -8px}
 .cl span{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#45505c}
@@ -123,7 +124,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button><button type="button" data-l="t">🌡️ Temperatur</button></div>
     <div id="rtime">--:--</div>
     <div id="leg"></div>
-    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen">▶</button><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
+    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen">▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit"><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
 
   <section class="view" id="v-wind">
@@ -380,7 +381,8 @@ document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.da
 function setLayer(l){layer=l;store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}loadRadar()}
-  else{Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;loadGrid().then(drawField).catch(e=>{$("rtime").textContent=String(e.message).includes("429")?"Zu viele Abrufe – bitte in 1 Minute erneut":"Daten nicht erreichbar"})}
+  else if(rainOv){map.removeLayer(rainOv);rainOv=null}
+  else{Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;loadGrid().then(()=>{fieldSlider();drawField()}).catch(e=>{$("rtime").textContent=String(e.message).includes("429")?"Zu viele Abrufe – bitte in 1 Minute erneut":"Daten nicht erreichbar"})}
   legend();}
 const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,196]],[10,[167,216,107]],[15,[242,216,75]],[20,[244,160,58]],[25,[232,97,60]],[30,[192,35,60]],[40,[122,13,43]]];
 function ramp(st,v){if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++){if(v<=st[i][0]){const a=st[i-1],b=st[i],f=(v-a[0])/(b[0]-a[0]);return[0,1,2].map(k=>Math.round(a[1][k]+(b[1][k]-a[1][k])*f))}}return st[st.length-1][1]}
@@ -390,17 +392,17 @@ function legend(){const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
    layer==="c"?`<span>wenig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.15),#fff);border:1px solid #999"></span><span>dicht bewölkt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
-const LAT0=25,LAT1=70,LON0=-20,LON1=40,STEP=2.5,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
+const LAT0=25,LAT1=70,LON0=-20,LON1=40,STEP=3,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
 let G=null,gh=0,fieldOv=null,landPath=null;
 async function loadGrid(){
-  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid2");
+  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid3");
   if(c&&Date.now()-c.ts<90*60000){G=c;return}
   const pts=[];for(let r=0;r<NR;r++)for(let k=0;k<NC;k++)pts.push([LAT0+r*STEP,LON0+k*STEP]);
   const res=[];for(let i=0;i<pts.length;i+=60){$("rtime").textContent="Lade … "+Math.round(i/pts.length*100)+" %";const ch=pts.slice(i,i+60);
     let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover&forecast_hours=25&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
   const times=res[0].hourly.time,t=[],cc=[];for(let h=0;h<times.length;h++)for(let i=0;i<NP;i++){t.push(Math.round(res[i].hourly.temperature_2m[h]*10)/10);cc.push(res[i].hourly.cloud_cover[h])}
-  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid2",G);
+  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid3",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
@@ -422,25 +424,62 @@ function drawField(){
   fieldOv.setOpacity(layer==="c"?.9:.8);
   $("rtime").textContent=(gh===0?"Jetzt ":"")+new Date(G.times[h]*1000).toLocaleString("de-DE",{weekday:gh>12?"short":undefined,hour:"2-digit",minute:"2-digit"});
 }
+// ---------- Regen: Radar (vergangen) + Prognose (bis 24 Std.) ----------
+let TL=[],ti=0,R=null,rainOv=null;
+const RS=0.4,RNR=13,RNC=19; // lokales Raster um den Ort: 13 x 19 Punkte, 0,4° Abstand
+const RSTOPS=[[0.1,[159,211,255]],[0.5,[95,170,240]],[1.5,[47,127,216]],[4,[27,63,168]],[8,[130,40,170]],[15,[210,60,140]]];
+const rCol=v=>{if(!(v>=0.1))return null;const c=ramp(RSTOPS,v);return[c[0],c[1],c[2],Math.min(235,130+v*35)]};
+async function loadRainGrid(){
+  const la0=Math.round(place.lat*2)/2-RS*(RNR-1)/2,lo0=Math.round(place.lon*2)/2-RS*(RNC-1)/2,key=la0+"_"+lo0;
+  if(R&&R.key===key&&Date.now()-R.ts<30*60000)return;const c=store.get("wx_rain1");
+  if(c&&c.key===key&&Date.now()-c.ts<30*60000){R=c;return}
+  const pts=[];for(let r=0;r<RNR;r++)for(let k=0;k<RNC;k++)pts.push([+(la0+r*RS).toFixed(2),+(lo0+k*RS).toFixed(2)]);
+  const res=[];for(let i=0;i<pts.length;i+=60){const ch=pts.slice(i,i+60);
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=precipitation&forecast_hours=25&timezone=GMT&timeformat=unixtime");
+    if(!Array.isArray(j))j=[j];res.push(...j)}
+  const times=res[0].hourly.time,pr=[];for(let h=0;h<times.length;h++)for(let i=0;i<pts.length;i++)pr.push(res[i].hourly.precipitation[h]??0);
+  R={key,ts:Date.now(),la0,lo0,times,p:pr};store.set("wx_rain1",R);
+}
+const rcv=document.createElement("canvas"),RCW=360,rctx=rcv.getContext("2d");
+function drawRainForecast(t){
+  if(!R)return;const h=R.times.indexOf(t);if(h<0)return;const NPr=RNR*RNC,la1=R.la0+RS*(RNR-1),lo1=R.lo0+RS*(RNC-1);
+  const RCH=Math.round(RCW*(merc(la1)-merc(R.la0))/((lo1-R.lo0)*Math.PI/180));rcv.width=RCW;rcv.height=RCH;
+  const img=rctx.createImageData(RCW,RCH),d=img.data,b=h*NPr;
+  for(let y=0;y<RCH;y++){const lat=imerc(merc(la1)-(y+.5)/RCH*(merc(la1)-merc(R.la0))),fr=Math.min(RNR-1.0001,Math.max(0,(lat-R.la0)/RS)),r=fr|0,dr=fr-r;
+    for(let x=0;x<RCW;x++){const fc=Math.min(RNC-1.0001,(x+.5)/RCW*(RNC-1)),c=fc|0,dc=fc-c,i=b+r*RNC+c;
+      const v=(R.p[i]*(1-dc)+R.p[i+1]*dc)*(1-dr)+(R.p[i+RNC]*(1-dc)+R.p[i+RNC+1]*dc)*dr;const col=rCol(v);if(!col)continue;const o=(y*RCW+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=col[3]}}
+  rctx.putImageData(img,0,0);const url=rcv.toDataURL(),bd=[[R.la0,R.lo0],[la1,lo1]];
+  if(rainOv){rainOv.setUrl(url);rainOv.setBounds(L.latLngBounds(bd))}else rainOv=L.imageOverlay(url,bd,{pane:"radar",opacity:.85}).addTo(map);
+}
 async function loadRadar(){
   if(layer!=="r")return;
+  let past=[];
   try{const j=await getJSON("https://api.rainviewer.com/public/weather-maps.json");
-    frames=(j.radar&&j.radar.past||[]).map(f=>({t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png"}));
-    Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};
-    if(!frames.length){$("rtime").textContent="kein Radar";return}
-    showFrame(frames.length-1);
-  }catch(e){$("rtime").textContent="Radar nicht erreichbar"}
+    past=(j.radar&&j.radar.past||[]).map(f=>({k:"r",t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png"}));}catch(e){}
+  Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};
+  let fut=[];
+  try{await loadRainGrid();const last=past.length?past[past.length-1].t:Date.now()/1000;fut=R.times.filter(t=>t>last+600).slice(0,24).map(t=>({k:"f",t}))}
+  catch(e){if(String(e.message).includes("429"))setTimeout(()=>{if(layer==="r")loadRadar()},61000)}
+  TL=[...past,...fut];
+  if(!TL.length){$("rtime").textContent="Regen nicht erreichbar";return}
+  const s=$("tsl");s.min=0;s.max=TL.length-1;showT(past.length?past.length-1:0);
 }
-function showFrame(i){fi=i;const f=frames[i];if(!f)return;
-  if(!rlayers[f.t])rlayers[f.t]=L.tileLayer(f.url,{pane:"radar",opacity:0,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
-  Object.entries(rlayers).forEach(([t,l])=>l.setOpacity(+t===f.t?.85:0));
-  const old=Math.round((Date.now()/1000-f.t)/60);$("rtime").textContent=hm(f.t)+(i===frames.length-1?"":"  (−"+old+" min)");
+function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
+  if(f.k==="r"){if(rainOv)rainOv.setOpacity(0);
+    if(!rlayers[f.t])rlayers[f.t]=L.tileLayer(f.url,{pane:"radar",opacity:0,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
+    Object.entries(rlayers).forEach(([t,l])=>l.setOpacity(+t===f.t?.85:0));
+    const past=TL.filter(x=>x.k==="r"),isNow=f===past[past.length-1],old=Math.round((Date.now()/1000-f.t)/60);
+    $("rtime").textContent=isNow?"Radar "+hm(f.t):hm(f.t)+" (vor "+old+" min)";}
+  else{Object.values(rlayers).forEach(l=>l.setOpacity(0));drawRainForecast(f.t);if(rainOv)rainOv.setOpacity(.85);
+    $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";}
 }
+function fieldSlider(){const s=$("tsl");if(!G){s.max=0;return}s.min=0;s.max=G.times.length-2;s.value=gh}
+$("tsl").oninput=()=>{const v=+$("tsl").value;if(layer==="r")showT(v);else{gh=v;drawField()}};
 $("play").onclick=()=>{
-  if(playing){clearInterval(playing);playing=null;$("play").textContent="▶";if(layer==="r")showFrame(frames.length-1);else{gh=0;drawField()}return}
+  if(playing){clearInterval(playing);playing=null;$("play").textContent="▶";return}
   $("play").textContent="❚❚";
-  if(layer==="r"){if(!frames.length)return;let i=0;showFrame(0);playing=setInterval(()=>{i=(i+1)%frames.length;showFrame(i)},700)}
-  else{if(!G)return;gh=0;drawField();playing=setInterval(()=>{gh=(gh+1)%(G.times.length-1);drawField()},700)}};
+  if(layer==="r"){if(!TL.length)return;let i=ti>=TL.length-1?0:ti;showT(i);playing=setInterval(()=>{i=(i+1)%TL.length;showT(i)},700)}
+  else{if(!G)return;playing=setInterval(()=>{gh=(gh+1)%(G.times.length-1);$("tsl").value=gh;drawField()},700)}};
 
 // ---------- Start ----------
 let started=false;
