@@ -165,7 +165,7 @@ function ramp(stops,v){if(v<=stops[0][0])return stops[0][1];for(let i=1;i<stops.
 const tCol=v=>{if(isNaN(v))return null;const c=ramp(TSTOPS,v);return[c[0],c[1],c[2],150]};
 const RSTOPS=[[0.1,[150,200,245]],[0.5,[80,150,235]],[1.5,[30,95,210]],[4,[20,40,160]],[8,[130,40,170]],[15,[200,30,120]]];
 const rCol=v=>{if(!(v>=0.1))return null;const c=ramp(RSTOPS,v);return[c[0],c[1],c[2],Math.min(235,120+v*40)]};
-const cCol=v=>{if(!(v>=15))return null;const a=Math.pow((v-15)/85,1.2)*175;return[105,115,130,a]};
+const cCol=v=>{if(!(v>=20))return null;const a=40+Math.pow((v-20)/80,1.1)*190;return[250,251,253,a]};
 const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
 
 // ---------- Karte ----------
@@ -182,7 +182,7 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{
 map.attributionControl.addAttribution('Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> (DWD, ECMWF u. a.) · Radar: <a href="https://www.rainviewer.com/">RainViewer</a>');
 
 // ---------- Zustand ----------
-const on=Object.assign({r:true,c:false,t:true},store.get("wk_layers")||{});
+const on=Object.assign({r:true,c:false,t:true},store.get("wk_layers")||{});if(on.c&&on.t)on.c=false;
 let G=null;          // Rasterdaten {times, t, p, c}
 let CD=null;         // Städtedaten
 let i0=0, radar=null, radarTime=null, playing=null;
@@ -236,13 +236,14 @@ async function loadRadar(){
 }
 
 // ---------- Grenzen, Küsten und Landmaske ----------
-let landPath=null;
+let landPath=null,landLayer=null;
+function theme(){const dark=on.c;$("map").style.background=dark?"#3d6488":"#8cc3ee";if(landLayer)landLayer.setStyle({fillColor:dark?"#7d8a76":"#f3efe4"})}
 async function loadBorders(){
   try{
     const topo=await getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json");
     const mesh=topojson.mesh(topo,topo.objects.countries);
     const land=topojson.feature(topo,topo.objects.land||topojson.merge(topo,topo.objects.countries.geometries));
-    L.geoJSON(land,{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#f3efe4",fillOpacity:1}}).addTo(map);
+    landLayer=L.geoJSON(land,{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#f3efe4",fillOpacity:1}}).addTo(map);
     L.geoJSON(mesh,{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#26323f",weight:1.4,opacity:.85,fill:false}}).addTo(map);
     const P=new Path2D(),ym1=merc(LAT1),yr=merc(LAT1)-merc(LAT0);
     const px=(lon,lat)=>[(lon-LON0)/(LON1-LON0)*CW,(ym1-merc(Math.max(-85,Math.min(85,lat))))/yr*CH];
@@ -250,7 +251,7 @@ async function loadBorders(){
     for(const poly of polys)for(const ring of poly){
       if(!ring.some(c=>c[0]>=LON0-5&&c[0]<=LON1+5&&c[1]>=LAT0-5&&c[1]<=LAT1+5))continue;
       ring.forEach((c,i)=>{const q=px(c[0],c[1]);i?P.lineTo(q[0],q[1]):P.moveTo(q[0],q[1])});P.closePath();}
-    landPath=P;
+    landPath=P;theme();
   }catch(e){landPath=null}
 }
 
@@ -346,11 +347,11 @@ function legend(){
   let h="";
   if(on.t)h+=`<div class="lg"><span class="t">Temperatur</span><span>-10°</span><span class="grad" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span></div>`;
   if(on.r)h+=`<div class="lg"><span class="t">Regen</span><span>leicht</span><span class="grad" style="background:linear-gradient(90deg,${RSTOPS.map(s=>css(s[1])).join(",")})"></span><span>stark</span></div>`;
-  if(on.c)h+=`<div class="lg"><span class="t">Wolken</span><span>wenig</span><span class="grad" style="background:linear-gradient(90deg,rgba(105,115,130,.1),rgba(105,115,130,.75))"></span><span>dicht</span></div>`;
+  if(on.c)h+=`<div class="lg"><span class="t">Wolken</span><span>wenig</span><span class="grad" style="background:linear-gradient(90deg,#3d6488,#fafbfd)"></span><span>dicht</span></div>`;
   $("legend").innerHTML=h;
 }
 function btns(){[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).classList.toggle("on",!!on[k]))}
-[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).onclick=()=>{on[k]=!on[k];store.set("wk_layers",on);btns();legend();draw()});
+[["r","bR"],["c","bC"],["t","bT"]].forEach(([k,id])=>$(id).onclick=()=>{on[k]=!on[k];if(on[k]&&k==="c")on.t=false;if(on[k]&&k==="t")on.c=false;theme();store.set("wk_layers",on);btns();legend();draw()});
 $("sl").oninput=draw;
 map.on("zoomend",()=>{if(G)updMarkers(G.times[i0+ +$("sl").value])});
 $("play").onclick=()=>{
