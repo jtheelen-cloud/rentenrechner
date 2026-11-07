@@ -124,7 +124,6 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <div id="map"></div>
     <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button><button type="button" data-l="t">🌡️ Temperatur</button></div>
     <div id="rtime">--:--</div>
-    <div id="leg"></div>
     <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen">▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit"><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
 
@@ -399,7 +398,7 @@ const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,1
 function ramp(st,v){if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++){if(v<=st[i][0]){const a=st[i-1],b=st[i],f=(v-a[0])/(b[0]-a[0]);return[0,1,2].map(k=>Math.round(a[1][k]+(b[1][k]-a[1][k])*f))}}return st[st.length-1][1]}
 const tCol=v=>{if(isNaN(v))return null;const c=ramp(TSTOPS,v);return[c[0],c[1],c[2],170]};
 const cCol=v=>{if(!(v>=40))return null;const a=70+Math.pow((v-40)/60,1.2)*180;return[255,255,255,a]};
-function legend(){const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
+function legend(){if(!$("leg"))return;const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
    layer==="c"?`<span>wolkig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.3),#fff);border:1px solid #999"></span><span>bedeckt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
