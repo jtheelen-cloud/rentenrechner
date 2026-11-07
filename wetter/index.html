@@ -89,6 +89,9 @@ button{font:inherit;color:inherit}
 #admin{display:grid;gap:10px}
 #admOut{font-size:24px;font-weight:700;letter-spacing:.1em;min-height:1.2em}
 #admList{width:100%;border-collapse:collapse;font-size:12px}#admList td,#admList th{padding:5px 4px;border-top:1px solid #333;text-align:left}
+.cd{display:flex;align-items:center;gap:12px;margin:8px 0 6px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,#0f6d8c,#e0a33a);color:#fff;border:0;width:100%;text-align:left;font:inherit}
+.cd .ico{font-size:30px}.cd .tx{flex:1;line-height:1.25}.cd .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}.cd .sm{font-size:13px;opacity:.9}
+.cdf{display:grid;gap:10px}.cdf input{font:inherit;border:1px solid #555;background:#111;color:#eee;border-radius:10px;padding:10px 12px;width:100%;color-scheme:dark}
 h3{font-size:14px;margin:14px 0 2px;color:#bbb}
 </style>
 </head>
@@ -114,6 +117,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
   <div id="head"><span id="hTime">--:--</span><button id="hPlace" type="button">Mülheim an der Ruhr</button><span id="hTemp"></span><button id="more" type="button" aria-label="Menü">•••</button></div>
 
   <section class="view" id="v-vor">
+    <button type="button" class="cd hide" id="cd"></button>
     <canvas class="chart" id="cRain" height="520"></canvas>
     <canvas class="chart" id="cProb" height="400"></canvas>
     <div class="ranges"><div class="seg" data-for="vor"></div><button class="help" type="button" data-help>?</button></div>
@@ -137,6 +141,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
 <div id="menu" class="hide">
   <button type="button" id="mPlace">📍 Ort wählen</button>
   <button type="button" id="mGeo">🎯 Mein Standort</button>
+  <button type="button" id="mCd">🏝️ Urlaubs-Countdown</button>
   <button type="button" id="mReload">⟳ Neu laden</button>
   <button type="button" id="bAdm" class="hide">🔑 Codes vergeben</button>
 </div>
@@ -214,6 +219,43 @@ $("mGeo").onclick=()=>{$("menu").classList.add("hide");if(!navigator.geolocation
   ()=>{status("Standort nicht freigegeben");setTimeout(()=>status(null),2500)},{timeout:10000,maximumAge:600000})};
 $("mReload").onclick=()=>{$("menu").classList.add("hide");loadAll(true)};
 function setPlace(p){place=p;store.set("wx_place",p);$("hPlace").textContent=p.n;loadAll(true);if(map){dot.setLatLng([p.lat,p.lon]);map.setView([p.lat,p.lon],Math.max(map.getZoom(),7))}}
+
+
+// ---------- Urlaubs-Countdown ----------
+function dayNo(d){return Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)}
+function isoNo(s){const [y,m,d]=s.split("-").map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)}
+function fmtD(s){const [y,m,d]=s.split("-");return d+"."+m+"."+y}
+function renderCd(){
+  const u=store.get("wx_cd"),el=$("cd");
+  if(!u||!u.von){el.classList.add("hide");return}
+  const t=dayNo(new Date()),a=isoNo(u.von),b=u.bis?isoNo(u.bis):a,ziel=escH(u.ziel||"Urlaub");
+  let ico="🏝️",big,sm;
+  if(t<a){const n=a-t;big=n===1?"Morgen!":"Noch "+n+" Tage";sm=(n===1?"geht’s los nach ":"bis ")+ziel+" · Abreise "+fmtD(u.von);
+    if(n>13)sm+=" · "+(Math.floor(n/7))+" Wochen "+(n%7?"und "+(n%7)+(n%7===1?" Tag":" Tage"):"");}
+  else if(t===a){ico="✈️";big="Heute geht’s los!";sm="Gute Reise nach "+ziel}
+  else if(t<=b){ico="🌴";const n=b-t;big=n===0?"Letzter Tag":"Noch "+n+(n===1?" Tag":" Tage");sm="Urlaub in "+ziel+(u.bis?" · bis "+fmtD(u.bis):"")}
+  else{el.classList.add("hide");return}
+  el.innerHTML=`<span class="ico">${ico}</span><span class="tx"><span class="big">${big}</span><br><span class="sm">${sm}</span></span>`;
+  el.classList.remove("hide");
+}
+function escH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function cdEdit(){const u=store.get("wx_cd")||{};
+  sheet("Urlaubs-Countdown",`<div class="cdf">
+   <div><label class="sub" for="cdZ">Wohin?</label><input id="cdZ" placeholder="z. B. Fuerteventura" value="${escH(u.ziel||"")}"></div>
+   <div><label class="sub" for="cdV">Abreise</label><input id="cdV" type="date" value="${u.von||""}"></div>
+   <div><label class="sub" for="cdB">Rückreise (freiwillig)</label><input id="cdB" type="date" value="${u.bis||""}"></div>
+   <p class="err" id="cdE"></p>
+   <div style="display:flex;gap:8px"><button class="btnp" type="button" id="cdS">Speichern</button>${u.von?'<button class="btn2" type="button" id="cdX">Löschen</button>':""}</div>
+   <p class="sub" style="margin:0">Der Countdown steht oben auf der Seite „Vorhersage“. Er gilt nur für dieses Handy.</p></div>`);
+  $("cdS").onclick=()=>{const z=$("cdZ").value.trim(),v=$("cdV").value,b=$("cdB").value;
+    if(!v){$("cdE").textContent="Bitte das Abreisedatum eintragen.";return}
+    if(b&&b<v){$("cdE").textContent="Die Rückreise liegt vor der Abreise.";return}
+    store.set("wx_cd",{ziel:z,von:v,bis:b});renderCd();$("sheet").classList.remove("open")};
+  if($("cdX"))$("cdX").onclick=()=>{try{localStorage.removeItem("wx_cd")}catch(e){}renderCd();$("sheet").classList.remove("open")};
+}
+$("mCd").onclick=cdEdit;$("cd").onclick=cdEdit;
+renderCd();setInterval(renderCd,60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()});
 
 // ---------- Daten ----------
 let W=null;
