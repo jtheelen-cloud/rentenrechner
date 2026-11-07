@@ -246,5 +246,18 @@
     ]
    }
   ]
+ },
+ "gesetz": {
+  "stand": "2026",
+  "mindestlohn": "13,90",
+  "mindestlohn_q": "MiLoG, Mindestlohnanpassungsverordnung",
+  "miav": [
+   "724",
+   "854",
+   "977",
+   "1.014"
+  ],
+  "miav_q": "§ 17 BBiG, Mindestausbildungsvergütung für Ausbildungsbeginn 2026",
+  "u": "https://www.dgb.de/service/ratgeber/mindestausbildungsverguetung/"
  }
 }
