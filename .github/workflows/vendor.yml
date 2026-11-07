@@ -1,0 +1,21 @@
+name: Testdateien laden
+on:
+  push:
+    branches: [vendor-test]
+permissions:
+  contents: write
+jobs:
+  v:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p vendor
+          curl -sSL -o vendor/leaflet.min.js https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js
+          curl -sSL -o vendor/leaflet.min.css https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css
+          curl -sSL -o vendor/topojson.min.js https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js
+          curl -sSL -o vendor/countries-50m.json https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json
+          curl -sSL -o vendor/om.json "https://api.open-meteo.com/v1/forecast?latitude=51.4,40.4&longitude=6.9,-3.7&hourly=temperature_2m,precipitation,cloud_cover&forecast_days=7&timezone=GMT&timeformat=unixtime"
+          ls -la vendor
+          git config user.name github-actions; git config user.email actions@github.com
+          git add vendor; git commit -m "vendor"; git push
