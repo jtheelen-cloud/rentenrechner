@@ -57,6 +57,7 @@ button{font:inherit;color:inherit}
 .arrw span{position:absolute;transform:translate(-50%,-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:7px;padding:1px 7px;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 #rtime{position:absolute;z-index:1000;left:50%;top:58px;white-space:nowrap;transform:translateX(-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:20px;font-variant-numeric:tabular-nums}
 #rnote{position:absolute;z-index:1000;left:12px;top:14px;font-size:12px;color:#222;background:rgba(255,255,255,.7);border-radius:6px;padding:2px 6px}
+.ptemp span{position:absolute;transform:translate(14px,-50%);background:#fff;color:#111;border:2px solid #23239a;border-radius:9px;padding:1px 8px;font-size:17px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .dot{width:16px;height:16px;border-radius:50%;background:#23239a;border:2px solid #fff;margin:-8px 0 0 -8px}
 .cl span{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#45505c}
 .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.6)!important}
@@ -219,18 +220,18 @@ function setPlace(p){place=p;store.set("wx_place",p);$("hPlace").textContent=p.n
 let W=null;
 async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function loadWeather(force){
-  const key="wx_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
+  const key="wx2_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
   if(!force&&c&&c.key===key&&Date.now()-c.ts<10*60000){W=c.d;return}
   const u=`https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}`+
    "&current=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
    "&minutely_15=precipitation&forecast_minutely_15=12&past_minutely_15=1"+
-   "&hourly=precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=50&past_hours=1"+
+   "&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=50&past_hours=1"+
    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max&forecast_days=7"+
    "&timezone=auto&timeformat=unixtime";
   W=await getJSON(u);store.set("wx_cache",{key,ts:Date.now(),d:W});
 }
 async function loadAll(force){
-  try{status("Lade Wetterdaten …");await loadWeather(force);status(null);drawAll();if(map){loadRadar();drawArrow()}}
+  try{status("Lade Wetterdaten …");await loadWeather(force);status(null);drawAll();if(map){loadRadar();drawArrow();placeTemp(null)}}
   catch(e){status("Wetterdaten konnten nicht geladen werden. Bitte über ••• → Neu laden erneut versuchen.")}
 }
 
@@ -354,6 +355,16 @@ function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
     const nb=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
     fineLand=nl;landTheme();(coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
   }).catch(()=>{fineState=0});}
+// ---------- Temperatur am gewählten Ort (passend zur angezeigten Zeit) ----------
+let ptemp=null;
+function placeTemp(t){
+  if(!map||!W)return;let v;
+  if(t==null||t<=Date.now()/1000+900)v=W.current.temperature_2m;
+  else{const H=W.hourly;let k=-1;H.time.forEach((x,i)=>{if(x<=t+1)k=i});v=k>=0&&H.temperature_2m?H.temperature_2m[k]:null}
+  if(v==null)return;const html=`<span>${Math.round(v)}°</span>`;
+  if(ptemp){ptemp.setLatLng([place.lat,place.lon]);ptemp.setIcon(L.divIcon({className:"ptemp",iconSize:[0,0],html}))}
+  else ptemp=L.marker([place.lat,place.lon],{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"ptemp",iconSize:[0,0],html})}).addTo(map);
+}
 // ---------- Zugrichtung des Regens (Pfeil mit Zeitlinien) ----------
 let arrowGroup=null;
 function dest(lat,lon,brg,km){const b=brg*Math.PI/180;return[lat+km*Math.cos(b)/111.2,lon+km*Math.sin(b)/(111.2*Math.cos(lat*Math.PI/180))]}
@@ -422,7 +433,7 @@ function drawField(){
   if(layer==="t"&&landPath){ctx.globalCompositeOperation="destination-in";ctx.fill(landPath);ctx.globalCompositeOperation="source-over"}
   const url=cv.toDataURL();if(fieldOv)fieldOv.setUrl(url);else fieldOv=L.imageOverlay(url,[[LAT0,LON0],[LAT1,LON1]],{pane:"radar",opacity:layer==="c"?.9:.8}).addTo(map);
   fieldOv.setOpacity(layer==="c"?.9:.8);
-  $("rtime").textContent=(gh===0?"Jetzt ":"")+new Date(G.times[h]*1000).toLocaleString("de-DE",{weekday:gh>12?"short":undefined,hour:"2-digit",minute:"2-digit"});
+  placeTemp(gh===0?null:G.times[h]);$("rtime").textContent=(gh===0?"Jetzt ":"")+new Date(G.times[h]*1000).toLocaleString("de-DE",{weekday:gh>12?"short":undefined,hour:"2-digit",minute:"2-digit"});
 }
 // ---------- Regen: Radar (vergangen) + Prognose (bis 24 Std.) ----------
 let TL=[],ti=0,R=null,rainOv=null;
@@ -469,9 +480,9 @@ function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
   if(f.k==="r"){if(rainOv)rainOv.setOpacity(0);
     if(!rlayers[f.t])rlayers[f.t]=L.tileLayer(f.url,{pane:"radar",opacity:0,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
     Object.entries(rlayers).forEach(([t,l])=>l.setOpacity(+t===f.t?.85:0));
-    $("rtime").textContent="Jetzt · Radar "+hm(f.t);}
+    $("rtime").textContent="Jetzt · Radar "+hm(f.t);placeTemp(null);}
   else{Object.values(rlayers).forEach(l=>l.setOpacity(0));drawRainForecast(f.t);if(rainOv)rainOv.setOpacity(.85);
-    $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";}
+    $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";placeTemp(f.t);}
 }
 function fieldMax(){if(!G)return 0;const d=new Date();d.setHours(24,0,0,0);const eod=d.getTime()/1000,now=Date.now()/1000;let h0=0;G.times.forEach((t,i)=>{if(t<=now)h0=i});let n=0;G.times.forEach((t,i)=>{if(i>h0&&t<=eod)n=i-h0});return Math.max(3,Math.min(n,G.times.length-1-h0))}
 function fieldSlider(){const s=$("tsl");if(!G){s.max=0;return}s.min=0;s.max=fieldMax();s.value=gh}
