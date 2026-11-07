@@ -499,8 +499,8 @@ function drawField(){
 }
 // ---------- Regen: Radar (vergangen) + Prognose (bis 24 Std.) ----------
 let TL=[],ti=0,R=null,rainOv=null;
-// lokales Raster um den Ort: 13 x 19 Punkte, 0,4° Abstand; auf den Kanaren größer und weit nach Westen (Atlantik)
-function rainBox(){if(place.lat>26&&place.lat<31&&place.lon<-11&&place.lon>-19.5)return{rs:0.6,nr:10,nc:21,la0:26,lo0:-24};const rs=0.4,nr=13,nc=19;return{rs,nr,nc,la0:Math.round(place.lat*2)/2-rs*(nr-1)/2,lo0:Math.round(place.lon*2)/2-rs*(nc-1)/2}}
+// Regenprognose-Raster um den Ort: 17 x 23 Punkte, 0,8° Abstand (rund 700 km in jede Richtung); Kanaren: 24–36° N, 28–10° W inkl. Madeira
+function rainBox(){if(place.lat>26&&place.lat<31&&place.lon<-11&&place.lon>-19.5)return{rs:0.8,nr:16,nc:23,la0:24,lo0:-28};const rs=0.8,nr=17,nc=23;return{rs,nr,nc,la0:Math.round(place.lat*2)/2-rs*(nr-1)/2,lo0:Math.round(place.lon*2)/2-rs*(nc-1)/2}}
 const RSTOPS=[[0.1,[159,211,255]],[0.5,[95,170,240]],[1.5,[47,127,216]],[4,[27,63,168]],[8,[130,40,170]],[15,[210,60,140]]];
 const rCol=v=>{if(!(v>=0.1))return null;const c=ramp(RSTOPS,v);return[c[0],c[1],c[2],Math.min(235,130+v*35)]};
 async function loadRainGrid(){
@@ -521,7 +521,7 @@ function drawRainForecast(t){
   const img=rctx.createImageData(RCW,RCH),d=img.data,b=h*NPr;
   for(let y=0;y<RCH;y++){const lat=imerc(merc(la1)-(y+.5)/RCH*(merc(la1)-merc(R.la0))),fr=Math.min(RNR-1.0001,Math.max(0,(lat-R.la0)/RS)),r=fr|0,dr=fr-r;
     for(let x=0;x<RCW;x++){const fc=Math.min(RNC-1.0001,(x+.5)/RCW*(RNC-1)),c=fc|0,dc=fc-c,i=b+r*RNC+c;
-      const v=(R.p[i]*(1-dc)+R.p[i+1]*dc)*(1-dr)+(R.p[i+RNC]*(1-dc)+R.p[i+RNC+1]*dc)*dr;const col=rCol(v);if(!col)continue;const o=(y*RCW+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=col[3]}}
+      const v=(R.p[i]*(1-dc)+R.p[i+1]*dc)*(1-dr)+(R.p[i+RNC]*(1-dc)+R.p[i+RNC+1]*dc)*dr;const col=rCol(v);if(!col)continue;const o=(y*RCW+x)*4,f=Math.min(1,Math.min(x,RCW-1-x)/(RCW*.06),Math.min(y,RCH-1-y)/(RCH*.06));d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=col[3]*f}}
   rctx.putImageData(img,0,0);const url=rcv.toDataURL(),bd=[[R.la0,R.lo0],[la1,lo1]];
   if(rainOv){rainOv.setUrl(url);rainOv.setBounds(L.latLngBounds(bd))}else rainOv=L.imageOverlay(url,bd,{pane:"radar",opacity:.85}).addTo(map);
 }
