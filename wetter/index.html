@@ -456,17 +456,17 @@ let G=null,gh=0,fieldOv=null,fieldOvK=null,landPath=null,landPathK=null,landFeat
 async function gridFetch(B,label){
   const pts=[];for(let r=0;r<B.nr;r++)for(let k=0;k<B.nc;k++)pts.push([B.la0+r*B.st,B.lo0+k*B.st]);
   const res=[];for(let i=0;i<pts.length;i+=60){$("rtime").textContent="Lade "+label+" … "+Math.round(i/pts.length*100)+" %";const ch=pts.slice(i,i+60);
-    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover_low,cloud_cover_mid,cloud_cover_high&forecast_hours=25&timezone=GMT&timeformat=unixtime");
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover_low,cloud_cover_mid,cloud_cover_high&forecast_hours=49&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
   const n=pts.length,times=res[0].hourly.time,t=[],cc=[],hc=[];for(let h=0;h<times.length;h++)for(let i=0;i<n;i++){const H=res[i].hourly;t.push(Math.round((H.temperature_2m[h]??NaN)*10)/10);cc.push(Math.max(H.cloud_cover_low[h]??0,H.cloud_cover_mid[h]??0));hc.push(H.cloud_cover_high[h]??0)}
   return{times,t,c:cc,hc};
 }
 async function loadGrid(){
-  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid7");
+  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid8");
   if(c&&c.k&&Date.now()-c.ts<90*60000){G=c;return}
   if(!(G&&Date.now()-G.ts<90*60000)){const m=await gridFetch(MB,"Europa");G={ts:Date.now(),times:m.times,t:m.t,c:m.c,hc:m.hc,k:null}}
   try{G.k=await gridFetch(KB,"Kanaren")}catch(e){G.k=null;if(String(e.message).includes("429"))setTimeout(()=>{if(layer!=="r")loadGrid().then(()=>{fieldSlider();drawField()}).catch(()=>{})},61000)}
-  if(G.k)store.set("wx_grid7",G);
+  if(G.k)store.set("wx_grid8",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
@@ -506,14 +506,14 @@ const RSTOPS=[[0.2,[136,221,238]],[0.6,[0,153,204]],[1.5,[0,92,175]],[3,[255,230
 const rCol=v=>{if(!(v>=0.2))return null;const c=ramp(RSTOPS,v);return[c[0],c[1],c[2],v<0.6?90+(v-0.2)/0.4*90:Math.min(235,180+v*15)]};
 async function loadRainGrid(){
   const B=rainBox(),{rs:RS,nr:RNR,nc:RNC,la0,lo0}=B,key=la0+"_"+lo0+"_"+RS;
-  if(R&&R.key===key&&Date.now()-R.ts<30*60000)return;const c=store.get("wx_rain2");
+  if(R&&R.key===key&&Date.now()-R.ts<30*60000)return;const c=store.get("wx_rain3");
   if(c&&c.key===key&&Date.now()-c.ts<30*60000){R=c;return}
   const pts=[];for(let r=0;r<RNR;r++)for(let k=0;k<RNC;k++)pts.push([+(la0+r*RS).toFixed(2),+(lo0+k*RS).toFixed(2)]);
   const res=[];for(let i=0;i<pts.length;i+=60){const ch=pts.slice(i,i+60);
-    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=precipitation&forecast_hours=25&timezone=GMT&timeformat=unixtime");
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=precipitation&forecast_hours=49&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
   const times=res[0].hourly.time,pr=[];for(let h=0;h<times.length;h++)for(let i=0;i<pts.length;i++)pr.push(res[i].hourly.precipitation[h]??0);
-  R={key,ts:Date.now(),la0,lo0,rs:RS,nr:RNR,nc:RNC,times,p:pr};store.set("wx_rain2",R);
+  R={key,ts:Date.now(),la0,lo0,rs:RS,nr:RNR,nc:RNC,times,p:pr};store.set("wx_rain3",R);
 }
 const rcv=document.createElement("canvas"),RCW=360,rctx=rcv.getContext("2d");
 function drawRainForecast(t){
@@ -554,11 +554,17 @@ async function loadRadar(){
   Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};ncOff();
   // Prognose = letztes Radarbild, mit dem Höhenwind (700 hPa) weitergeschoben – wie bei Regenradar-Apps
   let fut=[];const last=past.length?past[past.length-1]:null;
-  if(last){ncUrl=last.url;let t=last.t;const t3=last.t+3*3600;
-    while(true){t+=t<t3?1800:3600;if(t>eod&&fut.length>=8)break;if(fut.length>=30)break;fut.push({k:"n",t})}}
+  if(last){ncUrl=last.url;for(let t=last.t+1800;t<=last.t+3*3600;t+=1800)fut.push({k:"n",t})}
   TL=[...past,...fut];
   if(!TL.length){$("rtime").textContent="Regen nicht erreichbar";return}
   const s=$("tsl");s.min=0;s.max=TL.length-1;showT(past.length?past.length-1:0);
+  // danach bis 48 Stunden: Regen aus dem Wettermodell (in Radarfarben)
+  rainModel(last?last.t+3*3600:Date.now()/1000);
+}
+function rainModel(after){
+  loadRainGrid().then(()=>{if(layer!=="r")return;const lim=Date.now()/1000+48*3600;
+    TL=TL.filter(x=>x.k!=="f").concat(R.times.filter(t=>t>after+60&&t<=lim).map(t=>({k:"f",t})));$("tsl").max=TL.length-1;})
+  .catch(e=>{if(String(e.message).includes("429"))setTimeout(()=>{if(layer==="r")rainModel(after)},61000)});
 }
 function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
   if(f.k==="r"){if(rainOv)rainOv.setOpacity(0);
@@ -569,10 +575,10 @@ function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
     const base=TL.find(x=>x.k==="r");const lead=(f.t-(base?base.t:f.t))/3600;ncShow(base?base.t:f.t,f.t,lead);
     $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";placeTemp(f.t);}
   else{Object.values(rlayers).forEach(l=>l.setOpacity(0));drawRainForecast(f.t);if(rainOv)rainOv.setOpacity(.85);
-    $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr";placeTemp(f.t);}
+    $("rtime").textContent="Prognose "+whenTxt(f.t)+" Uhr · Modell";placeTemp(f.t);}
   if(f.k!=="n")ncHide();
 }
-function fieldMax(){if(!G)return 0;const d=new Date();d.setHours(24,0,0,0);const eod=d.getTime()/1000,now=Date.now()/1000;let h0=0;G.times.forEach((t,i)=>{if(t<=now)h0=i});let n=0;G.times.forEach((t,i)=>{if(i>h0&&t<=eod)n=i-h0});return Math.max(6,Math.min(n,G.times.length-1-h0))}
+function fieldMax(){if(!G)return 0;const d=new Date();d.setHours(24,0,0,0);const eod=d.getTime()/1000,now=Date.now()/1000;let h0=0;G.times.forEach((t,i)=>{if(t<=now)h0=i});return Math.min(48,G.times.length-1-h0)}
 function fieldSlider(){const s=$("tsl");if(!G){s.max=0;return}s.min=0;s.max=fieldMax();s.value=gh}
 $("tsl").oninput=()=>{const v=+$("tsl").value;if(layer==="r")showT(v);else{gh=v;drawField()}};
 $("play").onclick=()=>{
