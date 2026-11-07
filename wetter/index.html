@@ -14,7 +14,7 @@
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1d2733;background:#e9eef3}
-#map{position:fixed;inset:0;touch-action:none}
+#map{position:fixed;inset:0;touch-action:none;background:#8cc3ee}
 html,body{overscroll-behavior:none}
 #zoom{position:fixed;right:10px;top:42%;z-index:1000;display:flex;flex-direction:column;gap:8px}
 #zoom button{width:46px;height:46px;border-radius:12px;border:0;background:rgba(255,255,255,.95);box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:24px;color:#1d2733}
@@ -177,8 +177,8 @@ map.createPane("field").style.zIndex=350;
 map.createPane("radar").style.zIndex=380;
 const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
 const lp=map.createPane("labels");lp.style.zIndex=450;lp.style.pointerEvents="none";
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",pane:"labels"}).addTo(map);
+map.createPane("land").style.zIndex=200;
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",pane:"labels",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>, Küsten: Natural Earth'}).addTo(map);
 map.attributionControl.addAttribution('Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> (DWD, ECMWF u. a.) · Radar: <a href="https://www.rainviewer.com/">RainViewer</a>');
 
 // ---------- Zustand ----------
@@ -241,8 +241,9 @@ async function loadBorders(){
   try{
     const topo=await getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json");
     const mesh=topojson.mesh(topo,topo.objects.countries);
-    L.geoJSON(mesh,{pane:"borders",interactive:false,style:{color:"#26323f",weight:1.4,opacity:.85,fill:false}}).addTo(map);
     const land=topojson.feature(topo,topo.objects.land||topojson.merge(topo,topo.objects.countries.geometries));
+    L.geoJSON(land,{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#f3efe4",fillOpacity:1}}).addTo(map);
+    L.geoJSON(mesh,{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#26323f",weight:1.4,opacity:.85,fill:false}}).addTo(map);
     const P=new Path2D(),ym1=merc(LAT1),yr=merc(LAT1)-merc(LAT0);
     const px=(lon,lat)=>[(lon-LON0)/(LON1-LON0)*CW,(ym1-merc(Math.max(-85,Math.min(85,lat))))/yr*CH];
     const polys=land.geometry?(land.geometry.type==="Polygon"?[land.geometry.coordinates]:land.geometry.coordinates):[];
