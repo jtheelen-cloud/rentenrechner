@@ -55,11 +55,37 @@ html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI",Roboto,Arial
 .hours .p{color:#1f6fd1}
 .day{display:flex;align-items:center;padding:7px 0;border-top:1px solid #eef2f6;font-size:14px;gap:8px}
 .day .n{width:34px;font-weight:600}.day .w{width:26px;text-align:center}.day .p{color:#1f6fd1;width:70px;font-size:12px}.day .mm{margin-left:auto}
+#gate{position:fixed;inset:0;z-index:3000;background:#e9eef3;display:grid;place-items:center;padding:20px}
+#gate form{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(0,0,0,.15);padding:24px 20px;max-width:380px;width:100%;display:grid;gap:12px}
+#gate h1{margin:0;font-size:22px}
+#gate input,#admin input{font:inherit;border:1px solid #cfd8e2;border-radius:10px;padding:10px 12px;width:100%}
+#gate input{text-transform:uppercase;letter-spacing:.12em;font-size:20px;text-align:center}
+.btnp{border:0;background:#1f6fd1;color:#fff;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:600}
+.btn2{border:1px solid #cfd8e2;background:#fff;border-radius:10px;padding:9px 12px;font-size:14px}
+.err{color:#c0392b;font-size:14px;min-height:1.2em;margin:0}
+.devid{display:grid;gap:4px;border-top:1px solid #eef2f6;padding-top:12px}
+.devid b{font-size:24px;letter-spacing:.1em}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#5b6875}
+#admin{display:grid;gap:10px}
+#admOut{font-size:24px;font-weight:700;letter-spacing:.1em;min-height:1.2em}
+#admList{width:100%;border-collapse:collapse;font-size:12px}#admList td,#admList th{padding:5px 4px;border-top:1px solid #eef2f6;text-align:left}
+.hide{display:none!important}
 h3{font-size:14px;margin:14px 0 2px;color:#41505f}
 .leaflet-control-attribution{font-size:9px}
 </style>
 </head>
 <body>
+<div id="gate"><form id="gateForm">
+  <div class="eyebrow">Wetter</div>
+  <h1>Wetterkarte Europa</h1>
+  <p class="sub" style="margin:0">Bitte den Zugangscode eingeben, den du bekommen hast. Danach merkt sich dieses Handy den Code.</p>
+  <label for="gateCode" class="sub">Zugangscode</label>
+  <input id="gateCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX">
+  <p class="err" id="gateErr" aria-live="polite"></p>
+  <button class="btnp" type="submit">Freischalten</button>
+  <div class="devid"><span class="sub">Gerätenummer dieses Handys</span><b id="devId">–</b><span class="sub">Noch keinen Code? Nenne diese Nummer der Person, von der du den Link hast. Du bekommst dann einen Code, der nur auf diesem Handy funktioniert.</span></div>
+</form></div>
+
 <div id="map"></div>
 
 <div id="top" class="bar">
@@ -67,6 +93,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#41505f}
   <button id="bC">☁️ Wolken</button>
   <button id="bT">🌡️ Temp.</button>
   <button id="refresh" title="Neu laden">⟳</button>
+  <button id="bAdm" class="hide" title="Codes vergeben" style="flex:0 0 40px">🔑</button>
 </div>
 
 <div id="bottom" class="bar">
@@ -78,11 +105,21 @@ h3{font-size:14px;margin:14px 0 2px;color:#41505f}
   <div id="legend"></div>
 </div>
 
-<div id="status">Lade Wetterdaten …</div>
+<div id="status" class="hide">Lade Wetterdaten …</div>
 
 <div id="sheet">
   <div class="hd"><h2 id="sName"></h2><button id="close" aria-label="Schließen">✕</button></div>
   <div id="sBody"></div>
+  <div id="admin" class="hide">
+    <p class="sub" style="margin:0">Nur für dich sichtbar, weil du mit deinem Hauptcode angemeldet bist. Trag die Gerätenummer ein, die das andere Handy anzeigt. Der Code funktioniert nur auf diesem einen Handy.</p>
+    <div><label for="admName" class="sub">Für wen?</label><input id="admName" autocomplete="off" placeholder="Name"></div>
+    <div><label for="admDev" class="sub">Gerätenummer</label><input id="admDev" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></div>
+    <div id="admOut" aria-live="polite"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn2 hide" type="button" id="admCopy">Code kopieren</button><button class="btnp hide" type="button" id="admSave">In Liste speichern</button></div>
+    <p class="sub" id="admMsg" style="margin:0" aria-live="polite"></p>
+    <h3 style="margin:6px 0 0">Vergebene Codes</h3>
+    <table id="admList"></table>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -104,7 +141,7 @@ const CITIES=[
 // ---------- Hilfen ----------
 const $=id=>document.getElementById(id);
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-function status(t){const s=$("status");if(t){s.textContent=t;s.style.display="block"}else s.style.display="none"}
+function status(t){const s=$("status");if(t){s.textContent=t;s.classList.remove("hide")}else s.classList.add("hide")}
 const WD=["So","Mo","Di","Mi","Do","Fr","Sa"];
 function fmtT(u,tz){return new Date(u*1000).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit",timeZone:tz})}
 function wmo(c){
@@ -248,7 +285,7 @@ function openSheet(i){
     const wd=j===0?"Heute":WD[new Date(dt.toLocaleString("en-US",{timeZone:tz})).getDay()];
     h+=`<div class="day"><span class="n">${wd}</span><span class="w">${wmo(D.weather_code[j])[0]}</span><span class="p">${D.precipitation_probability_max[j]??"–"} % · ${D.precipitation_sum[j].toFixed(1)}</span><span class="mm">${Math.round(D.temperature_2m_min[j])}° / <b>${Math.round(D.temperature_2m_max[j])}°</b></span></div>`}
   h+=`<div class="sub" style="margin-top:10px">Ortszeit ${tz.replace("_"," ")} · Daten: Open-Meteo</div>`;
-  $("sBody").innerHTML=h;$("sheet").classList.add("open");
+  $("sBody").innerHTML=h;$("sBody").classList.remove("hide");$("admin").classList.add("hide");$("sheet").classList.add("open");
 }
 $("close").onclick=()=>$("sheet").classList.remove("open");
 map.on("click",()=>$("sheet").classList.remove("open"));
@@ -306,8 +343,57 @@ async function start(force){
     status(null);btns();legend();draw();
   }catch(e){status("Wetterdaten konnten nicht geladen werden ("+e.message+"). Bitte später erneut versuchen.")}
 }
-btns();legend();start(false);
-setInterval(()=>{loadRadar().then(draw)},10*60000);
+let started=false;
+function boot(){if(started)return;started=true;$("status").classList.remove("hide");btns();legend();start(false);setInterval(()=>{loadRadar().then(draw)},10*60000)}
+
+// ---------- Zugang (wie Rentenrechner und BR-Nachschlagen, eigener Schlüssel) ----------
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const DEV_SECRET="7ad4bf26f3a3036759e67fdf56bcdf9a";
+const KEY_OK="wetter.zugang", KEY_DEV="wetter.geraet", KEY_LIST="wetter.vergeben";
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+const ALPH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const fmt8=x=>x.slice(0,4)+"-"+x.slice(4,8);
+const normCode=v=>{v=String(v||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");return v.length===8?fmt8(v):v};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function devCode(id){const h=sha256js(DEV_SECRET+":"+normCode(id));let o="";for(let i=0;i<8;i++)o+=ALPH[parseInt(h.substr(i*2,2),16)%32];return fmt8(o)}
+function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
+  if(!id){const a=new Uint8Array(8);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<8;i++)a[i]=Math.floor(Math.random()*256)}
+    id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
+  return id}
+const DEV=deviceId(); $("devId").textContent=DEV;
+function unlock(master){$("gate").classList.add("hide");$("bAdm").classList.toggle("hide",!master);if(master)renderAdminList();setTimeout(()=>{map.invalidateSize();boot()},0)}
+(function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
+  if(ok==="M:"+CODE_HASH) unlock(true);
+  else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();
+$("gateForm").addEventListener("submit",e=>{e.preventDefault();const c=normCode($("gateCode").value);
+  if(sha256js("rentenrechner:"+c)===CODE_HASH){try{localStorage.setItem(KEY_OK,"M:"+CODE_HASH)}catch(err){} unlock(true);return}
+  if(c===devCode(DEV)){try{localStorage.setItem(KEY_OK,"D:|"+DEV+"|"+c)}catch(err){} unlock(false);return}
+  $("gateErr").textContent="Der Code stimmt nicht oder gehört zu einem anderen Handy.";});
+/* Codes vergeben */
+$("bAdm").onclick=()=>{$("sName").textContent="Code für ein anderes Handy";$("sBody").classList.add("hide");$("admin").classList.remove("hide");$("sheet").classList.add("open")};
+let delArmed=null;
+function renderAdminList(){const l=store.get(KEY_LIST)||[];const t=$("admList");
+  if(!l.length){t.innerHTML='<tbody><tr><td class="sub">Noch keine Einträge.</td></tr></tbody>';return}
+  t.innerHTML='<thead><tr><th>Name</th><th>Gerät</th><th>Code</th><th>Datum</th><th></th></tr></thead><tbody>'+
+    l.map((e,i)=>`<tr><td>${esc(e.name)}</td><td>${esc(e.dev)}</td><td><b>${esc(e.code)}</b></td><td>${esc(e.datum)}</td><td><button class="btn2" type="button" data-del="${i}" style="padding:4px 8px;font-size:12px">${delArmed===i?"Wirklich?":"Löschen"}</button></td></tr>`).join("")+'</tbody>';
+  t.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{const i=+b.dataset.del;
+    if(delArmed!==i){delArmed=i;renderAdminList();setTimeout(()=>{if(delArmed===i){delArmed=null;renderAdminList()}},4000);return}
+    const l2=store.get(KEY_LIST)||[];l2.splice(i,1);store.set(KEY_LIST,l2);delArmed=null;renderAdminList()}))}
+$("admDev").addEventListener("input",()=>{const id=normCode($("admDev").value);const ok=/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);
+  $("admOut").textContent=ok?devCode(id):"";$("admCopy").classList.toggle("hide",!ok);$("admSave").classList.toggle("hide",!ok);$("admMsg").textContent=""});
+$("admSave").addEventListener("click",()=>{const id=normCode($("admDev").value),name=$("admName").value.trim()||"ohne Namen";
+  const l=store.get(KEY_LIST)||[];const entry={name,dev:id,code:devCode(id),datum:new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})};
+  const ex=l.findIndex(e=>e.dev===id);if(ex>=0)l[ex]=entry;else l.push(entry);store.set(KEY_LIST,l);
+  $("admMsg").textContent=(store.get(KEY_LIST)||[]).length?"In der Liste gespeichert.":"Speichern nicht möglich – bitte Code notieren.";renderAdminList()});
+$("admCopy").addEventListener("click",()=>{const t=$("admOut").textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>{$("admCopy").textContent="Kopiert"},()=>{});
+  setTimeout(()=>{$("admCopy").textContent="Code kopieren"},2000)});
 if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{})}
 </script>
 </body>
