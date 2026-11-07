@@ -387,22 +387,22 @@ function setLayer(l){layer=l;store.set("wx_layer",l);if(playing){clearInterval(p
 const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,196]],[10,[167,216,107]],[15,[242,216,75]],[20,[244,160,58]],[25,[232,97,60]],[30,[192,35,60]],[40,[122,13,43]]];
 function ramp(st,v){if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++){if(v<=st[i][0]){const a=st[i-1],b=st[i],f=(v-a[0])/(b[0]-a[0]);return[0,1,2].map(k=>Math.round(a[1][k]+(b[1][k]-a[1][k])*f))}}return st[st.length-1][1]}
 const tCol=v=>{if(isNaN(v))return null;const c=ramp(TSTOPS,v);return[c[0],c[1],c[2],170]};
-const cCol=v=>{if(!(v>=15))return null;const a=30+Math.pow((v-15)/85,1.1)*200;return[255,255,255,a]};
+const cCol=v=>{if(!(v>=40))return null;const a=70+Math.pow((v-40)/60,1.2)*180;return[255,255,255,a]};
 function legend(){const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
-   layer==="c"?`<span>wenig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.15),#fff);border:1px solid #999"></span><span>dicht bewölkt</span>`:
+   layer==="c"?`<span>wolkig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.3),#fff);border:1px solid #999"></span><span>bedeckt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
 const LAT0=25,LAT1=70,LON0=-20,LON1=40,STEP=3,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
 let G=null,gh=0,fieldOv=null,landPath=null;
 async function loadGrid(){
-  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid3");
+  if(G&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid4");
   if(c&&Date.now()-c.ts<90*60000){G=c;return}
   const pts=[];for(let r=0;r<NR;r++)for(let k=0;k<NC;k++)pts.push([LAT0+r*STEP,LON0+k*STEP]);
   const res=[];for(let i=0;i<pts.length;i+=60){$("rtime").textContent="Lade … "+Math.round(i/pts.length*100)+" %";const ch=pts.slice(i,i+60);
-    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover&forecast_hours=25&timezone=GMT&timeformat=unixtime");
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover_low,cloud_cover_mid&forecast_hours=25&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
-  const times=res[0].hourly.time,t=[],cc=[];for(let h=0;h<times.length;h++)for(let i=0;i<NP;i++){t.push(Math.round(res[i].hourly.temperature_2m[h]*10)/10);cc.push(res[i].hourly.cloud_cover[h])}
-  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid3",G);
+  const times=res[0].hourly.time,t=[],cc=[];for(let h=0;h<times.length;h++)for(let i=0;i<NP;i++){t.push(Math.round(res[i].hourly.temperature_2m[h]*10)/10);{const H=res[i].hourly;cc.push(Math.max(H.cloud_cover_low[h]??0,H.cloud_cover_mid[h]??0))}}
+  G={ts:Date.now(),times,t,c:cc};store.set("wx_grid4",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
