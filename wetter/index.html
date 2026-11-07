@@ -14,7 +14,10 @@
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1d2733;background:#e9eef3}
-#map{position:fixed;inset:0}
+#map{position:fixed;inset:0;touch-action:none}
+html,body{overscroll-behavior:none}
+#zoom{position:fixed;right:10px;top:42%;z-index:1000;display:flex;flex-direction:column;gap:8px}
+#zoom button{width:46px;height:46px;border-radius:12px;border:0;background:rgba(255,255,255,.95);box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:24px;color:#1d2733}
 .bar{position:fixed;left:8px;right:8px;z-index:1000;background:rgba(255,255,255,.94);border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
 #top{top:calc(8px + env(safe-area-inset-top));display:flex;gap:6px;padding:6px;align-items:center}
 #top button{flex:1;border:1px solid #cfd8e2;background:#fff;border-radius:10px;padding:8px 4px;font-size:14px;color:#41505f}
@@ -87,6 +90,8 @@ h3{font-size:14px;margin:14px 0 2px;color:#41505f}
 </form></div>
 
 <div id="map"></div>
+
+<div id="zoom"><button id="zIn" aria-label="Vergrößern">+</button><button id="zOut" aria-label="Verkleinern">−</button><button id="zHome" aria-label="Mülheim" style="font-size:20px">⌂</button><button id="zAll" aria-label="Ganz Europa" style="font-size:18px">🌍</button></div>
 
 <div id="top" class="bar">
   <button id="bR">🌧️ Regen</button>
@@ -164,7 +169,9 @@ const cCol=v=>{if(!(v>=15))return null;const a=Math.pow((v-15)/85,1.2)*175;retur
 const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
 
 // ---------- Karte ----------
-const map=L.map("map",{zoomControl:false,minZoom:3,maxZoom:9,worldCopyJump:false,attributionControl:true});
+const map=L.map("map",{zoomControl:false,minZoom:3,maxZoom:9,zoomSnap:0.5,worldCopyJump:false,attributionControl:true,touchZoom:true,dragging:true,doubleClickZoom:true,tapTolerance:15,bounceAtZoomLimits:false});
+$("zIn").onclick=()=>map.zoomIn(1);$("zOut").onclick=()=>map.zoomOut(1);
+$("zHome").onclick=()=>map.setView([51.43,6.88],7);$("zAll").onclick=()=>map.fitBounds([[27,-18],[61,30]]);
 map.fitBounds([[27,-18],[61,30]]);
 map.createPane("field").style.zIndex=350;
 map.createPane("radar").style.zIndex=380;
