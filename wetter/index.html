@@ -360,9 +360,13 @@ const EU_NAMES=new Set(["Kosovo","N. Cyprus","Cyprus U.N. Buffer Zone"]);
 const isEU=f=>!!f&&(EU[String(f.id??"").padStart(3,"0")]||EU_NAMES.has(f.properties&&f.properties.name));
 const labels=[];
 function updLabels(){const z=map.getZoom();labels.forEach(([m,mz])=>{const v=z>=mz;if(v&&!map.hasLayer(m))m.addTo(map);else if(!v&&map.hasLayer(m))map.removeLayer(m)})}
+// Polygone über die Datumsgrenze (Russland/Fiji) erzeugen sonst ein Band quer über den Atlantik
+const wide=r=>{let a=1e9,b=-1e9;for(const c of r){if(c[0]<a)a=c[0];if(c[0]>b)b=c[0]}return b-a>180};
+function amF(fs){return fs.map(f=>{const g=f.geometry;if(!g)return f;if(g.type==="MultiPolygon")return{...f,geometry:{type:"MultiPolygon",coordinates:g.coordinates.filter(p=>!wide(p[0]))}};if(g.type==="Polygon"&&wide(g.coordinates[0]))return{...f,geometry:{type:"MultiPolygon",coordinates:[]}};return f})}
+function amM(m){const ok=l=>{for(let i=1;i<l.length;i++)if(Math.abs(l[i][0]-l[i-1][0])>180)return false;return true};return m.type==="MultiLineString"?{type:"MultiLineString",coordinates:m.coordinates.filter(ok)}:m}
 function initMap(){
   if(map)return;
-  map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:3.5,maxZoom:9,zoomSnap:.5,maxBounds:[[20,-36],[73,48]],maxBoundsViscosity:1,bounceAtZoomLimits:false});
+  map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:3.5,maxZoom:9,zoomSnap:.5,maxBounds:[[20,-42],[73,48]],maxBoundsViscosity:1,bounceAtZoomLimits:false});
   map.attributionControl.setPrefix(false).addAttribution('Radar: <a href="https://www.rainviewer.com/">RainViewer</a> · Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> · Karte: Natural Earth');
   map.createPane("land").style.zIndex=200;map.createPane("radar").style.zIndex=300;
   const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
@@ -372,11 +376,11 @@ function initMap(){
   $("zIn").onclick=()=>map.zoomIn(1);$("zOut").onclick=()=>map.zoomOut(1);
   map.on("zoomend",updLabels);
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(topo=>{
-    const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
-    const other=topojson.feature(topo,topo.objects.countries).features.filter(f=>!isEU(f));
+    const feats=amF(topojson.feature(topo,topo.objects.countries).features).filter(isEU);
+    const other=amF(topojson.feature(topo,topo.objects.countries).features).filter(f=>!isEU(f));
     otherL=L.geoJSON({type:"FeatureCollection",features:other},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     landL=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
-    bordL=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
+    bordL=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
     Object.values(EU).forEach(v=>{if(v.length<3)return;labels.push([L.marker([v[1],v[2]],{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"cl",iconSize:[0,0],html:`<span>${v[0]}</span>`})}),v[3]||5])});
     updLabels();
     landFeats=feats;landPath=buildLandPath(feats,MB);landPathK=buildLandPath(feats,KB);if(layer==="t")drawField();
@@ -390,10 +394,10 @@ let landL=null,bordL=null,otherL=null,coarse=null,fineState=0,fineLand=null;
 function landTheme(){const c=layer==="c"?"#6e8569":"#c3cfdb";[landL,fineLand].forEach(l=>l&&l.setStyle({fillColor:c}))}
 function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json").then(topo=>{
-    const feats=topojson.feature(topo,topo.objects.countries).features.filter(isEU);
-    L.geoJSON({type:"FeatureCollection",features:topojson.feature(topo,topo.objects.countries).features.filter(f=>!isEU(f))},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
+    const feats=amF(topojson.feature(topo,topo.objects.countries).features).filter(isEU);
+    L.geoJSON({type:"FeatureCollection",features:amF(topojson.feature(topo,topo.objects.countries).features).filter(f=>!isEU(f))},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     const nl=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
-    const nb=L.geoJSON(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b)),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
+    const nb=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
     fineLand=nl;landTheme();(coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
   }).catch(()=>{fineState=0});}
 // ---------- Temperatur am gewählten Ort (passend zur angezeigten Zeit) ----------
@@ -444,7 +448,7 @@ function legend(){if(!$("leg"))return;const css=c=>`rgb(${c[0]},${c[1]},${c[2]})
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
    layer==="c"?`<span>wolkig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.3),#fff);border:1px solid #999"></span><span>bedeckt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
-const LAT0=25,LAT1=70,LON0=-20,LON1=40,STEP=3,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
+const LAT0=25,LAT1=70,LON0=-38,LON1=40,STEP=3,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
 // Feinraster Kanaren und Atlantik westlich davon (1,5°), damit Wolken früher sichtbar sind
 const MB={la0:LAT0,la1:LAT1,lo0:LON0,lo1:LON1,st:STEP,nr:NR,nc:NC},KB={la0:24,la1:34.5,lo0:-32,lo1:-9.5,st:1.5};KB.nr=(KB.la1-KB.la0)/KB.st+1;KB.nc=(KB.lo1-KB.lo0)/KB.st+1;
 let G=null,gh=0,fieldOv=null,fieldOvK=null,landPath=null,landPathK=null,landFeats=null;
@@ -457,16 +461,16 @@ async function gridFetch(B,label){
   return{times,t,c:cc};
 }
 async function loadGrid(){
-  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid5");
+  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid6");
   if(c&&c.k&&Date.now()-c.ts<90*60000){G=c;return}
   if(!(G&&Date.now()-G.ts<90*60000)){const m=await gridFetch(MB,"Europa");G={ts:Date.now(),times:m.times,t:m.t,c:m.c,k:null}}
   try{G.k=await gridFetch(KB,"Kanaren")}catch(e){G.k=null;if(String(e.message).includes("429"))setTimeout(()=>{if(layer!=="r")loadGrid().then(()=>{fieldSlider();drawField()}).catch(()=>{})},61000)}
-  if(G.k)store.set("wx_grid5",G);
+  if(G.k)store.set("wx_grid6",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
 function cvFor(B,w){const h=Math.round(w*(merc(B.la1)-merc(B.la0))/((B.lo1-B.lo0)*Math.PI/180)),c=document.createElement("canvas");c.width=w;c.height=h;return c}
-const cv=cvFor(MB,600),ctx=cv.getContext("2d"),CW=cv.width,CH=cv.height,cvK=cvFor(KB,450),ctxK=cvK.getContext("2d");
+const cv=cvFor(MB,780),ctx=cv.getContext("2d"),CW=cv.width,CH=cv.height,cvK=cvFor(KB,450),ctxK=cvK.getContext("2d");
 function buildLandPath(feats,B){const P=new Path2D(),W=B===MB?cv.width:cvK.width,H=B===MB?cv.height:cvK.height,ym1=merc(B.la1),yr=merc(B.la1)-merc(B.la0);
   const px=(lon,lat)=>[(lon-B.lo0)/(B.lo1-B.lo0)*W,(ym1-merc(Math.max(-85,Math.min(85,lat))))/yr*H];
   const polysOf=g=>g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?g.coordinates:[];
@@ -484,7 +488,7 @@ function drawField(){
   const fn=layer==="t"?tCol:cCol,op=layer==="c"?.9:.8;
   paint(MB,layer==="t"?G.t:G.c,h,cv,ctx,fn,landPath);
   if(G.k){// Bereich des Feinrasters im Grobraster aussparen
-    const ym1=merc(LAT1),yr=merc(LAT1)-merc(LAT0),x1=(KB.lo1-LON0)/(LON1-LON0)*CW,y0=(ym1-merc(KB.la1))/yr*CH;ctx.clearRect(0,y0,x1,CH-y0);
+    const ym1=merc(LAT1),yr=merc(LAT1)-merc(LAT0),x0=(KB.lo0-LON0)/(LON1-LON0)*CW,x1=(KB.lo1-LON0)/(LON1-LON0)*CW,y0=(ym1-merc(KB.la1))/yr*CH;ctx.clearRect(x0,y0,x1-x0,CH-y0);
     const hk=Math.min(G.k.times.length-1,G.k.times.indexOf(G.times[h])<0?h:G.k.times.indexOf(G.times[h]));
     paint(KB,layer==="t"?G.k.t:G.k.c,hk,cvK,ctxK,fn,landPathK);
     const uk=cvK.toDataURL(),bk=[[KB.la0,KB.lo0],[KB.la1,KB.lo1]];if(fieldOvK)fieldOvK.setUrl(uk);else fieldOvK=L.imageOverlay(uk,bk,{pane:"radar",opacity:op}).addTo(map);fieldOvK.setOpacity(op)}
