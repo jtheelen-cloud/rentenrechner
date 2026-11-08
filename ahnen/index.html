@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
 :root{
+  --fanm:color-mix(in srgb,var(--m) 20%,var(--surface)); --fanw:color-mix(in srgb,var(--w) 20%,var(--surface));
   --bg:#f3ede2; --surface:#fffcf6; --ink:#2b241e; --muted:#76695b; --line:#dcd1c0;
   --accent:#4a3a2c; --accent2:#9a5b24; --soft:#f1e3cf; --m:#6b8aa6; --w:#b0727f; --u:#a59a8c;
   --ok:#2f7a45; --bad:#a8322b; --input:#fffcf6; --tree:#b9a990;
@@ -112,7 +113,7 @@ svg text{font-family:var(--f-body)}
 
 /* Reiter */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
 .tabs a{display:grid;justify-items:center;gap:1px;padding:8px 0 9px;color:var(--muted);text-decoration:none;font-size:12px;font-weight:600}
 .tabs a svg{width:24px;height:24px}
 .tabs a.on{color:var(--accent2)}
@@ -122,6 +123,28 @@ td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-
 .out{font-family:var(--f-head);font-size:26px;letter-spacing:.08em;min-height:1.2em}
 .welcome{max-width:520px;margin:24px auto}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line)}
+.tl li{position:relative;display:grid;grid-template-columns:52px 1fr;gap:8px;padding:8px 0}
+.tl li::before{content:"";position:absolute;left:-21px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--tree)}
+.tl li.me::before{background:var(--accent2);border-color:var(--accent2)}
+.tl li.fam::before{border-color:var(--accent2)}
+.tl li.hist .t{color:var(--muted);font-style:italic}
+.tl .y{font-family:var(--f-head);font-weight:600;font-size:17px}
+.tl li.me .t{font-weight:600}
+.btop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.btop .seg{flex:0 0 auto}
+.btop .seg button{padding:6px 14px;font-size:14px}
+#pTitle{display:none}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--ink:#222;--muted:#555;--line:#ccc;--tree:#999;--accent2:#8a4f1c;--fanm:#e3ebf2;--fanw:#f4e3e6;color-scheme:light}
+  body.printing{padding:0;background:#fff}
+  body.printing #gate,body.printing .tabs,body.printing #sheet,body.printing #viewer,body.printing .view:not(#v-baum),body.printing #v-baum .pad,body.printing .zoom,body.printing .hint{display:none!important}
+  body.printing [data-add]{display:none}
+  body.printing #pTitle{display:block;font-family:var(--f-head);font-size:18pt;margin:0 0 4mm}
+  body.printing .treebox{height:auto;min-height:0;border:0;background:none}
+  body.printing #tsvg{height:170mm;width:100%}
+  @page{size:A4 landscape;margin:10mm}
+}
 </style>
 </head><body>
 
@@ -151,8 +174,10 @@ td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-
   <!-- Baum -->
   <section id="v-baum" class="view" hidden>
     <div class="pad top"><div><div class="eyebrow">Stammbaum</div><h1 id="bTitle">–</h1></div>
-      <button class="btn small" id="bOpen" type="button">Personenblatt</button></div>
-    <div class="pad" id="bBanner"></div>
+      </div>
+    <div class="pad btop"><div class="seg" id="bMode"><button type="button" data-m="baum">Baum</button><button type="button" data-m="fan">Fächer</button></div>
+      <button class="btn small" id="bOpen" type="button">Personenblatt</button><button class="btn small" id="bPrint" type="button">Drucken</button></div>
+    <div class="pad" id="bBanner"></div><h1 id="pTitle"></h1>
     <div class="treebox" id="tbox"><svg id="tsvg" aria-label="Stammbaum"></svg>
       <div class="hint" id="thint">Tippen: Person in die Mitte holen · Ziehen: verschieben</div>
       <div class="zoom"><button type="button" id="zIn" aria-label="Vergrößern">+</button><button type="button" id="zOut" aria-label="Verkleinern">−</button><button type="button" id="zHome" aria-label="Zur Hauptperson">⌂</button></div>
@@ -173,7 +198,9 @@ td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-
 
   <!-- Forschen -->
   <section id="v-forschen" class="view" hidden>
-    <div class="eyebrow">Forschungs-Assistent</div><h1>Wo suche ich weiter?</h1>
+    <div class="eyebrow">Forschen</div><h1 id="fH">Wo suche ich weiter?</h1>
+    <div class="seg" id="fSeg" style="margin:10px 0"><button type="button" data-t="ass">Assistent</button><button type="button" data-t="lese">Lesehilfe Kirchenbuch</button></div>
+    <div id="fAss">
     <p class="sub">Für jede Person zeigt die App, welche Urkunden es gibt und wo sie heute liegen. Vorfahren der Hauptperson stehen oben.</p>
     <details class="card" style="margin:12px 0"><summary style="cursor:pointer;font-weight:600">So funktionieren die Fristen</summary>
       <div class="note" style="margin-top:8px">
@@ -183,7 +210,14 @@ td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-
       <p>Vorher stellt das <b>Standesamt</b> Urkunden nur für die Person selbst, Ehegatten, Vorfahren und Nachkommen aus (Abstammung nachweisen). Geschwister brauchen ein berechtigtes Interesse.</p>
       <p>Kirchenbücher online: evangelisch bei <a href="https://www.archion.de" target="_blank" rel="noopener">Archion</a> (kostenpflichtig), katholisch teils kostenlos bei <a href="https://data.matricula-online.eu/de/" target="_blank" rel="noopener">Matricula</a>, vieles auch kostenlos bei <a href="https://www.familysearch.org/de/" target="_blank" rel="noopener">FamilySearch</a>.</p>
       </div></details>
-    <div class="list" id="flist"></div>
+    <div class="list" id="flist"></div></div><div id="fLese" hidden></div>
+  </section>
+
+  <!-- Entdecken -->
+  <section id="v-entdecken" class="view" hidden>
+    <div class="eyebrow">Entdecken</div><h1>Familie entdecken</h1>
+    <div class="seg" id="eSeg" style="margin:10px 0"><button type="button" data-t="verw">Verwandt?</button><button type="button" data-t="zeit">Zeitleiste</button><button type="button" data-t="karte">Karte</button></div>
+    <div id="eBox"></div>
   </section>
 
   <!-- Mehr -->
@@ -234,6 +268,7 @@ td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-
 <nav class="tabs" id="tabs" hidden><div class="in">
   <a href="#baum" data-v="baum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="4.5" rx="1"/><rect x="2.5" y="16.5" width="6" height="4.5" rx="1"/><rect x="15.5" y="16.5" width="6" height="4.5" rx="1"/><path d="M12 7v5M5.5 16.5V12h13v4.5"/></svg>Baum</a>
   <a href="#personen" data-v="personen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></svg>Personen</a>
+  <a href="#entdecken" data-v="entdecken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>Entdecken</a>
   <a href="#forschen" data-v="forschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 6 6"/></svg>Forschen</a>
   <a href="#mehr" data-v="mehr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>Mehr</a>
 </div></nav>
@@ -301,7 +336,7 @@ function route(){let h=location.hash.slice(1)||"baum";let [v,arg]=h.split("/");
   if(v==="person"&&(!arg||!P(arg)))v="personen";
   view=v;document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="v-"+v);
   document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===v||(v==="person"&&a.dataset.v==="personen")));
-  if(v==="baum")drawTree(true);else if(v==="personen")drawList();else if(v==="person"){cur=arg;drawPerson()}else if(v==="forschen")drawResearch();else if(v==="mehr")drawMehr();
+  if(v==="baum")drawTree(true);else if(v==="personen")drawList();else if(v==="person"){cur=arg;drawPerson()}else if(v==="forschen")drawResearch();else if(v==="entdecken")drawEntdecken();else if(v==="mehr")drawMehr();
   window.scrollTo(0,0)}
 addEventListener("hashchange",route);
 function go(h){if(location.hash==="#"+h)route();else location.hash=h}
@@ -312,7 +347,7 @@ const BW=132,BH=70,SX=146,RH=112;
 let VB={x:0,y:0,w:400,h:400}, Z=1, nodes=[];
 function sexCol(p){return p&&p.sex==="m"?"var(--m)":p&&p.sex==="w"?"var(--w)":"var(--u)"}
 function trunc(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s}
-function drawTree(recenter){
+function drawTree(recenter){document.querySelectorAll("#bMode button").forEach(b=>b.classList.toggle("on",b.dataset.m===treeMode));if(treeMode==="fan")return drawFan(recenter);
   if(!T.proband||!P(T.proband)){const ids=Object.keys(T.persons);T.proband=ids[0]||null}
   if(!focus||!P(focus))focus=T.proband; if(!focus){go("start");return}
   const F=focus, fp=P(F);$("bTitle").textContent=fullName(fp);
@@ -376,7 +411,7 @@ function drawTree(recenter){
 let BB=null;
 function yr(e){return e?year(e.d):null}
 function fit(){const box=$("tbox"),cw=box.clientWidth||360,ch=box.clientHeight||500;
-  const bw=BB.x1-BB.x0,bh=BB.y1-BB.y0;Z=Math.max(.78,Math.min(1.1,cw/bw,ch/bh));
+  const bw=BB.x1-BB.x0,bh=BB.y1-BB.y0;Z=Math.max(BB.minZ||.78,Math.min(1.1,cw/bw,ch/bh));
   VB.w=cw/Z;VB.h=ch/Z;
   VB.x=bw<=VB.w?BB.x0-(VB.w-bw)/2:Math.min(Math.max(BB.fx-VB.w/2,BB.x0),BB.x1-VB.w);
   VB.y=bh<=VB.h?BB.y0-(VB.h-bh)/2:Math.min(Math.max(BB.fy-VB.h*.55,BB.y0),BB.y1-VB.h);applyVB()}
@@ -431,7 +466,7 @@ function drawPerson(){const p=P(cur);if(!p){go("personen");return}const id=cur,k
   const fa=fatherOf(id),mo=motherOf(id),sib=siblingsOf(id),sf=spouseFams(id);
   let h=`<button class="back" type="button" onclick="history.length>1?history.back():go('personen')">‹ Zurück</button>
   <div class="phead">${avatar(p)}<div><div class="eyebrow">${k?esc(relLabel(k))+" · Ahnennr. "+k:id===T.proband?"Hauptperson":"Person"}</div><h1>${esc(fullName(p))}</h1>${p.geburtsname?`<p class="sub">geborene/r ${esc(p.geburtsname)}</p>`:""}<p class="sub">${esc(lifeTxt(p))}</p></div></div>
-  <div class="row" style="margin:12px 0"><button class="btn primary" type="button" id="pEdit">Bearbeiten</button><button class="btn" type="button" id="pTree">Im Baum zeigen</button><button class="btn" type="button" id="pFoto">${p.foto?"Foto ändern":"Foto hinzufügen"}</button></div>
+  <div class="row" style="margin:12px 0"><button class="btn primary" type="button" id="pEdit">Bearbeiten</button><button class="btn" type="button" id="pTree">Im Baum zeigen</button><button class="btn" type="button" id="pIv">Interview führen</button><button class="btn" type="button" id="pFoto">${p.foto?"Foto ändern":"Foto hinzufügen"}</button></div>
   <section class="card"><h2 style="margin:0 0 4px">Lebensdaten</h2>${evRows(p)}</section>
   <section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Familie</h2><div class="rel">
    <div class="lab">Eltern</div>${fa?pLink(fa.id," <span class='yr'>Vater</span>"):""}${mo?pLink(mo.id," <span class='yr'>Mutter</span>"):""}
@@ -445,6 +480,7 @@ function drawPerson(){const p=P(cur);if(!p){go("personen");return}const id=cur,k
   <section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Urkunden, Fotos, Dokumente</h2><p class="sub" style="margin-bottom:8px">Fotos von Urkunden, Kirchenbuch-Einträgen, Briefen oder alten Bildern.</p>
    <div class="media" id="pMedia"></div><div class="row" style="margin-top:8px"><button class="btn" type="button" id="pAddM">+ Bild oder PDF</button></div></section>
   <section class="card" style="margin-top:10px"><h2 style="margin:0 0 6px">Wo suche ich weiter?</h2><div class="stack">${tipsFor(id).map(t=>`<div class="tip ${t.ok?"ok":""}">${t.h}</div>`).join("")||`<p class="sub">Alles Wichtige ist eingetragen.</p>`}</div></section>
+  ${interviewHTML(p)}
   ${p.notiz?`<section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Notizen und Erzählungen</h2><p style="white-space:pre-wrap;margin:0">${esc(p.notiz)}</p></section>`:""}
   <div class="row" style="margin-top:16px"><button class="btn small" type="button" id="pProb">${id===T.proband?"Ist Hauptperson":"Als Hauptperson festlegen"}</button><button class="btn small" type="button" id="pMerge">Doppelte Person zusammenführen</button><button class="btn small danger" type="button" id="pDel">Person löschen</button></div>`;
   const v=$("v-person");v.innerHTML=h;
@@ -452,6 +488,7 @@ function drawPerson(){const p=P(cur);if(!p){go("personen");return}const id=cur,k
   v.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>addRel(id,b.dataset.add));
   v.querySelectorAll("[data-fam]").forEach(b=>b.onclick=()=>editFam(b.dataset.fam));
   $("pEdit").onclick=()=>editPerson(id);$("pTree").onclick=()=>{focus=id;go("baum")};
+  $("pIv").onclick=()=>interview(id);fillAudio();
   $("pFoto").onclick=()=>pickFile("image/*",f=>setPortrait(id,f));
   $("pAddM").onclick=()=>pickFile("image/*,application/pdf",f=>addMedia(id,f),true);
   $("pProb").onclick=()=>{T.proband=id;save();refresh()};
@@ -463,7 +500,7 @@ function armed(btn,txt,fn){let t=null;const orig=btn.textContent;btn.onclick=()=
 async function drawMedia(id){const p=P(id),box=$("pMedia");if(!box)return;const m=p.media||[];
   if(!m.length){box.innerHTML=`<p class="sub" style="grid-column:1/-1">Noch nichts angehängt.</p>`;return}
   await Promise.all(m.map(x=>mediaURL(x.id)));if(cur!==id||!$("pMedia"))return;
-  box.innerHTML=m.map((x,i)=>`<button type="button" data-m="${i}">${x.typ==="pdf"?`<div style="display:grid;place-items:center;height:100%;font-size:30px">📄</div>`:`<img src="${URLS[x.id]||""}" alt="">`}<span>${esc(x.titel||"ohne Titel")}</span></button>`).join("");
+  box.innerHTML=m.map((x,i)=>`<button type="button" data-m="${i}">${x.typ==="pdf"||x.typ==="audio"?`<div style="display:grid;place-items:center;height:100%;font-size:30px">${x.typ==="pdf"?"📄":"🎙"}</div>`:`<img src="${URLS[x.id]||""}" alt="">`}<span>${esc(x.titel||"ohne Titel")}</span></button>`).join("");
   box.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>openViewer(id,+b.dataset.m))}
 
 /* ---------- Dateien ---------- */
@@ -480,9 +517,9 @@ async function addMedia(id,file){const p=P(id);const pdf=file.type==="applicatio
   const b=pdf?file:await shrink(file,2000,.85);const mid=uid();await putMedia(mid,b);
   (p.media=p.media||[]).push({id:mid,typ:pdf?"pdf":"bild",titel:file.name.replace(/\.[a-z0-9]+$/i,"").slice(0,60),datum:today()});save();if(view==="person"&&cur===id)drawMedia(id)}
 function openViewer(id,i){const p=P(id),m=p.media[i],v=$("viewer"),u=URLS[m.id];
-  v.innerHTML=`<div class="im">${m.typ==="pdf"?`<a class="btn primary" href="${u}" target="_blank" rel="noopener">PDF öffnen</a>`:`<img src="${u}" alt="">`}</div>
+  v.innerHTML=`<div class="im">${m.typ==="audio"?`<audio controls src="${u}" style="width:90%"></audio>`:m.typ==="pdf"?`<a class="btn primary" href="${u}" target="_blank" rel="noopener">PDF öffnen</a>`:`<img src="${u}" alt="">`}</div>
   <div class="bar"><div><label for="vT">Titel</label><input id="vT" value="${esc(m.titel||"")}" placeholder="z. B. Geburtsurkunde 1921"></div>
-  <div class="row"><button class="btn primary" type="button" id="vOk">Fertig</button>${m.typ==="pdf"?"":`<button class="btn" type="button" id="vPort">Als Porträt</button>`}<button class="btn danger" type="button" id="vDel">Löschen</button></div></div>`;
+  <div class="row"><button class="btn primary" type="button" id="vOk">Fertig</button>${m.typ!=="bild"?"":`<button class="btn" type="button" id="vPort">Als Porträt</button>`}<button class="btn danger" type="button" id="vDel">Löschen</button></div></div>`;
   v.hidden=false;
   $("vOk").onclick=()=>{m.titel=$("vT").value.trim();save();v.hidden=true;drawMedia(id)};
   if($("vPort"))$("vPort").onclick=async()=>{const b=await getMedia(m.id);await setPortrait(id,b);v.hidden=true};
@@ -597,7 +634,7 @@ function tipsFor(id){const p=P(id),t=[],b=year(ev(p,"geb").d)||year(ev(p,"taufe"
   const d=year(ev(p,"tod").d);if(d)t.push(archTip("Tod",d,30,ev(p,"tod").o,p.konf));else if(isDead(p)&&b)t.push({h:`<b>Sterbedatum unbekannt.</b> Friedhofsverwaltung, Grabstein, Nachlassakten beim Amtsgericht oder Sterbeanzeigen in alten Zeitungen helfen weiter.`});
   const missQ=EVN.filter(([k])=>ev(p,k).d&&!ev(p,k).q).map(x=>x[1]);if(missQ.length)t.push({h:`<b>Quelle fehlt</b> bei: ${missQ.join(", ")}. Notiere, woher die Angabe stammt – später weiß man es sonst nicht mehr.`});
   return t}
-function drawResearch(){const all=Object.values(T.persons).sort((a,b)=>(KEK[a.id]||1e9)-(KEK[b.id]||1e9)||(fullName(a)).localeCompare(fullName(b),"de"));
+function drawResearch(){document.querySelectorAll("#fSeg button").forEach(b=>b.classList.toggle("on",b.dataset.t===fTab));$("fAss").hidden=fTab!=="ass";$("fLese").hidden=fTab!=="lese";$("fH").textContent=fTab==="ass"?"Wo suche ich weiter?":"Alte Kirchenbücher lesen";if(fTab==="lese"){drawLese($("fLese"));return}const all=Object.values(T.persons).sort((a,b)=>(KEK[a.id]||1e9)-(KEK[b.id]||1e9)||(fullName(a)).localeCompare(fullName(b),"de"));
   $("flist").innerHTML=all.map(p=>{const t=tipsFor(p.id).filter(x=>!x.ok||true);const open=t.filter(x=>!x.ok).length;
     return `<details class="card"><summary style="cursor:pointer;display:flex;gap:10px;align-items:center;list-style:none">${avatar(p)}<span style="flex:1"><b>${esc(fullName(p))}</b>${KEK[p.id]?`<span class="kek">${KEK[p.id]}</span>`:""}<br><span class="sub">${[esc(lifeTxt(p)),open?open+(open===1?" offener Punkt":" offene Punkte"):"alles erledigt"].filter(Boolean).join(" · ")}</span></span></summary><div class="stack" style="margin-top:10px">${t.map(x=>`<div class="tip ${x.ok?"ok":""}">${x.h}</div>`).join("")}<button class="btn small" type="button" onclick="go('person/${p.id}')">Zur Person</button></div></details>`}).join("")||`<p class="sub">Noch keine Personen.</p>`;
   preloadFotos(all.map(p=>p.id)).then(r=>{if(r&&view==="forschen")drawResearch()})}
@@ -671,6 +708,218 @@ $("mGedIn").onclick=()=>pickFile(".ged,text/plain",async f=>{try{const recs=pars
 armed($("mWipe"),"Wirklich ALLES löschen?",async()=>{await op("media","readwrite",s=>s.clear());T=emptyTree();await saveNow();focus=null;calcKek();go("start")});
 $("startMe").onclick=()=>editPerson(null,{kind:"proband"});
 let persisted=false;
+
+/* ================= Stufe 2 ================= */
+/* ---------- Fächer-Ansicht ---------- */
+let treeMode=ls.get("ahnen.mode","baum");
+const FR=[0,78,156,236,326,426,536];
+function arcPath(r0,r1,a0,a1){const R=Math.PI/180,p=(r,a)=>`${(r*Math.cos(a*R)).toFixed(1)} ${(r*Math.sin(a*R)).toFixed(1)}`,lg=a1-a0>180?1:0;
+  return `M${p(r1,a0)}A${r1} ${r1} 0 ${lg} 1 ${p(r1,a1)}L${p(r0,a1)}A${r0} ${r0} 0 ${lg} 0 ${p(r0,a0)}Z`}
+function drawFan(recenter){
+  if(!focus||!P(focus))focus=T.proband;const F=focus;if(!F){go("start");return}$("bTitle").textContent=fullName(P(F));
+  const num={1:F};let maxG=0;
+  for(let n=1;n<64;n++){const id=num[n];if(!id)continue;maxG=Math.max(maxG,genOf(n));const f=parentsFam(id);if(f){if(f.a&&P(f.a))num[2*n]=f.a;if(f.b&&P(f.b))num[2*n+1]=f.b}}
+  const G=Math.min(5,Math.max(3,maxG+1));let h=`<defs><clipPath id="cp"><circle cx="0" cy="0" r="17"/></clipPath></defs>`;nodes=[];
+  const fp=P(F);h+=`<g data-id="${F}" style="cursor:pointer"><path d="${arcPath(0.01,FR[1],180,360)}" fill="var(--surface)" stroke="var(--accent2)" stroke-width="2"/>`+
+    `<text x="0" y="-38" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">${esc(trunc(fp.vorname||"?",12))}</text><text x="0" y="-21" text-anchor="middle" font-size="13" fill="var(--ink)">${esc(trunc(fp.nachname||"",12))}</text><text x="0" y="-6" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(lifeTxt(fp))}</text></g>`;
+  for(let g=1;g<=G;g++){const cnt=2**g,span=180/cnt,r0=FR[g],r1=FR[g+1],rc=(r0+r1)/2;
+    for(let i=0;i<cnt;i++){const n=cnt+i,id=num[n],a0=180+i*span,a1=a0+span,ac=(a0+a1)/2,R=Math.PI/180,cx=rc*Math.cos(ac*R),cy=rc*Math.sin(ac*R);
+      const side=i<cnt/2?"var(--fanm)":"var(--fanw)";
+      if(id){const p=P(id);h+=`<g data-id="${id}" style="cursor:pointer"><path d="${arcPath(r0,r1,a0,a1)}" fill="${side}" stroke="var(--surface)" stroke-width="2"/>`;
+        const fs=g<=2?15:g===3?13:g===4?12:11,ln=[p.vorname||"?",p.nachname||"",lifeTxt(p)];
+        if(g<=2){const rot=ac+90;h+=`<g transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${rot.toFixed(1)})">`+ln.map((t,k)=>`<text y="${(k-1)*17+5}" text-anchor="middle" font-size="${k===2?12:fs}" ${k===0?'font-weight="700"':""} fill="${k===2?"var(--muted)":"var(--ink)"}">${esc(trunc(t,g===1?18:15))}</text>`).join("")+`</g>`}
+        else{const flip=ac<270,rot=flip?ac+180:ac;const lines=g===3?ln:[(p.vorname||"?").split(" ")[0]+" "+(p.nachname||""),lifeTxt(p)];const lh=g===3?15:13,off=(lines.length-1)/2;
+          h+=`<g transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${rot.toFixed(1)})">`+lines.map((t,k)=>`<text y="${((k-off)*lh+4).toFixed(1)}" text-anchor="middle" font-size="${k>0&&/\d/.test(t)?11:fs}" ${k===0?'font-weight="700"':""} fill="${k>0&&/\d/.test(t)?"var(--muted)":"var(--ink)"}">${esc(trunc(t,g===3?13:16))}</text>`).join("")+`</g>`}
+        h+=`</g>`}
+      else{const child=num[n>>1];
+        if(child)h+=`<g data-add="${n%2?"mutter":"vater"}" data-child="${child}" style="cursor:pointer"><path d="${arcPath(r0+3,r1-3,a0+.6,a1-.6)}" fill="var(--surface)" fill-opacity=".55" stroke="var(--tree)" stroke-dasharray="4 4"/><text x="${cx.toFixed(1)}" y="${(cy+5).toFixed(1)}" text-anchor="middle" font-size="${g<=3?14:12}" fill="var(--accent2)" font-weight="700">+</text></g>`;
+        else h+=`<path d="${arcPath(r0+3,r1-3,a0+.6,a1-.6)}" fill="none" stroke="var(--line)" stroke-dasharray="2 5"/>`}}}
+  const RR=FR[G+1];h+=`<text x="${-RR+6}" y="22" font-size="13" fill="var(--muted)">väterlicherseits</text><text x="${RR-6}" y="22" text-anchor="end" font-size="13" fill="var(--muted)">mütterlicherseits</text>`;
+  $("tsvg").innerHTML=h;BB={x0:-RR-12,x1:RR+12,y0:-RR-12,y1:36,fx:0,fy:-RR/2,minZ:.3};
+  if(recenter){const box=$("tbox"),cw=box.clientWidth||360,ch=box.clientHeight||500,fr=FR[Math.min(G,3)+1];Z=Math.max(.3,Math.min(1.1,cw/(2*fr+24),ch/(fr+60)));VB.w=cw/Z;VB.h=ch/Z;VB.x=-VB.w/2;VB.y=Math.min(40,VB.h*.5-fr*.5)-VB.h+fr*0+ (VB.h-(fr+60))/2*-1+0;VB.y=36+10-VB.h+Math.max(0,(VB.h-(fr+60))/2);applyVB()}else applyVB();$("bOpen").onclick=()=>go("person/"+F);drawBanner()}
+function setMode(m){treeMode=m;ls.set("ahnen.mode",m);document.querySelectorAll("#bMode button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));drawTree(true)}
+document.querySelectorAll("#bMode button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+/* ---------- Plakat drucken ---------- */
+function printTree(){const sv=$("tsvg"),old=sv.getAttribute("viewBox");sv.setAttribute("viewBox",`${BB.x0} ${BB.y0} ${BB.x1-BB.x0} ${BB.y1-BB.y0}`);
+  $("pTitle").textContent=(treeMode==="fan"?"Ahnenfächer ":"Stammbaum ")+fullName(P(focus))+" · Stand "+today();document.body.classList.add("printing");
+  const done=()=>{document.body.classList.remove("printing");sv.setAttribute("viewBox",old);removeEventListener("afterprint",done)};addEventListener("afterprint",done);
+  setTimeout(()=>{window.print();setTimeout(()=>{if(document.body.classList.contains("printing")&&!matchMedia("print").matches)done()},1500)},60)}
+$("bPrint").onclick=printTree;
+
+/* ---------- Verwandtschaftsrechner ---------- */
+function ancMap(id){const m=new Map([[id,{d:0,via:null}]]),q=[id];while(q.length){const x=q.shift(),d=m.get(x).d;if(d>40)continue;const f=parentsFam(x);if(!f)continue;
+  [f.a,f.b].forEach(p=>{if(p&&P(p)&&!m.has(p)){m.set(p,{d:d+1,via:x});q.push(p)}})}return m}
+const sx=(p,m,w,u)=>p&&p.sex==="m"?m:p&&p.sex==="w"?w:(u||m+"/"+w);
+function urs(n){return n<=3?"Ur"+"ur".repeat(n-1):n+"-fach-Ur"}
+function bloodName(dA,dB,B,half){
+  if(dA===0&&dB===0)return"dieselbe Person";
+  if(dB===0){if(dA===1)return sx(B,"Vater","Mutter","Elternteil");if(dA===2)return sx(B,"Großvater","Großmutter","Großelternteil");const u=urs(dA-2);return sx(B,u+"großvater",u+"großmutter",u+"großelternteil")}
+  if(dA===0){if(dB===1)return sx(B,"Sohn","Tochter","Kind");if(dB===2)return sx(B,"Enkel","Enkelin");const u=urs(dB-2);return sx(B,u+"enkel",u+"enkelin")}
+  if(dA===1&&dB===1)return (half?"Halb":"")+sx(B,"bruder","schwester","geschwister").replace(/^./,c=>half?c:c.toUpperCase());
+  if(dA===1){if(dB===2)return sx(B,"Neffe","Nichte");return (dB===3?"Groß":urs(dB-3)+"groß")+sx(B,"neffe","nichte")}
+  if(dB===1){if(dA===2)return sx(B,"Onkel","Tante");return (dA===3?"Groß":urs(dA-3)+"groß")+sx(B,"onkel","tante")}
+  const k=Math.min(dA,dB)-1,v=Math.abs(dA-dB);let s=sx(B,"Cousin","Cousine")+(k>1?` ${k}. Grades`:"");if(k===2&&!v)s+=` (${sx(B,"Großcousin","Großcousine")})`;
+  if(v)s+=`, ${v} Generation${v>1?"en":""} ${dB>dA?"jünger":"älter"}`;return s}
+function bloodRel(a,b){const A=ancMap(a),Bm=ancMap(b);let best=1e9;const com=[];A.forEach((va,id)=>{const vb=Bm.get(id);if(vb){const s=va.d+vb.d;if(s<best){best=s;com.length=0}if(s===best)com.push(id)}});
+  if(!com.length)return null;
+  // nur "tiefste" gemeinsame Vorfahren für den Anteil
+  const all=[];A.forEach((va,id)=>{const vb=Bm.get(id);if(vb)all.push(id)});
+  const lowest=all.filter(c=>!all.some(o=>o!==c&&ancMap(o).has(c)));
+  const share=lowest.reduce((s,c)=>s+Math.pow(.5,A.get(c).d+Bm.get(c).d),0);
+  const c=com[0],dA=A.get(c).d,dB=Bm.get(c).d;
+  const half=dA===1&&dB===1&&parentsFam(a)!==parentsFam(b);
+  const pathA=[];let y=c;while(y){pathA.unshift(y);y=A.get(y).via}const pathB=[];y=c;while(y){pathB.push(y);y=Bm.get(y).via}
+  return{dA,dB,com:com.filter(z=>A.get(z).d===dA),half,share,path:pathA.concat(pathB.slice(1))}}
+function relation(a,b){const Bp=P(b);if(a===b)return{txt:"Das ist dieselbe Person."};
+  const r=bloodRel(a,b);
+  if(r){const nm=bloodName(r.dA,r.dB,Bp,r.half);const gerade=r.dA===0||r.dB===0;
+    return{txt:`${fullName(Bp)} ist ${art(Bp,nm)} ${nm} von ${fullName(P(a))}.`,blood:true,grad:r.dA+r.dB,gerade,share:r.share,com:r.com,path:r.path}}
+  // verheiratet / verschwägert
+  const sp=spouseFams(a).map(f=>partnerIn(f,a)).filter(P);
+  if(sp.includes(b))return{txt:`${fullName(Bp)} ist ${sx(Bp,"der Ehemann","die Ehefrau","Partner/in")} von ${fullName(P(a))}.`,path:[a,b]};
+  for(const s of sp){const r2=bloodRel(s,b);if(r2){const nm=bloodName(r2.dA,r2.dB,Bp,r2.half);const special=r2.dA===1&&r2.dB===0?sx(Bp,"Schwiegervater","Schwiegermutter"):r2.dA===1&&r2.dB===1?sx(Bp,"Schwager","Schwägerin"):r2.dA===2&&r2.dB===0?sx(Bp,"Schwiegergroßvater","Schwiegergroßmutter"):null;
+    return{txt:special?`${fullName(Bp)} ist ${art(Bp,special)} ${special} von ${fullName(P(a))}.`:`${fullName(Bp)} ist ${art(Bp,nm)} ${nm} von ${fullName(P(s))} (${sx(P(s),"Ehemann","Ehefrau","Partner/in")} von ${fullName(P(a))}).`,inlaw:true,path:[a,...r2.path]}}}
+  const bs=spouseFams(b).map(f=>partnerIn(f,b)).filter(P);
+  for(const s of bs){const r2=bloodRel(a,s);if(r2){const nm=bloodName(r2.dA,r2.dB,P(s),r2.half);const special=r2.dA===0&&r2.dB===1?sx(Bp,"Schwiegersohn","Schwiegertochter"):r2.dA===1&&r2.dB===1?sx(Bp,"Schwager","Schwägerin"):r2.dA===0&&r2.dB===2?sx(Bp,"angeheirateter Enkel","angeheiratete Enkelin"):null;
+    return{txt:special?`${fullName(Bp)} ist ${art(Bp,special)} ${special} von ${fullName(P(a))}.`:`${fullName(Bp)} ist mit ${fullName(P(s))} verheiratet, ${art(P(s),nm)} ${nm} von ${fullName(P(a))}.`,inlaw:true,path:[...r2.path,b]}}}
+  return{txt:`Zwischen ${fullName(P(a))} und ${fullName(Bp)} ist im Stammbaum keine Verbindung eingetragen.`}}
+function art(p,nm){return p&&p.sex==="m"?"der":p&&p.sex==="w"?"die":(/kind|teil|geschwister/i.test(nm)?"ein":"der/die")}
+function drawVerw(box){const all=Object.values(T.persons).sort((x,y)=>fullName(x).localeCompare(fullName(y),"de"));
+  const opt=sel=>all.map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(fullName(p)+(lifeTxt(p)?" ("+lifeTxt(p)+")":""))}</option>`).join("");
+  const a0=ls.get("ahnen.vA",T.proband),b0=ls.get("ahnen.vB",null);const A=P(a0)?a0:T.proband,B=P(b0)?b0:(all.find(p=>p.id!==A)||{}).id;
+  box.innerHTML=`<p class="sub">Wähle zwei Personen. Die App sagt, wie sie verwandt sind – auch über mehrere Ecken.</p>
+   <div class="stack" style="margin:12px 0"><div><label for="vA">Person 1</label><select id="vA">${opt(A)}</select></div>
+   <div style="text-align:center"><button class="btn small" type="button" id="vSw">⇅ tauschen</button></div>
+   <div><label for="vB">Person 2</label><select id="vB">${opt(B)}</select></div></div><div id="vOut"></div>`;
+  const run=()=>{const a=$("vA").value,b=$("vB").value;ls.set("ahnen.vA",a);ls.set("ahnen.vB",b);if(!a||!b)return;const r=relation(a,b);
+    let h=`<div class="card"><p style="font-family:var(--f-head);font-size:21px;line-height:1.3;margin:0 0 8px">${esc(r.txt)}</p>`;
+    if(r.blood){if(!r.gerade)h+=`<div class="ev"><b>Gemeinsam</b><span>${r.com.map(c=>esc(fullName(P(c)))).join(" und ")}</span></div>`;
+      h+=`<div class="ev"><b>Grad</b><span>${r.grad}. Grades in ${r.gerade?"gerader Linie":"der Seitenlinie"} <span class="sub">(§ 1589 BGB: Zahl der Geburten dazwischen)</span></span></div>`;
+      h+=`<div class="ev"><b>Erbgut</b><span>im Schnitt etwa ${fmtPct(r.share)} gemeinsam</span></div>`}
+    if(r.path&&r.path.length>1)h+=`<div class="lab sub" style="margin-top:10px">Verbindung im Stammbaum</div><div class="row" style="margin-top:4px">${r.path.map((id,i)=>`${i?"<span class='sub'>›</span>":""}<button class="chip" style="border-style:solid" data-p="${id}">${esc(fullName(P(id)))}</button>`).join("")}</div>`;
+    h+=`</div>`;$("vOut").innerHTML=h;$("vOut").querySelectorAll("[data-p]").forEach(x=>x.onclick=()=>go("person/"+x.dataset.p))};
+  $("vA").onchange=run;$("vB").onchange=run;$("vSw").onclick=()=>{const t=$("vA").value;$("vA").value=$("vB").value;$("vB").value=t;run()};run()}
+function fmtPct(x){const v=x*100;return (v>=10?Math.round(v):v>=1?v.toFixed(1):v.toFixed(2)).toString().replace(".",",")+" %"}
+
+/* ---------- Zeitleiste ---------- */
+const HIST=[[1806,"Ende des Heiligen Römischen Reiches"],[1815,"Wiener Kongress: Rheinland und Westfalen werden preußisch"],[1835,"Erste deutsche Eisenbahn (Nürnberg–Fürth)"],[1848,"Märzrevolution"],
+ [1871,"Gründung des Deutschen Kaiserreichs"],[1874,"Standesämter in Preußen (ab 1. Oktober)"],[1876,"Standesämter im ganzen Deutschen Reich"],[1883,"Gesetzliche Krankenversicherung"],[1889,"Gesetz über die Invaliditäts- und Altersversicherung – die erste Rente"],
+ [1900,"Das Bürgerliche Gesetzbuch (BGB) tritt in Kraft"],[1914,"Beginn des Ersten Weltkriegs"],[1918,"Ende des Ersten Weltkriegs, Novemberrevolution, Frauenwahlrecht, 8-Stunden-Tag"],[1919,"Weimarer Verfassung"],
+ [1923,"Ruhrbesetzung durch Frankreich und Belgien, Hyperinflation"],[1929,"Weltwirtschaftskrise"],[1933,"Machtübernahme der Nationalsozialisten, Gewerkschaften werden zerschlagen"],[1939,"Beginn des Zweiten Weltkriegs"],
+ [1943,"Schwere Luftangriffe auf das Ruhrgebiet"],[1945,"Ende des Zweiten Weltkriegs, Flucht und Vertreibung"],[1948,"Währungsreform: die D-Mark kommt"],[1949,"Gründung der Bundesrepublik und der DDR"],
+ [1951,"Montan-Mitbestimmung in Kohle und Stahl"],[1955,"Erstes Anwerbeabkommen für Gastarbeiter (Italien)"],[1957,"Rentenreform: dynamische Rente"],[1961,"Bau der Berliner Mauer"],[1969,"Erste Mondlandung"],
+ [1973,"Ölkrise, autofreie Sonntage"],[1976,"Mitbestimmungsgesetz"],[1984,"Streik der IG Metall für die 35-Stunden-Woche"],[1989,"Fall der Berliner Mauer"],[1990,"Deutsche Einheit"],
+ [1995,"35-Stunden-Woche in der westdeutschen Metall- und Elektroindustrie"],[2002,"Der Euro wird Bargeld"],[2020,"Corona-Pandemie"]];
+function lifeEvents(id){const p=P(id),L=[];const add=(y,t,k)=>{if(y)L.push({y,t,k})};const b=year(ev(p,"geb").d)||year(ev(p,"taufe").d);
+  add(b,`Geburt${ev(p,"geb").o?" in "+ev(p,"geb").o:""}`,"me");
+  spouseFams(id).forEach(f=>{const o=P(partnerIn(f,id));add(yr(f.heirat),`Heirat${o?" mit "+fullName(o):""}${f.heirat&&f.heirat.o?" in "+f.heirat.o:""}`,"me");
+    f.kinder.filter(P).forEach(k=>add(year(ev(P(k),"geb").d),`Geburt ${sx(P(k),"des Sohnes","der Tochter","des Kindes")} ${P(k).vorname||""}`,"fam"));
+    if(o)add(year(ev(o,"tod").d),`Tod ${sx(o,"des Ehemannes","der Ehefrau","des Partners")} ${o.vorname||""}`,"fam")});
+  [fatherOf(id),motherOf(id)].filter(Boolean).forEach(q=>add(year(ev(q,"tod").d),`Tod ${sx(q,"des Vaters","der Mutter")} ${q.vorname||""}`,"fam"));
+  childrenOf(id).forEach(k=>childrenOf(k).forEach(e=>add(year(ev(P(e),"geb").d),`Geburt ${sx(P(e),"des Enkels","der Enkelin","des Enkelkindes")} ${P(e).vorname||""}`,"fam")));
+  const d=year(ev(p,"tod").d);add(d,`Tod${ev(p,"tod").o?" in "+ev(p,"tod").o:""}`,"me");
+  if(b){const end=d||(isDead(p)?b+80:NOWY);HIST.forEach(([y,t])=>{if(y>=b&&y<=end)L.push({y,t,k:"hist"})})}
+  return{b,d,L:L.sort((x,y)=>x.y-y.y||(x.k==="me"?-1:1))}}
+function drawZeit(box){const all=Object.values(T.persons).sort((x,y)=>fullName(x).localeCompare(fullName(y),"de"));let id=ls.get("ahnen.zP",T.proband);if(!P(id))id=T.proband;
+  box.innerHTML=`<p class="sub">Ein Leben neben der Geschichte: Was war los, als sie oder er so alt war?</p><div style="margin:12px 0"><label for="tlP">Person</label><select id="tlP">${all.map(p=>`<option value="${p.id}" ${p.id===id?"selected":""}>${esc(fullName(p)+(lifeTxt(p)?" ("+lifeTxt(p)+")":""))}</option>`).join("")}</select></div><div id="tlOut"></div>`;
+  const run=()=>{id=$("tlP").value;ls.set("ahnen.zP",id);const{b,L}=lifeEvents(id),p=P(id);
+    if(!b){$("tlOut").innerHTML=`<div class="tip">Für ${esc(fullName(p))} ist noch kein Geburtsjahr eingetragen. Ohne Geburtsjahr kann die App keine Zeitleiste bauen.</div>`;return}
+    $("tlOut").innerHTML=`<ol class="tl">${L.map(e=>{const age=e.y-b;return `<li class="${e.k}"><span class="y">${e.y}</span><span class="t">${e.k==="hist"?`<span class="sub">${esc(p.vorname||"")} war ${age}${age===1?" Jahr":" Jahre"} alt</span><br>`:age>0&&e.k!=="me"||(e.k==="me"&&age>0)?`<span class="sub">mit ${age}</span><br>`:""}${esc(e.t)}</span></li>`}).join("")}</ol>`};
+  $("tlP").onchange=run;run()}
+
+/* ---------- Karte ---------- */
+let LMAP=null,LLAY=null;
+function loadLeaflet(){if(window.L)return Promise.resolve();return new Promise((res,rej)=>{const c=document.createElement("link");c.rel="stylesheet";c.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";document.head.appendChild(c);
+  const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=res;s.onerror=()=>rej(new Error("Karte konnte nicht geladen werden (kein Internet?)"));document.head.appendChild(s)})}
+async function geocode(name){T.geo=T.geo||{};const key=name.trim();if(key in T.geo)return T.geo[key];
+  const tries=[key,key.replace(/\s*\(.*?\)\s*/g," ").trim(),key.split(/[,(]/)[0].trim(),key.split(/[-\/]/)[0].trim(),key.split(/\s+/)[0]].filter((x,i,a)=>x&&a.indexOf(x)===i);
+  for(const t of tries){try{const r=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&name="+encodeURIComponent(t));const j=await r.json();
+    if(j.results&&j.results[0]){const g=j.results[0];return T.geo[key]={lat:g.latitude,lon:g.longitude,n:g.name+(g.admin1?", "+g.admin1:"")+(g.country_code&&g.country_code!=="DE"?" ("+g.country+")":""),ca:t!==key}}}catch(e){return null}}
+  return T.geo[key]=null}
+function placesOf(p){const o=[];[["geb","geboren"],["taufe","getauft"],["tod","gestorben"],["grab","begraben"]].forEach(([k,l])=>{const e=ev(p,k);if(e.o)o.push({o:e.o,l,y:year(e.d)})});
+  spouseFams(p.id).forEach(f=>{if(f.heirat&&f.heirat.o)o.push({o:f.heirat.o,l:"geheiratet",y:yr(f.heirat)})});return o}
+async function drawKarte(box){box.innerHTML=`<p class="sub">Wo die Familie gelebt hat. Linien führen vom Geburtsort zu den Geburtsorten der Eltern – so sieht man, woher die Familie kam.</p>
+  <div class="row" style="margin:10px 0"><label style="display:flex;gap:6px;align-items:center;font-size:15px;color:var(--ink);margin:0"><input type="checkbox" id="kAnc" style="width:auto" ${ls.get("ahnen.kAnc",false)?"checked":""}> nur Vorfahren der Hauptperson</label></div>
+  <div id="kmap" style="height:58vh;min-height:320px;border-radius:12px;border:1px solid var(--line);overflow:hidden"></div><p class="sub" id="kMsg" style="margin-top:6px"></p>
+  <p class="note">Für die Karte werden nur die Ortsnamen an den kostenlosen Ortsdienst von Open-Meteo geschickt, keine Personennamen. Kartendaten © OpenStreetMap.</p>`;
+  $("kAnc").onchange=()=>{ls.set("ahnen.kAnc",$("kAnc").checked);drawKarte(box)};
+  try{await loadLeaflet()}catch(e){$("kMsg").textContent=e.message;return}
+  if(LMAP){LMAP.remove();LMAP=null}
+  LMAP=L.map("kmap",{zoomControl:true,attributionControl:true}).setView([51.4,6.9],6);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap"}).addTo(LMAP);
+  const ppl=Object.values(T.persons).filter(p=>!$("kAnc").checked||KEK[p.id]);
+  const names=[...new Set(ppl.flatMap(p=>placesOf(p).map(x=>x.o.trim())))];$("kMsg").textContent=names.length?`Suche ${names.length} Orte …`:"Noch keine Orte eingetragen.";
+  const geo={};for(const n of names)geo[n]=await geocode(n);save();
+  if(!$("kmap"))return;const by={};const miss=names.filter(n=>!geo[n]);
+  ppl.forEach(p=>placesOf(p).forEach(x=>{const g=geo[x.o.trim()];if(!g)return;const k=g.lat.toFixed(3)+","+g.lon.toFixed(3);(by[k]=by[k]||{g,list:[]}).list.push({p,x})}));
+  const css=getComputedStyle(document.documentElement),acc=css.getPropertyValue("--accent2").trim()||"#9a5b24";const pts=[];
+  Object.values(by).forEach(({g,list})=>{pts.push([g.lat,g.lon]);const m=L.circleMarker([g.lat,g.lon],{radius:Math.min(16,6+list.length*1.6),color:"#fff",weight:2,fillColor:acc,fillOpacity:.9}).addTo(LMAP);
+    m.bindPopup(`<b>${esc(g.n)}</b><br>`+list.slice(0,25).map(({p,x})=>`<a href="#person/${p.id}">${esc(fullName(p))}</a> – ${x.l}${x.y?" "+x.y:""}`).join("<br>")+(list.length>25?`<br>… und ${list.length-25} weitere`:""))});
+  ppl.forEach(p=>{const me=geo[(ev(p,"geb").o||ev(p,"taufe").o||"").trim()];if(!me)return;[fatherOf(p.id),motherOf(p.id)].filter(Boolean).forEach(q=>{const g=geo[(ev(q,"geb").o||ev(q,"taufe").o||"").trim()];
+    if(g&&(g.lat!==me.lat||g.lon!==me.lon))L.polyline([[g.lat,g.lon],[me.lat,me.lon]],{color:acc,weight:2.5,opacity:.65,dashArray:"6 6"}).addTo(LMAP)})});
+  if(pts.length)LMAP.fitBounds(pts,{padding:[30,30],maxZoom:10});
+  $("kMsg").textContent=`${Object.keys(by).length} Orte auf der Karte`+(miss.length?` · nicht gefunden: ${miss.join(", ")} (Ort genauer schreiben, z. B. „Mülheim an der Ruhr“)`:"");
+  setTimeout(()=>LMAP&&LMAP.invalidateSize(),200)}
+
+/* ---------- Entdecken (Reiter) ---------- */
+let entTab=ls.get("ahnen.ent","verw");
+function drawEntdecken(){document.querySelectorAll("#eSeg button").forEach(b=>b.classList.toggle("on",b.dataset.t===entTab));const box=$("eBox");
+  if(Object.keys(T.persons).length<2&&entTab!=="karte"){box.innerHTML=`<div class="tip">Trag erst ein paar Personen ein, dann gibt es hier etwas zu entdecken.</div>`;return}
+  if(entTab==="verw")drawVerw(box);else if(entTab==="zeit")drawZeit(box);else drawKarte(box)}
+document.querySelectorAll("#eSeg button").forEach(b=>b.onclick=()=>{entTab=b.dataset.t;ls.set("ahnen.ent",entTab);drawEntdecken()});
+
+/* ---------- Lesehilfe Kirchenbuch ---------- */
+const GLOSS=[
+ ["Latein: Ereignisse",[["natus / nata","geboren"],["baptizatus / baptizata","getauft"],["renatus / renata","getauft („wiedergeboren“)"],["copulati, copulavi, conjuncti","getraut (das Paar wurde verheiratet)"],["sponsus / sponsa","Bräutigam / Braut"],["obiit, denatus, defunctus, mortuus","gestorben"],["sepultus / sepulta","begraben"],["proclamationes","Aufgebote vor der Hochzeit"]]],
+ ["Latein: Personen",[["pater / mater","Vater / Mutter"],["filius / filia","Sohn / Tochter"],["legitimus / legitima","ehelich"],["illegitimus, spurius","unehelich"],["uxor, coniux","Ehefrau"],["maritus","Ehemann"],["viduus / vidua, relicta","Witwer / Witwe (hinterlassene Ehefrau)"],["patrini, levantes, susceptores, testes","Paten bzw. Trauzeugen"],["parochus, pastor","Pfarrer"],["gemelli","Zwillinge"],["infans, proles","Kind, Nachkommen"],["quondam, olim, defuncti","verstorbene/r (vor dem Namen)"],["incola, hujus","Einwohner, hiesig"]]],
+ ["Latein: Zeit und Alter",[["aetatis … annorum","im Alter von … Jahren"],["circiter, circa","ungefähr"],["eodem (die)","am selben Tag"],["mane / vespere / nocte","morgens / abends / nachts"],["hora","Stunde"],["Januarius, Februarius, Martius, Aprilis, Majus, Junius, Julius, Augustus","Januar bis August"]]],
+ ["Falle bei den Monaten",[["7ber, 7bris","September (septem = 7)"],["8ber, 8bris","Oktober (octo = 8)"],["9ber, 9bris","November (novem = 9)"],["10ber, Xber, Xbris","Dezember (decem = 10) – nicht Oktober!"]]],
+ ["Alte deutsche Begriffe",[["ehel. / unehel.","ehelich / unehelich"],["Jgfr., Jungfer","ledige Frau"],["Jgl., Junggesell","lediger Mann"],["Ww., Wwe., Wittib","Witwe"],["Wittiber","Witwer"],["weil., weiland, sel., selig","verstorben (vor dem Namen)"],["nachgel.","nachgelassen (hinterlassen)"],["Gevatter, Gevatterin","Pate, Patin"],["Eheleute","Ehepaar"],["Kindbett","im Wochenbett (nach der Geburt) gestorben"]]],
+ ["Alte Berufe (Rheinland/Ruhr)",[["Ackerer, Ackersmann","Bauer"],["Kötter, Kötter","Kleinbauer mit wenig Land"],["Halfe, Halbwinner","Pächter, der den halben Ertrag abgab"],["Tagelöhner","Arbeiter gegen Tageslohn"],["Knecht, Magd","Dienstbote auf dem Hof"],["Hauer","Bergmann vor Ort (Kohle)"],["Schlepper","Bergmann, der die Kohle wegbringt"],["Puddler","Arbeiter am Puddelofen (Eisenherstellung)"],["Former","Gießereiarbeiter, der die Gussformen macht"],["Schmelzer","Arbeiter am Hochofen/Schmelzofen"],["Fabrikarbeiter","Arbeiter in einer Fabrik"]]],
+ ["Alte Todesursachen",[["Auszehrung, Schwindsucht","Tuberkulose"],["Stickfluss","Ersticken, Lungenödem"],["Fraisen, Gichter","Krampfanfälle (meist bei Kleinkindern)"],["Faulfieber, Nervenfieber","Typhus"],["Wassersucht","Wassereinlagerungen, oft Herzschwäche"],["Brand","Wundbrand"],["Altersschwäche","im hohen Alter gestorben"]]]];
+const KTIPS=[["e und n","Das kleine e sieht in Kurrent aus wie ein enges n (zwei Striche). Am Wortende steht oft „-en“: zwei kleine Zacken mehr."],["u mit Bogen","Über dem u steht ein kleiner Bogen (ŭ), damit man es vom n unterscheidet."],["Zwei s","Im Wort steht das lange ſ (sieht aus wie ein f ohne Querstrich), am Wortende das runde s."],["h und g","Das h hat unten eine Schleife unter die Zeile, das g auch – beim h ist oben ebenfalls eine Schleife."],["Großbuchstaben","Die Großbuchstaben sehen ganz anders aus als heute. Am besten zuerst die Namen der Familie lernen, die man sucht."],["Vergleichen","Unklare Buchstaben in anderen Wörtern derselben Seite suchen, deren Bedeutung man schon kennt – derselbe Schreiber schreibt sie gleich."]];
+function drawLese(box){box.innerHTML=`<p class="sub">Kirchenbücher sind oft lateinisch oder in alter deutscher Schrift (Kurrent, später Sütterlin) geschrieben. Hier die wichtigsten Wörter.</p>
+  <div style="margin:12px 0"><input id="gq" type="search" placeholder="Wort suchen, z. B. copulati, Kötter, 9ber" autocomplete="off" aria-label="Wort suchen"></div><div id="gOut" class="stack"></div>
+  <details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:600">Tipps zum Lesen der alten Schrift</summary><div class="stack" style="margin-top:10px">${KTIPS.map(([a,b])=>`<div class="tip"><b>${esc(a)}:</b> ${esc(b)}</div>`).join("")}
+   <p class="note" style="margin:0">Das ganze Alphabet mit Bildern: <a href="https://de.wikipedia.org/wiki/Deutsche_Kurrentschrift" target="_blank" rel="noopener">Deutsche Kurrentschrift</a> und <a href="https://de.wikipedia.org/wiki/S%C3%BCtterlinschrift" target="_blank" rel="noopener">Sütterlinschrift</a> (Wikipedia).</p></div></details>`;
+  const run=()=>{const q=$("gq").value.trim().toLowerCase();$("gOut").innerHTML=GLOSS.map(([t,l])=>{const f=l.filter(([a,b])=>!q||a.toLowerCase().includes(q)||b.toLowerCase().includes(q));
+    return f.length?`<section class="card"><h3 style="margin:0 0 6px">${esc(t)}</h3>${f.map(([a,b])=>`<div class="ev"><b style="color:var(--ink)">${esc(a)}</b><span>${esc(b)}</span></div>`).join("")}</section>`:""}).join("")||`<p class="sub">Nichts gefunden.</p>`};
+  $("gq").oninput=run;run()}
+let fTab=ls.get("ahnen.fTab","ass");
+document.querySelectorAll("#fSeg button").forEach(b=>b.onclick=()=>{fTab=b.dataset.t;ls.set("ahnen.fTab",fTab);drawResearch()});
+
+/* ---------- Interview ---------- */
+const IQ=[["Kindheit",["Wann und wo bist du geboren?","Wie hießen deine Eltern, und was haben sie beruflich gemacht?","Wie hießen deine Großeltern, und wo haben sie gelebt?","Hattest du Geschwister? Wie hießen sie, was ist aus ihnen geworden?","Wo bist du aufgewachsen? Wie sah die Wohnung oder das Haus aus?","Welche Schule hast du besucht, was hast du in der Freizeit gemacht?"]],
+ ["Familie",["Wie habt ihr euch kennengelernt? Wann und wo war die Hochzeit?","Welche Verwandten sind weggezogen, ausgewandert oder zugezogen?","Gibt es alte Fotos, Briefe, Urkunden oder eine Familienbibel – und wer hat sie heute?","Welche Geschichten werden in der Familie immer wieder erzählt?","Gab es Familiengeheimnisse oder Verwandte, über die wenig gesprochen wurde?"]],
+ ["Arbeit",["Welchen Beruf hast du gelernt, und wo hast du gearbeitet?","Wie sah ein normaler Arbeitstag aus?"]],
+ ["Zeitgeschichte",["Was weißt du aus der Kriegs- und Nachkriegszeit (Ausbombung, Flucht, Gefangenschaft, Hunger)?","Wie habt ihr die Währungsreform und die Wirtschaftswunderzeit erlebt?"]],
+ ["Erinnerungen",["Was weißt du über deine Großeltern und Urgroßeltern – wie waren sie als Menschen?","Welche Feste, Rezepte und Bräuche gab es in der Familie?","Was möchtest du deinen Enkeln mitgeben?"]]];
+const IQF=IQ.flatMap(([g,l])=>l.map(q=>({g,q})));
+let rec=null;
+function interview(id){const p=P(id);p.interview=p.interview||{};
+  const canRec=!!(navigator.mediaDevices&&window.MediaRecorder);
+  openSheet(`<div class="eyebrow">Interview</div><h2 style="margin:2px 0 6px">Gespräch mit ${esc(fullName(p))}</h2>
+   <p class="sub" style="margin-bottom:10px">Stell die Fragen in Ruhe, tipp die Antworten ein oder nimm sie als Sprachaufnahme auf. So bleibt auch die Stimme erhalten. Alles wird nur auf diesem Handy gespeichert.</p>
+   <div class="stack">${IQ.map(([g,l])=>`<h3 style="margin:8px 0 0">${esc(g)}</h3>`+l.map(q=>{const i=IQF.findIndex(x=>x.q===q),au=(p.media||[]).filter(m=>m.qi===i);
+     return `<div class="evf"><b style="font-size:15px">${esc(q)}</b><textarea data-qi="${i}" placeholder="Antwort …" style="min-height:64px">${esc(p.interview[i]||"")}</textarea>
+      <div class="row">${canRec?`<button class="btn small" type="button" data-rec="${i}">🎙 Aufnehmen</button>`:""}<span class="sub" data-au="${i}">${au.length?au.length+" Aufnahme"+(au.length>1?"n":""):""}</span></div></div>`}).join("")).join("")}</div>
+   <p class="err" id="iErr"></p><div class="row" style="position:sticky;bottom:0;background:var(--bg);padding-top:8px"><button class="btn primary" type="button" id="iOk">Speichern und schließen</button></div>`);
+  const store=()=>{document.querySelectorAll("[data-qi]").forEach(t=>{const v=t.value.trim();if(v)p.interview[t.dataset.qi]=v;else delete p.interview[t.dataset.qi]});save()};
+  document.querySelectorAll("[data-qi]").forEach(t=>t.addEventListener("change",store));
+  document.querySelectorAll("[data-rec]").forEach(b=>b.onclick=async()=>{const i=+b.dataset.rec;
+    if(rec&&rec.qi===i){rec.r.stop();return}if(rec){$("iErr").textContent="Bitte zuerst die laufende Aufnahme beenden.";return}
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const r=new MediaRecorder(st),ch=[];rec={r,qi:i,b};
+      r.ondataavailable=e=>e.data.size&&ch.push(e.data);
+      r.onstop=async()=>{st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:r.mimeType||"audio/webm"}),mid=uid();await putMedia(mid,blob);
+        (p.media=p.media||[]).push({id:mid,typ:"audio",qi:i,titel:"Interview: "+IQF[i].q.slice(0,50),datum:today()});store();rec=null;b.textContent="🎙 Aufnehmen";b.classList.remove("primary");
+        const n=p.media.filter(m=>m.qi===i).length;document.querySelector(`[data-au="${i}"]`).textContent=n+" Aufnahme"+(n>1?"n":"")};
+      r.start();b.textContent="⏹ Stopp";b.classList.add("primary");$("iErr").textContent=""}
+    catch(e){rec=null;$("iErr").textContent="Mikrofon nicht freigegeben. Bitte im Browser erlauben."}});
+  $("iOk").onclick=()=>{if(rec){rec.r.stop()}store();closeSheet();if(view==="person")drawPerson()}}
+function interviewHTML(p){const iv=p.interview||{},keys=Object.keys(iv);const au=(p.media||[]).filter(m=>m.typ==="audio");if(!keys.length&&!au.length)return"";
+  return `<section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Erzählungen aus dem Interview</h2>${IQF.map((x,i)=>{const t=iv[i],a=au.filter(m=>m.qi===i);if(!t&&!a.length)return"";
+    return `<div class="ev" style="grid-template-columns:1fr"><b>${esc(x.q)}</b>${t?`<span style="white-space:pre-wrap">${esc(t)}</span>`:""}${a.map(m=>`<audio controls preload="none" data-aud="${m.id}" style="width:100%;margin-top:4px"></audio>`).join("")}</div>`}).join("")}</section>`}
+async function fillAudio(){for(const el of document.querySelectorAll("audio[data-aud]")){const u=await mediaURL(el.dataset.aud);if(u)el.src=u}}
 
 /* ---------- Offline ---------- */
 if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{})}
