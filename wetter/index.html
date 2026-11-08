@@ -140,7 +140,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
 
   <section class="view" id="v-radar">
     <div id="map"></div>
-    <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button><button type="button" data-l="t">🌡️ Temperatur</button></div>
+    <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button></div>
     <div id="rtime">--:--</div>
     <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><span style="flex:1"></span><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
@@ -517,7 +517,7 @@ function drawArrow(){
 }
 // ---------- Ebenen: Regen (Radar), Wolken, Temperatur ----------
 function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
-let layer=store.get("wx_layer")||"r";
+let layer=store.get("wx_layer")||"r";if(layer==="t")layer="r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
 function setLayer(l){layer=l;if(arrowGroup){if(l==="r")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
