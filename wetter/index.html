@@ -292,7 +292,7 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()
 let W=null;
 async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function loadWeather(force){
-  const key="wx5_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
+  const key="wx6_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
   if(!force&&c&&c.key===key&&Date.now()-c.ts<10*60000){W=c.d;return}
   const u=`https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}`+
    "&current=temperature_2m,apparent_temperature,is_day,weather_code,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
@@ -300,8 +300,19 @@ async function loadWeather(force){
    "&hourly=temperature_2m,apparent_temperature,weather_code,is_day,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=168&past_hours=1"+
    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,wind_speed_10m_max,wind_gusts_10m_max&forecast_days=7"+
    "&timezone=auto&timeformat=unixtime";
-  W=await getJSON(u);store.set("wx_cache",{key,ts:Date.now(),d:W});
+  W=await getJSON(u);
+  // Kanaren: ECMWF IFS 9 km (europäisches Modell) für Temperatur, Wolken, Regen und Wind übernehmen
+  if(isCanary()){try{
+    const E=await getJSON(u.replace("&minutely_15=precipitation&forecast_minutely_15=12&past_minutely_15=1","").replace(",wind_speed_700hPa,wind_direction_700hPa","")+"&models=ecmwf_ifs");
+    const mg=(A,B,keys)=>{if(!A||!B)return;keys.forEach(k=>{if(B[k]==null||A[k]==null)return;if(!Array.isArray(B[k])){if(B[k]!=null)A[k]=B[k];return}
+      const ix=new Map((B.time||[]).map((t,i)=>[t,i]));A[k]=A[k].map((v,i)=>{const j=ix.get(A.time[i]);return j!=null&&B[k][j]!=null?B[k][j]:v})})};
+    const HK=["temperature_2m","apparent_temperature","weather_code","cloud_cover","cloud_cover_low","cloud_cover_mid","cloud_cover_high","precipitation","wind_speed_10m","wind_gusts_10m","wind_direction_10m"];
+    mg(W.hourly,E.hourly,HK);mg(W.current,E.current,HK.filter(k=>k!=="precipitation"));
+    mg(W.daily,E.daily,["weather_code","temperature_2m_max","temperature_2m_min","precipitation_sum","wind_speed_10m_max","wind_gusts_10m_max"]);
+    W.model="ECMWF 9 km";}catch(e){}}
+  store.set("wx_cache",{key,ts:Date.now(),d:W});
 }
+function isCanary(){return place.lat>26.5&&place.lat<30&&place.lon>-19&&place.lon<-12.8}
 async function loadAll(force){
   try{status("Lade Wetterdaten …");await loadWeather(force);status(null);drawAll();if(map){loadRadar();drawArrow();placeTemp(null)}}
   catch(e){status("Wetterdaten konnten nicht geladen werden. Bitte über ••• → Neu laden erneut versuchen.")}
@@ -418,6 +429,7 @@ function drawWet(){
   hl.forEach(i=>{const dd=lt(H.time[i],tz).getDate();if(wDay===0&&lastD!==null&&dd!==lastD)h+=`<div class="hday">Morgen</div>`;lastD=dd;h+=`<div class="hrow"><span>${hm(H.time[i],tz)}</span><span class="i">${svgIcon(H.weather_code[i],H.is_day[i],hCC(i),34)}</span><span class="t">${Math.round(H.temperature_2m[i])}°</span>
     <span class="p">${(H.precipitation_probability[i]??0)>=10||(H.precipitation[i]??0)>=0.1?`💧 ${H.precipitation_probability[i]??0} %${(H.precipitation[i]??0)>=0.1?" · "+H.precipitation[i].toFixed(1)+" mm":""}`:""}</span>
     <span class="w">${ar(H.wind_direction_10m[i])} ${Math.round(H.wind_speed_10m[i])} km/h</span></div>`});
+  h+=`<p class="sub" style="margin:14px 4px 0;font-size:12px">Vorhersage: Open-Meteo${W.model?" · Modell "+W.model+" (für die Kanaren)":""}</p>`;
   $("wet").innerHTML=h;
   document.querySelectorAll(".dsel button").forEach(b=>b.onclick=()=>{wDay=+b.dataset.d;drawWet()});
 }
@@ -502,7 +514,7 @@ function placeTemp(t){
 let arrowGroup=null;
 function dest(lat,lon,brg,km){const b=brg*Math.PI/180;return[lat+km*Math.cos(b)/111.2,lon+km*Math.sin(b)/(111.2*Math.cos(lat*Math.PI/180))]}
 function drawArrow(){
-  if(!map||!arrowGroup||!W)return;arrowGroup.clearLayers();
+  if(!map||!arrowGroup||!W||!W.hourly)return;arrowGroup.clearLayers();
   const H=W.hourly,now=Date.now()/1000;let k=H.time.findIndex(t=>t>now-3600);if(k<0)k=0;
   let sp=H.wind_speed_700hPa&&H.wind_speed_700hPa[k],dir=H.wind_direction_700hPa&&H.wind_direction_700hPa[k];
   if(sp==null||dir==null){sp=(H.wind_speed_10m[k]||0)*1.6;dir=H.wind_direction_10m[k]}
