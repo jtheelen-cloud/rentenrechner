@@ -28,7 +28,14 @@ button{font:inherit;color:inherit}
 #more{border:0;background:none;font-size:26px;line-height:1;padding:0 4px;letter-spacing:2px}
 .view{flex:1;min-height:0;display:none;position:relative}
 .view.on{display:block}
-#v-vor,#v-wind{overflow-y:auto;padding:4px 10px 16px}
+#v-vor,#v-wind,#v-wet{overflow-y:auto;padding:4px 10px 16px}
+.wnow{display:flex;align-items:center;gap:14px;padding:10px 4px 6px}.wnow .i{font-size:64px;line-height:1}.wnow .t{font-size:56px;font-weight:300;line-height:1}.wnow .d{font-size:15px;color:#bbb;line-height:1.5}
+.wfacts{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:14px;color:#ccc;padding:6px 4px 12px;border-bottom:1px solid #333}.wfacts b{color:#fff}
+.wh{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#8a8a8a;margin:16px 4px 6px}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px}.part{background:#1c1c1c;border-radius:10px;padding:8px 4px;text-align:center;font-size:13px;color:#bbb}.part .i{font-size:26px;display:block;margin:4px 0}.part b{color:#fff;font-size:17px}
+.hrow{display:grid;grid-template-columns:52px 34px 50px 1fr 92px;align-items:center;gap:6px;padding:8px 4px;border-bottom:1px solid #222;font-size:15px}.hrow .i{font-size:22px;text-align:center}.hrow .t{font-weight:600;text-align:right}.hrow .p{color:#5fa8e6;font-size:13px}.hrow .w{color:#bbb;font-size:13px;text-align:right}
+.hday{font-weight:700;padding:12px 4px 4px;color:#fff;border-bottom:1px solid #333}
+.dsel{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px}.dsel button{flex:0 0 auto;border:1px solid #444;background:#1c1c1c;color:#ccc;border-radius:10px;padding:6px 10px;font-size:14px;line-height:1.3}.dsel button.on{background:#2f7fd8;border-color:#2f7fd8;color:#fff}
 .chart{display:block;width:100%}
 #wmap{position:relative;width:100%;height:62vh;min-height:320px;margin:4px 0 8px;border-radius:6px;overflow:hidden;background:#2a3a8a}
 #wmap canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -114,14 +121,16 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
 
 <div id="app">
   <nav id="tabs">
+    <button data-v="wet"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M2 12h3M4.9 4.9l2.1 2.1M19.1 4.9 17 7"/><path d="M13 27h12a5 5 0 0 0 0-10 7 7 0 0 0-13 2 4 4 0 0 0 1 8z" fill="#2b2b2b"/></svg>Wetter</button>
     <button data-v="vor"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v26h26"/><path d="M6 24C10 6 18 6 24 16"/></svg>Vorhersage</button>
     <button data-v="radar"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="3"/><path d="M16 16 26 8"/></svg>Radarkarte</button>
     <button data-v="wind"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 10c4-3 8 3 12 0s8 3 12 0M4 17c4-3 8 3 12 0s8 3 12 0M4 24c4-3 8 3 12 0s8 3 12 0"/></svg>Wind</button>
   </nav>
   <div id="head"><span id="hTime">--:--</span><button id="hPlace" type="button">Mülheim an der Ruhr</button><span id="hTemp"></span><button id="more" type="button" aria-label="Menü">•••</button></div>
 
+  <section class="view" id="v-wet"><button type="button" class="cd hide" id="cd"></button><div id="wet"></div></section>
+
   <section class="view" id="v-vor">
-    <button type="button" class="cd hide" id="cd"></button>
     <canvas class="chart" id="cRain" height="520"></canvas>
     <canvas class="chart" id="cProb" height="400"></canvas>
     <div class="ranges"><div class="seg" data-for="vor"></div><button class="help" type="button" data-help>?</button></div>
@@ -194,7 +203,7 @@ const PLACES=[["Mülheim an der Ruhr",51.427,6.883],["Essen",51.456,7.012],["Dü
 let place=store.get("wx_place")||{n:PLACES[0][0],lat:PLACES[0][1],lon:PLACES[0][2]};
 
 // ---------- Ansicht ----------
-let view=store.get("wx_view")||"vor", range=store.get("wx_range")||2;
+let view=store.get("wx_view")||"wet", range=store.get("wx_range")||2;
 function setView(v){view=v;store.set("wx_view",v);
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
@@ -252,7 +261,7 @@ function cdEdit(){const u=store.get("wx_cd")||{};
    <div><label class="sub" for="cdB">Rückreise</label><input id="cdB" type="date" value="${u.bis||""}"></div>
    <p class="err" id="cdE"></p>
    <div style="display:flex;gap:8px"><button class="btnp" type="button" id="cdS">Speichern</button>${u.von?'<button class="btn2" type="button" id="cdX">Löschen</button>':""}</div>
-   <p class="sub" style="margin:0">Der Countdown steht oben auf der Seite „Vorhersage“. Er gilt nur für dieses Handy.</p></div>`);
+   <p class="sub" style="margin:0">Der Countdown steht oben auf der Seite „Wetter“. Er gilt nur für dieses Handy.</p></div>`);
   $("cdS").onclick=()=>{const z=$("cdZ").value.trim(),v=$("cdV").value,b=$("cdB").value;
     if(!v){$("cdE").textContent="Bitte das Datum der Hinreise eintragen.";return}
     if(b&&b<v){$("cdE").textContent="Die Rückreise liegt vor der Hinreise.";return}
@@ -267,13 +276,13 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()
 let W=null;
 async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function loadWeather(force){
-  const key="wx2_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
+  const key="wx3_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
   if(!force&&c&&c.key===key&&Date.now()-c.ts<10*60000){W=c.d;return}
   const u=`https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}`+
-   "&current=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
+   "&current=temperature_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
    "&minutely_15=precipitation&forecast_minutely_15=12&past_minutely_15=1"+
-   "&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=50&past_hours=1"+
-   "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max&forecast_days=7"+
+   "&hourly=temperature_2m,apparent_temperature,weather_code,is_day,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=168&past_hours=1"+
+   "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,wind_speed_10m_max,wind_gusts_10m_max&forecast_days=7"+
    "&timezone=auto&timeformat=unixtime";
   W=await getJSON(u);store.set("wx_cache",{key,ts:Date.now(),d:W});
 }
@@ -340,6 +349,38 @@ function drawWind(){
   xLabels(c,S,x0,w,y0+h);
   const cu=W.current;$("windNow").innerHTML=`Jetzt: <b>${Math.round(cu.wind_speed_10m)} km/h</b> aus ${dirTxt(cu.wind_direction_10m)} · Böen <b>${Math.round(cu.wind_gusts_10m)} km/h</b> · ${BFT[bft(cu.wind_speed_10m)]} (${bft(cu.wind_speed_10m)} Bft)`;
 }
+
+// ---------- Reiter „Wetter“: heute im Überblick + stündlich ----------
+let wDay=0;
+function wIcon(code,day){const i=wmo(code)[0];if(day===0&&(code===0||code===1))return"🌙";if(day===0&&code===2)return"☁️";return i}
+function lt(u,tz){return new Date(new Date(u*1000).toLocaleString("en-US",{timeZone:tz}))}
+function drawWet(){
+  const D=W.daily,H=W.hourly,cu=W.current,tz=W.timezone,now=Date.now()/1000;
+  const ar=d=>`<span style="display:inline-block;transform:rotate(${(d+180)%360}deg)">↑</span>`;
+  let h=`<div class="wnow"><span class="i">${wIcon(cu.weather_code,cu.is_day)}</span><div><div class="t">${Math.round(cu.temperature_2m)}°</div></div>
+   <div class="d">${wmo(cu.weather_code)[1]}<br>gefühlt ${Math.round(cu.apparent_temperature)}°<br>${Math.round(D.temperature_2m_min[0])}° / <b style="color:#fff">${Math.round(D.temperature_2m_max[0])}°</b></div></div>
+   <div class="wfacts"><span>🌧️ Regen <b>${D.precipitation_probability_max[0]??"–"} %</b> · ${(D.precipitation_sum[0]??0).toFixed(1)} mm</span>
+   <span>💨 Wind <b>${Math.round(cu.wind_speed_10m)} km/h</b> ${ar(cu.wind_direction_10m)} ${dirTxt(cu.wind_direction_10m)}</span>
+   <span>🌬️ Böen bis <b>${Math.round(D.wind_gusts_10m_max[0])} km/h</b></span>
+   <span>🌅 <b>${hm(D.sunrise[0],tz)}</b> · 🌇 <b>${hm(D.sunset[0],tz)}</b></span></div>`;
+  // Tagesabschnitte des gewählten Tages
+  const dsel=D.time.map((t,j)=>{const nm=j===0?"Heute":j===1?"Morgen":WD[lt(t+43200,tz).getDay()];return`<button type="button" data-d="${j}" class="${j===wDay?"on":""}">${nm}<br>${wmo(D.weather_code[j])[0]} ${Math.round(D.temperature_2m_max[j])}°</button>`}).join("");
+  h+=`<div class="wh">Tag wählen</div><div class="dsel">${dsel}</div>`;
+  const d0=D.time[wDay],hrs=H.time.map((t,i)=>i).filter(i=>H.time[i]>=d0&&H.time[i]<d0+86400);
+  const seg=[["Nachts",0,6],["Morgens",6,12],["Mittags",12,18],["Abends",18,24]].map(([n,a,b])=>{const ix=hrs.filter(i=>{const hh=lt(H.time[i],tz).getHours();return hh>=a&&hh<b});if(!ix.length)return"";
+    const tmax=Math.max(...ix.map(i=>H.temperature_2m[i])),pr=Math.max(...ix.map(i=>H.precipitation_probability[i]??0)),mid=ix[Math.floor(ix.length/2)];
+    let code=H.weather_code[mid];ix.forEach(i=>{if((H.weather_code[i]??0)>=51&&(code??0)<51)code=H.weather_code[i]});
+    return`<div class="part">${n}<span class="i">${wIcon(code,H.is_day[mid])}</span><b>${Math.round(tmax)}°</b><br>💧 ${pr} %</div>`}).join("");
+  h+=`<div class="wh">${wDay===0?"Heute":wDay===1?"Morgen":"Tagesverlauf"} im Überblick</div><div class="parts">${seg}</div>`;
+  // stündlich
+  h+=`<div class="wh">Stündlich${wDay===0?" – nächste 24 Stunden":""}</div>`;
+  const hl=wDay===0?H.time.map((t,i)=>i).filter(i=>H.time[i]>now-3600&&H.time[i]<now+23*3600):hrs;let lastD=null;
+  hl.forEach(i=>{const dd=lt(H.time[i],tz).getDate();if(wDay===0&&lastD!==null&&dd!==lastD)h+=`<div class="hday">Morgen</div>`;lastD=dd;h+=`<div class="hrow"><span>${hm(H.time[i],tz)}</span><span class="i">${wIcon(H.weather_code[i],H.is_day[i])}</span><span class="t">${Math.round(H.temperature_2m[i])}°</span>
+    <span class="p">${(H.precipitation_probability[i]??0)>=10||(H.precipitation[i]??0)>=0.1?`💧 ${H.precipitation_probability[i]??0} %${(H.precipitation[i]??0)>=0.1?" · "+H.precipitation[i].toFixed(1)+" mm":""}`:""}</span>
+    <span class="w">${ar(H.wind_direction_10m[i])} ${Math.round(H.wind_speed_10m[i])} km/h</span></div>`});
+  $("wet").innerHTML=h;
+  document.querySelectorAll(".dsel button").forEach(b=>b.onclick=()=>{wDay=+b.dataset.d;drawWet()});
+}
 function drawDays(){const D=W.daily,tz=W.timezone;let h="";
   for(let j=0;j<D.time.length;j++){const wd=j===0?"Heute":j===1?"Morgen":WD[new Date(new Date(D.time[j]*1000).toLocaleString("en-US",{timeZone:tz})).getDay()];
     h+=`<div class="day"><span class="n">${wd}</span><span class="w">${wmo(D.weather_code[j])[0]}</span><span class="p">${D.precipitation_probability_max[j]??"–"} % · ${(D.precipitation_sum[j]??0).toFixed(1)} mm</span><span class="t">${Math.round(D.temperature_2m_min[j])}° / <b>${Math.round(D.temperature_2m_max[j])}°</b></span></div>`}
@@ -347,7 +388,7 @@ function drawDays(){const D=W.daily,tz=W.timezone;let h="";
 function drawHead(){if(!W)return;$("hTemp").textContent=Math.round(W.current.temperature_2m)+" °C";$("hPlace").textContent=place.n}
 function tick(){const d=new Date();$("hTime").textContent=pad(d.getHours())+":"+pad(d.getMinutes())}
 setInterval(tick,15000);tick();
-function drawAll(){if(!W)return;drawHead();if(view==="vor"){drawRain();drawProb();drawDays()}else if(view==="wind"){drawWind();windMap()}}
+function drawAll(){if(!W)return;drawHead();if(view==="wet")drawWet();else if(view==="vor"){drawRain();drawProb();drawDays()}else if(view==="wind"){drawWind();windMap()}}
 window.addEventListener("resize",drawAll);
 
 // ---------- Radarkarte ----------
@@ -574,12 +615,11 @@ async function loadRadar(){
   Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};ncOff();
   // Prognose = letztes Radarbild, mit dem Höhenwind (700 hPa) weitergeschoben – wie bei Regenradar-Apps
   let fut=[];const last=past.length?past[past.length-1]:null;
-  if(last){ncUrl=last.url;for(let t=last.t+1800;t<=last.t+3*3600;t+=1800)fut.push({k:"n",t})}
+  if(last){ncUrl=last.url;for(let t=last.t+900;t<=last.t+2*3600;t+=900)fut.push({k:"n",t})}
   TL=[...past,...fut];
   if(!TL.length){$("rtime").textContent="Regen nicht erreichbar";return}
   const s=$("tsl");s.min=0;s.max=TL.length-1;showT(past.length?past.length-1:0);
-  // danach bis 48 Stunden: Regen aus dem Wettermodell (in Radarfarben)
-  rainModel(last?last.t+3*3600:Date.now()/1000);
+  // Regenprognose auf der Karte bewusst nur 2 Stunden (danach nicht mehr verlässlich)
 }
 function rainModel(after){
   loadRainGrid().then(()=>{if(layer!=="r")return;const lim=Date.now()/1000+48*3600;
