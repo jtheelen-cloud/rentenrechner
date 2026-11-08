@@ -1,0 +1,730 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4a3a2c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>Ahnenspur</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#f3ede2; --surface:#fffcf6; --ink:#2b241e; --muted:#76695b; --line:#dcd1c0;
+  --accent:#4a3a2c; --accent2:#9a5b24; --soft:#f1e3cf; --m:#6b8aa6; --w:#b0727f; --u:#a59a8c;
+  --ok:#2f7a45; --bad:#a8322b; --input:#fffcf6; --tree:#b9a990;
+  --f-head:"Fraunces",Georgia,"Times New Roman",serif;
+  --f-body:"Source Sans 3","Segoe UI",Roboto,Arial,sans-serif; color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#17130f; --surface:#221c17; --ink:#efe6d8; --muted:#a8998a; --line:#3a3128;
+  --accent:#e6d3b8; --accent2:#e0a066; --soft:#3a2b1d; --m:#7fa0bd; --w:#cf8e9b; --u:#8d8275;
+  --input:#221c17; --tree:#5e5142; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 92px}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-head);line-height:1.15;text-wrap:balance;font-weight:600}
+h1{font-size:28px;margin:16px 0 2px}
+h2{font-size:22px;margin:20px 0 8px}
+h3{font-size:17px;margin:16px 0 6px}
+.eyebrow{text-transform:uppercase;letter-spacing:.1em;font-size:12px;color:var(--accent2);font-weight:700}
+.sub{color:var(--muted);font-size:14px;margin:0}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:90px;resize:vertical}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:2px}
+input:focus-visible,button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.btn{font:inherit;font-size:15px;padding:9px 15px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:var(--surface);border-color:var(--accent);font-weight:600}
+.btn.small{font-size:13px;padding:5px 10px}
+.btn.danger{color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stack{display:grid;gap:10px}
+a{color:var(--accent2)}
+.err{color:var(--bad);font-size:14px;min-height:1.2em;margin:0}
+.note{font-size:14px;color:var(--muted)}
+
+/* Gate */
+.gate{min-height:100vh;display:grid;place-items:center;padding-block:40px}
+.gate form{padding:24px 20px;max-width:380px;width:100%;display:grid;gap:12px}
+.gate input{text-transform:uppercase;letter-spacing:.12em;font-size:20px;text-align:center}
+.devid{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
+.devid b{font-family:var(--f-head);font-size:24px;letter-spacing:.1em}
+
+/* Kopf */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.top h1{margin-bottom:0}
+
+/* Baum */
+#v-baum{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+#v-baum .pad{padding-inline:16px}
+.treebox{position:relative;height:calc(100vh - 210px);min-height:380px;background:
+  radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 1.2px) 0 0/22px 22px;border-block:1px solid var(--line);overflow:hidden}
+#tsvg{width:100%;height:100%;touch-action:none;display:block;user-select:none;-webkit-user-select:none}
+.zoom{position:absolute;right:10px;bottom:10px;display:grid;gap:6px}
+.zoom button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.hint{position:absolute;left:10px;bottom:10px;right:64px;font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--surface) 85%,transparent);border-radius:8px;padding:4px 8px}
+.banner{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;margin:8px 0;display:flex;gap:10px;align-items:center;justify-content:space-between}
+svg text{font-family:var(--f-body)}
+
+/* Listen */
+.list{display:grid;gap:8px}
+.item{display:flex;gap:12px;align-items:center;text-align:left;width:100%;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.item .nm{font-weight:600}
+.item .yr{color:var(--muted);font-size:14px}
+.av{flex:none;width:42px;height:42px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-family:var(--f-head);font-weight:600;color:var(--accent);overflow:hidden;border:2px solid var(--u)}
+.av.m{border-color:var(--m)} .av.w{border-color:var(--w)}
+.av img{width:100%;height:100%;object-fit:cover}
+.kek{font-size:12px;background:var(--soft);color:var(--accent2);border-radius:6px;padding:1px 6px;font-weight:700;margin-left:6px}
+
+/* Person */
+.phead{display:flex;gap:14px;align-items:center;margin-top:10px}
+.phead .av{width:84px;height:84px;font-size:30px;border-width:3px}
+.phead h1{margin:0;font-size:26px}
+.ev{display:grid;grid-template-columns:96px 1fr;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line)}
+.ev:first-child{border-top:0}
+.ev b{font-size:14px;color:var(--muted);font-weight:600}
+.ev .q{grid-column:2;font-size:13px;color:var(--muted)}
+.ev .q.miss{color:var(--accent2)}
+.rel{display:grid;gap:6px}
+.rel .lab{font-size:13px;color:var(--muted);margin-top:6px}
+.chip{font:inherit;font-size:14px;border:1px dashed var(--line);background:transparent;color:var(--accent2);border-radius:999px;padding:5px 12px;cursor:pointer}
+.media{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.media button{aspect-ratio:1;border:1px solid var(--line);border-radius:10px;overflow:hidden;padding:0;background:var(--soft);cursor:pointer;color:var(--ink);font:inherit;font-size:12px;position:relative}
+.media img{width:100%;height:100%;object-fit:cover}
+.media span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tip{border-left:3px solid var(--accent2);background:var(--soft);border-radius:0 10px 10px 0;padding:8px 12px;font-size:14px}
+.tip.ok{border-color:var(--ok)}
+.back{font:inherit;background:none;border:0;color:var(--accent2);padding:8px 0;cursor:pointer;font-size:15px}
+
+/* Formular-Blatt */
+.sheet{position:fixed;inset:0;background:rgba(20,14,8,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet>.in{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.evf{border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:6px;background:var(--surface)}
+.evf legend{font-family:var(--f-head);font-weight:600;padding:0 4px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;font:inherit;border:0;background:var(--surface);color:var(--ink);padding:9px;cursor:pointer}
+.seg button.on{background:var(--accent);color:var(--surface);font-weight:600}
+.viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:30;display:flex;flex-direction:column}
+.viewer .im{flex:1;display:grid;place-items:center;overflow:auto;padding:10px}
+.viewer img{max-width:100%;max-height:100%}
+.viewer .bar{background:var(--bg);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:grid;gap:8px}
+
+/* Reiter */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs a{display:grid;justify-items:center;gap:1px;padding:8px 0 9px;color:var(--muted);text-decoration:none;font-size:12px;font-weight:600}
+.tabs a svg{width:24px;height:24px}
+.tabs a.on{color:var(--accent2)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-space:nowrap}
+.out{font-family:var(--f-head);font-size:26px;letter-spacing:.08em;min-height:1.2em}
+.welcome{max-width:520px;margin:24px auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+
+<div class="gate" id="gate"><form class="card" id="gateForm">
+  <div class="eyebrow">Familienforschung</div>
+  <h1 style="margin:0">Ahnenspur</h1>
+  <p class="sub">Bitte den Zugangscode eingeben, den du bekommen hast. Danach merkt sich dieses Handy den Code.</p>
+  <label for="gateCode">Zugangscode</label>
+  <input id="gateCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX">
+  <p class="err" id="gateErr" aria-live="polite"></p>
+  <button class="btn primary" type="submit">Freischalten</button>
+  <div class="devid"><span class="sub">Gerätenummer dieses Handys</span><b id="devId">–</b><span class="sub">Noch keinen Code? Nenne diese Nummer der Person, von der du den Link hast.</span></div>
+</form></div>
+
+<div id="app" hidden>
+<div class="wrap">
+
+  <!-- Willkommen -->
+  <section id="v-start" class="view welcome" hidden>
+    <div class="eyebrow">Ahnenspur</div>
+    <h1>Jeder Stammbaum fängt bei einem selbst an.</h1>
+    <p>Trag zuerst dich ein. Danach tippst du im Baum auf die leeren Felder über dir und fügst Eltern, Großeltern und weitere Vorfahren hinzu.</p>
+    <div class="tip" style="margin:14px 0"><b>Deine Daten bleiben auf diesem Handy.</b> Sie werden nicht ins Internet hochgeladen, auch nicht zum Ersteller der App. Mach deshalb ab und zu eine Sicherung (unter „Mehr“).</div>
+    <div class="row"><button class="btn primary" id="startMe" type="button">Mich eintragen</button><button class="btn" id="startImp" type="button">Sicherung einspielen</button></div>
+  </section>
+
+  <!-- Baum -->
+  <section id="v-baum" class="view" hidden>
+    <div class="pad top"><div><div class="eyebrow">Stammbaum</div><h1 id="bTitle">–</h1></div>
+      <button class="btn small" id="bOpen" type="button">Personenblatt</button></div>
+    <div class="pad" id="bBanner"></div>
+    <div class="treebox" id="tbox"><svg id="tsvg" aria-label="Stammbaum"></svg>
+      <div class="hint" id="thint">Tippen: Person in die Mitte holen · Ziehen: verschieben</div>
+      <div class="zoom"><button type="button" id="zIn" aria-label="Vergrößern">+</button><button type="button" id="zOut" aria-label="Verkleinern">−</button><button type="button" id="zHome" aria-label="Zur Hauptperson">⌂</button></div>
+    </div>
+  </section>
+
+  <!-- Personen -->
+  <section id="v-personen" class="view" hidden>
+    <div class="eyebrow">Alle Personen</div><h1>Personen</h1>
+    <p class="sub" id="pStat"></p>
+    <div style="margin:12px 0"><input id="pq" type="search" placeholder="Name, Ort oder Jahr suchen" autocomplete="off" aria-label="Suche"></div>
+    <div class="list" id="plist"></div>
+    <div style="margin-top:14px"><button class="btn" id="pNew" type="button">+ Person ohne Verbindung anlegen</button></div>
+  </section>
+
+  <!-- Person -->
+  <section id="v-person" class="view" hidden></section>
+
+  <!-- Forschen -->
+  <section id="v-forschen" class="view" hidden>
+    <div class="eyebrow">Forschungs-Assistent</div><h1>Wo suche ich weiter?</h1>
+    <p class="sub">Für jede Person zeigt die App, welche Urkunden es gibt und wo sie heute liegen. Vorfahren der Hauptperson stehen oben.</p>
+    <details class="card" style="margin:12px 0"><summary style="cursor:pointer;font-weight:600">So funktionieren die Fristen</summary>
+      <div class="note" style="margin-top:8px">
+      <p>Seit 1874 (Preußen, also auch das Rheinland und Westfalen) bzw. 1876 (ganzes Reich) führen die <b>Standesämter</b> die Geburts-, Heirats- und Sterberegister. Vorher gibt es nur die <b>Kirchenbücher</b> (Taufe, Trauung, Begräbnis).</p>
+      <p>Die Register sind gesperrt und gehen danach an das zuständige <b>Stadt- oder Kreisarchiv</b> – dort darf sie jeder einsehen:</p>
+      <ul><li>Geburten nach <b>110 Jahren</b></li><li>Heiraten nach <b>80 Jahren</b></li><li>Sterbefälle nach <b>30 Jahren</b></li></ul>
+      <p>Vorher stellt das <b>Standesamt</b> Urkunden nur für die Person selbst, Ehegatten, Vorfahren und Nachkommen aus (Abstammung nachweisen). Geschwister brauchen ein berechtigtes Interesse.</p>
+      <p>Kirchenbücher online: evangelisch bei <a href="https://www.archion.de" target="_blank" rel="noopener">Archion</a> (kostenpflichtig), katholisch teils kostenlos bei <a href="https://data.matricula-online.eu/de/" target="_blank" rel="noopener">Matricula</a>, vieles auch kostenlos bei <a href="https://www.familysearch.org/de/" target="_blank" rel="noopener">FamilySearch</a>.</p>
+      </div></details>
+    <div class="list" id="flist"></div>
+  </section>
+
+  <!-- Mehr -->
+  <section id="v-mehr" class="view" hidden>
+    <div class="eyebrow">Einstellungen</div><h1>Mehr</h1>
+    <div class="stack">
+      <section class="card stack">
+        <h2 style="margin:0">Hauptperson</h2>
+        <p class="sub">Von ihr aus werden die Ahnennummern gezählt (Hauptperson 1, Vater 2, Mutter 3, Großvater väterlicherseits 4 …).</p>
+        <select id="mProb"></select>
+      </section>
+      <section class="card stack">
+        <h2 style="margin:0">Sichern</h2>
+        <p class="sub" id="mBackInfo"></p>
+        <div class="row"><button class="btn primary" id="mBack" type="button">Sicherung speichern</button><button class="btn" id="mShare" type="button" hidden>Sicherung teilen</button></div>
+        <p class="note" style="margin:0">Die Sicherung enthält alle Personen, Fotos und Dokumente. Am besten zusätzlich auf den PC oder in die Cloud legen.</p>
+        <div class="row"><button class="btn" id="mImp" type="button">Sicherung einspielen</button><button class="btn" id="mMerge" type="button">Ast von Verwandten hinzufügen</button></div>
+        <p class="note" style="margin:0">„Einspielen“ ersetzt alles auf diesem Handy. „Ast hinzufügen“ nimmt die Personen aus einer fremden Sicherung dazu; doppelte Personen kannst du danach zusammenführen.</p>
+        <p class="sub" id="mMsg" aria-live="polite"></p>
+      </section>
+      <section class="card stack">
+        <h2 style="margin:0">Andere Programme</h2>
+        <p class="sub">GEDCOM ist das Austauschformat aller Ahnenprogramme (Ahnenblatt, Gramps, MyHeritage, Ancestry …).</p>
+        <div class="row"><button class="btn" id="mGed" type="button">GEDCOM exportieren</button><button class="btn" id="mGedIn" type="button">GEDCOM einlesen</button></div>
+      </section>
+      <section class="card stack">
+        <h2 style="margin:0">Datenschutz</h2>
+        <p class="note" style="margin:0">Alles, was du eingibst, liegt nur im Speicher dieses Browsers auf diesem Handy. Es gibt keinen Server und kein Konto. Wer den Browserverlauf bzw. die Websitedaten löscht oder das Handy verliert, verliert ohne Sicherung auch den Stammbaum.</p>
+        <p class="sub" id="mStore"></p>
+        <button class="btn danger" id="mWipe" type="button">Alles auf diesem Handy löschen</button>
+      </section>
+      <section class="card stack" id="admin" hidden>
+        <h2 style="margin:0">Code für ein anderes Handy</h2>
+        <p class="sub" style="margin:0">Nur für dich sichtbar, weil du mit deinem Hauptcode angemeldet bist.</p>
+        <div><label for="admName">Für wen?</label><input id="admName" autocomplete="off" placeholder="Name"></div>
+        <div><label for="admDev">Gerätenummer</label><input id="admDev" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></div>
+        <div class="out" id="admOut" aria-live="polite"></div>
+        <div class="row"><button class="btn" type="button" id="admCopy" hidden>Code kopieren</button><button class="btn primary" type="button" id="admSave" hidden>In Liste speichern</button></div>
+        <p class="sub" id="admMsg" style="margin:0" aria-live="polite"></p>
+        <h3 style="margin:6px 0 0">Vergebene Codes</h3>
+        <div class="tw"><table id="admList"></table></div>
+      </section>
+    </div>
+  </section>
+</div>
+</div>
+
+<nav class="tabs" id="tabs" hidden><div class="in">
+  <a href="#baum" data-v="baum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="4.5" rx="1"/><rect x="2.5" y="16.5" width="6" height="4.5" rx="1"/><rect x="15.5" y="16.5" width="6" height="4.5" rx="1"/><path d="M12 7v5M5.5 16.5V12h13v4.5"/></svg>Baum</a>
+  <a href="#personen" data-v="personen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></svg>Personen</a>
+  <a href="#forschen" data-v="forschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 6 6"/></svg>Forschen</a>
+  <a href="#mehr" data-v="mehr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>Mehr</a>
+</div></nav>
+
+<div class="sheet" id="sheet" hidden><div class="in" id="sheetIn"></div></div>
+<div class="viewer" id="viewer" hidden></div>
+<input type="file" id="fileIn" hidden>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const NOWY=new Date().getFullYear();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const today=()=>new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+
+/* ---------- Speicher (IndexedDB, nur auf diesem Gerät) ---------- */
+let db=null, T=null;
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open("ahnenspur",1);
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains("kv"))d.createObjectStore("kv");if(!d.objectStoreNames.contains("media"))d.createObjectStore("media")};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function op(store,mode,fn){return new Promise((res,rej)=>{const t=db.transaction(store,mode),rq=fn(t.objectStore(store));t.oncomplete=()=>res(rq&&"result"in rq?rq.result:undefined);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+const emptyTree=()=>({v:1,persons:{},fams:{},proband:null,changed:0,backup:0});
+async function loadTree(){T=(await op("kv","readonly",s=>s.get("tree")))||emptyTree();T.persons=T.persons||{};T.fams=T.fams||{}}
+let saveTimer=null;
+function save(){T.changed=Date.now();clearTimeout(saveTimer);saveTimer=setTimeout(()=>op("kv","readwrite",s=>s.put(T,"tree")).catch(e=>alertMsg("Speichern fehlgeschlagen: "+e)),150)}
+function saveNow(){clearTimeout(saveTimer);return op("kv","readwrite",s=>s.put(T,"tree"))}
+const putMedia=(id,blob)=>op("media","readwrite",s=>s.put(blob,id));
+const getMedia=id=>op("media","readonly",s=>s.get(id));
+const delMedia=id=>op("media","readwrite",s=>s.delete(id));
+const URLS={};
+async function mediaURL(id){if(!id)return null;if(URLS[id])return URLS[id];const b=await getMedia(id).catch(()=>null);if(!b)return null;return URLS[id]=URL.createObjectURL(b)}
+function alertMsg(t){const b=$("bBanner");if(b)b.innerHTML=`<div class="banner">${esc(t)}</div>`}
+
+/* ---------- Familien-Logik ---------- */
+const P=id=>T.persons[id];
+const fams=()=>Object.values(T.fams);
+const parentsFam=id=>fams().find(f=>f.kinder.includes(id));
+const spouseFams=id=>fams().filter(f=>f.a===id||f.b===id);
+const fatherOf=id=>{const f=parentsFam(id);return f&&f.a?P(f.a):null};
+const motherOf=id=>{const f=parentsFam(id);return f&&f.b?P(f.b):null};
+const childrenOf=id=>spouseFams(id).flatMap(f=>f.kinder).filter(P);
+const siblingsOf=id=>{const f=parentsFam(id);return f?f.kinder.filter(k=>k!==id&&P(k)):[]};
+const partnerIn=(f,id)=>f.a===id?f.b:f.a;
+const year=s=>{const m=String(s||"").match(/(1[0-9]{3}|20[0-9]{2})/);return m?+m[1]:null};
+const fullName=p=>p?([p.vorname,p.nachname].filter(Boolean).join(" ")||"Unbekannt"):"Unbekannt";
+const ev=(p,k)=>(p&&p[k])||{};
+function lifeTxt(p){const b=year(ev(p,"geb").d)||year(ev(p,"taufe").d),d=year(ev(p,"tod").d)||year(ev(p,"grab").d);
+  if(b&&d)return b+"–"+d;if(b)return (isDead(p)?"* ":"* ")+b+(isDead(p)&&!d?" †":"");if(d)return "† "+d;return isDead(p)?"†":""}
+function isDead(p){const t=ev(p,"tod");if(t.d||t.o||p.verst)return true;const b=year(ev(p,"geb").d)||year(ev(p,"taufe").d);return !!(b&&b<NOWY-105)}
+function initials(p){return ((p.vorname||"?")[0]+(p.nachname||"")[0]||"").toUpperCase()}
+let KEK={};
+function calcKek(){KEK={};if(!T.proband||!P(T.proband))return;const q=[[T.proband,1]];
+  while(q.length){const[id,n]=q.shift();if(KEK[id]||n>2**20)continue;KEK[id]=n;const f=parentsFam(id);if(f){if(f.a&&P(f.a))q.push([f.a,2*n]);if(f.b&&P(f.b))q.push([f.b,2*n+1])}}}
+function genOf(n){return Math.floor(Math.log2(n))}
+const GEN=["Hauptperson","Eltern","Großeltern","Urgroßeltern","Ururgroßeltern"];
+function genName(n){const g=genOf(n);return GEN[g]||`${g-2}. Ur-Generation`}
+function relLabel(n){if(n===1)return"Hauptperson";if(n===2)return"Vater";if(n===3)return"Mutter";const g=genOf(n);const side=(n>>(g-1))===2?"väterlicherseits":"mütterlicherseits";const sex=n%2?"mutter":"vater";const pre=g===2?"Groß":"Ur".repeat(g-2)+"groß";return pre+sex+" "+side}
+
+/* ---------- Ansichten / Navigation ---------- */
+let view="baum", cur=null, focus=null, started=false;
+function route(){let h=location.hash.slice(1)||"baum";let [v,arg]=h.split("/");
+  if(!T.proband&&!Object.keys(T.persons).length&&v!=="mehr")v="start";
+  if(v==="person"&&(!arg||!P(arg)))v="personen";
+  view=v;document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="v-"+v);
+  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===v||(v==="person"&&a.dataset.v==="personen")));
+  if(v==="baum")drawTree(true);else if(v==="personen")drawList();else if(v==="person"){cur=arg;drawPerson()}else if(v==="forschen")drawResearch();else if(v==="mehr")drawMehr();
+  window.scrollTo(0,0)}
+addEventListener("hashchange",route);
+function go(h){if(location.hash==="#"+h)route();else location.hash=h}
+function refresh(){calcKek();route()}
+
+/* ---------- Baum zeichnen ---------- */
+const BW=132,BH=70,SX=146,RH=112;
+let VB={x:0,y:0,w:400,h:400}, Z=1, nodes=[];
+function sexCol(p){return p&&p.sex==="m"?"var(--m)":p&&p.sex==="w"?"var(--w)":"var(--u)"}
+function trunc(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s}
+function drawTree(recenter){
+  if(!T.proband||!P(T.proband)){const ids=Object.keys(T.persons);T.proband=ids[0]||null}
+  if(!focus||!P(focus))focus=T.proband; if(!focus){go("start");return}
+  const F=focus, fp=P(F);$("bTitle").textContent=fullName(fp);
+  const out=[], lines=[];nodes=[];
+  function depth(id,g){if(!id||g>4)return 0;const f=parentsFam(id);if(!f)return 0;return 1+Math.max(depth(f.a,g+1),depth(f.b,g+1))}
+  const G=Math.min(3,Math.max(1,depth(F,0)+1));
+  const yF=G*RH;
+  function node(id,x,y,o={}){nodes.push({id,x,y,...o})}
+  function anc(id,g,x0){const y=(G-g)*RH;let cs=[],w=0;
+    if(g<G){const f=parentsFam(id),pa=[f&&f.a,f&&f.b],any=pa.some(pid=>pid&&P(pid));
+      pa.forEach((pid,k)=>{if(pid&&P(pid)){const r=anc(pid,g+1,x0+w);cs.push(r.cx);w+=r.w}
+        else if(g===0||any||g<2){const sw=g>=1?SX*.72:SX;const cx=x0+w+sw/2;node(null,cx,y-RH,{add:k?"mutter":"vater",child:id,small:g>=1});cs.push(cx);w+=sw}});
+      if(cs.length){const py=y-RH,my=py+BH/2+(RH-BH)/2;lines.push(cs.map(c=>`M${c} ${py+(nodes.find(n=>n.x===c&&n.y===py&&!n.id)?17:BH/2)}V${my}`).join("")+`M${Math.min(...cs)} ${my}H${Math.max(...cs)}`);
+        const m=f&&f.a&&f.b?yr(f.heirat):null;if(m)lines.push({t:"⚭ "+m,x:(cs[0]+cs[cs.length-1])/2,y:my-6})}}
+    let cx;if(cs.length){cx=(Math.min(...cs)+Math.max(...cs))/2}else{w=SX;cx=x0+SX/2}
+    if(w<SX){const sh=(SX-w)/2;w=SX}
+    if(cs.length){const my=y-RH+BH/2+(RH-BH)/2;lines.push(`M${cx} ${my}V${y-BH/2}`)}
+    if(g>0)node(id,cx,y);return{w,cx}}
+  const cx0=anc(F,0,0).cx;
+  // Hauptperson
+  node(F,cx0,yF,{focus:true});
+  // Geschwister links
+  const sib=siblingsOf(F),pf=parentsFam(F);
+  if(sib.length){const my=yF-BH/2-(RH-BH)/2;sib.forEach((s,i)=>{const x=cx0-(i+1)*SX;node(s,x,yF,{dim:true});lines.push(`M${x} ${yF-BH/2}V${my}H${cx0}`)})}
+  // Partner rechts, Kinder unten
+  const sf=spouseFams(F);let px=cx0;const kids=[];
+  sf.forEach((f,i)=>{const o=partnerIn(f,F);let x=cx0;if(o&&P(o)){px+=SX;x=px;node(o,x,yF,{partner:true});lines.push(`M${cx0+BW/2} ${yF}H${x-BW/2}`);const m=yr(f.heirat);lines.push({t:"⚭"+(m?" "+m:""),x:(cx0+x)/2+(i?0:0),y:yF-8})}
+    f.kinder.filter(P).forEach(k=>kids.push({k,from:(cx0+x)/2}))});
+  if(kids.length){const yK=yF+RH+6,mid=(cx0+px)/2,n=kids.length;
+    kids.forEach((o,j)=>{const x=mid+(j-(n-1)/2)*SX;node(o.k,x,yK,{kid:true});const my=yK-BH/2-(RH-BH)/2+3;lines.push(`M${o.from} ${yF+(o.from===cx0?BH/2:0)}V${my}H${x}V${yK-BH/2}`)})}
+  node(null,px+SX*.82,yF,{add:"partner",child:F,small:true});
+  node(null,cx0,yF+RH+6+(kids.length?RH:0)-(kids.length?0:0),{add:"kind",child:F,small:true,below:kids.length>0});
+  // Fix: Kind-Platzhalter neben die Kinder
+  const addK=nodes[nodes.length-1];if(kids.length){const mid=(cx0+px)/2;addK.x=mid+((kids.length)/2+.35)*SX;addK.y=yF+RH+6}
+  else lines.push(`M${cx0} ${yF+BH/2}V${addK.y-18}`);
+  // SVG
+  const sv=$("tsvg");let h=`<defs><clipPath id="cp"><circle cx="0" cy="0" r="17"/></clipPath><filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1.4" flood-opacity=".18"/></filter></defs>`;
+  h+=`<g fill="none" stroke="var(--tree)" stroke-width="2">`+lines.filter(l=>typeof l==="string").map(d=>`<path d="${d}"/>`).join("")+`</g>`;
+  h+=lines.filter(l=>typeof l==="object").map(l=>`<text x="${l.x}" y="${l.y}" text-anchor="middle" font-size="12" fill="var(--muted)">${esc(l.t)}</text>`).join("");
+  const need=[];
+  nodes.forEach(n=>{if(!n.id){const r=n.small?17:22,lab=n.add==="vater"?"Vater":n.add==="mutter"?"Mutter":n.add==="partner"?"Partner":"Kind";
+      h+=`<g data-add="${n.add}" data-child="${n.child}" style="cursor:pointer"><rect x="${n.x-(n.small?44:BW/2)}" y="${n.y-(n.small?17:BH/2)}" width="${n.small?88:BW}" height="${n.small?34:BH}" rx="${n.small?17:12}" fill="var(--surface)" fill-opacity=".6" stroke="var(--tree)" stroke-dasharray="5 4" stroke-width="1.5"/><text x="${n.x}" y="${n.y+5}" text-anchor="middle" font-size="${n.small?13:15}" fill="var(--accent2)" font-weight="600">+ ${lab}</text></g>`;return}
+    const p=P(n.id);if(!p)return;const x=n.x-BW/2,y=n.y-BH/2,k=KEK[n.id];
+    const foto=p.foto&&URLS[p.foto];if(p.foto&&!URLS[p.foto])need.push(p.foto);
+    const tx=foto?x+48:x+12, tw=foto?BW-54:BW-20, cl=foto?13:15;
+    h+=`<g data-id="${n.id}" style="cursor:pointer" opacity="${n.dim?.82:1}" filter="url(#sh)"><rect x="${x}" y="${y}" width="${BW}" height="${BH}" rx="12" fill="var(--surface)" stroke="${n.focus?"var(--accent2)":"var(--line)"}" stroke-width="${n.focus?2.5:1}"/>`+
+      `<rect x="${x}" y="${y+10}" width="4" height="${BH-20}" rx="2" fill="${sexCol(p)}"/>`+
+      (foto?`<g transform="translate(${x+27} ${n.y})"><circle r="18.5" fill="${sexCol(p)}"/><image href="${foto}" x="-17" y="-17" width="34" height="34" clip-path="url(#cp)" preserveAspectRatio="xMidYMid slice"/></g>`:"")+
+      `<text x="${tx}" y="${y+22}" font-size="14" font-weight="700" fill="var(--ink)">${esc(trunc(p.vorname||"?",cl))}</text>`+
+      `<text x="${tx}" y="${y+39}" font-size="13" fill="var(--ink)">${esc(trunc(p.nachname||"",cl+1))}</text>`+
+      `<text x="${tx}" y="${y+58}" font-size="12" fill="var(--muted)">${esc(lifeTxt(p))}</text>`+
+      (k?`<text x="${x+BW-8}" y="${y+58}" font-size="11" text-anchor="end" fill="var(--accent2)" font-weight="700">${k}</text>`:"")+
+      (n.kid&&childrenOf(n.id).length?`<text x="${x+BW-8}" y="${y+18}" font-size="11" text-anchor="end" fill="var(--muted)">↓${childrenOf(n.id).length}</text>`:"")+`</g>`});
+  sv.innerHTML=h;
+  if(need.length)Promise.all(need.map(mediaURL)).then(()=>drawTree(false));
+  // Grenzen
+  const xs=nodes.map(n=>n.x),ys=nodes.map(n=>n.y);BB={x0:Math.min(...xs)-BW/2-20,x1:Math.max(...xs)+BW/2+20,y0:Math.min(...ys)-BH/2-24,y1:Math.max(...ys)+BH/2+24,fx:cx0,fy:yF};
+  if(recenter)fit();else applyVB();
+  $("bOpen").onclick=()=>go("person/"+F);
+  drawBanner()}
+let BB=null;
+function yr(e){return e?year(e.d):null}
+function fit(){const box=$("tbox"),cw=box.clientWidth||360,ch=box.clientHeight||500;
+  const bw=BB.x1-BB.x0,bh=BB.y1-BB.y0;Z=Math.max(.78,Math.min(1.1,cw/bw,ch/bh));
+  VB.w=cw/Z;VB.h=ch/Z;
+  VB.x=bw<=VB.w?BB.x0-(VB.w-bw)/2:Math.min(Math.max(BB.fx-VB.w/2,BB.x0),BB.x1-VB.w);
+  VB.y=bh<=VB.h?BB.y0-(VB.h-bh)/2:Math.min(Math.max(BB.fy-VB.h*.55,BB.y0),BB.y1-VB.h);applyVB()}
+function applyVB(){const box=$("tbox");VB.w=(box.clientWidth||360)/Z;VB.h=(box.clientHeight||500)/Z;$("tsvg").setAttribute("viewBox",`${VB.x} ${VB.y} ${VB.w} ${VB.h}`)}
+function zoomAt(f,sx,sy){const box=$("tbox").getBoundingClientRect();const px=VB.x+(sx-box.left)/Z,py=VB.y+(sy-box.top)/Z;Z=Math.max(.3,Math.min(2.5,Z*f));VB.x=px-(sx-box.left)/Z;VB.y=py-(sy-box.top)/Z;applyVB()}
+(function(){const sv=$("tsvg"),pts=new Map();let moved=0,startD=0,startZ=1,down=null;
+  sv.addEventListener("pointerdown",e=>{sv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=0;down={x:e.clientX,y:e.clientY,t:e.target};
+    if(pts.size===2){const[a,b]=[...pts.values()];startD=Math.hypot(a.x-b.x,a.y-b.y);startZ=Z}});
+  sv.addEventListener("pointermove",e=>{const p=pts.get(e.pointerId);if(!p)return;
+    if(pts.size===1){const dx=e.clientX-p.x,dy=e.clientY-p.y;VB.x-=dx/Z;VB.y-=dy/Z;applyVB();moved+=Math.abs(dx)+Math.abs(dy);if(moved>40&&!$("thint").hidden){$("thint").hidden=true;ls.set("ahnen.hint",1)}}
+    else if(pts.size===2){p.x=e.clientX;p.y=e.clientY;const[a,b]=[...pts.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(startD){const f=startZ*d/startD/Z;zoomAt(f,(a.x+b.x)/2,(a.y+b.y)/2)}moved=99;return}
+    p.x=e.clientX;p.y=e.clientY});
+  const up=e=>{const was=pts.size;pts.delete(e.pointerId);if(pts.size<2)startD=0;
+    if(was===1&&moved<10&&down){const g=down.t.closest&&down.t.closest("[data-id],[data-add]");if(g){if(g.dataset.id){const id=g.dataset.id;if(id===focus)go("person/"+id);else{focus=id;drawTree(true)}}else addRel(g.dataset.child,g.dataset.add)}}
+    down=null};
+  sv.addEventListener("pointerup",up);sv.addEventListener("pointercancel",e=>{pts.delete(e.pointerId);down=null});
+  sv.addEventListener("wheel",e=>{e.preventDefault();zoomAt(e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false});
+  $("zIn").onclick=()=>{const r=$("tbox").getBoundingClientRect();zoomAt(1.25,r.left+r.width/2,r.top+r.height/2)};
+  $("zOut").onclick=()=>{const r=$("tbox").getBoundingClientRect();zoomAt(.8,r.left+r.width/2,r.top+r.height/2)};
+  if(ls.get("ahnen.hint",0))$("thint").hidden=true;
+  $("zHome").onclick=()=>{focus=T.proband;drawTree(true)};
+  addEventListener("resize",()=>{if(view==="baum"&&BB)applyVB()})})();
+function drawBanner(){const n=Object.keys(T.persons).length,b=$("bBanner");
+  const old=!T.backup||Date.now()-T.backup>14*864e5;
+  if(n>=3&&T.changed>T.backup&&old)b.innerHTML=`<div class="banner"><span>${T.backup?"Letzte Sicherung am "+new Date(T.backup).toLocaleDateString("de-DE"):"Noch keine Sicherung gemacht"} – deine Daten liegen nur auf diesem Handy.</span><button class="btn small" type="button" onclick="doBackup()">Sichern</button></div>`;
+  else b.innerHTML=""}
+
+/* ---------- Personenliste ---------- */
+function avatar(p,cls=""){const u=p.foto&&URLS[p.foto];return `<span class="av ${p.sex||""} ${cls}">${u?`<img src="${u}" alt="">`:esc(initials(p))}</span>`}
+async function preloadFotos(ids){const need=ids.map(id=>P(id)).filter(p=>p&&p.foto&&!URLS[p.foto]).map(p=>p.foto);if(need.length){await Promise.all(need.map(mediaURL));return true}return false}
+function drawList(){const q=$("pq").value.trim().toLowerCase(),all=Object.values(T.persons);
+  const gens=Object.values(KEK).reduce((m,n)=>Math.max(m,genOf(n)+1),0);
+  $("pStat").textContent=`${all.length} ${all.length===1?"Person":"Personen"}${gens?` · ${gens} ${gens===1?"Generation":"Generationen"} Vorfahren`:""}`;
+  const l=all.filter(p=>!q||[p.vorname,p.nachname,p.geburtsname,ev(p,"geb").o,ev(p,"tod").o,ev(p,"geb").d,ev(p,"tod").d,p.beruf].join(" ").toLowerCase().includes(q))
+    .sort((a,b)=>(a.nachname||"").localeCompare(b.nachname||"","de")||(year(ev(a,"geb").d)||0)-(year(ev(b,"geb").d)||0));
+  $("plist").innerHTML=l.map(p=>`<button class="item" type="button" data-p="${p.id}">${avatar(p)}<span><span class="nm">${esc(fullName(p))}</span>${p.geburtsname?` <span class="yr">geb. ${esc(p.geburtsname)}</span>`:""}${KEK[p.id]?`<span class="kek">${KEK[p.id]}</span>`:""}<br><span class="yr">${esc(lifeTxt(p))}${ev(p,"geb").o?" · "+esc(ev(p,"geb").o):""}</span></span></button>`).join("")||`<p class="sub">Keine Treffer.</p>`;
+  $("plist").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>go("person/"+b.dataset.p));
+  preloadFotos(l.map(p=>p.id)).then(r=>{if(r&&view==="personen")drawList()})}
+$("pq").addEventListener("input",drawList);
+$("pNew").onclick=()=>editPerson(null,{kind:"frei"});
+
+/* ---------- Personenblatt ---------- */
+const EVN=[["geb","Geburt"],["taufe","Taufe"],["tod","Tod"],["grab","Begräbnis"]];
+function evRows(p){let h="";EVN.forEach(([k,lab])=>{const e=ev(p,k);if(!e.d&&!e.o)return;
+  h+=`<div class="ev"><b>${lab}</b><span>${esc(e.d||"Datum unbekannt")}${e.o?" in "+esc(e.o):""}</span><span class="q ${e.q?"":"miss"}">${e.q?"Quelle: "+esc(e.q):"Quelle fehlt noch"}</span></div>`});
+  if(p.beruf)h+=`<div class="ev"><b>Beruf</b><span>${esc(p.beruf)}</span></div>`;
+  if(p.konf)h+=`<div class="ev"><b>Konfession</b><span>${esc(p.konf)}</span></div>`;
+  if(p.wohn)h+=`<div class="ev"><b>Wohnorte</b><span>${esc(p.wohn)}</span></div>`;
+  return h||`<p class="sub">Noch keine Lebensdaten eingetragen.</p>`}
+function pLink(id,extra=""){const p=P(id);return p?`<button class="item" type="button" data-p="${id}">${avatar(p)}<span><span class="nm">${esc(fullName(p))}</span>${extra}<br><span class="yr">${esc(lifeTxt(p))}</span></span></button>`:""}
+function drawPerson(){const p=P(cur);if(!p){go("personen");return}const id=cur,k=KEK[id];
+  const fa=fatherOf(id),mo=motherOf(id),sib=siblingsOf(id),sf=spouseFams(id);
+  let h=`<button class="back" type="button" onclick="history.length>1?history.back():go('personen')">‹ Zurück</button>
+  <div class="phead">${avatar(p)}<div><div class="eyebrow">${k?esc(relLabel(k))+" · Ahnennr. "+k:id===T.proband?"Hauptperson":"Person"}</div><h1>${esc(fullName(p))}</h1>${p.geburtsname?`<p class="sub">geborene/r ${esc(p.geburtsname)}</p>`:""}<p class="sub">${esc(lifeTxt(p))}</p></div></div>
+  <div class="row" style="margin:12px 0"><button class="btn primary" type="button" id="pEdit">Bearbeiten</button><button class="btn" type="button" id="pTree">Im Baum zeigen</button><button class="btn" type="button" id="pFoto">${p.foto?"Foto ändern":"Foto hinzufügen"}</button></div>
+  <section class="card"><h2 style="margin:0 0 4px">Lebensdaten</h2>${evRows(p)}</section>
+  <section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Familie</h2><div class="rel">
+   <div class="lab">Eltern</div>${fa?pLink(fa.id," <span class='yr'>Vater</span>"):""}${mo?pLink(mo.id," <span class='yr'>Mutter</span>"):""}
+   <div class="row">${fa?"":`<button class="chip" data-add="vater">+ Vater</button>`}${mo?"":`<button class="chip" data-add="mutter">+ Mutter</button>`}</div>`;
+  sf.forEach(f=>{const o=partnerIn(f,id),m=f.heirat||{};h+=`<div class="lab">${o&&P(o)?"Partner/in":"Kinder"}${m.d||m.o?` · ⚭ ${esc(m.d||"")} ${m.o?"in "+esc(m.o):""}`:""}</div>`;
+    if(o&&P(o))h+=pLink(o)+`<div class="row"><button class="chip" data-fam="${f.id}">Heirat bearbeiten</button></div>`;
+    const ks=f.kinder.filter(P);if(ks.length){if(o&&P(o))h+=`<div class="lab">Kinder${P(o)?" mit "+esc(P(o).vorname||""):""}</div>`;h+=ks.map(c=>pLink(c)).join("")}});
+  h+=`<div class="row" style="margin-top:6px"><button class="chip" data-add="partner">+ Partner/in</button><button class="chip" data-add="kind">+ Kind</button><button class="chip" data-add="geschw">+ Geschwister</button></div>`;
+  if(sib.length)h+=`<div class="lab">Geschwister</div>`+sib.map(s=>pLink(s)).join("");
+  h+=`</div></section>
+  <section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Urkunden, Fotos, Dokumente</h2><p class="sub" style="margin-bottom:8px">Fotos von Urkunden, Kirchenbuch-Einträgen, Briefen oder alten Bildern.</p>
+   <div class="media" id="pMedia"></div><div class="row" style="margin-top:8px"><button class="btn" type="button" id="pAddM">+ Bild oder PDF</button></div></section>
+  <section class="card" style="margin-top:10px"><h2 style="margin:0 0 6px">Wo suche ich weiter?</h2><div class="stack">${tipsFor(id).map(t=>`<div class="tip ${t.ok?"ok":""}">${t.h}</div>`).join("")||`<p class="sub">Alles Wichtige ist eingetragen.</p>`}</div></section>
+  ${p.notiz?`<section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Notizen und Erzählungen</h2><p style="white-space:pre-wrap;margin:0">${esc(p.notiz)}</p></section>`:""}
+  <div class="row" style="margin-top:16px"><button class="btn small" type="button" id="pProb">${id===T.proband?"Ist Hauptperson":"Als Hauptperson festlegen"}</button><button class="btn small" type="button" id="pMerge">Doppelte Person zusammenführen</button><button class="btn small danger" type="button" id="pDel">Person löschen</button></div>`;
+  const v=$("v-person");v.innerHTML=h;
+  v.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>go("person/"+b.dataset.p));
+  v.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>addRel(id,b.dataset.add));
+  v.querySelectorAll("[data-fam]").forEach(b=>b.onclick=()=>editFam(b.dataset.fam));
+  $("pEdit").onclick=()=>editPerson(id);$("pTree").onclick=()=>{focus=id;go("baum")};
+  $("pFoto").onclick=()=>pickFile("image/*",f=>setPortrait(id,f));
+  $("pAddM").onclick=()=>pickFile("image/*,application/pdf",f=>addMedia(id,f),true);
+  $("pProb").onclick=()=>{T.proband=id;save();refresh()};
+  armed($("pDel"),"Wirklich löschen?",()=>delPerson(id));
+  $("pMerge").onclick=()=>mergeDialog(id);
+  drawMedia(id);
+  preloadFotos([id,...[fa,mo].filter(Boolean).map(x=>x.id),...sib,...sf.flatMap(f=>[partnerIn(f,id),...f.kinder])].filter(Boolean)).then(r=>{if(r&&view==="person"&&cur===id)drawPerson()})}
+function armed(btn,txt,fn){let t=null;const orig=btn.textContent;btn.onclick=()=>{if(t){clearTimeout(t);t=null;fn();return}btn.textContent=txt;t=setTimeout(()=>{t=null;btn.textContent=orig},4000)}}
+async function drawMedia(id){const p=P(id),box=$("pMedia");if(!box)return;const m=p.media||[];
+  if(!m.length){box.innerHTML=`<p class="sub" style="grid-column:1/-1">Noch nichts angehängt.</p>`;return}
+  await Promise.all(m.map(x=>mediaURL(x.id)));if(cur!==id||!$("pMedia"))return;
+  box.innerHTML=m.map((x,i)=>`<button type="button" data-m="${i}">${x.typ==="pdf"?`<div style="display:grid;place-items:center;height:100%;font-size:30px">📄</div>`:`<img src="${URLS[x.id]||""}" alt="">`}<span>${esc(x.titel||"ohne Titel")}</span></button>`).join("");
+  box.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>openViewer(id,+b.dataset.m))}
+
+/* ---------- Dateien ---------- */
+function pickFile(accept,cb,multi){const f=$("fileIn");f.value="";f.accept=accept;f.multiple=!!multi;f.onchange=()=>{[...f.files].forEach(cb)};f.click()}
+async function shrink(file,max,q=.84,square=false){
+  let bmp;try{bmp=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){bmp=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(file)})}
+  let sw=bmp.width,sh=bmp.height,sx=0,sy=0;if(square){const s=Math.min(sw,sh);sx=(sw-s)/2;sy=(sh-s)/4;sw=sh=s}
+  const r=Math.min(1,max/Math.max(sw,sh)),c=document.createElement("canvas");c.width=Math.round(sw*r);c.height=Math.round(sh*r);
+  c.getContext("2d").drawImage(bmp,sx,sy,sw,sh,0,0,c.width,c.height);return await new Promise(res=>c.toBlob(res,"image/jpeg",q))}
+async function setPortrait(id,file){const p=P(id);const b=await shrink(file,420,.85,true);const mid=uid();await putMedia(mid,b);
+  if(p.foto){await delMedia(p.foto).catch(()=>{});delete URLS[p.foto]}p.foto=mid;save();refresh()}
+async function addMedia(id,file){const p=P(id);const pdf=file.type==="application/pdf";
+  if(pdf&&file.size>15e6){alert("Die PDF ist zu groß (max. 15 MB).");return}
+  const b=pdf?file:await shrink(file,2000,.85);const mid=uid();await putMedia(mid,b);
+  (p.media=p.media||[]).push({id:mid,typ:pdf?"pdf":"bild",titel:file.name.replace(/\.[a-z0-9]+$/i,"").slice(0,60),datum:today()});save();if(view==="person"&&cur===id)drawMedia(id)}
+function openViewer(id,i){const p=P(id),m=p.media[i],v=$("viewer"),u=URLS[m.id];
+  v.innerHTML=`<div class="im">${m.typ==="pdf"?`<a class="btn primary" href="${u}" target="_blank" rel="noopener">PDF öffnen</a>`:`<img src="${u}" alt="">`}</div>
+  <div class="bar"><div><label for="vT">Titel</label><input id="vT" value="${esc(m.titel||"")}" placeholder="z. B. Geburtsurkunde 1921"></div>
+  <div class="row"><button class="btn primary" type="button" id="vOk">Fertig</button>${m.typ==="pdf"?"":`<button class="btn" type="button" id="vPort">Als Porträt</button>`}<button class="btn danger" type="button" id="vDel">Löschen</button></div></div>`;
+  v.hidden=false;
+  $("vOk").onclick=()=>{m.titel=$("vT").value.trim();save();v.hidden=true;drawMedia(id)};
+  if($("vPort"))$("vPort").onclick=async()=>{const b=await getMedia(m.id);await setPortrait(id,b);v.hidden=true};
+  armed($("vDel"),"Wirklich löschen?",async()=>{p.media.splice(i,1);await delMedia(m.id).catch(()=>{});save();v.hidden=true;drawMedia(id)})}
+
+/* ---------- Bearbeiten ---------- */
+function openSheet(html){$("sheetIn").innerHTML=html;$("sheet").hidden=false;$("sheetIn").scrollTop=0}
+function closeSheet(){$("sheet").hidden=true;$("sheetIn").innerHTML=""}
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+const KONF=["","evangelisch","katholisch","altlutherisch","reformiert","jüdisch","freikirchlich","muslimisch","ohne Konfession","andere"];
+function evField(k,lab,e){e=e||{};return `<fieldset class="evf"><legend>${lab}</legend><div class="grid2"><div><label>Datum</label><input data-e="${k}.d" value="${esc(e.d)}" placeholder="12.03.1921 / um 1890"></div><div><label>Ort</label><input data-e="${k}.o" value="${esc(e.o)}" placeholder="z. B. Mülheim-Speldorf"></div></div><div><label>Quelle</label><input data-e="${k}.q" value="${esc(e.q)}" placeholder="z. B. Geburtsurkunde Nr. 312/1921, Standesamt Mülheim"></div></fieldset>`}
+const CTXT={vater:"Vater von",mutter:"Mutter von",partner:"Partner/in von",kind:"Kind von",geschw:"Geschwister von"};
+function addRel(pid,kind){editPerson(null,{kind,pid})}
+function editPerson(id,ctx){const isNew=!id,p=id?P(id):{};ctx=ctx||{};const base=ctx.pid?P(ctx.pid):null;
+  let sex=p.sex||(ctx.kind==="vater"?"m":ctx.kind==="mutter"?"w":ctx.kind==="partner"&&base?(base.sex==="m"?"w":base.sex==="w"?"m":""):"");
+  let nach=p.nachname||"";if(isNew&&base){if(ctx.kind==="vater"||ctx.kind==="geschw")nach=base.geburtsname||base.nachname||"";if(ctx.kind==="kind")nach=base.sex==="w"?(P(partnerOfOnly(ctx.pid))?.nachname||base.nachname||""):base.nachname||""}
+  const sf=ctx.kind==="kind"?spouseFams(ctx.pid):[];
+  const existing=isNew&&ctx.pid?Object.values(T.persons).filter(x=>x.id!==ctx.pid).sort((a,b)=>fullName(a).localeCompare(fullName(b),"de")):[];
+  openSheet(`<div class="eyebrow">${isNew?(ctx.kind==="proband"?"Los geht's":ctx.pid?esc(CTXT[ctx.kind]+" "+fullName(base)):"Neue Person"):"Bearbeiten"}</div>
+   <h2 style="margin:2px 0 10px">${isNew?(ctx.kind==="proband"?"Das bist du":"Neue Person"):esc(fullName(p))}</h2>
+   <div class="stack">
+   ${existing.length?`<div><label for="fEx">Ist die Person schon eingetragen?</label><select id="fEx"><option value="">Nein, neu anlegen</option>${existing.map(x=>`<option value="${x.id}">${esc(fullName(x)+(lifeTxt(x)?" ("+lifeTxt(x)+")":""))}</option>`).join("")}</select></div>`:""}
+   <div id="fNewBox" class="stack">
+   ${sf.length>1?`<div><label for="fFam">Mit welchem Partner?</label><select id="fFam">${sf.map(f=>`<option value="${f.id}">${esc(P(partnerIn(f,ctx.pid))?fullName(P(partnerIn(f,ctx.pid))):"unbekannt")}</option>`).join("")}</select></div>`:""}
+   <div class="grid2"><div><label for="fV">Vorname(n)</label><input id="fV" value="${esc(p.vorname)}" autocomplete="off"></div><div><label for="fN">Nachname</label><input id="fN" value="${esc(nach)}" autocomplete="off"></div></div>
+   <div class="grid2"><div><label for="fG">Geburtsname</label><input id="fG" value="${esc(p.geburtsname)}" placeholder="falls anders" autocomplete="off"></div>
+    <div><label>Geschlecht</label><div class="seg" id="fS"><button type="button" data-s="m" class="${sex==="m"?"on":""}">männl.</button><button type="button" data-s="w" class="${sex==="w"?"on":""}">weibl.</button><button type="button" data-s="" class="${!sex?"on":""}">?</button></div></div></div>
+   ${evField("geb","Geburt",p.geb)}
+   <details ${p.taufe&&p.taufe.d?"open":""}><summary style="cursor:pointer;color:var(--accent2)">Taufe</summary>${evField("taufe","Taufe",p.taufe)}</details>
+   <label style="display:flex;gap:8px;align-items:center;font-size:15px;color:var(--ink)"><input type="checkbox" id="fDead" style="width:auto" ${isDead(p)&&Object.keys(p).length?"checked":""}> verstorben</label>
+   <div id="fDeadBox" class="stack">${evField("tod","Tod",p.tod)}${evField("grab","Begräbnis",p.grab)}</div>
+   <div class="grid2"><div><label for="fB">Beruf</label><input id="fB" value="${esc(p.beruf)}"></div><div><label for="fK">Konfession</label><select id="fK">${KONF.map(k=>`<option ${k===(p.konf||"")?"selected":""}>${k}</option>`).join("")}</select></div></div>
+   <div><label for="fW">Wohnorte</label><input id="fW" value="${esc(p.wohn)}" placeholder="z. B. Duisburg, ab 1950 Mülheim"></div>
+   <div><label for="fNo">Notizen und Erzählungen</label><textarea id="fNo" placeholder="Was man sich in der Familie erzählt, offene Fragen …">${esc(p.notiz)}</textarea></div>
+   </div>
+   <p class="err" id="fErr"></p>
+   <div class="row"><button class="btn primary" type="button" id="fOk">Speichern</button><button class="btn" type="button" id="fNo2">Abbrechen</button></div></div>`);
+  $("fS").querySelectorAll("button").forEach(b=>b.onclick=()=>{sex=b.dataset.s;$("fS").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))});
+  const dz=()=>{$("fDeadBox").hidden=!$("fDead").checked};$("fDead").onchange=dz;dz();
+  if($("fEx"))$("fEx").onchange=()=>{$("fNewBox").hidden=!!$("fEx").value};
+  $("fNo2").onclick=closeSheet;
+  $("fOk").onclick=()=>{
+    let nid=id;
+    if($("fEx")&&$("fEx").value){nid=$("fEx").value}
+    else{const q=Object.assign({},p);
+      q.vorname=$("fV").value.trim();q.nachname=$("fN").value.trim();q.geburtsname=$("fG").value.trim();q.sex=sex;
+      document.querySelectorAll("[data-e]").forEach(i=>{const[k,f]=i.dataset.e.split(".");q[k]=Object.assign({},q[k]||{});q[k][f]=i.value.trim()});
+      q.verst=$("fDead").checked;if(!q.verst){q.tod={};q.grab={}}
+      q.beruf=$("fB").value.trim();q.konf=$("fK").value;q.wohn=$("fW").value.trim();q.notiz=$("fNo").value.trim();
+      if(!q.vorname&&!q.nachname){$("fErr").textContent="Bitte mindestens einen Namen eingeben (gern auch nur „?“).";return}
+      if(!nid){nid=uid();q.id=nid;q.media=[];q.neu=today()}T.persons[nid]=q}
+    if(isNew)link(ctx,nid,$("fFam")&&$("fFam").value);
+    if(!T.proband)T.proband=nid;
+    save();closeSheet();calcKek();
+    if(ctx.kind==="proband"||ctx.kind==="frei"){focus=nid;go(ctx.kind==="proband"?"baum":"person/"+nid)}
+    else if(view==="baum")drawTree(true);else route()}}
+function partnerOfOnly(id){const f=spouseFams(id);return f.length===1?partnerIn(f[0],id):null}
+function link(ctx,nid,famId){const pid=ctx.pid,k=ctx.kind;if(!pid)return;
+  const mk=o=>{const f=Object.assign({id:uid(),a:null,b:null,kinder:[],heirat:{}},o);T.fams[f.id]=f;return f};
+  if(k==="vater"||k==="mutter"){let f=parentsFam(pid)||mk({kinder:[pid]});const slot=k==="vater"?"a":"b";
+    if(f[slot]&&f[slot]!==nid){/* schon belegt */}else f[slot]=nid;
+    // Kinder des neuen Elternteils mit fehlendem Partner zusammenführen
+    }
+  else if(k==="geschw"){let f=parentsFam(pid)||mk({kinder:[pid]});if(!f.kinder.includes(nid)&&!parentsFam(nid))f.kinder.push(nid)}
+  else if(k==="partner"){if(spouseFams(pid).some(f=>partnerIn(f,pid)===nid))return;
+    let f=spouseFams(pid).find(f=>!partnerIn(f,pid)&&!spouseFams(nid).includes(f));const me=P(pid),o=P(nid);
+    const pidIsA=me.sex==="m"||(me.sex!=="w"&&o.sex==="w");
+    if(f){if(pidIsA){f.a=pid;f.b=nid}else{f.a=nid;f.b=pid}}else mk(pidIsA?{a:pid,b:nid}:{a:nid,b:pid})}
+  else if(k==="kind"){let f=famId?T.fams[famId]:null;const sf=spouseFams(pid);if(!f)f=sf.length===1?sf[0]:sf[0];
+    if(!f){const me=P(pid);f=mk(me.sex==="w"?{b:pid}:{a:pid})}
+    const old=parentsFam(nid);if(old&&old!==f){old.kinder=old.kinder.filter(x=>x!==nid)}if(!f.kinder.includes(nid))f.kinder.push(nid)}
+  cleanFams()}
+function cleanFams(){fams().forEach(f=>{f.kinder=f.kinder.filter(P);if(f.a&&!P(f.a))f.a=null;if(f.b&&!P(f.b))f.b=null;
+  const n=(f.a?1:0)+(f.b?1:0);if(n+f.kinder.length<2&&!(f.heirat&&(f.heirat.d||f.heirat.o)))delete T.fams[f.id]})}
+function editFam(fid){const f=T.fams[fid];if(!f)return;const h=f.heirat||{};
+  openSheet(`<div class="eyebrow">Ehe</div><h2 style="margin:2px 0 10px">${esc(fullName(P(f.a)))} ⚭ ${esc(fullName(P(f.b)))}</h2><div class="stack">${evField("heirat","Heirat",h)}
+   <div><label for="fSch">Scheidung / Ende (optional)</label><input id="fSch" value="${esc(f.ende||"")}"></div>
+   <div class="row"><button class="btn primary" type="button" id="fOk">Speichern</button><button class="btn" type="button" id="fNo2">Abbrechen</button><button class="btn danger" type="button" id="fDelF">Verbindung lösen</button></div></div>`);
+  $("fNo2").onclick=closeSheet;
+  $("fOk").onclick=()=>{const n={};document.querySelectorAll("[data-e]").forEach(i=>{n[i.dataset.e.split(".")[1]]=i.value.trim()});f.heirat=n;f.ende=$("fSch").value.trim();save();closeSheet();route()};
+  armed($("fDelF"),"Wirklich lösen?",()=>{if(f.kinder.length){if(cur&&f.a===cur)f.b=null;else if(cur&&f.b===cur)f.a=null}else delete T.fams[fid];cleanFams();save();closeSheet();route()})}
+function mergeDialog(id){const o=Object.values(T.persons).filter(x=>x.id!==id).sort((a,b)=>fullName(a).localeCompare(fullName(b),"de"));
+  openSheet(`<div class="eyebrow">Zusammenführen</div><h2 style="margin:2px 0 10px">${esc(fullName(P(id)))}</h2><div class="stack"><p class="sub">Wähle die doppelte Person. Ihre Angaben, Fotos und Verbindungen werden hierher übernommen, danach wird der doppelte Eintrag entfernt. Was hier schon eingetragen ist, bleibt erhalten.</p>
+  <select id="mgSel">${o.map(x=>`<option value="${x.id}">${esc(fullName(x)+(lifeTxt(x)?" ("+lifeTxt(x)+")":""))}</option>`).join("")}</select>
+  <div class="row"><button class="btn primary" type="button" id="mgOk">Zusammenführen</button><button class="btn" type="button" id="mgNo">Abbrechen</button></div></div>`);
+  $("mgNo").onclick=closeSheet;$("mgOk").onclick=()=>{mergeInto(id,$("mgSel").value);closeSheet();refresh()}}
+function mergeInto(keep,drop){const a=P(keep),b=P(drop);if(!a||!b)return;
+  ["vorname","nachname","geburtsname","sex","beruf","konf","wohn"].forEach(k=>{if(!a[k]&&b[k])a[k]=b[k]});
+  EVN.forEach(([k])=>{a[k]=Object.assign({},b[k]||{},Object.fromEntries(Object.entries(a[k]||{}).filter(([,v])=>v)))});
+  if(b.verst)a.verst=true;if(b.notiz)a.notiz=a.notiz?a.notiz+"\n"+b.notiz:b.notiz;
+  a.media=(a.media||[]).concat(b.media||[]);if(!a.foto&&b.foto)a.foto=b.foto;else if(b.foto&&b.foto!==a.foto)a.media.push({id:b.foto,typ:"bild",titel:"Porträt",datum:today()});
+  const pa=parentsFam(keep),pb=parentsFam(drop);
+  fams().forEach(f=>{if(f.a===drop)f.a=keep;if(f.b===drop)f.b=keep;f.kinder=f.kinder.map(k=>k===drop?keep:k).filter((k,i,arr)=>arr.indexOf(k)===i)});
+  if(pa&&pb&&pa!==pb){pb.kinder=pb.kinder.filter(k=>k!==keep);if(!pa.a&&pb.a)pa.a=pb.a;if(!pa.b&&pb.b)pa.b=pb.b;
+    if((pb.a===pa.a||!pb.a)&&(pb.b===pa.b||!pb.b)){pb.kinder.forEach(k=>{if(!pa.kinder.includes(k))pa.kinder.push(k)});delete T.fams[pb.id]}}
+  // gleiche Paare zusammenlegen
+  const seen={};fams().forEach(f=>{if(!f.a||!f.b)return;const key=f.a+"|"+f.b;if(seen[key]){const g=seen[key];f.kinder.forEach(k=>{if(!g.kinder.includes(k))g.kinder.push(k)});if(!(g.heirat&&g.heirat.d)&&f.heirat)g.heirat=f.heirat;delete T.fams[f.id]}else seen[key]=f});
+  delete T.persons[drop];if(T.proband===drop)T.proband=keep;if(focus===drop)focus=keep;cleanFams();save()}
+async function delPerson(id){const p=P(id);for(const m of(p.media||[]))await delMedia(m.id).catch(()=>{});if(p.foto)await delMedia(p.foto).catch(()=>{});
+  delete T.persons[id];cleanFams();if(T.proband===id)T.proband=Object.keys(T.persons)[0]||null;if(focus===id)focus=T.proband;save();calcKek();go(T.proband?"personen":"start")}
+
+/* ---------- Forschungs-Assistent ---------- */
+function archTip(art,y,frist,ort,konf){const frei=y+frist,o=ort?` (${esc(ort)})`:"";
+  if(y<1874)return{h:`<b>${art} ${y}</b>: vor Einführung der Standesämter (Rheinland/Preußen 1874). Suche im <b>Kirchenbuch</b>${o}${konf==="evangelisch"?" – evangelische Bücher bei Archion bzw. im Archiv der Landeskirche":konf==="katholisch"?" – katholische Bücher im Bistumsarchiv, teils kostenlos bei Matricula":""}.`};
+  if(NOWY>=frei)return{h:`<b>${art} ${y}</b>: Die Sperrfrist (${frist} Jahre) ist abgelaufen. Der Registereintrag liegt jetzt meist im <b>Stadt- oder Kreisarchiv</b>${o} und ist für jeden einsehbar.`,ok:true};
+  return{h:`<b>${art} ${y}</b>: noch beim <b>Standesamt</b>${o}. Urkunde bekommen die Person selbst, Ehegatten, Vorfahren und Nachkommen. Ab ${frei} im Archiv frei zugänglich.`}}
+function tipsFor(id){const p=P(id),t=[],b=year(ev(p,"geb").d)||year(ev(p,"taufe").d),f=parentsFam(id);
+  if(!f||!f.a||!f.b)t.push({h:`<b>Eltern fehlen.</b> ${b?`Die Namen der Eltern stehen auf der Geburtsurkunde${b<1874?" bzw. im Taufeintrag":""}.`:`Erst Geburtsdatum und -ort herausfinden; die Eltern stehen dann auf der Geburtsurkunde.`} Auch die Heiratsurkunde nennt die Eltern beider Ehepartner.`});
+  if(!b)t.push({h:`<b>Geburtsdatum fehlt.</b> Tipp: Sterbeurkunde, Heiratsurkunde, alte Pässe, Grabsteine oder Familienbibel nennen es oft.`});
+  else t.push(archTip("Geburt",b,110,ev(p,"geb").o,p.konf));
+  spouseFams(id).forEach(fm=>{const y=yr(fm.heirat);if(y)t.push(archTip("Heirat",y,80,fm.heirat.o,p.konf))});
+  const d=year(ev(p,"tod").d);if(d)t.push(archTip("Tod",d,30,ev(p,"tod").o,p.konf));else if(isDead(p)&&b)t.push({h:`<b>Sterbedatum unbekannt.</b> Friedhofsverwaltung, Grabstein, Nachlassakten beim Amtsgericht oder Sterbeanzeigen in alten Zeitungen helfen weiter.`});
+  const missQ=EVN.filter(([k])=>ev(p,k).d&&!ev(p,k).q).map(x=>x[1]);if(missQ.length)t.push({h:`<b>Quelle fehlt</b> bei: ${missQ.join(", ")}. Notiere, woher die Angabe stammt – später weiß man es sonst nicht mehr.`});
+  return t}
+function drawResearch(){const all=Object.values(T.persons).sort((a,b)=>(KEK[a.id]||1e9)-(KEK[b.id]||1e9)||(fullName(a)).localeCompare(fullName(b),"de"));
+  $("flist").innerHTML=all.map(p=>{const t=tipsFor(p.id).filter(x=>!x.ok||true);const open=t.filter(x=>!x.ok).length;
+    return `<details class="card"><summary style="cursor:pointer;display:flex;gap:10px;align-items:center;list-style:none">${avatar(p)}<span style="flex:1"><b>${esc(fullName(p))}</b>${KEK[p.id]?`<span class="kek">${KEK[p.id]}</span>`:""}<br><span class="sub">${[esc(lifeTxt(p)),open?open+(open===1?" offener Punkt":" offene Punkte"):"alles erledigt"].filter(Boolean).join(" · ")}</span></span></summary><div class="stack" style="margin-top:10px">${t.map(x=>`<div class="tip ${x.ok?"ok":""}">${x.h}</div>`).join("")}<button class="btn small" type="button" onclick="go('person/${p.id}')">Zur Person</button></div></details>`}).join("")||`<p class="sub">Noch keine Personen.</p>`;
+  preloadFotos(all.map(p=>p.id)).then(r=>{if(r&&view==="forschen")drawResearch()})}
+
+/* ---------- Mehr: Sichern, GEDCOM, Codes ---------- */
+function drawMehr(){const all=Object.values(T.persons);
+  $("mProb").innerHTML=all.sort((a,b)=>fullName(a).localeCompare(fullName(b),"de")).map(p=>`<option value="${p.id}" ${p.id===T.proband?"selected":""}>${esc(fullName(p))}</option>`).join("");
+  $("mBackInfo").textContent=T.backup?`Letzte Sicherung: ${new Date(T.backup).toLocaleDateString("de-DE")}${T.changed>T.backup?" – seitdem geändert":""}`:"Noch keine Sicherung gemacht.";
+  if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{$("mStore").textContent=`Belegt: ${(e.usage/1048576).toFixed(1)} MB`+(persisted?" · dauerhaft gespeichert":"")}).catch(()=>{});
+  $("mShare").hidden=!(navigator.canShare&&navigator.canShare({files:[new File(["x"],"t.txt",{type:"text/plain"})]}));renderAdminList()}
+$("mProb").onchange=()=>{T.proband=$("mProb").value;focus=T.proband;save();calcKek();drawMehr()};
+const b64=blob=>new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(blob)});
+async function buildBackup(){const ids=new Set();Object.values(T.persons).forEach(p=>{if(p.foto)ids.add(p.foto);(p.media||[]).forEach(m=>ids.add(m.id))});
+  const media={};for(const id of ids){const b=await getMedia(id).catch(()=>null);if(b)media[id]=await b64(b)}
+  return new Blob([JSON.stringify({app:"ahnenspur",v:1,datum:new Date().toISOString(),tree:T,media})],{type:"application/json"})}
+const fname=ext=>`Ahnenspur_${(P(T.proband)?.nachname||"Stammbaum").replace(/[^A-Za-zÄÖÜäöüß0-9-]/g,"")}_${new Date().toISOString().slice(0,10)}.${ext}`;
+function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+async function doBackup(share){try{const b=await buildBackup(),n=fname("json");
+  if(share){const f=new File([b],n,{type:"application/json"});try{await navigator.share({files:[f],title:"Ahnenspur-Sicherung"})}catch(e){if(e.name==="AbortError")return;download(b,n)}}else download(b,n);
+  T.backup=Date.now();await saveNow();$("mMsg")&&( $("mMsg").textContent=`Sicherung erstellt (${(b.size/1048576).toFixed(1)} MB).`);drawBanner();if(view==="mehr")drawMehr()}catch(e){$("mMsg").textContent="Sicherung fehlgeschlagen: "+e.message}}
+$("mBack").onclick=()=>doBackup(false);$("mShare").onclick=()=>doBackup(true);
+async function readBackup(file){const j=JSON.parse(await file.text());if(j.app!=="ahnenspur"||!j.tree)throw new Error("Das ist keine Ahnenspur-Sicherung.");return j}
+async function storeMedia(media,map=x=>x){for(const[id,d]of Object.entries(media||{})){const b=await (await fetch(d)).blob();await putMedia(map(id),b)}}
+function importReplace(){pickFile(".json,application/json",async f=>{try{const j=await readBackup(f);await op("media","readwrite",s=>s.clear());Object.keys(URLS).forEach(k=>delete URLS[k]);
+  await storeMedia(j.media);T=j.tree;T.backup=Date.now();focus=T.proband;await saveNow();calcKek();$("mMsg").textContent=`Eingespielt: ${Object.keys(T.persons).length} Personen.`;go("baum")}catch(e){$("mMsg").textContent=e.message;alertMsg(e.message)}})}
+$("mImp").onclick=importReplace;$("startImp").onclick=importReplace;
+$("mMerge").onclick=()=>pickFile(".json,application/json",async f=>{try{const j=await readBackup(f),map={},mm={};const nid=x=>map[x]||(map[x]=uid());
+  Object.values(j.tree.persons).forEach(p=>{const q=JSON.parse(JSON.stringify(p));q.id=nid(p.id);if(q.foto){mm[q.foto]=uid();q.foto=mm[p.foto]}(q.media||[]).forEach(m=>{mm[m.id]=mm[m.id]||uid();m.id=mm[m.id]});T.persons[q.id]=q});
+  Object.values(j.tree.fams).forEach(fm=>{const q=JSON.parse(JSON.stringify(fm));q.id=uid();q.a=fm.a?nid(fm.a):null;q.b=fm.b?nid(fm.b):null;q.kinder=fm.kinder.map(nid);T.fams[q.id]=q});
+  await storeMedia(j.media,id=>mm[id]||id);save();calcKek();$("mMsg").textContent=`${Object.keys(j.tree.persons).length} Personen hinzugefügt. Doppelte Personen findest du unter „Personen“; verbinde sie über „Ist die Person schon eingetragen?“.`}catch(e){$("mMsg").textContent=e.message}});
+/* GEDCOM */
+const MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+function gDate(s){s=String(s||"").trim();if(!s)return"";let pre="";const l=s.toLowerCase();
+  if(/^(um|ca\.?|etwa)\b/.test(l)){pre="ABT ";s=s.replace(/^(um|ca\.?|etwa)\s*/i,"")}else if(/^vor\b/.test(l)){pre="BEF ";s=s.replace(/^vor\s*/i,"")}else if(/^nach\b/.test(l)){pre="AFT ";s=s.replace(/^nach\s*/i,"")}
+  let m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);if(m)return pre+`${+m[1]} ${MON[+m[2]-1]||""} ${m[3]}`;m=s.match(/^(\d{1,2})\.(\d{4})$/);if(m)return pre+`${MON[+m[1]-1]} ${m[2]}`;
+  m=s.match(/^(\d{4})$/);if(m)return pre+m[1];return pre?pre+s:`(${s})`}
+function pDate(s){s=String(s||"").trim();if(!s)return"";let pre="";const r=s.match(/^(ABT|EST|CAL|BEF|AFT)\s+/i);if(r){pre={ABT:"um ",EST:"um ",CAL:"um ",BEF:"vor ",AFT:"nach "}[r[1].toUpperCase()];s=s.slice(r[0].length)}
+  let m=s.match(/^(\d{1,2})\s+([A-Z]{3})\s+(\d{4})$/i);if(m){const mo=MON.indexOf(m[2].toUpperCase())+1;return pre+`${String(m[1]).padStart(2,"0")}.${String(mo).padStart(2,"0")}.${m[3]}`}
+  m=s.match(/^([A-Z]{3})\s+(\d{4})$/i);if(m)return pre+`${String(MON.indexOf(m[1].toUpperCase())+1).padStart(2,"0")}.${m[2]}`;return pre+s.replace(/^\(|\)$/g,"")}
+function gedcom(){const L=["0 HEAD","1 SOUR AHNENSPUR","2 NAME Ahnenspur","1 GEDC","2 VERS 5.5.1","2 FORM LINEAGE-LINKED","1 CHAR UTF-8","1 LANG German"];
+  const ix={},fx={};let i=1;Object.keys(T.persons).forEach(id=>ix[id]="@I"+(i++)+"@");i=1;Object.keys(T.fams).forEach(id=>fx[id]="@F"+(i++)+"@");
+  const evL=(tag,e)=>{if(!e||!(e.d||e.o||e.q))return;L.push("1 "+tag);if(e.d)L.push("2 DATE "+gDate(e.d));if(e.o)L.push("2 PLAC "+e.o);if(e.q)L.push("2 NOTE Quelle: "+e.q)};
+  const note=(lvl,t)=>{String(t).split("\n").forEach((ln,k)=>L.push(`${k?lvl+1:lvl} ${k?"CONT":"NOTE"} ${ln}`))};
+  Object.values(T.persons).forEach(p=>{L.push(`0 ${ix[p.id]} INDI`,`1 NAME ${p.vorname||""} /${p.nachname||""}/`);if(p.vorname)L.push("2 GIVN "+p.vorname);if(p.nachname)L.push("2 SURN "+p.nachname);
+    if(p.geburtsname)L.push(`1 NAME ${p.vorname||""} /${p.geburtsname}/`,"2 TYPE birth");
+    L.push("1 SEX "+(p.sex==="m"?"M":p.sex==="w"?"F":"U"));evL("BIRT",p.geb);evL("CHR",p.taufe);
+    if(p.verst&&!(p.tod&&(p.tod.d||p.tod.o)))L.push("1 DEAT Y");else evL("DEAT",p.tod);evL("BURI",p.grab);
+    if(p.beruf)L.push("1 OCCU "+p.beruf);if(p.konf)L.push("1 RELI "+p.konf);if(p.wohn)L.push("1 RESI","2 PLAC "+p.wohn);if(p.notiz)note(1,p.notiz);
+    const pf=parentsFam(p.id);if(pf)L.push("1 FAMC "+fx[pf.id]);spouseFams(p.id).forEach(f=>L.push("1 FAMS "+fx[f.id]))});
+  Object.values(T.fams).forEach(f=>{L.push(`0 ${fx[f.id]} FAM`);if(f.a&&ix[f.a])L.push("1 HUSB "+ix[f.a]);if(f.b&&ix[f.b])L.push("1 WIFE "+ix[f.b]);f.kinder.forEach(k=>ix[k]&&L.push("1 CHIL "+ix[k]));evL("MARR",f.heirat);if(f.ende)L.push("1 DIV","2 NOTE "+f.ende)});
+  L.push("0 TRLR");return L.join("\r\n")}
+$("mGed").onclick=()=>{download(new Blob([gedcom()],{type:"text/plain;charset=utf-8"}),fname("ged"));$("mMsg").textContent="GEDCOM-Datei gespeichert (ohne Fotos)."};
+function parseGed(txt){const recs={};let curR=null,stack=[];
+  txt.replace(/^﻿/,"").split(/\r?\n|\r/).forEach(line=>{const m=line.match(/^\s*(\d+)\s+(@[^@]+@\s+)?(\w+)(?:\s(.*))?$/);if(!m)return;const lv=+m[1],xref=m[2]&&m[2].trim(),tag=m[3].toUpperCase(),val=m[4]||"";
+    const node={tag,val,ch:[]};if(lv===0){curR=xref?(recs[xref]=Object.assign(node,{id:xref})):null;stack=[node];return}if(!curR)return;
+    if(tag==="CONT"||tag==="CONC"){const par=stack[lv-1];if(par)par.val+=(tag==="CONT"?"\n":"")+val;return}
+    const par=stack[lv-1];if(par){par.ch.push(node);stack[lv]=node;stack.length=lv+1}});
+  return recs}
+$("mGedIn").onclick=()=>pickFile(".ged,text/plain",async f=>{try{const recs=parseGed(await f.text()),map={};let n=0;
+  const g=(nd,t)=>nd.ch.find(c=>c.tag===t),gs=(nd,t)=>nd.ch.filter(c=>c.tag===t);
+  const evI=nd=>nd?{d:pDate(g(nd,"DATE")?.val||""),o:g(nd,"PLAC")?.val||"",q:(g(nd,"NOTE")?.val||"").replace(/^Quelle:\s*/,"")||(g(nd,"SOUR")?.val&&!/^@/.test(g(nd,"SOUR").val)?g(nd,"SOUR").val:"")}:{};
+  Object.values(recs).filter(r=>r.tag==="INDI").forEach(r=>{const id=uid();map[r.id]=id;const nm=gs(r,"NAME");const main=nm.find(x=>!g(x,"TYPE"))||nm[0];const bn=nm.find(x=>/birth|maiden/i.test(g(x,"TYPE")?.val||""));
+    const sp=s=>{const m=String(s||"").match(/^(.*?)\s*\/(.*?)\/\s*(.*)$/);return m?{v:(m[1]+" "+m[3]).trim(),n:m[2].trim()}:{v:String(s||"").trim(),n:""}};const nn=sp(main&&main.val);
+    const de=g(r,"DEAT"),p={id,vorname:nn.v,nachname:nn.n,geburtsname:bn&&sp(bn.val).n!==nn.n?sp(bn.val).n:"",sex:{M:"m",F:"w"}[(g(r,"SEX")?.val||"").trim()]||"",
+      geb:evI(g(r,"BIRT")),taufe:evI(g(r,"CHR")||g(r,"BAPM")),tod:evI(de),grab:evI(g(r,"BURI")),verst:!!de,beruf:g(r,"OCCU")?.val||"",konf:g(r,"RELI")?.val||"",wohn:gs(r,"RESI").map(x=>g(x,"PLAC")?.val||x.val).filter(Boolean).join(", "),
+      notiz:gs(r,"NOTE").map(x=>x.val).filter(v=>!/^@/.test(v)).join("\n"),media:[],neu:today()};
+    if(p.konf&&!KONF.includes(p.konf))p.notiz=(p.notiz?p.notiz+"\n":"")+"Konfession: "+p.konf;
+    T.persons[id]=p;n++});
+  Object.values(recs).filter(r=>r.tag==="FAM").forEach(r=>{const f={id:uid(),a:map[g(r,"HUSB")?.val]||null,b:map[g(r,"WIFE")?.val]||null,kinder:gs(r,"CHIL").map(c=>map[c.val]).filter(Boolean),heirat:evI(g(r,"MARR")),ende:g(r,"DIV")?"geschieden":""};T.fams[f.id]=f});
+  cleanFams();if(!T.proband)T.proband=Object.values(map)[0]||null;save();calcKek();$("mMsg").textContent=`${n} Personen aus der GEDCOM-Datei übernommen.`}catch(e){$("mMsg").textContent="Datei konnte nicht gelesen werden: "+e.message}});
+armed($("mWipe"),"Wirklich ALLES löschen?",async()=>{await op("media","readwrite",s=>s.clear());T=emptyTree();await saveNow();focus=null;calcKek();go("start")});
+$("startMe").onclick=()=>editPerson(null,{kind:"proband"});
+let persisted=false;
+
+/* ---------- Offline ---------- */
+if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{})}
+
+async function start(){if(started)return;started=true;
+  try{db=await idbOpen();await loadTree()}catch(e){document.querySelector("#app .wrap").innerHTML=`<div class="card" style="margin-top:30px"><h2>Speicher nicht verfügbar</h2><p>Dieser Browser erlaubt keine Datenspeicherung (z. B. privater Modus). Bitte im normalen Chrome-Fenster öffnen.</p></div>`;return}
+  try{if(navigator.storage&&navigator.storage.persist)persisted=await navigator.storage.persisted()||await navigator.storage.persist()}catch(e){}
+  calcKek();focus=T.proband;route()}
+
+/* ---------- Zugang (wie Rentenrechner, eigener Schlüssel) ---------- */
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const DEV_SECRET="f79494342ca27ba833673da8f60b12cd";
+const KEY_OK="ahnen.zugang", KEY_DEV="ahnen.geraet", KEY_LIST="ahnen.vergeben";
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+const ALPH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const fmt8=x=>x.slice(0,4)+"-"+x.slice(4,8);
+const normCode=v=>{v=String(v||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");return v.length===8?fmt8(v):v};
+function devCode(id){const h=sha256js(DEV_SECRET+":"+normCode(id));let o="";for(let i=0;i<8;i++)o+=ALPH[parseInt(h.substr(i*2,2),16)%32];return fmt8(o)}
+function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
+  if(!id){const a=new Uint8Array(8);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<8;i++)a[i]=Math.floor(Math.random()*256)}
+    id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
+  return id}
+const DEV=deviceId(); $("devId").textContent=DEV;
+function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
+(function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
+  const other=["rentenrechner.zugang","br.zugang","wetter.zugang","admin.zugang"].some(k=>{try{return localStorage.getItem(k)==="M:"+CODE_HASH}catch(e){return false}});
+  if(ok==="M:"+CODE_HASH||other) unlock(true);
+  else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();
+$("gateForm").addEventListener("submit",e=>{e.preventDefault();const c=normCode($("gateCode").value);
+  if(sha256js("rentenrechner:"+c)===CODE_HASH){try{localStorage.setItem(KEY_OK,"M:"+CODE_HASH)}catch(err){} unlock(true);return}
+  if(c===devCode(DEV)){try{localStorage.setItem(KEY_OK,"D:|"+DEV+"|"+c)}catch(err){} unlock(false);return}
+  $("gateErr").textContent="Der Code stimmt nicht oder gehört zu einem anderen Handy.";});
+let delArmed=null;
+function renderAdminList(){const l=ls.get(KEY_LIST,[]);const t=$("admList");
+  if(!l.length){t.innerHTML='<tbody><tr><td class="sub">Noch keine Einträge.</td></tr></tbody>';return}
+  t.innerHTML='<thead><tr><th>Name</th><th>Gerätenummer</th><th>Code</th><th>Datum</th><th></th></tr></thead><tbody>'+
+    l.map((e,i)=>`<tr><td>${esc(e.name)}</td><td>${esc(e.dev)}</td><td><b>${esc(e.code)}</b></td><td>${esc(e.datum)}</td><td><button class="btn small" type="button" data-del="${i}">${delArmed===i?"Wirklich löschen?":"Löschen"}</button></td></tr>`).join("")+'</tbody>';
+  t.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{const i=+b.dataset.del;
+    if(delArmed!==i){delArmed=i;renderAdminList();setTimeout(()=>{if(delArmed===i){delArmed=null;renderAdminList()}},4000);return}
+    const l2=ls.get(KEY_LIST,[]);l2.splice(i,1);ls.set(KEY_LIST,l2);delArmed=null;renderAdminList()}))}
+$("admDev").addEventListener("input",()=>{const id=normCode($("admDev").value);const ok=/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);
+  $("admOut").textContent=ok?devCode(id):"";$("admCopy").hidden=!ok;$("admSave").hidden=!ok;$("admMsg").textContent=""});
+$("admSave").addEventListener("click",()=>{const id=normCode($("admDev").value),name=$("admName").value.trim()||"ohne Namen";
+  const l=ls.get(KEY_LIST,[]);const entry={name,dev:id,code:devCode(id),datum:today()};
+  const ex=l.findIndex(e=>e.dev===id);if(ex>=0)l[ex]=entry;else l.push(entry);
+  $("admMsg").textContent=ls.set(KEY_LIST,l)?"In der Liste gespeichert.":"Speichern nicht möglich – bitte Code notieren.";renderAdminList()});
+$("admCopy").addEventListener("click",()=>{const t=$("admOut").textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>{$("admCopy").textContent="Kopiert"},()=>{});
+  setTimeout(()=>{$("admCopy").textContent="Code kopieren"},2000)});
+</script>
+</body></html>
