@@ -58,6 +58,7 @@ button{font:inherit;color:inherit}
 #mapbar>*{pointer-events:auto}
 .pill{border:1px solid #444;border-radius:28px;background:linear-gradient(#fafafa,#cfcfcf);color:#222;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 #play{width:58px;height:46px;font-size:18px;flex:0 0 58px}
+[hidden]{display:none!important}
 #tsl{flex:1;min-width:60px;accent-color:#2b2b2b;height:30px}
 #zoom{margin-left:auto;display:flex;height:46px;overflow:hidden;flex:0 0 auto}
 #zoom button{width:50px;border:0;background:none;font-size:26px;color:#333}
@@ -141,7 +142,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <div id="map"></div>
     <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button><button type="button" data-l="t">🌡️ Temperatur</button></div>
     <div id="rtime">--:--</div>
-    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen">▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit"><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
+    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><span style="flex:1"></span><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
 
   <section class="view" id="v-wind">
@@ -518,7 +519,7 @@ function drawArrow(){
 function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
 let layer=store.get("wx_layer")||"r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
-function setLayer(l){layer=l;store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
+function setLayer(l){layer=l;if(arrowGroup){if(l==="r")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar()}
   else{ncOff();if(rainOv){map.removeLayer(rainOv);rainOv=null}Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;fieldLoad()}
