@@ -574,12 +574,12 @@ function drawArrow(){
   // Querlinien je Stunde: Regen, der jetzt an dieser Linie ist, erreicht den Ort etwa zu dieser Zeit
   for(let h=1;h<=hrs;h++){const c=dest(P[0],P[1],dir,sp*h),qw=Math.max(6,sp*h*.32),q1=dest(c[0],c[1],dir+90,qw),q2=dest(c[0],c[1],dir-90,qw);
     arrowGroup.addLayer(L.polyline([q1,q2],st));
-    const lp=dest(c[0],c[1],dir+90,qw+22);
+    const lp=dest(c[0],c[1],dir+90,qw*1.45);
     arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
   // kleine Zwischenstriche alle 30 Minuten
   for(let h=.5;h<hrs;h+=1){const c=dest(P[0],P[1],dir,sp*h),qw=Math.max(3,sp*h*.16),q1=dest(c[0],c[1],dir+90,qw),q2=dest(c[0],c[1],dir-90,qw);
     arrowGroup.addLayer(L.polyline([q1,q2],{...st,weight:2,opacity:.75}));
-    const lp=dest(c[0],c[1],dir-90,qw+14);
+    const lp=dest(c[0],c[1],dir-90,qw*1.9);
     arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw s",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
 }
 
