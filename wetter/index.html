@@ -157,6 +157,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
   <button type="button" id="mPlace">📍 Ort wählen</button>
   <button type="button" id="mGeo">🎯 Mein Standort</button>
   <button type="button" id="mCd">🏝️ Urlaubs-Countdown</button>
+  <button type="button" id="mAemet">🇪🇸 AEMET (Kanaren)</button>
   <button type="button" id="mReload">⟳ Neu laden</button>
   <button type="button" id="bAdm" class="hide">🔑 Codes vergeben</button>
 </div>
@@ -285,6 +286,14 @@ function cdEdit(){const u=store.get("wx_cd")||{};
   if($("cdX"))$("cdX").onclick=()=>{try{localStorage.removeItem("wx_cd")}catch(e){}renderCd();$("sheet").classList.remove("open")};
 }
 $("mCd").onclick=cdEdit;$("cd").onclick=cdEdit;
+$("mAemet").onclick=()=>{const k=store.get("wx_aemet")||"";
+  sheet("AEMET (Kanaren)",`<div class="cdf"><p class="sub" style="margin:0">Spanischer Wetterdienst. Mit Schlüssel nimmt die App für Orte auf den Kanaren die Vorhersage von AEMET (heute und die nächsten Tage stündlich). Der Schlüssel bleibt nur auf diesem Handy.</p>
+   <input id="aeK" placeholder="Schlüssel (beginnt mit eyJ…)" value="${escH(k)}" autocomplete="off">
+   <p class="sub" id="aeS" style="margin:0">${k?"Schlüssel gespeichert.":"Kein Schlüssel – es gilt ECMWF."}${store.get("wx_aemet_err")?"<br>Letzter Abruf: "+escH(store.get("wx_aemet_err")):""}</p>
+   <div style="display:flex;gap:8px"><button class="btnp" type="button" id="aeSave">Speichern</button>${k?'<button class="btn2" type="button" id="aeDel">Löschen</button>':""}</div></div>`);
+  $("aeSave").onclick=()=>{const v=$("aeK").value.trim();if(v)store.set("wx_aemet",v);$("sheet").classList.remove("open");loadWeather(true).then(drawAll).catch(()=>{})};
+  if($("aeDel"))$("aeDel").onclick=()=>{try{localStorage.removeItem("wx_aemet")}catch(e){}$("sheet").classList.remove("open");loadWeather(true).then(drawAll).catch(()=>{})};
+};
 renderCd();setInterval(renderCd,60000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()});
 
@@ -309,8 +318,44 @@ async function loadWeather(force){
     const HK=["temperature_2m","apparent_temperature","weather_code","cloud_cover","cloud_cover_low","cloud_cover_mid","cloud_cover_high","precipitation","wind_speed_10m","wind_gusts_10m","wind_direction_10m"];
     mg(W.hourly,E.hourly,HK);mg(W.current,E.current,HK.filter(k=>k!=="precipitation"));
     mg(W.daily,E.daily,["weather_code","temperature_2m_max","temperature_2m_min","precipitation_sum","wind_speed_10m_max","wind_gusts_10m_max"]);
-    W.model="ECMWF 9 km";}catch(e){}}
+    W.model="ECMWF 9 km";}catch(e){}
+    const ak=store.get("wx_aemet");if(ak){try{await aemetMerge(ak);store.set("wx_aemet_err","")}catch(e){store.set("wx_aemet_err",String(e.message||e))}}}
   store.set("wx_cache",{key,ts:Date.now(),d:W});
+}
+
+// ---------- AEMET (spanischer Wetterdienst) für die Kanaren ----------
+async function aeGet(u){const r=await fetch(u);if(!r.ok)throw new Error("AEMET HTTP "+r.status);const b=await r.arrayBuffer();return JSON.parse(new TextDecoder("iso-8859-15").decode(b))}
+async function aeData(path,key){const j=await aeGet("https://opendata.aemet.es/opendata/api/"+path+(path.includes("?")?"&":"?")+"api_key="+encodeURIComponent(key));
+  if(j.estado!==200||!j.datos)throw new Error("AEMET: "+(j.descripcion||j.estado));return aeGet(j.datos)}
+async function aeMuni(key){let L=store.get("wx_aemet_muni");
+  if(!L){const all=await aeData("maestro/municipios",key);L=all.filter(m=>/^id3[58]/.test(m.id)).map(m=>[m.id.slice(2),m.nombre,+m.latitud_dec,+m.longitud_dec]);store.set("wx_aemet_muni",L)}
+  let best=null,bd=1e9;L.forEach(m=>{const d=(m[2]-place.lat)**2+((m[3]-place.lon)*Math.cos(place.lat*Math.PI/180))**2;if(d<bd){bd=d;best=m}});return best}
+const AE_SKY={11:[0,5],12:[1,25],13:[2,45],14:[2,65],15:[3,80],16:[3,95],17:[1,20],43:[80,45],44:[80,65],45:[61,80],46:[61,95],23:[80,45],24:[61,65],25:[63,85],26:[63,95],33:[85,45],34:[85,65],35:[71,85],36:[71,95],71:[85,45],72:[85,65],73:[71,85],74:[71,95],51:[95,50],52:[95,70],53:[95,85],54:[95,95],61:[95,50],62:[95,70],63:[95,85],64:[95,95],81:[45,100],82:[45,90]};
+async function aemetMerge(key){
+  const m=await aeMuni(key);if(!m)throw new Error("keine Gemeinde");
+  const d=await aeData("prediccion/especifica/municipio/horaria/"+m[0],key),P=d[0].prediccion.dia,H=W.hourly,off=W.utc_offset_seconds||0;
+  const idx=new Map(H.time.map((t,i)=>[t,i]));
+  const ut=(fecha,h)=>{const[y,mo,da]=fecha.slice(0,10).split("-").map(Number);return Date.UTC(y,mo-1,da,+h)/1000-off};
+  let n=0;
+  P.forEach(day=>{
+    (day.temperatura||[]).forEach(x=>{const i=idx.get(ut(day.fecha,x.periodo));if(i!=null&&x.value!==""){H.temperature_2m[i]=+x.value;n++}});
+    (day.sensTermica||[]).forEach(x=>{const i=idx.get(ut(day.fecha,x.periodo));if(i!=null&&x.value!=="")H.apparent_temperature[i]=+x.value});
+    (day.estadoCielo||[]).forEach(x=>{const i=idx.get(ut(day.fecha,x.periodo));const c=AE_SKY[parseInt(x.value)];if(i!=null&&c){H.weather_code[i]=c[0];
+      if(H.cloud_cover_low){H.cloud_cover_low[i]=c[1];H.cloud_cover_mid[i]=0;H.cloud_cover_high[i]=0}H.cloud_cover[i]=c[1]}});
+    (day.precipitacion||[]).forEach(x=>{const i=idx.get(ut(day.fecha,x.periodo));if(i!=null)H.precipitation[i]=x.value==="Ip"?0.05:(+x.value||0)});
+    (day.probPrecipitacion||[]).forEach(x=>{if(!x.periodo||x.periodo.length!==4||x.value==="")return;let a=+x.periodo.slice(0,2),b=+x.periodo.slice(2);if(b<=a)b+=24;
+      for(let h=a;h<b;h++){const i=idx.get(ut(day.fecha,0)+h*3600);if(i!=null)H.precipitation_probability[i]=+x.value}});
+  });
+  if(!n)throw new Error("keine passenden Stunden");
+  // Tageswerte aus den Stunden neu berechnen, soweit AEMET sie abdeckt
+  const D=W.daily;D.time.forEach((t0,j)=>{const ix=H.time.map((t,i)=>i).filter(i=>H.time[i]>=t0&&H.time[i]<t0+86400);
+    const day=P.find(p=>ut(p.fecha,0)===t0);if(!day||!ix.length)return;const T=ix.map(i=>H.temperature_2m[i]);
+    D.temperature_2m_max[j]=Math.max(...T);D.temperature_2m_min[j]=Math.min(...T);D.precipitation_sum[j]=ix.reduce((a,i)=>a+(H.precipitation[i]||0),0);
+    D.precipitation_probability_max[j]=Math.max(...ix.map(i=>H.precipitation_probability[i]||0))});
+  const now=Date.now()/1000;let k=0;H.time.forEach((t,i)=>{if(t<=now)k=i});
+  W.current.temperature_2m=H.temperature_2m[k];W.current.apparent_temperature=H.apparent_temperature[k];W.current.weather_code=H.weather_code[k];W.current.cloud_cover=H.cloud_cover[k];
+  if(H.cloud_cover_low){W.current.cloud_cover_low=H.cloud_cover_low[k];W.current.cloud_cover_mid=0;W.current.cloud_cover_high=0}
+  W.model="AEMET ("+m[1]+"), danach ECMWF 9 km";
 }
 function isCanary(){return place.lat>26.5&&place.lat<30&&place.lon>-19&&place.lon<-12.8}
 async function loadAll(force){
