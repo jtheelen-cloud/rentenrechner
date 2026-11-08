@@ -18,6 +18,7 @@ a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24p
 #gate input{width:100%;font:inherit;font-size:20px;letter-spacing:.1em;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:#111;color:#fff;margin:12px 0}
 #gate button{width:100%;padding:11px;border:0;border-radius:10px;background:var(--ac);color:#fff;font:inherit;font-weight:600}.err{color:#f85149;font-size:14px;min-height:1.2em}
 .hide{display:none!important}
+.sh{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:#2a3038;color:var(--tx);font:inherit;font-size:14px}
 </style></head><body>
 <div id="gate"><form id="gf"><b>Admin-Bereich</b><div class="mu">Nur mit Master-Code.</div><input id="gc" autocomplete="off" placeholder="XXXX-XXXX"><div class="err" id="ge"></div><button>Öffnen</button></form></div>
 <header><h1>Meine Apps</h1><span class="mu" id="today"></span></header>
@@ -28,6 +29,10 @@ a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24p
  <a class="tile" href="../br/"><span class="i">📘</span><b>BR-Nachschlagen</b><div class="s" id="sBR">…</div></a>
  <a class="tile" href="../wetter/"><span class="i">⛅</span><b>Wetter</b><div class="s" id="sWet">…</div></a>
 </div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+ <button class="sh" data-a="">📤 Rentenrechner teilen</button><button class="sh" data-a="br/">📤 BR-Nachschlagen teilen</button><button class="sh" data-a="wetter/">📤 Wetter teilen</button>
+</div>
+<p class="mu" style="margin:6px 2px 0">Teilen schickt den Link z. B. per WhatsApp. Der Empfänger öffnet ihn, schickt dir seine Geräte-Nr., und du vergibst den Code in der App unter •••.</p>
 
 <h2>Apps auf dem NAS <span style="text-transform:none;letter-spacing:0">(Tailscale an)</span></h2>
 <div class="grid">
@@ -99,5 +104,10 @@ function load(){
   $("todo").innerHTML=T.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
   $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked)};
 }
+const BASE="https://jtheelen-cloud.github.io/rentenrechner/";
+document.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{const nm=b.textContent.replace("📤 ","").replace(" teilen",""),url=BASE+b.dataset.a;
+  const txt=`Hier ist die App „${nm}“: ${url}\nÖffne den Link, dann siehst du eine Geräte-Nr. Schick mir die Nummer, dann bekommst du deinen Zugangscode. Tipp: im Browser-Menü „Zum Startbildschirm hinzufügen“.`;
+  try{if(navigator.share){await navigator.share({title:nm,text:txt});return}}catch(e){return}
+  try{await navigator.clipboard.writeText(txt);b.textContent="✓ Kopiert"}catch(e){prompt("Link kopieren:",url)}});
 if(unlocked())openAdm();
 </script></body></html>
