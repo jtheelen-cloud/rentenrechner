@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Meine Apps – Admin</title><meta name="theme-color" content="#1f2328"><meta name="robots" content="noindex">
+<link rel="icon" href="../icon-192.png"><link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#14161a;--card:#1f2328;--line:#30363d;--tx:#e6e6e6;--mu:#9aa0a6;--ac:#2f7fd8;--ok:#3fb950;--wa:#d29922}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:0 14px 40px;max-width:900px;margin:auto}
+header{display:flex;align-items:baseline;justify-content:space-between;padding:18px 2px 6px}h1{font-size:22px;margin:0}.mu{color:var(--mu);font-size:13px}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:22px 2px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+a.tile,.tile{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--tx);text-decoration:none}
+a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24px;float:right}.tile .s{font-size:13px;color:var(--mu);margin-top:4px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mu);margin-right:6px}.dot.ok{background:var(--ok)}.dot.wa{background:var(--wa)}
+.todo label{display:flex;gap:10px;align-items:flex-start;padding:8px 2px;border-bottom:1px solid var(--line);font-size:15px}.todo input{flex:0 0 20px;width:20px;height:20px;margin-top:2px;accent-color:var(--ac)}
+.todo label.done span{color:var(--mu);text-decoration:line-through}
+#gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+#gate form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:340px;width:100%}
+#gate input{width:100%;font:inherit;font-size:20px;letter-spacing:.1em;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:#111;color:#fff;margin:12px 0}
+#gate button{width:100%;padding:11px;border:0;border-radius:10px;background:var(--ac);color:#fff;font:inherit;font-weight:600}.err{color:#f85149;font-size:14px;min-height:1.2em}
+.hide{display:none!important}
+</style></head><body>
+<div id="gate"><form id="gf"><b>Admin-Bereich</b><div class="mu">Nur mit Master-Code.</div><input id="gc" autocomplete="off" placeholder="XXXX-XXXX"><div class="err" id="ge"></div><button>Öffnen</button></form></div>
+<header><h1>Meine Apps</h1><span class="mu" id="today"></span></header>
+
+<h2>Apps im Internet</h2>
+<div class="grid">
+ <a class="tile" href="../"><span class="i">💶</span><b>Rentenrechner</b><div class="s" id="sRente">…</div></a>
+ <a class="tile" href="../br/"><span class="i">📘</span><b>BR-Nachschlagen</b><div class="s" id="sBR">…</div></a>
+ <a class="tile" href="../wetter/"><span class="i">⛅</span><b>Wetter</b><div class="s" id="sWet">…</div></a>
+</div>
+
+<h2>Apps auf dem NAS <span style="text-transform:none;letter-spacing:0">(Tailscale an)</span></h2>
+<div class="grid">
+ <a class="tile" href="http://100.124.80.87:8090" target="_blank" rel="noopener"><span class="i">🧳</span><b>Urlaubskasse</b><div class="s">100.124.80.87:8090 · zu Hause 192.168.178.24:8090</div></a>
+ <a class="tile" href="http://100.124.80.87:8091" target="_blank" rel="noopener"><span class="i">🍀</span><b>Lottogeld</b><div class="s">100.124.80.87:8091 · zu Hause 192.168.178.24:8091</div></a>
+ <div class="tile"><span class="i">🔥</span><b>Heizungs-App</b><div class="s">Port noch eintragen (docker-compose.yml)</div></div>
+ <div class="tile"><span class="i">📁</span><b>Betriebsrat-App</b><div class="s">Port noch eintragen (docker-compose.yml)</div></div>
+ <a class="tile" href="http://100.124.80.87:9999" target="_blank" rel="noopener"><span class="i">🗄️</span><b>NAS-Oberfläche (UGOS)</b><div class="s">100.124.80.87:9999 (Port bitte prüfen) · am Handy „Desktop-Version“</div></a>
+</div>
+<p class="mu" style="margin:6px 2px 0">Ob die NAS-Apps unterwegs unter der Tailscale-Adresse antworten, wird zu Hause noch geprüft.</p>
+
+<h2>Verwaltung</h2>
+<div class="grid">
+ <a class="tile" href="https://login.tailscale.com/admin/machines" target="_blank" rel="noopener"><span class="i">🔒</span><b>Tailscale</b><div class="s">Geräte, Exit Node, Schlüssel</div></a>
+ <a class="tile" href="http://fritz.box" target="_blank" rel="noopener"><span class="i">📶</span><b>FRITZ!Box</b><div class="s">nur im Heimnetz</div></a>
+ <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner" target="_blank" rel="noopener"><span class="i">🐙</span><b>GitHub</b><div class="s">Repository rentenrechner</div></a>
+ <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner/actions" target="_blank" rel="noopener"><span class="i">⚙️</span><b>Automatische Abläufe</b><div class="s">Gesetzestexte täglich</div></a>
+ <a class="tile" href="https://claude.ai/projects" target="_blank" rel="noopener"><span class="i">🤖</span><b>Claude-Projekt „Eigene Apps“</b><div class="s">Anleitungen zur Wiederherstellung</div></a>
+</div>
+
+<h2>Vergebene Gerätecodes</h2>
+<div class="grid"><div class="tile" id="codes">…</div></div>
+
+<h2>Automatisch</h2>
+<div class="grid">
+ <div class="tile"><b>Rentenrechner-Kennzahlen</b><div class="s">Geplante Aufgabe am 2. jedes Monats (7:52 und 8:37 Uhr)</div><div class="s" id="sNext"></div></div>
+ <div class="tile"><b>Gesetzestexte</b><div class="s">GitHub-Ablauf täglich früh</div><div class="s" id="sGes"></div></div>
+</div>
+
+<h2>Offen (zu Hause)</h2>
+<div class="todo" id="todo"></div>
+<p class="mu" style="margin:16px 2px">Haken werden nur auf diesem Gerät gespeichert.</p>
+
+<script>
+const $=id=>document.getElementById(id);
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const OKKEYS=["rentenrechner.zugang","br.zugang","wetter.zugang","admin.zugang"];
+function unlocked(){return OKKEYS.some(k=>ls(k)==="M:"+CODE_HASH)}
+function openAdm(){$("gate").classList.add("hide");load()}
+$("gf").onsubmit=e=>{e.preventDefault();let c=$("gc").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");if(c.length===8)c=c.slice(0,4)+"-"+c.slice(4);
+  if(sha256js("rentenrechner:"+c)===CODE_HASH){lsSet("admin.zugang","M:"+CODE_HASH);openAdm()}else $("ge").textContent="Code stimmt nicht."};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dot=(ok,txt)=>`<span class="dot ${ok?"ok":"wa"}"></span>${txt}`;
+async function j(u){const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;return r.json()}
+function load(){
+  $("today").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  j("../kennzahlen.json").then(k=>{$("sRente").innerHTML=dot(true,"Kennzahlen: "+esc(k.stand))}).catch(()=>{$("sRente").innerHTML=dot(false,"Kennzahlen nicht lesbar")});
+  Promise.all([j("../br/texte/index.json"),j("../br/tarif.json")]).then(([g,t])=>{const n=Object.keys(g.gesetze||{}).length,d=g.stand;
+    const age=(Date.now()-new Date(d).getTime())/864e5;$("sBR").innerHTML=dot(age<3,`${n} Gesetze offline · geprüft ${new Date(d).toLocaleDateString("de-DE")}`)+`<br>Tarif: ${esc(t.stand)}`;
+    $("sGes").innerHTML=dot(age<3,"Letzter Lauf: "+new Date(d).toLocaleDateString("de-DE")+(age>=3?" – länger nicht gelaufen!":""))}).catch(()=>{$("sBR").innerHTML=dot(false,"Stand nicht lesbar")});
+  let wp="Mülheim an der Ruhr";try{const p=JSON.parse(ls("wx_place"));if(p&&p.n)wp=p.n}catch(e){}
+  const cd=(()=>{try{return JSON.parse(ls("wx_cd"))}catch(e){return null}})();
+  $("sWet").innerHTML=dot(true,"Ort: "+esc(wp))+(cd&&cd.von?`<br>Countdown: ${esc(cd.ziel||"Urlaub")} ab ${cd.von.split("-").reverse().join(".")}`:"");
+  const now=new Date(),nx=new Date(now.getFullYear(),now.getMonth()+(now.getDate()>=2?1:0),2);$("sNext").textContent="Nächster Lauf: "+nx.toLocaleDateString("de-DE");
+  const cnt=k=>{try{return(JSON.parse(ls(k))||[]).length}catch(e){return 0}};
+  $("codes").innerHTML=`<div>💶 Rentenrechner: <b>${cnt("rentenrechner.vergeben")}</b></div><div>📘 BR-Nachschlagen: <b>${cnt("br.vergeben")}</b></div><div>⛅ Wetter: <b>${cnt("wetter.vergeben")}</b></div><div class="s">Liste steht nur in diesem Browser. Neue Codes vergibst du in der jeweiligen App unter •••.</div>`;
+  const T=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","NAS-Apps unterwegs über 100.124.80.87 testen, Anleitung ergänzen","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","Ports/Ordner von Heizung und BR-App in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen"];
+  let done={};try{done=JSON.parse(ls("admin.todo"))||{}}catch(e){}
+  $("todo").innerHTML=T.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
+  $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked)};
+}
+if(unlocked())openAdm();
+</script></body></html>
