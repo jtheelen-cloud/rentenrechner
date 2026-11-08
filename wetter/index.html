@@ -590,17 +590,21 @@ function flowStart(){
     map.on("movestart zoomstart",()=>{flowStop();if(flowCv)flowCv.style.display="none"});map.on("moveend zoomend",()=>{if(view==="radar")flowStart()})}
   flowStop();const sz=map.getSize(),r=window.devicePixelRatio||1;flowCv.width=sz.x*r;flowCv.height=sz.y*r;flowCv.style.width=sz.x+"px";flowCv.style.height=sz.y+"px";flowCv.style.display="";
   L.DomUtil.setPosition(flowCv,map.containerPointToLayerPoint([0,0]));
-  const cx=flowCv.getContext("2d");cx.setTransform(r,0,0,r,0,0);const W0=sz.x,H0=sz.y,N=Math.round(W0*H0/900),k=.028;
+  const cx=flowCv.getContext("2d");cx.setTransform(r,0,0,r,0,0);const W0=sz.x,H0=sz.y,N=Math.round(W0*H0/750),k=.03;
   const spawn=p=>{p.x=Math.random()*W0;p.y=Math.random()*H0;p.a=Math.random()*70|0;return p};flowP=[];for(let i=0;i<N;i++)flowP.push(spawn({}));
   // Wind je Bildschirmpunkt einmal vorberechnen (Raster 16 px), damit es flüssig läuft
-  const S=16,cw=Math.ceil(W0/S)+1,ch=Math.ceil(H0/S)+1,FU=new Float32Array(cw*ch),FV=new Float32Array(cw*ch),FM=new Uint8Array(cw*ch);
+  const S=16,cw=Math.ceil(W0/S)+1,ch=Math.ceil(H0/S)+1,FU=new Float32Array(cw*ch),FV=new Float32Array(cw*ch),FM=new Uint8Array(cw*ch),FL=new Uint8Array(cw*ch);
+  // Land/Meer-Maske, damit die Linien über hellem Land dunkel und über dem Meer weiß gezeichnet werden
+  if(landFeats){const lp=new Path2D(),pr=(lo,la)=>map.latLngToContainerPoint([la,lo]);
+    landFeats.forEach(f=>{const g=f.geometry;if(!g)return;(g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?g.coordinates:[]).forEach(poly=>{const ring=poly[0];ring.forEach((c,i)=>{const q=pr(c[0],c[1]);i?lp.lineTo(q.x,q.y):lp.moveTo(q.x,q.y)});lp.closePath()})});
+    const tc=document.createElement("canvas").getContext("2d");for(let j=0;j<ch;j++)for(let i=0;i<cw;i++)FL[j*cw+i]=tc.isPointInPath(lp,i*S,j*S,"evenodd")?1:0}
   for(let j=0;j<ch;j++)for(let i=0;i<cw;i++){const ll=map.containerPointToLatLng([i*S,j*S]),w=gWind(ll.lat,ll.lng);if(w){FU[j*cw+i]=w[0];FV[j*cw+i]=w[1];FM[j*cw+i]=1}}
   const wAtP=(x,y)=>{const fi=x/S,fj=y/S,i=fi|0,j=fj|0;if(i<0||j<0||i>=cw-1||j>=ch-1)return null;const q=j*cw+i;if(!FM[q])return null;const di=fi-i,dj=fj-j;
     return[(FU[q]*(1-di)+FU[q+1]*di)*(1-dj)+(FU[q+cw]*(1-di)+FU[q+cw+1]*di)*dj,(FV[q]*(1-di)+FV[q+1]*di)*(1-dj)+(FV[q+cw]*(1-di)+FV[q+cw+1]*di)*dj]};
   const step=()=>{cx.globalCompositeOperation="destination-in";cx.fillStyle="rgba(0,0,0,.94)";cx.fillRect(0,0,W0,H0);cx.globalCompositeOperation="source-over";
-    cx.strokeStyle="rgba(255,255,255,.42)";cx.lineWidth=1;cx.beginPath();
-    for(const p of flowP){const w=wAtP(p.x,p.y);if(!w||++p.a>80){spawn(p);p.a=0;continue}const nx=p.x+w[0]*k,ny=p.y-w[1]*k;cx.moveTo(p.x,p.y);cx.lineTo(nx,ny);p.x=nx;p.y=ny}
-    cx.stroke();flowRaf=requestAnimationFrame(step)};
+    const pS=new Path2D(),pL=new Path2D();
+    for(const p of flowP){const w=wAtP(p.x,p.y);if(!w||++p.a>80){spawn(p);p.a=0;continue}const nx=p.x+w[0]*k,ny=p.y-w[1]*k,q=((p.y/S+.5)|0)*cw+((p.x/S+.5)|0),pp=FL[q]?pL:pS;pp.moveTo(p.x,p.y);pp.lineTo(nx,ny);p.x=nx;p.y=ny}
+    cx.lineWidth=1.3;cx.strokeStyle="rgba(255,255,255,.5)";cx.stroke(pS);cx.strokeStyle="rgba(30,50,85,.7)";cx.stroke(pL);flowRaf=requestAnimationFrame(step)};
   if(!document.hidden)step();
 }
 document.addEventListener("visibilitychange",()=>{if(document.hidden)flowStop();else if(view==="radar")flowStart()});
