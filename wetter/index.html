@@ -226,8 +226,23 @@ $("more").onclick=e=>{e.stopPropagation();$("menu").classList.toggle("hide")};
 document.addEventListener("click",e=>{if(!$("menu").contains(e.target))$("menu").classList.add("hide")});
 function sheet(title,html){$("sName").textContent=title;$("sBody").innerHTML=html;$("sBody").classList.remove("hide");$("admin").classList.add("hide");$("sheet").classList.add("open");$("menu").classList.add("hide")}
 $("close").onclick=()=>$("sheet").classList.remove("open");
-function placeList(){sheet("Ort wählen",`<div class="plist">${PLACES.map((p,i)=>`<button type="button" data-i="${i}" class="${p[0]===place.n?"on":""}">${p[0]}</button>`).join("")}</div>`);
-  $("sBody").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const p=PLACES[+b.dataset.i];setPlace({n:p[0],lat:p[1],lon:p[2]});$("sheet").classList.remove("open")})}
+function placeList(){
+  const rec=store.get("wx_recent")||[];
+  const btn=(p,k)=>`<button type="button" data-k="${k}" class="${p.n===place.n?"on":""}">${escH(p.n)}${p.s?`<br><span class="sub" style="font-size:13px">${escH(p.s)}</span>`:""}</button>`;
+  sheet("Ort wählen",`<input id="pq" type="search" placeholder="🔍 Ort suchen, z. B. Corralejo" autocomplete="off" style="width:100%;font:inherit;font-size:16px;border:1px solid #555;background:#111;color:#eee;border-radius:10px;padding:11px 12px">
+    <div class="plist" id="pres"></div>
+    ${rec.length?`<div class="sub" style="margin-top:12px">Zuletzt gewählt</div><div class="plist">${rec.map((p,i)=>btn(p,"r"+i)).join("")}</div>`:""}
+    <div class="sub" style="margin-top:12px">Meine Orte</div><div class="plist">${PLACES.map((p,i)=>btn({n:p[0]},"f"+i)).join("")}</div>`);
+  let found=[];const pick=k=>{const p=k[0]==="r"?rec[+k.slice(1)]:k[0]==="s"?found[+k.slice(1)]:{n:PLACES[+k.slice(1)][0],lat:PLACES[+k.slice(1)][1],lon:PLACES[+k.slice(1)][2]};
+    const np={n:p.n,lat:+(+p.lat).toFixed(3),lon:+(+p.lon).toFixed(3)};if(p.s)np.s=p.s;
+    if(k[0]!=="f")store.set("wx_recent",[np,...rec.filter(x=>x.n!==np.n||x.s!==np.s)].slice(0,8));setPlace(np);$("sheet").classList.remove("open")};
+  const wire=el=>el.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>pick(b.dataset.k));wire($("sBody"));
+  let tmr=0;$("pq").oninput=()=>{clearTimeout(tmr);const q=$("pq").value.trim();if(q.length<2){$("pres").innerHTML="";return}
+    tmr=setTimeout(async()=>{try{const j=await getJSON("https://geocoding-api.open-meteo.com/v1/search?count=12&language=de&format=json&name="+encodeURIComponent(q));
+      found=(j.results||[]).map(r=>({n:r.name,s:[r.admin2&&r.admin2!==r.name?r.admin2:null,r.admin1,r.country].filter(Boolean).join(", "),lat:r.latitude,lon:r.longitude}));
+      $("pres").innerHTML=found.length?found.map((p,i)=>btn(p,"s"+i)).join(""):`<p class="sub">Kein Ort gefunden.</p>`;wire($("pres"))}catch(e){$("pres").innerHTML=`<p class="sub">Suche gerade nicht erreichbar.</p>`}},350)};
+  setTimeout(()=>$("pq").focus(),50);
+}
 $("mPlace").onclick=placeList;$("hPlace").onclick=placeList;
 $("mGeo").onclick=()=>{$("menu").classList.add("hide");if(!navigator.geolocation){status("Standort nicht verfügbar");setTimeout(()=>status(null),2000);return}
   status("Suche Standort …");navigator.geolocation.getCurrentPosition(p=>{status(null);setPlace({n:"Mein Standort",lat:+p.coords.latitude.toFixed(3),lon:+p.coords.longitude.toFixed(3)})},
