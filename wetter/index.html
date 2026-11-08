@@ -487,6 +487,7 @@ function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
 // ---------- Temperatur am gewählten Ort (passend zur angezeigten Zeit) ----------
 let ptemp=null;
 function placeTemp(t){
+  if(map&&ptemp){map.removeLayer(ptemp);ptemp=null}return; // Temperatur auf der Karte nicht mehr gewünscht
   if(!map||!W)return;let v;
   if(t==null||t<=Date.now()/1000+900)v=W.current.temperature_2m;
   else{const H=W.hourly;let k=-1;H.time.forEach((x,i)=>{if(x<=t+1)k=i});v=k>=0&&H.temperature_2m?H.temperature_2m[k]:null}
