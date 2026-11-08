@@ -481,7 +481,7 @@ function drawArrow(){
   let sp=H.wind_speed_700hPa&&H.wind_speed_700hPa[k],dir=H.wind_direction_700hPa&&H.wind_direction_700hPa[k];
   if(sp==null||dir==null){sp=(H.wind_speed_10m[k]||0)*1.6;dir=H.wind_direction_10m[k]}
   if(!(sp>=3))return;
-  const P=[place.lat,place.lon],hrs=6,end=dest(P[0],P[1],dir,sp*hrs);
+  const P=[place.lat,place.lon],hrs=3,end=dest(P[0],P[1],dir,sp*hrs); // nur 3 Stunden: länger ist die Zugbahn nicht verlässlich
   const st={pane:"lbl",interactive:false,color:"#333",weight:3,opacity:.9};
   arrowGroup.addLayer(L.polyline([end,P],st));
   // Pfeilspitze am Ort
