@@ -30,6 +30,10 @@ button{font:inherit;color:inherit}
 .view.on{display:block}
 #v-vor,#v-wind{overflow-y:auto;padding:4px 10px 16px}
 .chart{display:block;width:100%}
+#wmap{position:relative;width:100%;height:62vh;min-height:320px;margin:4px 0 8px;border-radius:6px;overflow:hidden;background:#2a3a8a}
+#wmap canvas{position:absolute;inset:0;width:100%;height:100%}
+#wmap .wt{position:absolute;top:10px;background:rgba(40,40,40,.75);color:#fff;border-radius:8px;padding:4px 10px;font-size:17px;font-variant-numeric:tabular-nums}
+.rgrn{image-rendering:pixelated;image-rendering:crisp-edges}
 .ranges{display:flex;justify-content:center;gap:10px;align-items:center;margin:10px 0 4px}
 .seg{display:flex;border:1px solid #777}
 .seg button{border:0;border-left:1px solid #777;background:#000;color:#8a8a8a;padding:9px 12px;font-size:15px}
@@ -132,6 +136,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
   </section>
 
   <section class="view" id="v-wind">
+    <div id="wmap"><canvas id="wBg"></canvas><canvas id="wPt"></canvas><canvas id="wOv"></canvas><span class="wt" id="wTime" style="left:10px">--:--</span><span class="wt" style="right:10px">1500 m</span></div>
     <div class="now" id="windNow"></div>
     <canvas class="chart" id="cWind" height="560"></canvas>
     <div class="ranges"><div class="seg" data-for="wind"></div><button class="help" type="button" data-help>?</button></div>
@@ -195,6 +200,7 @@ function setView(v){view=v;store.set("wx_view",v);
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $("head").classList.toggle("map",v==="radar");
   if(v==="radar"){initMap();setTimeout(()=>map&&map.invalidateSize(),0)}
+  if(v!=="wind")wStop();
   drawAll();}
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>setView(b.dataset.v));
 function segs(){document.querySelectorAll(".seg").forEach(el=>{el.innerHTML=[2,16,48].map(r=>`<button type="button" data-r="${r}" class="${r===range?"on":""}">${r} Stunden</button>`).join("");
@@ -341,7 +347,7 @@ function drawDays(){const D=W.daily,tz=W.timezone;let h="";
 function drawHead(){if(!W)return;$("hTemp").textContent=Math.round(W.current.temperature_2m)+" °C";$("hPlace").textContent=place.n}
 function tick(){const d=new Date();$("hTime").textContent=pad(d.getHours())+":"+pad(d.getMinutes())}
 setInterval(tick,15000);tick();
-function drawAll(){if(!W)return;drawHead();if(view==="vor"){drawRain();drawProb();drawDays()}else if(view==="wind")drawWind()}
+function drawAll(){if(!W)return;drawHead();if(view==="vor"){drawRain();drawProb();drawDays()}else if(view==="wind"){drawWind();windMap()}}
 window.addEventListener("resize",drawAll);
 
 // ---------- Radarkarte ----------
@@ -380,7 +386,7 @@ function initMap(){
     const other=amF(topojson.feature(topo,topo.objects.countries).features).filter(f=>!isEU(f));
     otherL=L.geoJSON({type:"FeatureCollection",features:other},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     landL=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
-    bordL=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.6,opacity:.95,fill:false}}).addTo(map);
+    bordL=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:2.6,opacity:.95,fill:false}}).addTo(map);
     Object.values(EU).forEach(v=>{if(v.length<3)return;labels.push([L.marker([v[1],v[2]],{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"cl",iconSize:[0,0],html:`<span>${v[0]}</span>`})}),v[3]||5])});
     updLabels();
     landFeats=feats;landPath=buildLandPath(feats,MB);landPathK=buildLandPath(feats,KB);if(layer==="t")drawField();
@@ -397,7 +403,7 @@ function fineCoast(){if(fineState||map.getZoom()<6)return;fineState=1;
     const feats=amF(topojson.feature(topo,topo.objects.countries).features).filter(isEU);
     L.geoJSON({type:"FeatureCollection",features:amF(topojson.feature(topo,topo.objects.countries).features).filter(f=>!isEU(f))},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#8f9290",fillOpacity:1}}).addTo(map);
     const nl=L.geoJSON({type:"FeatureCollection",features:feats},{pane:"land",interactive:false,renderer:L.canvas({pane:"land",padding:.5}),style:{stroke:false,fillColor:"#c3cfdb",fillOpacity:1}}).addTo(map);
-    const nb=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:1.4,opacity:.95,fill:false}}).addTo(map);
+    const nb=L.geoJSON(amM(topojson.mesh(topo,topo.objects.countries,(a,b)=>isEU(a)||isEU(b))),{pane:"borders",interactive:false,renderer:L.canvas({pane:"borders",padding:.5}),style:{color:"#000",weight:2.4,opacity:.95,fill:false}}).addTo(map);
     fineLand=nl;landTheme();(coarse||[]).forEach(l=>l&&map.removeLayer(l));fineState=2;
   }).catch(()=>{fineState=0});}
 // ---------- Temperatur am gewählten Ort (passend zur angezeigten Zeit) ----------
@@ -419,14 +425,14 @@ function drawArrow(){
   let sp=H.wind_speed_700hPa&&H.wind_speed_700hPa[k],dir=H.wind_direction_700hPa&&H.wind_direction_700hPa[k];
   if(sp==null||dir==null){sp=(H.wind_speed_10m[k]||0)*1.6;dir=H.wind_direction_10m[k]}
   if(!(sp>=3))return;
-  const P=[place.lat,place.lon],hrs=3,end=dest(P[0],P[1],dir,sp*hrs);
+  const P=[place.lat,place.lon],hrs=6,end=dest(P[0],P[1],dir,sp*hrs);
   const st={pane:"lbl",interactive:false,color:"#333",weight:3,opacity:.9};
   arrowGroup.addLayer(L.polyline([end,P],st));
   // Pfeilspitze am Ort
   const al=Math.max(6,sp*.2),a1=dest(P[0],P[1],dir+25,al),a2=dest(P[0],P[1],dir-25,al);
   arrowGroup.addLayer(L.polyline([a1,P,a2],st));
   // Querlinien je Stunde: Regen, der jetzt an dieser Linie ist, erreicht den Ort etwa zu dieser Zeit
-  for(let h=1;h<=hrs;h++){const c=dest(P[0],P[1],dir,sp*h),qw=Math.max(8,sp*.25),q1=dest(c[0],c[1],dir+90,qw),q2=dest(c[0],c[1],dir-90,qw);
+  for(let h=1;h<=hrs;h++){const c=dest(P[0],P[1],dir,sp*h),qw=Math.max(6,sp*h*.32),q1=dest(c[0],c[1],dir+90,qw),q2=dest(c[0],c[1],dir-90,qw);
     arrowGroup.addLayer(L.polyline([q1,q2],st));
     const lp=dest(c[0],c[1],dir+90,qw+22);
     arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
@@ -526,6 +532,20 @@ function drawRainForecast(t){
   rctx.putImageData(img,0,0);const url=rcv.toDataURL(),bd=[[R.la0,R.lo0],[la1,lo1]];
   if(rainOv){rainOv.setUrl(url);rainOv.setBounds(L.latLngBounds(bd))}else rainOv=L.imageOverlay(url,bd,{pane:"radar",opacity:.85}).addTo(map);
 }
+// ---------- Radarbild in Grün (wie klassische Regenradar-Apps) ----------
+// RainViewer liefert nur noch „Universal Blue“; ohne Glättung hat jeder Pixel genau eine Tabellenfarbe → dBZ → eigene Farbe
+const UB={15:"88ddee",16:"6cd1eb",17:"51c5e8",18:"36bae5",19:"1baee2",20:"00a3e0",21:"009ad5",22:"0091ca",23:"0088bf",24:"007fb4",25:"0077aa",26:"0070a3",27:"00699c",28:"006295",29:"005b8e",30:"005588",31:"005180",32:"004e78",33:"004a70",34:"004768",35:"ffee00",36:"ffe000",37:"ffd200",38:"ffc500",39:"ffb700",40:"ffaa00",41:"ff9f00",42:"ff9500",43:"ff8b00",44:"ff8100",45:"ff4400",46:"f23600",47:"e62800",48:"d91b00",49:"cd0d00",50:"c10000",51:"a80000",52:"8f0000",53:"760000",54:"5d0000",55:"ffaaff",56:"ff9fff",57:"ff95ff",58:"ff8bff",59:"ff81ff",60:"ff77ff",61:"ff6cff",62:"ff62ff",63:"ff58ff",64:"ff4eff",65:"ffffff"};
+const GSC=[[15,[60,255,40]],[21,[20,225,20]],[26,[30,200,200]],[31,[30,150,230]],[35,[60,90,255]],[40,[130,60,230]],[45,[210,0,200]],[50,[255,0,0]],[55,[255,255,255]]];
+const UBMAP=new Map();Object.entries(UB).forEach(([d,h])=>{let c=GSC[0][1];GSC.forEach(g=>{if(+d>=g[0])c=g[1]});UBMAP.set(parseInt(h,16),c)});
+const RadarGreen=L.GridLayer.extend({
+  createTile(co,done){const t=L.DomUtil.create("canvas","rgrn");t.width=t.height=256;const u=L.Util.template(this._u,co);
+    const draw=(img,rec)=>{const c=t.getContext("2d");c.drawImage(img,0,0);if(rec){try{const d=c.getImageData(0,0,256,256),a=d.data;
+      for(let i=0;i<a.length;i+=4){if(!a[i+3])continue;const g=UBMAP.get(a[i]<<16|a[i+1]<<8|a[i+2]);if(!g){a[i+3]=0;continue}a[i]=g[0];a[i+1]=g[1];a[i+2]=g[2];a[i+3]=235}
+      c.putImageData(d,0,0)}catch(e){}}done(null,t)};
+    const img=new Image();img.crossOrigin="anonymous";img.onload=()=>draw(img,true);
+    img.onerror=()=>{const i2=new Image();i2.onload=()=>draw(i2,false);i2.onerror=()=>done(null,t);i2.src=u};img.src=u;return t}
+});
+function radarLayer(url,pane){const l=new RadarGreen({pane,maxNativeZoom:7,maxZoom:9,opacity:.9});l._u=url;return l}
 // ---------- Nowcast: Radarbild mit dem Wind verschieben ----------
 let ncUrl=null,ncLayer=null;
 function ncShift(t0,t1){// Verschiebung in km (Ost, Nord) von t0 bis t1 mit dem Wind in 700 hPa am Ort
@@ -537,7 +557,7 @@ function ncShift(t0,t1){// Verschiebung in km (Ost, Nord) von t0 bis t1 mit dem 
   return[e,n];
 }
 function ncShow(t0,t1,lead){
-  if(!ncUrl)return;if(!ncLayer)ncLayer=L.tileLayer(ncUrl,{pane:"nowc",opacity:.85,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
+  if(!ncUrl)return;if(!ncLayer)ncLayer=radarLayer(ncUrl,"nowc").addTo(map);
   const[e,n]=ncShift(t0,t1),c=map.getCenter(),la=c.lat+n/111.2,lo=c.lng+e/(111.2*Math.cos(c.lat*Math.PI/180));
   const a=map.latLngToLayerPoint(c),b=map.latLngToLayerPoint([la,lo]);
   const pn=map.getPane("nowc");pn.style.transform="translate3d("+(b.x-a.x)+"px,"+(b.y-a.y)+"px,0)";pn.style.display="";
@@ -550,7 +570,7 @@ async function loadRadar(){
   let past=[];
   const eod=(()=>{const d=new Date();d.setHours(24,0,0,0);return d.getTime()/1000})();
   try{const j=await getJSON("https://api.rainviewer.com/public/weather-maps.json");
-    past=(j.radar&&j.radar.past||[]).slice(-1).map(f=>({k:"r",t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png"}));}catch(e){}
+    past=(j.radar&&j.radar.past||[]).slice(-1).map(f=>({k:"r",t:f.time,url:j.host+f.path+"/256/{z}/{x}/{y}/2/0_0.png"}));}catch(e){}
   Object.values(rlayers).forEach(l=>map.removeLayer(l));rlayers={};ncOff();
   // Prognose = letztes Radarbild, mit dem Höhenwind (700 hPa) weitergeschoben – wie bei Regenradar-Apps
   let fut=[];const last=past.length?past[past.length-1]:null;
@@ -568,7 +588,7 @@ function rainModel(after){
 }
 function showT(i){ti=i;$("tsl").value=i;const f=TL[i];if(!f)return;
   if(f.k==="r"){if(rainOv)rainOv.setOpacity(0);
-    if(!rlayers[f.t])rlayers[f.t]=L.tileLayer(f.url,{pane:"radar",opacity:0,maxNativeZoom:7,maxZoom:9,attribution:""}).addTo(map);
+    if(!rlayers[f.t])rlayers[f.t]=radarLayer(f.url,"radar").addTo(map);rlayers[f.t].setOpacity(0);
     Object.entries(rlayers).forEach(([t,l])=>l.setOpacity(+t===f.t?.85:0));
     $("rtime").textContent="Jetzt · Radar "+hm(f.t);placeTemp(null);}
   else if(f.k==="n"){Object.values(rlayers).forEach(l=>l.setOpacity(0));if(rainOv)rainOv.setOpacity(0);
@@ -587,6 +607,64 @@ $("play").onclick=()=>{
   if(layer==="r"){if(!TL.length)return;let i=ti>=TL.length-1?0:ti;showT(i);playing=setInterval(()=>{i=(i+1)%TL.length;showT(i)},700)}
   else{if(!G)return;playing=setInterval(()=>{gh=(gh+1)%(fieldMax()+1);$("tsl").value=gh;drawField()},700)}};
 
+
+// ---------- Windkarte: Strömungslinien in 1500 m (850 hPa) ----------
+let WG=null,wRaf=0,wParts=null,wGeo=null;
+function wStop(){if(wRaf)cancelAnimationFrame(wRaf);wRaf=0}
+const WRAMP=[[0,[70,40,150]],[15,[45,70,185]],[30,[35,115,190]],[45,[30,160,160]],[60,[60,190,110]],[80,[200,200,50]],[100,[230,120,40]],[130,[220,50,50]]];
+async function loadWGrid(B){
+  const key=B.la0+"_"+B.lo0+"_"+B.nr+"_"+B.nc;if(WG&&WG.key===key&&Date.now()-WG.ts<60*60000)return;
+  const c=store.get("wx_wind1");if(c&&c.key===key&&Date.now()-c.ts<60*60000){WG=c;return}
+  const pts=[];for(let r=0;r<B.nr;r++)for(let k=0;k<B.nc;k++)pts.push([+(B.la0+r).toFixed(2),+(B.lo0+k).toFixed(2)]);
+  const res=[];for(let i=0;i<pts.length;i+=60){const ch=pts.slice(i,i+60);
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=wind_speed_850hPa,wind_direction_850hPa&forecast_hours=3&timezone=GMT&timeformat=unixtime");
+    if(!Array.isArray(j))j=[j];res.push(...j)}
+  const now=Date.now()/1000,T=res[0].hourly.time;let h=0;T.forEach((t,i)=>{if(t<=now)h=i});
+  const u=[],v=[],sp=[];res.forEach(r=>{const s=r.hourly.wind_speed_850hPa[h]??0,d=(r.hourly.wind_direction_850hPa[h]??0)*Math.PI/180;sp.push(s);u.push(-s*Math.sin(d));v.push(-s*Math.cos(d))});
+  WG={key,ts:Date.now(),t:T[h],...B,u,v,sp};store.set("wx_wind1",WG);
+}
+function windMap(){
+  const box=$("wmap");if(!box||view!=="wind")return;const W0=box.clientWidth,H0=box.clientHeight;if(!W0)return;
+  const lat0=Math.round(place.lat),lon0=Math.round(place.lon),cl=Math.cos(place.lat*Math.PI/180),lonSpan=14,latSpan=lonSpan*cl*H0/W0;
+  const B={la0:Math.floor(place.lat-latSpan/2)-1,lo0:Math.floor(place.lon-lonSpan/2)-1};B.nr=Math.ceil(latSpan)+3;B.nc=lonSpan+3;
+  const vw={lon0:place.lon-lonSpan/2,lat1:place.lat+latSpan/2,ppd:W0/lonSpan,cl};
+  loadWGrid(B).then(()=>wRender(vw,W0,H0)).catch(e=>{$("wTime").textContent=String(e.message).includes("429")?"gleich …":"keine Daten";if(String(e.message).includes("429"))setTimeout(()=>{if(view==="wind")windMap()},61000)});
+}
+function wAt(A,lat,lon){const G=WG,fr=Math.max(0,Math.min(G.nr-1.001,lat-G.la0)),fc=Math.max(0,Math.min(G.nc-1.001,lon-G.lo0)),r=fr|0,c=fc|0,dr=fr-r,dc=fc-c,i=r*G.nc+c;
+  return(A[i]*(1-dc)+A[i+1]*dc)*(1-dr)+(A[i+G.nc]*(1-dc)+A[i+G.nc+1]*dc)*dr}
+function wRender(vw,W0,H0){
+  const r=window.devicePixelRatio||1,toLL=(x,y)=>[vw.lat1-y/(vw.ppd/vw.cl),vw.lon0+x/vw.ppd],toXY=(la,lo)=>[(lo-vw.lon0)*vw.ppd,(vw.lat1-la)*vw.ppd/vw.cl];
+  // Hintergrund: Windstärke als Farbe
+  const bg=$("wBg"),bw=Math.ceil(W0/4),bh=Math.ceil(H0/4);bg.width=bw;bg.height=bh;const bc=bg.getContext("2d"),img=bc.createImageData(bw,bh),d=img.data;
+  for(let y=0;y<bh;y++)for(let x=0;x<bw;x++){const[la,lo]=toLL(x*4+2,y*4+2),c=ramp(WRAMP,wAt(WG.sp,la,lo)),o=(y*bw+x)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}
+  bc.putImageData(img,0,0);
+  // Grenzen, Ort und Beschriftung
+  const ov=$("wOv");ov.width=W0*r;ov.height=H0*r;const oc=ov.getContext("2d");oc.setTransform(r,0,0,r,0,0);
+  const drawGeo=()=>{oc.clearRect(0,0,W0,H0);if(wGeo){oc.strokeStyle="#000";oc.lineWidth=1.8;oc.lineJoin="round";oc.beginPath();
+      wGeo.coordinates.forEach(l=>{let pv=null;l.forEach((p,i)=>{const q=toXY(p[1],p[0]);if(i&&pv&&Math.abs(q[0]-pv[0])<W0)oc.lineTo(q[0],q[1]);else oc.moveTo(q[0],q[1]);pv=q})});oc.stroke()}
+    const[px,py]=toXY(place.lat,place.lon),s=wAt(WG.sp,place.lat,place.lon),u=wAt(WG.u,place.lat,place.lon),v=wAt(WG.v,place.lat,place.lon);
+    const dir=Math.round((Math.atan2(-u,-v)*180/Math.PI+360)%360);
+    oc.strokeStyle="#e01010";oc.lineWidth=3;oc.beginPath();oc.arc(px,py,8,0,7);oc.stroke();
+    const t1=place.n,t2=Math.round(s)+" km/h aus "+dir+"°";oc.font="600 16px system-ui,sans-serif";const tw=Math.max(oc.measureText(t1).width,oc.measureText(t2).width)+18;
+    let bx=Math.min(W0-tw-4,Math.max(4,px-tw/2)),by=py+16;if(by+50>H0)by=py-66;
+    oc.fillStyle="rgba(240,240,245,.95)";oc.strokeStyle="#333";oc.lineWidth=1.5;oc.beginPath();oc.roundRect?oc.roundRect(bx,by,tw,50,7):oc.rect(bx,by,tw,50);oc.fill();oc.stroke();
+    oc.fillStyle="#111";oc.fillText(t1,bx+9,by+21);oc.font="15px system-ui,sans-serif";oc.fillText(t2,bx+9,by+42)};
+  drawGeo();
+  if(!wGeo)getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(t=>{wGeo=amM(topojson.mesh(t,t.objects.countries));drawGeo()}).catch(()=>{});
+  $("wTime").textContent=hm(WG.t);
+  // Partikel
+  const pt=$("wPt");pt.width=W0*r;pt.height=H0*r;const pc=pt.getContext("2d");pc.setTransform(r,0,0,r,0,0);
+  const N=Math.round(W0*H0/170),k=0.045;wParts=[];const spawn=p=>{p.x=Math.random()*W0;p.y=Math.random()*H0;p.a=Math.random()*80|0;return p};
+  for(let i=0;i<N;i++)wParts.push(spawn({}));
+  wStop();const step=()=>{
+    pc.globalCompositeOperation="destination-in";pc.fillStyle="rgba(0,0,0,.93)";pc.fillRect(0,0,W0,H0);pc.globalCompositeOperation="source-over";
+    pc.strokeStyle="rgba(255,255,255,.85)";pc.lineWidth=1.1;pc.beginPath();
+    for(const p of wParts){const[la,lo]=toLL(p.x,p.y),u=wAt(WG.u,la,lo),v=wAt(WG.v,la,lo),nx=p.x+u*k,ny=p.y-v*k;
+      if(++p.a>90||nx<0||ny<0||nx>W0||ny>H0){spawn(p);p.a=0;continue}pc.moveTo(p.x,p.y);pc.lineTo(nx,ny);p.x=nx;p.y=ny}
+    pc.stroke();wRaf=requestAnimationFrame(step)};
+  if(!document.hidden)step();
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)wStop();else if(view==="wind"&&WG)windMap()});
 // ---------- Start ----------
 let started=false;
 function boot(){if(started)return;started=true;$("hPlace").textContent=place.n;setView(view);loadAll(false)}
