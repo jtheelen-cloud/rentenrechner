@@ -59,7 +59,8 @@ button{font:inherit;color:inherit}
 .pill{border:1px solid #444;border-radius:28px;background:linear-gradient(#fafafa,#cfcfcf);color:#222;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 #play{width:58px;height:46px;font-size:18px;flex:0 0 58px}
 [hidden]{display:none!important}
-#tsl{flex:1;min-width:60px;accent-color:#2b2b2b;height:30px}
+#tsl,#vsl{flex:1;min-width:60px;accent-color:#2b2b2b;height:30px}
+#vbox{flex:1;display:flex;flex-direction:column;justify-content:center;background:rgba(240,240,240,.92);border:1px solid #555;border-radius:14px;padding:2px 12px;margin-right:8px}#vbox small{font-size:11px;color:#333;text-align:center}
 #zoom{margin-left:auto;display:flex;height:46px;overflow:hidden;flex:0 0 auto}
 #zoom button{width:50px;border:0;background:none;font-size:26px;color:#333}
 #zoom button+button{border-left:1px solid #888}
@@ -142,7 +143,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <div id="map"></div>
     <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button></div>
     <div id="rtime">--:--</div>
-    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><span style="flex:1"></span><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
+    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><div id="vbox"><input type="range" id="vsl" min="0" max="12" step="1" value="0" aria-label="Vorschau mit dem Wind"><small id="vlab">Schieben = Vorschau mit dem Wind</small></div><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
 
   <section class="view" id="v-wind">
@@ -513,7 +514,7 @@ function initMap(){
   if(map)return;
   map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:3.5,maxZoom:9,zoomSnap:.5,maxBounds:[[20,-42],[73,48]],maxBoundsViscosity:1,bounceAtZoomLimits:false});
   map.attributionControl.setPrefix(false).addAttribution('Radar: <a href="https://www.rainviewer.com/">RainViewer</a> · Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> · Karte: Natural Earth');
-  map.createPane("land").style.zIndex=200;map.createPane("radar").style.zIndex=300;map.createPane("nowc").style.zIndex=301;map.on("zoomend viewreset",()=>{if(layer==="r"&&TL[ti]&&TL[ti].k==="n")showT(ti)});
+  map.on("zoomend",()=>{if(vMin)vApply()});map.createPane("land").style.zIndex=200;map.createPane("radar").style.zIndex=300;map.createPane("nowc").style.zIndex=301;map.on("zoomend viewreset",()=>{if(layer==="r"&&TL[ti]&&TL[ti].k==="n")showT(ti)});
   const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
   const lp=map.createPane("lbl");lp.style.zIndex=440;lp.style.pointerEvents="none";
   map.setView([place.lat,place.lon],7);
@@ -618,7 +619,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)flowStop();
 function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField();flowStart()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
 let layer=store.get("wx_layer")||"r";if(layer==="t")layer="r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
-function setLayer(l){layer=l;if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
+function setLayer(l){layer=l;vReset();if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar();loadGrid().then(flowStart).catch(()=>{})}
   else{ncOff();if(rainOv){map.removeLayer(rainOv);rainOv=null}Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;fieldLoad()}
@@ -726,6 +727,16 @@ const RadarGreen=L.GridLayer.extend({
 function radarLayer(url,pane){const l=new RadarGreen({pane,maxNativeZoom:7,maxZoom:9,opacity:.9});l._u=url;return l}
 // ---------- Nowcast: Radarbild mit dem Wind verschieben ----------
 let ncUrl=null,ncLayer=null;
+
+// ---------- Vorschau: Regen/Wolken mit dem Höhenwind von Hand weiterschieben ----------
+let vMin=0;
+function vApply(){if(!map)return;const pn=map.getPane("radar");
+  if(!vMin){pn.style.transform="";$("vlab").textContent="Schieben = Vorschau mit dem Wind";if(layer==="r"&&TL[ti])showT(ti);else if(layer==="c")drawField();return}
+  const t0=Date.now()/1000,[e,n]=ncShift(t0,t0+vMin*60),c=map.getCenter(),la=c.lat+n/111.2,lo=c.lng+e/(111.2*Math.cos(c.lat*Math.PI/180));
+  const a=map.latLngToLayerPoint(c),b=map.latLngToLayerPoint([la,lo]);pn.style.transform="translate3d("+(b.x-a.x)+"px,"+(b.y-a.y)+"px,0)";
+  const lbl="Vorschau "+hm(t0+vMin*60)+" Uhr";$("rtime").textContent=lbl;$("vlab").textContent="+"+[vMin>=60?Math.floor(vMin/60)+" Std.":"",vMin%60?vMin%60+" Min.":""].filter(Boolean).join(" ")+" · mit dem Wind verschoben";}
+$("vsl").addEventListener("input",()=>{vMin=+$("vsl").value*15;vApply()});
+function vReset(){vMin=0;$("vsl").value=0;if(map)map.getPane("radar").style.transform="";$("vlab").textContent="Schieben = Vorschau mit dem Wind"}
 function ncShift(t0,t1){// Verschiebung in km (Ost, Nord) von t0 bis t1 mit dem Wind in 700 hPa am Ort
   if(!W)return[0,0];const H=W.hourly;let e=0,n=0;
   for(let t=t0;t<t1;t+=900){let k=0;H.time.forEach((x,i)=>{if(x<=t)k=i});
