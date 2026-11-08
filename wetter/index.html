@@ -66,6 +66,7 @@ button{font:inherit;color:inherit}
 #lsel{position:absolute;z-index:1000;left:10px;right:10px;top:10px;display:flex;border:1px solid #555;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 #lsel button{flex:1;border:0;border-left:1px solid #aaa;background:#f2f2f2;color:#333;padding:8px 4px;font-size:14px}#lsel button:first-child{border-left:0}#lsel button.on{background:#2b2b2b;color:#fff;font-weight:600}
 #leg{position:absolute;z-index:1000;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:6px;font-size:11px;color:#111;background:rgba(255,255,255,.8);border-radius:8px;padding:4px 8px}#leg .g{flex:1;height:8px;border-radius:4px}
+.arrw.s span{font-size:11px;padding:0 4px;background:rgba(221,221,221,.85);border-color:#777}
 .arrw span{position:absolute;transform:translate(-50%,-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:7px;padding:1px 7px;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 #rtime{position:absolute;z-index:1000;left:50%;top:58px;white-space:nowrap;transform:translateX(-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:20px;font-variant-numeric:tabular-nums}
 #rnote{position:absolute;z-index:1000;left:12px;top:14px;font-size:12px;color:#222;background:rgba(255,255,255,.7);border-radius:6px;padding:2px 6px}
@@ -575,6 +576,11 @@ function drawArrow(){
     arrowGroup.addLayer(L.polyline([q1,q2],st));
     const lp=dest(c[0],c[1],dir+90,qw+22);
     arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
+  // kleine Zwischenstriche alle 30 Minuten
+  for(let h=.5;h<hrs;h+=1){const c=dest(P[0],P[1],dir,sp*h),qw=Math.max(3,sp*h*.16),q1=dest(c[0],c[1],dir+90,qw),q2=dest(c[0],c[1],dir-90,qw);
+    arrowGroup.addLayer(L.polyline([q1,q2],{...st,weight:2,opacity:.75}));
+    const lp=dest(c[0],c[1],dir-90,qw+14);
+    arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw s",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
 }
 
 // ---------- Dezente Windlinien (700 hPa, ca. 3 km) auf der Radarkarte ----------
