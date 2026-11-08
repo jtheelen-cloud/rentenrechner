@@ -47,7 +47,7 @@ a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24p
 <h2>Verwaltung</h2>
 <div class="grid">
  <a class="tile" href="https://login.tailscale.com/admin/machines" target="_blank" rel="noopener"><span class="i">🔒</span><b>Tailscale</b><div class="s">Geräte, Exit Node, Schlüssel</div></a>
- <a class="tile" href="http://fritz.box" target="_blank" rel="noopener"><span class="i">📶</span><b>FRITZ!Box</b><div class="s">nur im Heimnetz</div></a>
+ <a class="tile" href="http://192.168.178.1" target="_blank" rel="noopener"><span class="i">📶</span><b>FRITZ!Box</b><div class="s">192.168.178.1 · unterwegs erst nach Einrichtung der Tailscale-Subnetz-Route</div></a>
  <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner" target="_blank" rel="noopener"><span class="i">🐙</span><b>GitHub</b><div class="s">Repository rentenrechner</div></a>
  <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner/actions" target="_blank" rel="noopener"><span class="i">⚙️</span><b>Automatische Abläufe</b><div class="s">Gesetzestexte täglich</div></a>
  <a class="tile" href="https://claude.ai/projects" target="_blank" rel="noopener"><span class="i">🤖</span><b>Claude-Projekt „Eigene Apps“</b><div class="s">Anleitungen zur Wiederherstellung</div></a>
@@ -99,7 +99,7 @@ function load(){
   const now=new Date(),nx=new Date(now.getFullYear(),now.getMonth()+(now.getDate()>=2?1:0),2);$("sNext").textContent="Nächster Lauf: "+nx.toLocaleDateString("de-DE");
   const cnt=k=>{try{return(JSON.parse(ls(k))||[]).length}catch(e){return 0}};
   $("codes").innerHTML=`<div>💶 Rentenrechner: <b>${cnt("rentenrechner.vergeben")}</b></div><div>📘 BR-Nachschlagen: <b>${cnt("br.vergeben")}</b></div><div>⛅ Wetter: <b>${cnt("wetter.vergeben")}</b></div><div class="s">Liste steht nur in diesem Browser. Neue Codes vergibst du in der jeweiligen App unter •••.</div>`;
-  const T=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen"];
+  const T=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen"];
   let done={};try{done=JSON.parse(ls("admin.todo"))||{}}catch(e){}
   $("todo").innerHTML=T.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
   $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked)};
