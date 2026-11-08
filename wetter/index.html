@@ -212,6 +212,7 @@ function setView(v){view=v;store.set("wx_view",v);
   $("head").classList.toggle("map",v==="radar");
   if(v==="radar"){initMap();setTimeout(()=>map&&map.invalidateSize(),0)}
   if(v!=="wind")wStop();
+  if(v!=="radar")flowStop();else if(map)setTimeout(flowStart,300);
   drawAll();}
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>setView(b.dataset.v));
 function segs(){document.querySelectorAll(".seg").forEach(el=>{el.innerHTML=[2,16,48].map(r=>`<button type="button" data-r="${r}" class="${r===range?"on":""}">${r} Stunden</button>`).join("");
@@ -576,13 +577,41 @@ function drawArrow(){
     const lp=dest(c[0],c[1],dir+90,qw+22);
     arrowGroup.addLayer(L.marker(lp,{pane:"lbl",interactive:false,keyboard:false,icon:L.divIcon({className:"arrw",iconSize:[0,0],html:`<span>${hm(now+h*3600)}</span>`})}));}
 }
+
+// ---------- Dezente Windlinien (700 hPa, ca. 3 km) auf der Radarkarte ----------
+let flowCv=null,flowRaf=0,flowP=null;
+function gWind(lat,lon){if(!G||!G.u)return null;const now=Date.now()/1000;let h=0;G.times.forEach((t,i)=>{if(t<=now)h=i});
+  const ip=(B,U,V)=>{const fr=(lat-B.la0)/B.st,fc=(lon-B.lo0)/B.st;if(fr<0||fc<0||fr>B.nr-1||fc>B.nc-1)return null;const r=Math.min(B.nr-2,fr|0),c=Math.min(B.nc-2,fc|0),dr=fr-r,dc=fc-c,o=h*B.nr*B.nc,i=o+r*B.nc+c;
+    const f=A=>(A[i]*(1-dc)+A[i+1]*dc)*(1-dr)+(A[i+B.nc]*(1-dc)+A[i+B.nc+1]*dc)*dr;return[f(U),f(V)]};
+  if(G.k&&G.k.u){const w=ip(KB,G.k.u,G.k.v);if(w)return w}return ip(MB,G.u,G.v)}
+function flowStop(){if(flowRaf)cancelAnimationFrame(flowRaf);flowRaf=0;if(flowCv)flowCv.getContext("2d").clearRect(0,0,flowCv.width,flowCv.height)}
+function flowStart(){
+  if(!map||!G||!G.u||view!=="radar")return;
+  if(!flowCv){const pn=map.createPane("flow");pn.style.zIndex=302;pn.style.pointerEvents="none";flowCv=L.DomUtil.create("canvas","",pn);
+    map.on("movestart zoomstart",()=>{flowStop();if(flowCv)flowCv.style.display="none"});map.on("moveend zoomend",()=>{if(view==="radar")flowStart()})}
+  flowStop();const sz=map.getSize(),r=window.devicePixelRatio||1;flowCv.width=sz.x*r;flowCv.height=sz.y*r;flowCv.style.width=sz.x+"px";flowCv.style.height=sz.y+"px";flowCv.style.display="";
+  L.DomUtil.setPosition(flowCv,map.containerPointToLayerPoint([0,0]));
+  const cx=flowCv.getContext("2d");cx.setTransform(r,0,0,r,0,0);const W0=sz.x,H0=sz.y,N=Math.round(W0*H0/900),k=.028;
+  const spawn=p=>{p.x=Math.random()*W0;p.y=Math.random()*H0;p.a=Math.random()*70|0;return p};flowP=[];for(let i=0;i<N;i++)flowP.push(spawn({}));
+  // Wind je Bildschirmpunkt einmal vorberechnen (Raster 16 px), damit es flüssig läuft
+  const S=16,cw=Math.ceil(W0/S)+1,ch=Math.ceil(H0/S)+1,FU=new Float32Array(cw*ch),FV=new Float32Array(cw*ch),FM=new Uint8Array(cw*ch);
+  for(let j=0;j<ch;j++)for(let i=0;i<cw;i++){const ll=map.containerPointToLatLng([i*S,j*S]),w=gWind(ll.lat,ll.lng);if(w){FU[j*cw+i]=w[0];FV[j*cw+i]=w[1];FM[j*cw+i]=1}}
+  const wAtP=(x,y)=>{const fi=x/S,fj=y/S,i=fi|0,j=fj|0;if(i<0||j<0||i>=cw-1||j>=ch-1)return null;const q=j*cw+i;if(!FM[q])return null;const di=fi-i,dj=fj-j;
+    return[(FU[q]*(1-di)+FU[q+1]*di)*(1-dj)+(FU[q+cw]*(1-di)+FU[q+cw+1]*di)*dj,(FV[q]*(1-di)+FV[q+1]*di)*(1-dj)+(FV[q+cw]*(1-di)+FV[q+cw+1]*di)*dj]};
+  const step=()=>{cx.globalCompositeOperation="destination-in";cx.fillStyle="rgba(0,0,0,.94)";cx.fillRect(0,0,W0,H0);cx.globalCompositeOperation="source-over";
+    cx.strokeStyle="rgba(255,255,255,.42)";cx.lineWidth=1;cx.beginPath();
+    for(const p of flowP){const w=wAtP(p.x,p.y);if(!w||++p.a>80){spawn(p);p.a=0;continue}const nx=p.x+w[0]*k,ny=p.y-w[1]*k;cx.moveTo(p.x,p.y);cx.lineTo(nx,ny);p.x=nx;p.y=ny}
+    cx.stroke();flowRaf=requestAnimationFrame(step)};
+  if(!document.hidden)step();
+}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)flowStop();else if(view==="radar")flowStart()});
 // ---------- Ebenen: Regen (Radar), Wolken, Temperatur ----------
-function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
+function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField();flowStart()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
 let layer=store.get("wx_layer")||"r";if(layer==="t")layer="r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
 function setLayer(l){layer=l;if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
-  if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar()}
+  if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar();loadGrid().then(flowStart).catch(()=>{})}
   else{ncOff();if(rainOv){map.removeLayer(rainOv);rainOv=null}Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;fieldLoad()}
   legend();}
 const TSTOPS=[[-20,[75,41,145]],[-10,[44,91,168]],[0,[74,163,223]],[5,[127,209,196]],[10,[167,216,107]],[15,[242,216,75]],[20,[244,160,58]],[25,[232,97,60]],[30,[192,35,60]],[40,[122,13,43]]];
@@ -601,17 +630,18 @@ let G=null,gh=0,fieldOv=null,fieldOvK=null,landPath=null,landPathK=null,landFeat
 async function gridFetch(B,label){
   const pts=[];for(let r=0;r<B.nr;r++)for(let k=0;k<B.nc;k++)pts.push([B.la0+r*B.st,B.lo0+k*B.st]);
   const res=[];for(let i=0;i<pts.length;i+=60){$("rtime").textContent="Lade "+label+" … "+Math.round(i/pts.length*100)+" %";const ch=pts.slice(i,i+60);
-    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover_low,cloud_cover_mid,cloud_cover_high&forecast_hours=49&timezone=GMT&timeformat=unixtime");
+    let j=await getJSON("https://api.open-meteo.com/v1/forecast?latitude="+ch.map(p=>p[0]).join(",")+"&longitude="+ch.map(p=>p[1]).join(",")+"&hourly=temperature_2m,cloud_cover_low,cloud_cover_mid,cloud_cover_high,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=49&timezone=GMT&timeformat=unixtime");
     if(!Array.isArray(j))j=[j];res.push(...j)}
-  const n=pts.length,times=res[0].hourly.time,t=[],cc=[],hc=[];for(let h=0;h<times.length;h++)for(let i=0;i<n;i++){const H=res[i].hourly;t.push(Math.round((H.temperature_2m[h]??NaN)*10)/10);cc.push(Math.max(H.cloud_cover_low[h]??0,H.cloud_cover_mid[h]??0));hc.push(H.cloud_cover_high[h]??0)}
-  return{times,t,c:cc,hc};
+  const n=pts.length,times=res[0].hourly.time,t=[],cc=[],hc=[],uu=[],vv=[];for(let h=0;h<times.length;h++)for(let i=0;i<n;i++){const H=res[i].hourly;t.push(Math.round((H.temperature_2m[h]??NaN)*10)/10);cc.push(Math.max(H.cloud_cover_low[h]??0,H.cloud_cover_mid[h]??0));hc.push(H.cloud_cover_high[h]??0);
+    const sp=(H.wind_speed_700hPa&&H.wind_speed_700hPa[h])??0,dr=((H.wind_direction_700hPa&&H.wind_direction_700hPa[h])??0)*Math.PI/180;uu.push(Math.round(-sp*Math.sin(dr)*10)/10);vv.push(Math.round(-sp*Math.cos(dr)*10)/10)}
+  return{times,t,c:cc,hc,u:uu,v:vv};
 }
 async function loadGrid(){
-  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid8");
+  if(G&&G.k&&Date.now()-G.ts<90*60000)return;const c=store.get("wx_grid9");
   if(c&&c.k&&Date.now()-c.ts<90*60000){G=c;return}
-  if(!(G&&Date.now()-G.ts<90*60000)){const m=await gridFetch(MB,"Europa");G={ts:Date.now(),times:m.times,t:m.t,c:m.c,hc:m.hc,k:null}}
+  if(!(G&&Date.now()-G.ts<90*60000)){const m=await gridFetch(MB,"Europa");G={ts:Date.now(),times:m.times,t:m.t,c:m.c,hc:m.hc,u:m.u,v:m.v,k:null}}
   try{G.k=await gridFetch(KB,"Kanaren")}catch(e){G.k=null;if(String(e.message).includes("429"))setTimeout(()=>{if(layer!=="r")loadGrid().then(()=>{fieldSlider();drawField()}).catch(()=>{})},61000)}
-  if(G.k)store.set("wx_grid8",G);
+  if(G.k)store.set("wx_grid9",G);
 }
 function merc(l){return Math.log(Math.tan(Math.PI/4+l*Math.PI/360))}
 function imerc(y){return(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI}
