@@ -125,7 +125,6 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <button data-v="wet"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M2 12h3M4.9 4.9l2.1 2.1M19.1 4.9 17 7"/><path d="M13 27h12a5 5 0 0 0 0-10 7 7 0 0 0-13 2 4 4 0 0 0 1 8z" fill="#2b2b2b"/></svg>Wetter</button>
     <button data-v="vor"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v26h26"/><path d="M6 24C10 6 18 6 24 16"/></svg>Vorhersage</button>
     <button data-v="radar"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="3"/><path d="M16 16 26 8"/></svg>Radarkarte</button>
-    <button data-v="wind"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 10c4-3 8 3 12 0s8 3 12 0M4 17c4-3 8 3 12 0s8 3 12 0M4 24c4-3 8 3 12 0s8 3 12 0"/></svg>Wind</button>
   </nav>
   <div id="head"><span id="hTime">--:--</span><button id="hPlace" type="button">Mülheim an der Ruhr</button><span id="hTemp"></span><button id="more" type="button" aria-label="Menü">•••</button></div>
 
@@ -205,7 +204,7 @@ const PLACES=[["Mülheim an der Ruhr",51.427,6.883],["Essen",51.456,7.012],["Dü
 let place=store.get("wx_place")||{n:PLACES[0][0],lat:PLACES[0][1],lon:PLACES[0][2]};
 
 // ---------- Ansicht ----------
-let view=store.get("wx_view")||"wet", range=store.get("wx_range")||2;
+let view=store.get("wx_view")||"wet", range=store.get("wx_range")||2;if(view==="wind")view="wet";
 function setView(v){view=v;store.set("wx_view",v);
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
