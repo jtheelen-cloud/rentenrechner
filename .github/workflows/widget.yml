@@ -1,0 +1,37 @@
+name: Wetter-Widget bauen
+on:
+  push:
+    paths: ['android/**', '.github/workflows/widget.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.9' }
+      - name: APK bauen
+        env:
+          KS_PATH: ${{ github.workspace }}/android/keystore/wetter.jks
+          KS_PASS: 'krJ0GnIRKYuQ7b0tW22ckVGB'
+          VERSION_CODE: ${{ github.run_number }}
+        run: |
+          set -o pipefail
+          cd android && gradle assembleRelease --no-daemon --stacktrace 2>&1 | tee ../build.log
+      - name: Als Download veröffentlichen
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk wetter-widget.apk
+          gh release view widget >/dev/null 2>&1 || gh release create widget --title "Wetter-Widget" --notes "Android-App mit Startbildschirm-Widget für die Wetter-App. Download: wetter-widget.apk"
+          gh release upload widget wetter-widget.apk --clobber
+      - name: Fehlerprotokoll sichern
+        if: failure()
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git checkout --orphan ci-log && git rm -rqf . && cp -f build.log ci.log 2>/dev/null || echo "kein Log" > ci.log
+          git add ci.log && git commit -qm "Build-Log" && git push -f origin ci-log
