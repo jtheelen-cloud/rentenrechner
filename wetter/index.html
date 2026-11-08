@@ -292,12 +292,12 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()
 let W=null;
 async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function loadWeather(force){
-  const key="wx4_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
+  const key="wx5_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
   if(!force&&c&&c.key===key&&Date.now()-c.ts<10*60000){W=c.d;return}
   const u=`https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}`+
-   "&current=temperature_2m,apparent_temperature,is_day,weather_code,cloud_cover,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
+   "&current=temperature_2m,apparent_temperature,is_day,weather_code,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
    "&minutely_15=precipitation&forecast_minutely_15=12&past_minutely_15=1"+
-   "&hourly=temperature_2m,apparent_temperature,weather_code,is_day,cloud_cover,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=168&past_hours=1"+
+   "&hourly=temperature_2m,apparent_temperature,weather_code,is_day,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m,wind_speed_700hPa,wind_direction_700hPa&forecast_hours=168&past_hours=1"+
    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,wind_speed_10m_max,wind_gusts_10m_max&forecast_days=7"+
    "&timezone=auto&timeformat=unixtime";
   W=await getJSON(u);store.set("wx_cache",{key,ts:Date.now(),d:W});
@@ -386,7 +386,10 @@ function svgIcon(code,day,cc,px){code=code??0;if(cc==null)cc=code===0?0:code===1
   if(snow)for(let k=0;k<3;k++){const x=20+k*11,y=57+(k%2)*3;g+=`<g stroke="#e8f1ff" stroke-width="2" stroke-linecap="round"><line x1="${x-3}" y1="${y}" x2="${x+3}" y2="${y}"/><line x1="${x}" y1="${y-3}" x2="${x}" y2="${y+3}"/></g>`}
   if(storm)g+=`<path d="M33 46l-7 11h6l-4 9 11-13h-6l4-7z" fill="#ff7a00" stroke="#d35400" stroke-width="1"/>`;
   return g+`</svg>`}
-function dayCC(j){const H=W.hourly,d0=W.daily.time[j];const v=[];H.time.forEach((t,i)=>{const hh=(t-d0)/3600;if(hh>=8&&hh<=18&&H.cloud_cover&&H.cloud_cover[i]!=null)v.push(H.cloud_cover[i])});return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+// „gefühlte“ Bewölkung: tiefe und mittlere Wolken zählen voll, dünne hohe Schleierwolken nur zu 35 %
+function effCC(lo,mi,hi,tot){if(lo==null&&mi==null&&hi==null)return tot;return Math.max(lo||0,mi||0,(hi||0)*.35)}
+function hCC(i){const H=W.hourly;return effCC(H.cloud_cover_low&&H.cloud_cover_low[i],H.cloud_cover_mid&&H.cloud_cover_mid[i],H.cloud_cover_high&&H.cloud_cover_high[i],H.cloud_cover?H.cloud_cover[i]:null)}
+function dayCC(j){const H=W.hourly,d0=W.daily.time[j];const v=[];H.time.forEach((t,i)=>{const hh=(t-d0)/3600;if(hh>=8&&hh<=18){const c=hCC(i);if(c!=null)v.push(c)}});return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
 // ---------- Reiter „Wetter“: heute im Überblick + stündlich ----------
 let wDay=0;
 function wIcon(code,day){const i=wmo(code)[0];if(day===0&&(code===0||code===1))return"🌙";if(day===0&&code===2)return"☁️";return i}
@@ -394,7 +397,7 @@ function lt(u,tz){return new Date(new Date(u*1000).toLocaleString("en-US",{timeZ
 function drawWet(){
   const D=W.daily,H=W.hourly,cu=W.current,tz=W.timezone,now=Date.now()/1000;
   const ar=d=>`<span style="display:inline-block;transform:rotate(${(d+180)%360}deg)">↑</span>`;
-  let h=`<div class="wnow"><span class="i">${svgIcon(cu.weather_code,cu.is_day,cu.cloud_cover,84)}</span><div><div class="t">${Math.round(cu.temperature_2m)}°</div></div>
+  let h=`<div class="wnow"><span class="i">${svgIcon(cu.weather_code,cu.is_day,effCC(cu.cloud_cover_low,cu.cloud_cover_mid,cu.cloud_cover_high,cu.cloud_cover),84)}</span><div><div class="t">${Math.round(cu.temperature_2m)}°</div></div>
    <div class="d">${wmo(cu.weather_code)[1]}<br>gefühlt ${Math.round(cu.apparent_temperature)}°<br>${Math.round(D.temperature_2m_min[0])}° / <b style="color:#fff">${Math.round(D.temperature_2m_max[0])}°</b></div></div>
    <div class="wfacts"><span>🌧️ Regen <b>${D.precipitation_probability_max[0]??"–"} %</b> · ${(D.precipitation_sum[0]??0).toFixed(1)} mm</span>
    <span>💨 Wind <b>${Math.round(cu.wind_speed_10m)} km/h</b> ${ar(cu.wind_direction_10m)} ${dirTxt(cu.wind_direction_10m)}</span>
@@ -407,12 +410,12 @@ function drawWet(){
   const seg=[["Nachts",0,6],["Morgens",6,12],["Mittags",12,18],["Abends",18,24]].map(([n,a,b])=>{const ix=hrs.filter(i=>{const hh=lt(H.time[i],tz).getHours();return hh>=a&&hh<b});if(!ix.length)return"";
     const tmax=Math.max(...ix.map(i=>H.temperature_2m[i])),pr=Math.max(...ix.map(i=>H.precipitation_probability[i]??0)),mid=ix[Math.floor(ix.length/2)];
     let code=H.weather_code[mid];ix.forEach(i=>{if((H.weather_code[i]??0)>=51&&(code??0)<51)code=H.weather_code[i]});
-    return`<div class="part">${n}<span class="i">${svgIcon(code,H.is_day[mid],H.cloud_cover?H.cloud_cover[mid]:null,42)}</span><b>${Math.round(tmax)}°</b><br>💧 ${pr} %</div>`}).join("");
+    return`<div class="part">${n}<span class="i">${svgIcon(code,H.is_day[mid],hCC(mid),42)}</span><b>${Math.round(tmax)}°</b><br>💧 ${pr} %</div>`}).join("");
   h+=`<div class="wh">${wDay===0?"Heute":wDay===1?"Morgen":"Tagesverlauf"} im Überblick</div><div class="parts">${seg}</div>`;
   // stündlich
   h+=`<div class="wh">Stündlich${wDay===0?" – nächste 24 Stunden":""}</div>`;
   const hl=wDay===0?H.time.map((t,i)=>i).filter(i=>H.time[i]>now-3600&&H.time[i]<now+23*3600):hrs;let lastD=null;
-  hl.forEach(i=>{const dd=lt(H.time[i],tz).getDate();if(wDay===0&&lastD!==null&&dd!==lastD)h+=`<div class="hday">Morgen</div>`;lastD=dd;h+=`<div class="hrow"><span>${hm(H.time[i],tz)}</span><span class="i">${svgIcon(H.weather_code[i],H.is_day[i],H.cloud_cover?H.cloud_cover[i]:null,34)}</span><span class="t">${Math.round(H.temperature_2m[i])}°</span>
+  hl.forEach(i=>{const dd=lt(H.time[i],tz).getDate();if(wDay===0&&lastD!==null&&dd!==lastD)h+=`<div class="hday">Morgen</div>`;lastD=dd;h+=`<div class="hrow"><span>${hm(H.time[i],tz)}</span><span class="i">${svgIcon(H.weather_code[i],H.is_day[i],hCC(i),34)}</span><span class="t">${Math.round(H.temperature_2m[i])}°</span>
     <span class="p">${(H.precipitation_probability[i]??0)>=10||(H.precipitation[i]??0)>=0.1?`💧 ${H.precipitation_probability[i]??0} %${(H.precipitation[i]??0)>=0.1?" · "+H.precipitation[i].toFixed(1)+" mm":""}`:""}</span>
     <span class="w">${ar(H.wind_direction_10m[i])} ${Math.round(H.wind_speed_10m[i])} km/h</span></div>`});
   $("wet").innerHTML=h;
