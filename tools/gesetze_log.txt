@@ -28,9 +28,8 @@ OK entgtranspg EntgTranspG | Gesetz zur Förderung der Entgelttransparenz zwisch
   Kandidaten hinschg [["HEMBV", null, "Verordnung über die Organisation der nach dem Hinweisgeberschutzgesetz"], ["HinSchGOWiZustV", null, "Verordnung über die Zuständigkeit des Bundesamtes für Justiz für die V"], ["PolBeauftrG", null, "Gesetz über die Polizeibeauftragte oder den Polizeibeauftragten des Bu"], ["ArbSchG", null, "Gesetz über die Durchführung von Maßnahmen des Arbeitsschutzes zur Ver"], ["BeamtStG", null, "Gesetz zur Regelung des Statusrechts der Beamtinnen und Beamten in den"], ["FinDAG", null, "Gesetz über die Bundesanstalt für Finanzdienstleistungsaufsicht"], ["VAG", null, "Gesetz über die Beaufsichtigung der Versicherungsunternehmen"], ["ZFdG", null, "Gesetz über das Zollkriminalamt und die Zollfahndungsämter"]]
 OK tvg TVG | Tarifvertragsgesetz | Paragrafen: 15 | Stand 2026-04-27 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 16763
 OK hinschg HinSchG | Gesetz für einen besseren Schutz hinweisgebender Personen | Paragrafen: 42 | Stand 2025-12-02 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 61854
-  OLD: Abruf-Limit erreicht bei a_g, Fortschritt 25/31 – geht beim nächsten Lauf weiter
-NOCH NICHT DA a_g (App öffnet Originaltext)
-  OLD: Abruf-Limit erreicht bei mitbestg, Fortschritt 0/? – geht beim nächsten Lauf weiter
+OK a_g AÜG | Gesetz zur Regelung der Arbeitnehmerüberlassung | Paragrafen: 31 | Stand 2025-12-22 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 57627
+  OLD: Abruf-Limit erreicht bei mitbestg, Fortschritt 34/42 – geht beim nächsten Lauf weiter
 NOCH NICHT DA mitbestg (App öffnet Originaltext)
   OLD: Abruf-Limit erreicht bei arbgg, Fortschritt 0/? – geht beim nächsten Lauf weiter
 NOCH NICHT DA arbgg (App öffnet Originaltext)
@@ -40,4 +39,4 @@ NOCH NICHT DA gewo (App öffnet Originaltext)
 NOCH NICHT DA sgb_9_2018 (App öffnet Originaltext)
   OLD: Abruf-Limit erreicht bei bgb, Fortschritt 0/? – geht beim nächsten Lauf weiter
 BEHALTEN bgb (letzte gespeicherte Fassung)
-FERTIG, Fehler: 6
+FERTIG, Fehler: 5

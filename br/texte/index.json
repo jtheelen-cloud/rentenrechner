@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-07",
+ "stand": "2026-11-08",
  "gesetze": {
   "betrvg": {
    "stand": "2026-07-13",
@@ -160,6 +160,13 @@
    "n": 42,
    "name": "Gesetz für einen besseren Schutz hinweisgebender Personen",
    "kurz": "HinSchG",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+  },
+  "aueg": {
+   "stand": "2025-12-22",
+   "n": 31,
+   "name": "Gesetz zur Regelung der Arbeitnehmerüberlassung",
+   "kurz": "AÜG",
    "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   }
  }
