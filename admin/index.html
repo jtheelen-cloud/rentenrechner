@@ -1,81 +1,181 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Meine Apps – Admin</title><meta name="theme-color" content="#1f2328"><meta name="robots" content="noindex">
+<title>Meine Apps – Admin</title><meta name="theme-color" content="#15181d"><meta name="robots" content="noindex">
 <link rel="icon" href="../icon-192.png"><link rel="manifest" href="manifest.json">
 <style>
-:root{--bg:#14161a;--card:#1f2328;--line:#30363d;--tx:#e6e6e6;--mu:#9aa0a6;--ac:#2f7fd8;--ok:#3fb950;--wa:#d29922}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:0 14px 40px;max-width:900px;margin:auto}
-header{display:flex;align-items:baseline;justify-content:space-between;padding:18px 2px 6px}h1{font-size:22px;margin:0}.mu{color:var(--mu);font-size:13px}
-h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:22px 2px 8px}
+:root{--bg:#f4f5f7;--card:#ffffff;--line:#e2e5ea;--tx:#1b1f24;--mu:#66707c;--ac:#2563c9;--acs:#e6eefb;--ok:#1f8a4c;--oks:#e3f4ea;--wa:#b7791f;--was:#fbf0dc;--bad:#c0392b;--input:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#121418;--card:#1c2026;--line:#2c323a;--tx:#e8eaed;--mu:#9aa3ad;--ac:#6ea0ff;--acs:#1d2a40;--ok:#4cc27a;--oks:#173324;--wa:#e0a84a;--was:#3a2d16;--bad:#ff7b6b;--input:#15181d;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 max(16px,env(safe-area-inset-left)) 96px}
+.wrap{max-width:860px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 0 6px}
+header h1{font-size:22px;margin:0;letter-spacing:-.01em}
+.mu{color:var(--mu);font-size:13px}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:22px 0 8px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
-a.tile,.tile{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--tx);text-decoration:none}
-a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24px;float:right}.tile .s{font-size:13px;color:var(--mu);margin-top:4px}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mu);margin-right:6px}.dot.ok{background:var(--ok)}.dot.wa{background:var(--wa)}
-.todo label{display:flex;gap:10px;align-items:flex-start;padding:8px 2px;border-bottom:1px solid var(--line);font-size:15px}.todo input{flex:0 0 20px;width:20px;height:20px;margin-top:2px;accent-color:var(--ac)}
+.stack{display:grid;gap:10px}
+a{color:var(--ac)}
+button,.btn{font:inherit;font-size:14px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.btn.sm{font-size:13px;padding:5px 9px}
+.btn.del{color:var(--bad)}
+input,select{font:inherit;font-size:16px;color:var(--tx);background:var(--input);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+label{font-size:13px;color:var(--mu);display:block;margin-bottom:3px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+[hidden]{display:none!important}
+
+/* Cockpit */
+.cockpit{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.st{display:block;text-align:left;border-radius:12px;padding:10px 12px;border:1px solid var(--line);background:var(--card);color:var(--tx);text-decoration:none;font:inherit}
+.st b{display:block;font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums}
+.st span{font-size:12.5px;color:var(--mu)}
+.st.ok{background:var(--oks);border-color:transparent}.st.ok b{color:var(--ok)}
+.st.wa{background:var(--was);border-color:transparent}.st.wa b{color:var(--wa)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mu);margin-right:6px;vertical-align:1px}.dot.ok{background:var(--ok)}.dot.wa{background:var(--wa)}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--was);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px}
+
+/* App-Karten */
+.app{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;align-items:start}
+.app .ic{width:44px;height:44px;border-radius:12px;background:var(--acs);display:grid;place-items:center;font-size:24px;grid-row:span 2}
+.app h3{margin:0;font-size:17px}
+.app .s{font-size:13px;color:var(--mu)}
+.app .acts{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.link{display:grid;grid-template-columns:36px 1fr;gap:2px 10px;align-items:center;text-decoration:none;color:var(--tx)}
+.link .ic{width:36px;height:36px;border-radius:10px;background:var(--acs);display:grid;place-items:center;font-size:19px;grid-row:span 2}
+.link b{font-size:15px}.link .s{font-size:12.5px;color:var(--mu)}
+
+/* Kollegen */
+.person{border-top:1px solid var(--line);padding:10px 0}
+.person:first-child{border-top:0;padding-top:0}
+.person .nm{font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;background:var(--acs);border-radius:999px;padding:4px 6px 4px 10px}
+.chip code{font-size:12.5px}
+.chip button{border:0;background:none;padding:2px 6px;font-size:14px;color:var(--mu)}
+.out{font-size:26px;letter-spacing:.08em;font-weight:700;font-variant-numeric:tabular-nums;min-height:1.3em}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)}
+th{color:var(--mu);font-weight:600;font-size:12.5px}
+
+/* To-dos */
+.todo label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--tx);margin:0}
+.todo label:last-child{border-bottom:0}
+.todo input{flex:0 0 20px;width:20px;height:20px;margin-top:2px;accent-color:var(--ac)}
 .todo label.done span{color:var(--mu);text-decoration:line-through}
+
+/* Reiter */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.tabs .in{max-width:860px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs button{border:0;border-radius:0;background:none;display:grid;justify-items:center;gap:2px;padding:8px 0 9px;color:var(--mu);font-size:12px;font-weight:600}
+.tabs button svg{width:23px;height:23px}
+.tabs button.on{color:var(--ac)}
+.badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--wa);color:#fff;font-size:11px;line-height:18px;text-align:center;margin-left:4px}
+
+/* Gate, Dialog */
 #gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
-#gate form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:340px;width:100%}
-#gate input{width:100%;font:inherit;font-size:20px;letter-spacing:.1em;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:#111;color:#fff;margin:12px 0}
-#gate button{width:100%;padding:11px;border:0;border-radius:10px;background:var(--ac);color:#fff;font:inherit;font-weight:600}.err{color:#f85149;font-size:14px;min-height:1.2em}
+#gate form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:340px;width:100%;display:grid;gap:10px}
+#gate input{font-size:20px;letter-spacing:.1em;text-align:center}
+.err{color:var(--bad);font-size:14px;min-height:1.2em;margin:0}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8;display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg .in{background:var(--card);border-radius:16px;padding:18px;max-width:340px;width:100%;text-align:center;display:grid;gap:10px}
+#qr{background:#fff;padding:12px;border-radius:12px;display:grid;place-items:center;min-height:240px}
 .hide{display:none!important}
-.sh{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:#2a3038;color:var(--tx);font:inherit;font-size:14px}
 </style></head><body>
-<div id="gate"><form id="gf"><b>Admin-Bereich</b><div class="mu">Nur mit Master-Code.</div><input id="gc" autocomplete="off" placeholder="XXXX-XXXX"><div class="err" id="ge"></div><button>Öffnen</button></form></div>
-<header><h1>Meine Apps</h1><span class="mu" id="today"></span></header>
+<div id="gate"><form id="gf"><b>Admin-Bereich</b><div class="mu">Nur mit Master-Code.</div><input id="gc" autocomplete="off" placeholder="XXXX-XXXX" aria-label="Master-Code"><p class="err" id="ge"></p><button class="btn pri" style="justify-content:center">Öffnen</button></form></div>
 
-<h2>Apps im Internet</h2>
-<div class="grid">
- <a class="tile" href="../"><span class="i">💶</span><b>Rentenrechner</b><div class="s" id="sRente">…</div></a>
- <a class="tile" href="../br/"><span class="i">📘</span><b>BR-Nachschlagen</b><div class="s" id="sBR">…</div></a>
- <a class="tile" href="../wetter/"><span class="i">⛅</span><b>Wetter</b><div class="s" id="sWet">…</div></a>
- <a class="tile" href="../ahnen/"><span class="i">🌳</span><b>Ahnenspur</b><div class="s" id="sAhn">Stammbaum für Kollegen · Daten nur auf deren Handy</div></a>
+<div class="wrap">
+<header><div><h1>Meine Apps</h1><div class="mu" id="today"></div></div><button class="btn sm" id="reload" type="button" aria-label="Aktualisieren">⟳</button></header>
+
+<!-- ÜBERSICHT -->
+<section id="t-start" class="tab">
+  <h2>Status</h2>
+  <div class="cockpit" id="cockpit"></div>
+  <div id="bkBanner"></div>
+  <h2>Schnellzugriff</h2>
+  <div class="grid" id="quick" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr))"></div>
+</section>
+
+<!-- APPS -->
+<section id="t-apps" class="tab" hidden>
+  <h2>Apps im Internet <span style="text-transform:none;letter-spacing:0">(für Kollegen, mit Code)</span></h2>
+  <div class="grid" id="appCards"></div>
+  <p class="mu" style="margin:8px 0 0">Teilen schickt den Link mit kurzer Anleitung. Der QR-Code ist zum Abscannen direkt von deinem Handy.</p>
+  <h2>Nur für mich</h2>
+  <div class="grid">
+    <a class="card link" href="https://claude.ai/artifact/FBXaUUBdyKyTCcDXZSoRKY" target="_blank" rel="noopener"><span class="ic">📈</span><b>Sparplan &amp; Ruhestand</b><span class="s">Trade-Republic-Depot bis 65 · Werte alle paar Monate eintragen</span></a>
+  </div>
+  <h2>Apps auf dem NAS <span style="text-transform:none;letter-spacing:0">(unterwegs Tailscale an)</span></h2>
+  <div class="grid">
+    <a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">Port 8093</span></a>
+    <a class="card link" href="http://100.124.80.87:8090" target="_blank" rel="noopener"><span class="ic">🧳</span><b>Urlaubskasse</b><span class="s">Port 8090</span></a>
+    <a class="card link" href="http://100.124.80.87:8091" target="_blank" rel="noopener"><span class="ic">🍀</span><b>Lottogeld</b><span class="s">Port 8091</span></a>
+    <a class="card link" href="http://100.124.80.87:8092" target="_blank" rel="noopener"><span class="ic">📁</span><b>Betriebsrat-App</b><span class="s">Port 8092</span></a>
+    <a class="card link" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.ugreen.pro;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.ugreen.pro;end"><span class="ic">📱</span><b>NAS (UGREEN-App)</b><span class="s">Dateien, Fotos, Docker</span></a>
+  </div>
+  <p class="mu" style="margin:8px 0 0">NAS-Adresse unterwegs 100.124.80.87, zu Hause auch 192.168.178.24. Ob die NAS-Apps laufen, kann diese Seite nicht prüfen (der Browser blockt den Zugriff von https auf http).</p>
+</section>
+
+<!-- KOLLEGEN -->
+<section id="t-koll" class="tab" hidden>
+  <h2>Code vergeben</h2>
+  <div class="card stack">
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+      <div><label for="kName">Name</label><input id="kName" autocomplete="off" placeholder="z. B. Peter Schmitz" list="kNames"><datalist id="kNames"></datalist></div>
+      <div><label for="kApp">App</label><select id="kApp"></select></div>
+      <div><label for="kDev">Gerätenummer (zeigt die App an)</label><input id="kDev" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></div>
+    </div>
+    <div class="out" id="kOut" aria-live="polite"></div>
+    <div class="row" id="kActs" hidden><button class="btn pri" type="button" id="kSave">Speichern</button><button class="btn" type="button" id="kSend">Code schicken</button><button class="btn" type="button" id="kCopy">Kopieren</button></div>
+    <p class="mu" id="kMsg" style="margin:0" aria-live="polite"></p>
+  </div>
+  <h2>Kollegen <span id="kCount" style="text-transform:none;letter-spacing:0"></span></h2>
+  <div class="card" id="kList"></div>
+  <h2>Sicherung der Codelisten</h2>
+  <div class="card stack">
+    <p class="mu" style="margin:0" id="bkInfo"></p>
+    <div class="row"><button class="btn pri" type="button" id="bkSave">Codeliste sichern</button><button class="btn" type="button" id="bkShare" hidden>Teilen</button><button class="btn" type="button" id="bkLoad">Sicherung einspielen</button></div>
+    <p class="mu" style="margin:0">Die Codes stehen nur in diesem Browser. Die Sicherungsdatei am besten auf den PC oder das NAS legen. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.</p>
+    <p class="mu" id="bkMsg" style="margin:0" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- VERWALTUNG -->
+<section id="t-verw" class="tab" hidden>
+  <h2>Offen (zu Hause) <span id="todoCnt" style="text-transform:none;letter-spacing:0"></span></h2>
+  <div class="card todo" id="todo"></div>
+  <h2>Nutzung (Test)</h2>
+  <div class="card" id="use">…</div>
+  <h2>Automatisch</h2>
+  <div class="grid">
+    <div class="card"><b>Rentenrechner-Kennzahlen</b><div class="mu">Geplante Aufgabe am 2. jedes Monats</div><div class="mu" id="sNext"></div></div>
+    <div class="card"><b>Gesetzestexte (BR)</b><div class="mu">GitHub-Ablauf täglich früh</div><div class="mu" id="sGes"></div></div>
+  </div>
+  <h2>Links</h2>
+  <div class="grid">
+    <a class="card link" href="https://login.tailscale.com/admin/machines" target="_blank" rel="noopener"><span class="ic">🔒</span><b>Tailscale</b><span class="s">Geräte, Exit Node, Schlüssel</span></a>
+    <a class="card link" href="http://192.168.178.1" target="_blank" rel="noopener"><span class="ic">📶</span><b>FRITZ!Box</b><span class="s">192.168.178.1 · unterwegs erst mit Subnetz-Route</span></a>
+    <a class="card link" href="https://github.com/jtheelen-cloud/rentenrechner" target="_blank" rel="noopener"><span class="ic">🐙</span><b>GitHub</b><span class="s">Repository rentenrechner</span></a>
+    <a class="card link" href="https://github.com/jtheelen-cloud/rentenrechner/actions" target="_blank" rel="noopener"><span class="ic">⚙️</span><b>Automatische Abläufe</b><span class="s">GitHub Actions</span></a>
+    <a class="card link" href="https://claude.ai/projects" target="_blank" rel="noopener"><span class="ic">🤖</span><b>Claude-Projekt „Eigene Apps“</b><span class="s">Anleitungen zur Wiederherstellung</span></a>
+  </div>
+</section>
 </div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
- <button class="sh" data-a="">📤 Rentenrechner teilen</button><button class="sh" data-a="br/">📤 BR-Nachschlagen teilen</button><button class="sh" data-a="wetter/">📤 Wetter teilen</button><button class="sh" data-a="ahnen/">📤 Ahnenspur teilen</button>
-</div>
-<p class="mu" style="margin:6px 2px 0">Teilen schickt den Link z. B. per WhatsApp. Der Empfänger öffnet ihn, schickt dir seine Geräte-Nr., und du vergibst den Code in der App unter •••.</p>
 
-<h2>Nur für mich <span style="text-transform:none;letter-spacing:0">(Claude-Anmeldung)</span></h2>
-<div class="grid">
- <a class="tile" href="https://claude.ai/artifact/FBXaUUBdyKyTCcDXZSoRKY" target="_blank" rel="noopener"><span class="i">📈</span><b>Sparplan &amp; Ruhestand</b><div class="s">Trade-Republic-Depot bis 65 hochgerechnet · Werte alle paar Monate eintragen</div></a>
-</div>
+<nav class="tabs" id="tabs"><div class="in">
+  <button type="button" data-t="start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 13a8 8 0 1 1 16 0"/><path d="m12 13 4-4"/><path d="M4 17h16"/></svg>Übersicht</button>
+  <button type="button" data-t="apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>Apps</button>
+  <button type="button" data-t="koll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></svg>Kollegen</button>
+  <button type="button" data-t="verw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Verwaltung<span id="tabBadge"></span></button>
+</div></nav>
 
-<h2>Apps auf dem NAS <span style="text-transform:none;letter-spacing:0">(Tailscale an)</span></h2>
-<div class="grid">
- <a class="tile" href="http://100.124.80.87:8090" target="_blank" rel="noopener"><span class="i">🧳</span><b>Urlaubskasse</b><div class="s">100.124.80.87:8090 · zu Hause 192.168.178.24:8090</div></a>
- <a class="tile" href="http://100.124.80.87:8091" target="_blank" rel="noopener"><span class="i">🍀</span><b>Lottogeld</b><div class="s">100.124.80.87:8091 · zu Hause 192.168.178.24:8091</div></a>
- <a class="tile" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="i">🔥</span><b>Heizungs-App</b><div class="s">100.124.80.87:8093 · zu Hause 192.168.178.24:8093</div></a>
- <a class="tile" href="http://100.124.80.87:8092" target="_blank" rel="noopener"><span class="i">📁</span><b>Betriebsrat-App</b><div class="s">100.124.80.87:8092 · zu Hause 192.168.178.24:8092</div></a>
- <a class="tile" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.ugreen.pro;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.ugreen.pro;end"><span class="i">📱</span><b>NAS (UGREEN-App)</b><div class="s">öffnet die UGREEN-App auf dem Handy</div></a>
-</div>
-<p class="mu" style="margin:6px 2px 0">Unterwegs funktionieren die NAS-Apps über die Tailscale-Adresse (getestet am 8.11.2026).</p>
-
-<h2>Verwaltung</h2>
-<div class="grid">
- <a class="tile" href="https://login.tailscale.com/admin/machines" target="_blank" rel="noopener"><span class="i">🔒</span><b>Tailscale</b><div class="s">Geräte, Exit Node, Schlüssel</div></a>
- <a class="tile" href="http://192.168.178.1" target="_blank" rel="noopener"><span class="i">📶</span><b>FRITZ!Box</b><div class="s">192.168.178.1 · unterwegs erst nach Einrichtung der Tailscale-Subnetz-Route</div></a>
- <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner" target="_blank" rel="noopener"><span class="i">🐙</span><b>GitHub</b><div class="s">Repository rentenrechner</div></a>
- <a class="tile" href="https://github.com/jtheelen-cloud/rentenrechner/actions" target="_blank" rel="noopener"><span class="i">⚙️</span><b>Automatische Abläufe</b><div class="s">Gesetzestexte täglich</div></a>
- <a class="tile" href="https://claude.ai/projects" target="_blank" rel="noopener"><span class="i">🤖</span><b>Claude-Projekt „Eigene Apps“</b><div class="s">Anleitungen zur Wiederherstellung</div></a>
-</div>
-
-<h2>Vergebene Gerätecodes</h2>
-<div class="grid"><div class="tile" id="codes">…</div></div>
-
-<h2>Nutzung (Test)</h2>
-<div class="grid"><div class="tile" id="use" style="grid-column:1/-1">…</div></div>
-
-<h2>Automatisch</h2>
-<div class="grid">
- <div class="tile"><b>Rentenrechner-Kennzahlen</b><div class="s">Geplante Aufgabe am 2. jedes Monats (7:52 und 8:37 Uhr)</div><div class="s" id="sNext"></div></div>
- <div class="tile"><b>Gesetzestexte</b><div class="s">GitHub-Ablauf täglich früh</div><div class="s" id="sGes"></div></div>
-</div>
-
-<h2>Offen (zu Hause)</h2>
-<div class="todo" id="todo"></div>
-<p class="mu" style="margin:16px 2px">Haken werden nur auf diesem Gerät gespeichert.</p>
+<div class="dlg" id="dlg" hidden><div class="in"><b id="dlgT"></b><div id="qr"></div><div class="mu" id="dlgU" style="word-break:break-all"></div><button class="btn pri" type="button" id="dlgX" style="justify-content:center">Schließen</button></div></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
 
 <script>
+"use strict";
 const $=id=>document.getElementById(id);
 function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
 const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
@@ -84,60 +184,159 @@ for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24
 for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
 let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
 H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
-
 const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
 const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-const OKKEYS=["rentenrechner.zugang","br.zugang","wetter.zugang","admin.zugang"];
-function unlocked(){return OKKEYS.some(k=>ls(k)==="M:"+CODE_HASH)}
-function openAdm(){$("gate").classList.add("hide");load()}
-$("gf").onsubmit=e=>{e.preventDefault();let c=$("gc").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");if(c.length===8)c=c.slice(0,4)+"-"+c.slice(4);
-  if(sha256js("rentenrechner:"+c)===CODE_HASH){lsSet("admin.zugang","M:"+CODE_HASH);openAdm()}else $("ge").textContent="Code stimmt nicht."};
-const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const dot=(ok,txt)=>`<span class="dot ${ok?"ok":"wa"}"></span>${txt}`;
-async function j(u){const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;return r.json()}
-function load(){
-  $("today").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  j("../kennzahlen.json").then(k=>{$("sRente").innerHTML=dot(true,"Kennzahlen: "+esc(k.stand))}).catch(()=>{$("sRente").innerHTML=dot(false,"Kennzahlen nicht lesbar")});
-  Promise.all([j("../br/texte/index.json"),j("../br/tarif.json")]).then(([g,t])=>{const n=Object.keys(g.gesetze||{}).length,d=g.stand;
-    const age=(Date.now()-new Date(d).getTime())/864e5;$("sBR").innerHTML=dot(age<3,`${n} Gesetze offline · geprüft ${new Date(d).toLocaleDateString("de-DE")}`)+`<br>Tarif: ${esc(t.stand)}`;
-    $("sGes").innerHTML=dot(age<3,"Letzter Lauf: "+new Date(d).toLocaleDateString("de-DE")+(age>=3?" – länger nicht gelaufen!":""))}).catch(()=>{$("sBR").innerHTML=dot(false,"Stand nicht lesbar")});
-  let wp="Mülheim an der Ruhr";try{const p=JSON.parse(ls("wx_place"));if(p&&p.n)wp=p.n}catch(e){}
-  const cd=(()=>{try{return JSON.parse(ls("wx_cd"))}catch(e){return null}})();
-  $("sWet").innerHTML=dot(true,"Ort: "+esc(wp))+(cd&&cd.von?`<br>Countdown: ${esc(cd.ziel||"Urlaub")} ab ${cd.von.split("-").reverse().join(".")}`:"");
-  const now=new Date(),nx=new Date(now.getFullYear(),now.getMonth()+(now.getDate()>=2?1:0),2);$("sNext").textContent="Nächster Lauf: "+nx.toLocaleDateString("de-DE");
-  const cnt=k=>{try{return(JSON.parse(ls(k))||[]).length}catch(e){return 0}};
-  $("codes").innerHTML=`<div>💶 Rentenrechner: <b>${cnt("rentenrechner.vergeben")}</b></div><div>📘 BR-Nachschlagen: <b>${cnt("br.vergeben")}</b></div><div>⛅ Wetter: <b>${cnt("wetter.vergeben")}</b></div><div>🌳 Ahnenspur: <b>${cnt("ahnen.vergeben")}</b></div><div class="s">Liste steht nur in diesem Browser. Neue Codes vergibst du in der jeweiligen App unter •••.</div>`;
-  const T=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen"];
-  let done={};try{done=JSON.parse(ls("admin.todo"))||{}}catch(e){}
-  $("todo").innerHTML=T.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
-  $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked)};
-}
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
+const lsJ=(k,d)=>{try{const v=JSON.parse(ls(k));return v==null?d:v}catch(e){return d}};
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
 const BASE="https://jtheelen-cloud.github.io/rentenrechner/";
-document.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{const nm=b.textContent.replace("📤 ","").replace(" teilen",""),url=BASE+b.dataset.a;
-  const txt=`Hier ist die App „${nm}“: ${url}\nÖffne den Link, dann siehst du eine Geräte-Nr. Schick mir die Nummer, dann bekommst du deinen Zugangscode. Tipp: im Browser-Menü „Zum Startbildschirm hinzufügen“.`;
-  try{if(navigator.share){await navigator.share({title:nm,text:txt});return}}catch(e){return}
-  try{await navigator.clipboard.writeText(txt);b.textContent="✓ Kopiert"}catch(e){prompt("Link kopieren:",url)}});
-if(unlocked())openAdm();
 
-/* Nutzung: Aufrufe je Gerät aus der Google-Tabelle */
-const APPN={rr:"💶 Rentenrechner",br:"📘 BR-Nachschlagen",wetter:"⛅ Wetter",ahnen:"🌳 Ahnenspur"};
-function devNames(){const m={};["rentenrechner","br","wetter","ahnen"].forEach(k=>{try{(JSON.parse(localStorage.getItem(k+".vergeben"))||[]).forEach(e=>{if(e&&e.dev)m[e.dev]=e.name})}catch(e){}});return m}
-function escU(t){return String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-async function loadUse(){const box=document.getElementById("use");let cfg={};try{cfg=await (await fetch("../stats.json",{cache:"no-store"})).json()}catch(e){}
-  if(!cfg.url){box.innerHTML='<div class="s">Noch nicht eingerichtet: Die Google-Tabelle „App-Nutzung“ fehlt noch (Anleitung im Claude-Projekt: „Nutzungszaehler“).</div>';return}
-  let key="";try{key=localStorage.getItem("admin.statsKey")||""}catch(e){}
-  if(!key){box.innerHTML='<div class="s">Schlüssel für die Nutzungsstatistik eingeben (steht im Skript der Google-Tabelle):</div><div style="display:flex;gap:8px;margin-top:6px"><input id="uKey" style="flex:1;font:inherit;padding:8px;border-radius:8px;border:1px solid #888"><button class="sh" id="uOk" type="button">OK</button></div>';
-    document.getElementById("uOk").onclick=()=>{try{localStorage.setItem("admin.statsKey",document.getElementById("uKey").value.trim())}catch(e){}loadUse()};return}
-  box.innerHTML='<div class="s">Lade …</div>';
-  try{const j=await (await fetch(cfg.url+"?key="+encodeURIComponent(key),{cache:"no-store"})).json();
-    if(j.error){box.innerHTML='<div class="s">Schlüssel falsch.</div><button class="sh" type="button" id="uRe">Neu eingeben</button>';document.getElementById("uRe").onclick=()=>{localStorage.removeItem("admin.statsKey");loadUse()};return}
-    const nm=devNames(),rows=(j.rows||[]).sort((a,b)=>b.last-a.last);
-    if(!rows.length){box.innerHTML='<div class="s">Noch keine Aufrufe gezählt. (Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.)</div>';return}
-    const f=t=>new Date(t).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-    box.innerHTML=`<div class="s">${j.total} Aufrufe insgesamt · eigene Aufrufe zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table style="border-collapse:collapse;width:100%;font-size:14px">`+
-      `<tr><th style="text-align:left;padding:4px">Wer</th><th style="text-align:left;padding:4px">App</th><th style="text-align:right;padding:4px">Aufrufe</th><th style="text-align:left;padding:4px">zuletzt</th></tr>`+
-      rows.map(r=>`<tr style="border-top:1px solid #8884"><td style="padding:4px">${escU(nm[r.dev]||r.dev)}</td><td style="padding:4px">${escU(APPN[r.app]||r.app)}</td><td style="padding:4px;text-align:right"><b>${r.n}</b></td><td style="padding:4px;white-space:nowrap">${f(r.last)}</td></tr>`).join("")+`</table></div>`}
-  catch(e){box.innerHTML='<div class="s">Statistik gerade nicht erreichbar.</div>'}}
-loadUse();
+/* Apps: Schlüssel und Geheimnisse wie in den Apps selbst */
+const APPS=[
+ {id:"rentenrechner",stat:"rr",name:"Rentenrechner",icon:"💶",path:"",secret:"626f2bcb894cb11343fa07977990cf73"},
+ {id:"br",stat:"br",name:"BR-Nachschlagen",icon:"📘",path:"br/",secret:"f79494342ca27ba833673da8f60b12cd"},
+ {id:"wetter",stat:"wetter",name:"Wetter",icon:"⛅",path:"wetter/",secret:"7ad4bf26f3a3036759e67fdf56bcdf9a"},
+ {id:"ahnen",stat:"ahnen",name:"Ahnenspur",icon:"🌳",path:"ahnen/",secret:"f79494342ca27ba833673da8f60b12cd"}];
+const APP=Object.fromEntries(APPS.map(a=>[a.id,a]));
+const ALPH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const fmt8=x=>x.slice(0,4)+"-"+x.slice(4,8);
+const normCode=v=>{v=String(v||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");return v.length===8?fmt8(v):v};
+function devCode(app,id){const h=sha256js(APP[app].secret+":"+normCode(id));let o="";for(let i=0;i<8;i++)o+=ALPH[parseInt(h.substr(i*2,2),16)%32];return fmt8(o)}
+const nC=n=>n+(n===1?" Code":" Codes");
+const list=app=>lsJ(app+".vergeben",[]);
+const setList=(app,l)=>lsSet(app+".vergeben",JSON.stringify(l));
+
+/* ---------- Zugang ---------- */
+const OKKEYS=["rentenrechner.zugang","br.zugang","wetter.zugang","ahnen.zugang","admin.zugang"];
+function unlocked(){return OKKEYS.some(k=>ls(k)==="M:"+CODE_HASH)}
+function openAdm(){$("gate").classList.add("hide");start()}
+$("gf").onsubmit=e=>{e.preventDefault();const c=normCode($("gc").value);
+  if(sha256js("rentenrechner:"+c)===CODE_HASH){lsSet("admin.zugang","M:"+CODE_HASH);openAdm()}else $("ge").textContent="Code stimmt nicht."};
+
+/* ---------- Reiter ---------- */
+let tab=ls("admin.tab")||"start";
+function show(t){tab=t;lsSet("admin.tab",t);document.querySelectorAll(".tab").forEach(s=>s.hidden=s.id!=="t-"+t);
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));window.scrollTo(0,0);
+  if(t==="koll")drawKoll();if(t==="verw"){drawTodo();loadUse()}if(t==="apps")drawApps()}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+
+/* ---------- Daten holen ---------- */
+async function j(u){const r=await fetch(u+(u.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(r.status);return r.json()}
+async function up(u){try{const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"});return r.ok}catch(e){return false}}
+const S={};
+const MON=["januar","februar","märz","april","mai","juni","juli","august","september","oktober","november","dezember"];
+async function gather(){
+  const [ups,k,g,t,cfg]=await Promise.all([Promise.all(APPS.map(a=>up("../"+a.path+"index.html"))),j("../kennzahlen.json").catch(()=>null),j("../br/texte/index.json").catch(()=>null),j("../br/tarif.json").catch(()=>null),j("../stats.json").catch(()=>({}))]);
+  S.ups=ups;S.k=k;S.g=g;S.t=t;S.cfg=cfg||{};
+  if(k&&k.stand){const m=String(k.stand).toLowerCase().match(/([a-zäöü]+)\s+(\d{4})/);if(m){const mi=MON.indexOf(m[1]),age=(new Date().getFullYear()-+m[2])*12+new Date().getMonth()-mi;S.kOk=mi>=0&&age<=1}}
+  if(g&&g.stand){S.gAge=(Date.now()-new Date(g.stand).getTime())/864e5}
+  S.use=null;if(S.cfg.url){const key=ls("admin.statsKey");if(key){try{const r=await j(S.cfg.url+"?key="+encodeURIComponent(key));if(!r.error)S.use=r}catch(e){}}}}
+
+/* ---------- Kollegen-Daten ---------- */
+function people(){const m=new Map();APPS.forEach(a=>list(a.id).forEach((e,i)=>{if(!e||!e.dev)return;const key=(e.name||"ohne Namen").trim().toLowerCase();
+  if(!m.has(key))m.set(key,{name:(e.name||"ohne Namen").trim(),items:[]});m.get(key).items.push({app:a.id,i,...e})}));
+  return [...m.values()].sort((x,y)=>x.name.localeCompare(y.name,"de"))}
+function lastUse(dev,app){if(!S.use||!S.use.rows)return null;const r=S.use.rows.find(r=>r.dev===dev&&r.app===APP[app].stat);return r||null}
+
+/* ---------- Übersicht ---------- */
+function todoOpen(){const done=lsJ("admin.todo",{});return TODO.filter((_,i)=>!done[i]).length}
+function drawStart(){
+  const nUp=S.ups?S.ups.filter(Boolean).length:0,ppl=people(),codes=APPS.reduce((n,a)=>n+list(a.id).length,0),open=todoOpen();
+  const bk=+ls("admin.bk")||0,bkOld=codes>0&&(!bk||Date.now()-bk>30*864e5);
+  const tiles=[
+   {c:nUp===APPS.length?"ok":"wa",b:`${nUp}/${APPS.length}`,s:"Apps erreichbar",t:"apps"},
+   {c:S.kOk?"ok":"wa",b:S.k?esc(S.k.stand.replace(/\s*20\d\d/,"")):"?",s:"Renten-Kennzahlen",t:"verw"},
+   {c:S.gAge!=null&&S.gAge<3?"ok":"wa",b:S.g?new Date(S.g.stand).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"}):"?",s:"Gesetze geprüft",t:"verw"},
+   {c:"",b:ppl.length,s:`Kollegen · ${nC(codes)}`,t:"koll"},
+   {c:S.use?"ok":"",b:S.use?S.use.total:"aus",s:S.use?"Aufrufe gezählt":"Nutzungszähler",t:"verw"},
+   {c:open?"wa":"ok",b:open,s:"offene Aufgaben",t:"verw"}];
+  $("cockpit").innerHTML=tiles.map(x=>`<button class="st ${x.c}" type="button" data-go="${x.t}"><b>${x.b}</b><span>${x.s}</span></button>`).join("");
+  $("cockpit").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+  $("bkBanner").innerHTML=bkOld?`<div class="banner"><span>${bk?"Codeliste zuletzt gesichert am "+new Date(bk).toLocaleDateString("de-DE"):"Deine Codeliste ist noch nicht gesichert"} – sie steht nur in diesem Browser.</span><button class="btn sm" type="button" id="bkNow">Sichern</button></div>`:"";
+  if($("bkNow"))$("bkNow").onclick=()=>backup(false);
+  $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="../${a.path}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
+   `<a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">NAS · Tailscale an</span></a>`;
+  $("tabBadge").innerHTML=open?`<span class="badge">${open}</span>`:""}
+
+/* ---------- Apps ---------- */
+function appStatus(a){if(a.id==="rentenrechner")return S.k?`<span class="dot ${S.kOk?"ok":"wa"}"></span>Kennzahlen ${esc(S.k.stand)}`:"";
+  if(a.id==="br")return S.g?`<span class="dot ${S.gAge<3?"ok":"wa"}"></span>${Object.keys(S.g.gesetze||{}).length} Gesetze · Tarif ${esc(S.t?S.t.stand:"?")}`:"";
+  if(a.id==="wetter"){let wp="Mülheim an der Ruhr";const p=lsJ("wx_place",null);if(p&&p.n)wp=p.n;return `<span class="dot ok"></span>Ort: ${esc(wp)}`}
+  return `<span class="dot ok"></span>Daten nur auf den Handys`}
+function drawApps(){$("appCards").innerHTML=APPS.map((a,i)=>`<div class="card app"><span class="ic">${a.icon}</span><h3>${a.name}</h3>
+  <div class="s">${S.ups&&!S.ups[i]?'<span class="dot wa"></span>nicht erreichbar':appStatus(a)} · ${nC(list(a.id).length)}</div>
+  <div class="acts"><a class="btn sm" href="../${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
+  document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>shareApp(b.dataset.share,b));
+  document.querySelectorAll("[data-qr]").forEach(b=>b.onclick=()=>showQR(b.dataset.qr));
+  document.querySelectorAll("[data-code]").forEach(b=>b.onclick=()=>{show("koll");$("kApp").value=b.dataset.code;$("kDev").focus();upd()})}
+async function shareApp(id,btn){const a=APP[id],url=BASE+a.path;
+  const txt=`Hier ist die App „${a.name}“: ${url}\nÖffne den Link, dann siehst du eine Gerätenummer. Schick mir die Nummer, dann bekommst du deinen Zugangscode. Tipp: im Browser-Menü „Zum Startbildschirm hinzufügen“.`;
+  try{if(navigator.share){await navigator.share({title:a.name,text:txt});return}}catch(e){return}
+  try{await navigator.clipboard.writeText(txt);btn.textContent="✓ Kopiert"}catch(e){prompt("Link kopieren:",url)}}
+function loadQR(){if(window.QRCode)return Promise.resolve();return new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function showQR(id){const a=APP[id],url=BASE+a.path;$("dlgT").textContent=a.icon+" "+a.name;$("dlgU").textContent=url;$("qr").innerHTML="";$("dlg").hidden=false;
+  try{await loadQR();new QRCode($("qr"),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$("qr").innerHTML='<span style="color:#333">QR-Code konnte nicht geladen werden (kein Internet?)</span>'}}
+$("dlgX").onclick=()=>$("dlg").hidden=true;$("dlg").onclick=e=>{if(e.target.id==="dlg")$("dlg").hidden=true};
+
+/* ---------- Kollegen ---------- */
+$("kApp").innerHTML=APPS.map(a=>`<option value="${a.id}">${a.icon} ${a.name}</option>`).join("");
+const devOk=id=>/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(id);
+function upd(){const id=normCode($("kDev").value),ok=devOk(id);$("kOut").textContent=ok?devCode($("kApp").value,id):"";$("kActs").hidden=!ok;$("kMsg").textContent=ok?"":id.length>=9?"Die Gerätenummer hat das Format XXXX-XXXX (ohne 0, 1, I, O).":""}
+$("kDev").addEventListener("input",upd);$("kApp").addEventListener("change",upd);
+function saveEntry(){const app=$("kApp").value,id=normCode($("kDev").value),name=$("kName").value.trim()||"ohne Namen";if(!devOk(id))return false;
+  const l=list(app),e={name,dev:id,code:devCode(app,id),datum:today()},x=l.findIndex(v=>v.dev===id);if(x>=0)l[x]=e;else l.push(e);
+  const ok=setList(app,l);$("kMsg").textContent=ok?`Gespeichert: ${name} – ${APP[app].name}.`:"Speichern nicht möglich – bitte Code notieren.";drawKoll();drawStart();return ok}
+$("kSave").onclick=saveEntry;
+$("kCopy").onclick=async()=>{try{await navigator.clipboard.writeText($("kOut").textContent);$("kMsg").textContent="Code kopiert."}catch(e){}};
+$("kSend").onclick=async()=>{saveEntry();const a=APP[$("kApp").value],txt=`Dein Zugangscode für „${a.name}“: ${$("kOut").textContent}\n(Gilt nur für dein Handy mit der Gerätenummer ${normCode($("kDev").value)}.) Link: ${BASE+a.path}`;
+  try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){return}try{await navigator.clipboard.writeText(txt);$("kMsg").textContent="Text kopiert – jetzt z. B. in WhatsApp einfügen."}catch(e){}};
+let armed=null;
+function drawKoll(){const ppl=people();$("kCount").textContent=ppl.length?`(${ppl.length})`:"";
+  $("kNames").innerHTML=ppl.map(p=>`<option value="${esc(p.name)}">`).join("");
+  const f=t=>new Date(t).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});
+  $("kList").innerHTML=ppl.length?ppl.map(p=>`<div class="person"><div class="nm">${esc(p.name)}</div><div class="chips">${p.items.map(e=>{const u=lastUse(e.dev,e.app),k=e.app+"|"+e.dev;
+     return `<span class="chip" title="Gerät ${esc(e.dev)} · vergeben ${esc(e.datum||"")}">${APP[e.app].icon} ${APP[e.app].name} · <code>${esc(e.code)}</code>${u?` · ${u.n}× · zuletzt ${f(u.last)}`:""}<button type="button" data-del="${esc(k)}" aria-label="Löschen">${armed===k?"Löschen?":"✕"}</button></span>`}).join("")}</div></div>`).join("")
+   :`<p class="mu" style="margin:0">Noch keine Codes vergeben.</p>`;
+  $("kList").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const k=b.dataset.del;if(armed!==k){armed=k;drawKoll();setTimeout(()=>{if(armed===k){armed=null;drawKoll()}},4000);return}
+    const [app,dev]=k.split("|");setList(app,list(app).filter(e=>e.dev!==dev));armed=null;drawKoll();drawStart()});
+  const bk=+ls("admin.bk")||0;$("bkInfo").textContent=bk?`Letzte Sicherung: ${new Date(bk).toLocaleDateString("de-DE")}`:"Noch keine Sicherung gemacht.";
+  $("bkShare").hidden=!(navigator.canShare&&navigator.canShare({files:[new File(["x"],"t.json",{type:"application/json"})]}))}
+
+/* ---------- Sicherung ---------- */
+async function backup(share){const data={app:"admin-codes",v:1,datum:new Date().toISOString(),listen:Object.fromEntries(APPS.map(a=>[a.id,list(a.id)]))};
+  const name=`Codeliste_Apps_${new Date().toISOString().slice(0,10)}.json`,blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+  if(share){try{await navigator.share({files:[new File([blob],name,{type:"application/json"})],title:"Codeliste"})}catch(e){if(e.name==="AbortError")return}}
+  else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+  lsSet("admin.bk",String(Date.now()));$("bkMsg").textContent="Sicherung erstellt.";drawKoll();drawStart()}
+$("bkSave").onclick=()=>backup(false);$("bkShare").onclick=()=>backup(true);
+$("bkLoad").onclick=()=>{const f=$("fileIn");f.value="";f.onchange=async()=>{try{const d=JSON.parse(await f.files[0].text());if(d.app!=="admin-codes"||!d.listen)throw new Error("Das ist keine Codelisten-Sicherung.");
+  let n=0;APPS.forEach(a=>{const l=list(a.id);(d.listen[a.id]||[]).forEach(e=>{if(e&&e.dev&&!l.some(x=>x.dev===e.dev)){l.push(e);n++}});setList(a.id,l)});
+  $("bkMsg").textContent=`${n} Einträge übernommen.`;drawKoll();drawStart()}catch(e){$("bkMsg").textContent=e.message}};f.click()};
+
+/* ---------- Verwaltung ---------- */
+const TODO=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","Heizungs-App: Text beim Schlafzimmer und Heizstunden-Zählung korrigieren, Urlaubsdaten auswerten"];
+function drawTodo(){const done=lsJ("admin.todo",{});const o=todoOpen();$("todoCnt").textContent=`(${o} offen)`;
+  $("todo").innerHTML=TODO.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
+  $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked);$("todoCnt").textContent=`(${todoOpen()} offen)`;drawStart()}}
+function drawAuto(){const now=new Date(),nx=new Date(now.getFullYear(),now.getMonth()+(now.getDate()>=2?1:0),2);
+  $("sNext").innerHTML=(S.k?`<span class="dot ${S.kOk?"ok":"wa"}"></span>Stand ${esc(S.k.stand)} · `:"")+"nächster Lauf "+nx.toLocaleDateString("de-DE");
+  $("sGes").innerHTML=S.g?`<span class="dot ${S.gAge<3?"ok":"wa"}"></span>letzter Lauf ${new Date(S.g.stand).toLocaleDateString("de-DE")}${S.gAge>=3?" – länger nicht gelaufen!":""}`:"Stand nicht lesbar"}
+async function loadUse(){const box=$("use");
+  if(!S.cfg||!S.cfg.url){box.innerHTML='<div class="mu">Noch nicht eingerichtet: Die Google-Tabelle „App-Nutzung“ fehlt noch (Anleitung im Claude-Projekt: „Nutzungszaehler“).</div>';return}
+  const key=ls("admin.statsKey")||"";
+  if(!key){box.innerHTML='<div class="mu">Kennwort für die Nutzungsstatistik (steht im Skript der Google-Tabelle):</div><div class="row" style="margin-top:6px"><input id="uKey" style="flex:1"><button class="btn" id="uOk" type="button">OK</button></div>';
+    $("uOk").onclick=async()=>{lsSet("admin.statsKey",$("uKey").value.trim());await gather();loadUse();drawStart()};return}
+  if(!S.use){box.innerHTML='<div class="mu">Kennwort falsch oder Statistik nicht erreichbar.</div><button class="btn sm" type="button" id="uRe" style="margin-top:6px">Kennwort neu eingeben</button>';$("uRe").onclick=()=>{localStorage.removeItem("admin.statsKey");loadUse()};return}
+  const nm={};APPS.forEach(a=>list(a.id).forEach(e=>{if(e.dev)nm[e.dev]=e.name}));const sn=Object.fromEntries(APPS.map(a=>[a.stat,a]));
+  const rows=(S.use.rows||[]).sort((a,b)=>b.last-a.last);const f=t=>new Date(t).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  box.innerHTML=rows.length?`<div class="mu">${S.use.total} Aufrufe insgesamt · deine eigenen zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table><tr><th>Wer</th><th>App</th><th style="text-align:right">Aufrufe</th><th>zuletzt</th></tr>`+
+    rows.map(r=>`<tr><td>${esc(nm[r.dev]||r.dev)}</td><td>${sn[r.app]?sn[r.app].icon+" "+sn[r.app].name:esc(r.app)}</td><td style="text-align:right"><b>${r.n}</b></td><td style="white-space:nowrap">${f(r.last)}</td></tr>`).join("")+`</table></div>`
+    :'<div class="mu">Noch keine Aufrufe gezählt. Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.</div>'}
+
+/* ---------- Start ---------- */
+async function start(){$("today").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  drawStart();show(tab);await gather();drawStart();drawAuto();if(tab==="apps")drawApps();if(tab==="verw")loadUse();if(tab==="koll")drawKoll()}
+$("reload").onclick=async()=>{$("reload").textContent="…";await gather();drawStart();drawAuto();show(tab);$("reload").textContent="⟳"};
+if(unlocked())openAdm();
 </script></body></html>
