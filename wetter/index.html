@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-ver="202611091656">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
@@ -259,7 +259,8 @@ $("mPlace").onclick=placeList;$("hPlace").onclick=placeList;
 $("mGeo").onclick=()=>{$("menu").classList.add("hide");if(!navigator.geolocation){status("Standort nicht verfügbar");setTimeout(()=>status(null),2000);return}
   status("Suche Standort …");navigator.geolocation.getCurrentPosition(p=>{status(null);setPlace({n:"Mein Standort",lat:+p.coords.latitude.toFixed(3),lon:+p.coords.longitude.toFixed(3)})},
   ()=>{status("Standort nicht freigegeben");setTimeout(()=>status(null),2500)},{timeout:10000,maximumAge:600000})};
-$("mReload").onclick=()=>{$("menu").classList.add("hide");loadAll(true)};
+$("mReload").onclick=async()=>{$("menu").classList.add("hide");try{const r=await fetch(location.pathname+"?v="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/data-ver="([^"]+)"/);if(m&&m[1]!==APPVER){await fetch(location.pathname,{cache:"reload"}).catch(()=>{});location.reload();return}}catch(e){}loadAll(true)};
+const APPVER=document.documentElement.dataset.ver||"";
 function setPlace(p){place=p;store.set("wx_place",p);$("hPlace").textContent=p.n;loadAll(true);if(map){dot.setLatLng([p.lat,p.lon]);map.setView([p.lat,p.lon],Math.max(map.getZoom(),7))}}
 
 
