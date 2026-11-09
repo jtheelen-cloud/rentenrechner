@@ -639,7 +639,8 @@ function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
   return id}
 const DEV=deviceId(); $("devId").textContent=DEV;
 let isMaster=false;
-function unlock(master){isMaster=master;$("gate").hidden=true;$("app").hidden=false;$("bar").hidden=false;$("admin").hidden=!master;calc()}
+function jtPing(){try{if(sessionStorage.getItem("jt.ping.rr"))return;sessionStorage.setItem("jt.ping.rr","1")}catch(e){}fetch("stats.json",{cache:"no-store"}).then(r=>r.json()).then(c=>{if(c&&c.url)fetch(c.url+"?a=rr&d="+encodeURIComponent(DEV),{mode:"no-cors",cache:"no-store"}).catch(()=>{})}).catch(()=>{})}
+function unlock(master){if(!master)jtPing();isMaster=master;$("gate").hidden=true;$("app").hidden=false;$("bar").hidden=false;$("admin").hidden=!master;calc()}
 (function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
   if(ok===CODE_HASH){try{localStorage.setItem(KEY_OK,"M:"+CODE_HASH)}catch(e){} unlock(true)}
   else if(ok==="M:"+CODE_HASH) unlock(true);

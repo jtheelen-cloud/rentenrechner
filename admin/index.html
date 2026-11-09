@@ -62,6 +62,9 @@ a.tile:active{transform:scale(.98)}.tile b{font-size:17px}.tile .i{font-size:24p
 <h2>Vergebene Gerätecodes</h2>
 <div class="grid"><div class="tile" id="codes">…</div></div>
 
+<h2>Nutzung (Test)</h2>
+<div class="grid"><div class="tile" id="use" style="grid-column:1/-1">…</div></div>
+
 <h2>Automatisch</h2>
 <div class="grid">
  <div class="tile"><b>Rentenrechner-Kennzahlen</b><div class="s">Geplante Aufgabe am 2. jedes Monats (7:52 und 8:37 Uhr)</div><div class="s" id="sNext"></div></div>
@@ -116,4 +119,25 @@ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{const nm=b.
   try{if(navigator.share){await navigator.share({title:nm,text:txt});return}}catch(e){return}
   try{await navigator.clipboard.writeText(txt);b.textContent="✓ Kopiert"}catch(e){prompt("Link kopieren:",url)}});
 if(unlocked())openAdm();
+
+/* Nutzung: Aufrufe je Gerät aus der Google-Tabelle */
+const APPN={rr:"💶 Rentenrechner",br:"📘 BR-Nachschlagen",wetter:"⛅ Wetter",ahnen:"🌳 Ahnenspur"};
+function devNames(){const m={};["rentenrechner","br","wetter","ahnen"].forEach(k=>{try{(JSON.parse(localStorage.getItem(k+".vergeben"))||[]).forEach(e=>{if(e&&e.dev)m[e.dev]=e.name})}catch(e){}});return m}
+function escU(t){return String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+async function loadUse(){const box=document.getElementById("use");let cfg={};try{cfg=await (await fetch("../stats.json",{cache:"no-store"})).json()}catch(e){}
+  if(!cfg.url){box.innerHTML='<div class="s">Noch nicht eingerichtet: Die Google-Tabelle „App-Nutzung“ fehlt noch (Anleitung im Claude-Projekt: „Nutzungszaehler“).</div>';return}
+  let key="";try{key=localStorage.getItem("admin.statsKey")||""}catch(e){}
+  if(!key){box.innerHTML='<div class="s">Schlüssel für die Nutzungsstatistik eingeben (steht im Skript der Google-Tabelle):</div><div style="display:flex;gap:8px;margin-top:6px"><input id="uKey" style="flex:1;font:inherit;padding:8px;border-radius:8px;border:1px solid #888"><button class="sh" id="uOk" type="button">OK</button></div>';
+    document.getElementById("uOk").onclick=()=>{try{localStorage.setItem("admin.statsKey",document.getElementById("uKey").value.trim())}catch(e){}loadUse()};return}
+  box.innerHTML='<div class="s">Lade …</div>';
+  try{const j=await (await fetch(cfg.url+"?key="+encodeURIComponent(key),{cache:"no-store"})).json();
+    if(j.error){box.innerHTML='<div class="s">Schlüssel falsch.</div><button class="sh" type="button" id="uRe">Neu eingeben</button>';document.getElementById("uRe").onclick=()=>{localStorage.removeItem("admin.statsKey");loadUse()};return}
+    const nm=devNames(),rows=(j.rows||[]).sort((a,b)=>b.last-a.last);
+    if(!rows.length){box.innerHTML='<div class="s">Noch keine Aufrufe gezählt. (Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.)</div>';return}
+    const f=t=>new Date(t).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+    box.innerHTML=`<div class="s">${j.total} Aufrufe insgesamt · eigene Aufrufe zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table style="border-collapse:collapse;width:100%;font-size:14px">`+
+      `<tr><th style="text-align:left;padding:4px">Wer</th><th style="text-align:left;padding:4px">App</th><th style="text-align:right;padding:4px">Aufrufe</th><th style="text-align:left;padding:4px">zuletzt</th></tr>`+
+      rows.map(r=>`<tr style="border-top:1px solid #8884"><td style="padding:4px">${escU(nm[r.dev]||r.dev)}</td><td style="padding:4px">${escU(APPN[r.app]||r.app)}</td><td style="padding:4px;text-align:right"><b>${r.n}</b></td><td style="padding:4px;white-space:nowrap">${f(r.last)}</td></tr>`).join("")+`</table></div>`}
+  catch(e){box.innerHTML='<div class="s">Statistik gerade nicht erreichbar.</div>'}}
+loadUse();
 </script></body></html>

@@ -671,7 +671,8 @@ function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
     id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
   return id}
 const DEV=deviceId(); $("devId").textContent=DEV;
-function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
+function jtPing(){try{if(sessionStorage.getItem("jt.ping.br"))return;sessionStorage.setItem("jt.ping.br","1")}catch(e){}fetch("../stats.json",{cache:"no-store"}).then(r=>r.json()).then(c=>{if(c&&c.url)fetch(c.url+"?a=br&d="+encodeURIComponent(DEV),{mode:"no-cors",cache:"no-store"}).catch(()=>{})}).catch(()=>{})}
+function unlock(master){if(!master)jtPing();$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
 (function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
   if(ok==="M:"+CODE_HASH) unlock(true);
   else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();

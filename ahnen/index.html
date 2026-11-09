@@ -949,7 +949,8 @@ function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
     id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
   return id}
 const DEV=deviceId(); $("devId").textContent=DEV;
-function unlock(master){$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
+function jtPing(){try{if(sessionStorage.getItem("jt.ping.ahnen"))return;sessionStorage.setItem("jt.ping.ahnen","1")}catch(e){}fetch("../stats.json",{cache:"no-store"}).then(r=>r.json()).then(c=>{if(c&&c.url)fetch(c.url+"?a=ahnen&d="+encodeURIComponent(DEV),{mode:"no-cors",cache:"no-store"}).catch(()=>{})}).catch(()=>{})}
+function unlock(master){if(!master)jtPing();$("gate").hidden=true;$("app").hidden=false;$("tabs").hidden=false;$("admin").hidden=!master;setTimeout(start,0)}
 (function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
   const other=["rentenrechner.zugang","br.zugang","wetter.zugang","admin.zugang"].some(k=>{try{return localStorage.getItem(k)==="M:"+CODE_HASH}catch(e){return false}});
   if(ok==="M:"+CODE_HASH||other) unlock(true);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-ver="202611091656">
+<html lang="de" data-ver="202611091812">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
@@ -931,7 +931,8 @@ function deviceId(){let id=null;try{id=localStorage.getItem(KEY_DEV)}catch(e){}
     id=fmt8([...a].map(x=>ALPH[x%32]).join(""));try{localStorage.setItem(KEY_DEV,id)}catch(e){}}
   return id}
 const DEV=deviceId(); $("devId").textContent=DEV;
-function unlock(master){$("gate").classList.add("hide");$("bAdm").classList.toggle("hide",!master);setTimeout(boot,0);if(master)renderAdminList()}
+function jtPing(){try{if(sessionStorage.getItem("jt.ping.wetter"))return;sessionStorage.setItem("jt.ping.wetter","1")}catch(e){}fetch("../stats.json",{cache:"no-store"}).then(r=>r.json()).then(c=>{if(c&&c.url)fetch(c.url+"?a=wetter&d="+encodeURIComponent(DEV),{mode:"no-cors",cache:"no-store"}).catch(()=>{})}).catch(()=>{})}
+function unlock(master){if(!master)jtPing();$("gate").classList.add("hide");$("bAdm").classList.toggle("hide",!master);setTimeout(boot,0);if(master)renderAdminList()}
 (function(){let ok=null;try{ok=localStorage.getItem(KEY_OK)}catch(e){}
   if(ok==="M:"+CODE_HASH) unlock(true);
   else if(ok&&ok.startsWith("D:")){const [,id,code]=ok.split("|");if(id===DEV&&code===devCode(DEV)) unlock(false)}})();
