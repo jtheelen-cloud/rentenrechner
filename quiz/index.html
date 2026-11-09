@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2b1a5c">
+<title>Quiz-Duell</title>
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Spielshow-Bühne: tiefes Violett, zwei Spielerfarben (Koralle / Türkis), Gold für Punkte */
+:root{
+  --bg:#f3effc;--card:#ffffff;--ink:#1d1533;--mu:#6b6285;--line:#e2dcf2;
+  --p1:#ff6b57;--p2:#14b8a6;--gold:#f5b301;--ok:#16a34a;--bad:#e23d3d;--stage:#2b1a5c;--stage2:#47308f;
+  --f-head:"Fredoka","Trebuchet MS",system-ui,sans-serif;--f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#120c22;--card:#1f1838;--ink:#f1edff;--mu:#a69cc6;--line:#33295a;--stage:#2b1a5c;--stage2:#3c2a7d;color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.45 var(--f-body);padding:0 max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));min-height:100vh}
+.wrap{max-width:560px;margin:0 auto}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--f-head);line-height:1.15;margin:0;text-wrap:balance}
+.stage{background:radial-gradient(120% 90% at 50% 0%,var(--stage2),var(--stage));color:#fff;border-radius:0 0 28px 28px;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:calc(18px + env(safe-area-inset-top,0px)) 20px 26px;text-align:center}
+.logo{font-family:var(--f-head);font-weight:700;font-size:40px;letter-spacing:-.01em}
+.logo span{color:var(--gold)}
+.tag{opacity:.8;font-size:15px;margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px}
+label{display:block;font-size:14px;color:var(--mu);font-weight:700;margin-bottom:4px}
+input{font:inherit;font-size:18px;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+input:focus{outline:none;border-color:var(--stage2)}
+.btn{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:14px 18px;cursor:pointer;width:100%;background:var(--stage2);color:#fff;display:block;text-align:center;text-decoration:none}
+.btn.gold{background:var(--gold);color:#2b1a00}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.ans:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.stack{display:grid;gap:10px}
+.mu{color:var(--mu);font-size:14px}
+.code{font-family:var(--f-head);font-size:34px;letter-spacing:.14em;font-weight:700;text-align:center;color:var(--stage2)}
+@media (prefers-color-scheme:dark){.code{color:var(--gold)}}
+/* Spiel */
+.hud{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.hud .pts{font-family:var(--f-head);font-size:24px;color:var(--gold)}
+.dots{display:flex;gap:5px;justify-content:center;margin:12px 0 4px}
+.dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25)}
+.dots i.ok{background:#4ade80}.dots i.no{background:#f87171}.dots i.now{background:#fff}
+.cat{display:inline-block;background:rgba(255,255,255,.15);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-top:6px}
+.q{font-family:var(--f-head);font-weight:600;font-size:24px;margin:14px 0 4px}
+.timer{height:8px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden;margin-top:14px}
+.timer b{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left;transition:transform .2s linear}
+.answers{display:grid;gap:10px;margin-top:16px}
+.ans{font:inherit;font-weight:700;font-size:18px;text-align:left;padding:15px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;display:flex;gap:12px;align-items:center}
+.ans .k{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--bg);font-family:var(--f-head);font-size:15px}
+.ans.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--card))}
+.ans.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))}
+.ans:disabled{cursor:default}
+.fb{text-align:center;font-weight:800;min-height:1.5em;margin-top:12px}
+/* Ergebnis */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:16px}
+.pl{border-radius:18px;padding:14px 8px;text-align:center;color:#fff}
+.pl.a{background:var(--p1)}.pl.b{background:var(--p2)}
+.pl .n{font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .s{font-family:var(--f-head);font-size:36px;font-weight:700;line-height:1.1}
+.pl .r{font-size:13px;opacity:.9}
+.pl.win{box-shadow:0 0 0 4px var(--gold)}
+.vsx{font-family:var(--f-head);font-weight:700;color:var(--mu)}
+.verdict{font-family:var(--f-head);font-size:28px;text-align:center;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+td.m{text-align:center;width:44px;font-weight:800;white-space:nowrap}
+.y{color:var(--ok)}.x{color:var(--bad)}
+.hist{display:grid;gap:6px;margin-top:8px}
+.hist div{display:flex;justify-content:space-between;gap:8px;font-size:15px}
+.bilanz{font-family:var(--f-head);font-size:22px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+
+<header class="stage" id="stage">
+  <div class="logo">Quiz<span>·</span>Duell</div>
+  <div class="tag" id="tagline">Allgemeinwissen · 10 Fragen · jeder an seinem Handy</div>
+  <div id="hud" hidden>
+    <div class="hud"><span id="hNum">Frage 1/10</span><span class="pts" id="hPts">0</span></div>
+    <div class="dots" id="hDots"></div>
+    <span class="cat" id="hCat"></span>
+    <div class="q" id="hQ"></div>
+    <div class="timer"><b id="hT"></b></div>
+  </div>
+</header>
+
+<!-- Start -->
+<section id="v-start">
+  <div class="card stack">
+    <div><label for="name">Dein Name</label><input id="name" maxlength="16" autocomplete="off" placeholder="z. B. Jörg"></div>
+    <div id="invite" hidden class="mu" style="font-size:16px"></div>
+    <button class="btn gold" id="bNew" type="button">Neues Duell starten</button>
+    <button class="btn ghost" id="bJoinShow" type="button">Ich habe einen Duell-Code</button>
+    <div id="joinBox" hidden class="stack"><input id="joinCode" maxlength="7" autocomplete="off" autocapitalize="characters" placeholder="Code, z. B. K7QMX" aria-label="Duell-Code"><button class="btn" id="bJoin" type="button">Mitspielen</button></div>
+    <p class="mu" id="sErr" style="margin:0;color:var(--bad)"></p>
+  </div>
+  <div class="card" id="bilanzBox" hidden>
+    <h3>Eure Bilanz</h3>
+    <div class="bilanz" id="bilanz"></div>
+    <div class="hist" id="hist"></div>
+  </div>
+  <p class="mu" style="text-align:center;margin-top:18px">So geht's: Einer startet ein Duell und schickt den Link. Beide spielen dieselben 10 Fragen, jeder für sich. Danach schickt ihr euch das Ergebnis und seht, wer gewonnen hat. Jedes Duell hat neue Fragen.</p>
+</section>
+
+<!-- Bereit -->
+<section id="v-ready" hidden>
+  <div class="card stack" style="text-align:center">
+    <div class="mu">Duell-Code</div>
+    <div class="code" id="rCode"></div>
+    <div id="rInfo"></div>
+    <button class="btn" id="bShareDuel" type="button">Duell an Mitspieler schicken</button>
+    <button class="btn gold" id="bGo" type="button">Los geht's!</button>
+    <p class="mu" style="margin:0">Pro Frage 15 Sekunden. Richtig gibt 100 Punkte, schnell sein bis zu 50 Bonus.</p>
+  </div>
+</section>
+
+<!-- Spiel -->
+<section id="v-play" hidden>
+  <div class="answers" id="answers"></div>
+  <div class="fb" id="fb" aria-live="polite"></div>
+</section>
+
+<!-- Ergebnis -->
+<section id="v-end" hidden>
+  <div class="vs" id="vs"></div>
+  <div class="verdict" id="verdict"></div>
+  <div class="card stack">
+    <button class="btn gold" id="bShareRes" type="button">Mein Ergebnis schicken</button>
+    <button class="btn" id="bRevanche" type="button">Revanche – neues Duell</button>
+    <button class="btn ghost" id="bHome" type="button">Zur Startseite</button>
+    <p class="mu" id="eMsg" style="margin:0"></p>
+  </div>
+  <div class="card"><h3>Die Fragen</h3><table id="tbl"></table></div>
+</section>
+</div>
+
+<script src="fragen.js"></script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const N=10,SEC=15,BASE=location.origin+location.pathname;
+const ALPH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+/* ---------- Zufall mit Startwert: gleiche Fragen auf beiden Handys ---------- */
+function hash(s){let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return(h^=h>>>16)>>>0}}
+function rng(seed){let a=hash(seed)();return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(arr,r){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function questions(code){const r=rng("duell:"+code);
+  // gemischte Kategorien: höchstens 2 Fragen je Kategorie
+  const order=shuffle(FRAGEN.map((_,i)=>i),r),cnt={},pick=[];
+  for(const i of order){const c=FRAGEN[i][0];if((cnt[c]||0)>=2)continue;cnt[c]=(cnt[c]||0)+1;pick.push(i);if(pick.length===N)break}
+  return pick.map(i=>{const f=FRAGEN[i];const opts=shuffle([f[2],f[3],f[4],f[5]],r);return{i,cat:f[0],q:f[1],opts,right:opts.indexOf(f[2])}})}
+function newCode(){let s="";const a=new Uint8Array(5);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<5;i++)a[i]=Math.random()*256}for(const x of a)s+=ALPH[x%32];return s}
+const normCode=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);
+
+/* ---------- Ergebnis kodieren (im Link) ---------- */
+// pro Frage: gewählte Antwort (0-3, 4 = Zeit abgelaufen) und Punkte/10 (0-15)
+function encRes(r){return r.ans.map((a,k)=>ALPH[a]+ALPH[Math.round(r.pts[k]/10)]).join("")}
+function decRes(s){const ans=[],pts=[];for(let k=0;k<N;k++){const a=ALPH.indexOf(s[2*k]),p=ALPH.indexOf(s[2*k+1]);if(a<0||a>4||p<0||p>15)return null;ans.push(a);pts.push(p*10)}return{ans,pts}}
+function resLink(code,name,r){return BASE+"#"+code+"~"+encodeURIComponent(name).replace(/~/g,"%7E")+"~"+encRes(r)}
+
+/* ---------- Zustand ---------- */
+let G=null; // laufendes Spiel
+const games=()=>store.get("qd.games",{});
+function saveGame(code,patch){const g=games();g[code]=Object.assign(g[code]||{},patch);store.set("qd.games",g)}
+const myName=()=>($("name").value.trim()||store.get("qd.name","")||"Ich").slice(0,16);
+function view(v){["start","ready","play","end"].forEach(x=>$("v-"+x).hidden=x!==v);$("hud").hidden=v!=="play";$("tagline").hidden=v==="play";window.scrollTo(0,0)}
+
+/* ---------- Start ---------- */
+$("name").value=store.get("qd.name","");
+$("name").addEventListener("change",()=>store.set("qd.name",$("name").value.trim()));
+$("bNew").onclick=()=>{if(!needName())return;openDuel(newCode(),true)};
+$("bJoinShow").onclick=()=>{$("joinBox").hidden=false;$("joinCode").focus()};
+$("bJoin").onclick=()=>{if(!needName())return;const c=normCode($("joinCode").value);if(c.length!==5){$("sErr").textContent="Der Code hat 5 Zeichen.";return}openDuel(c,false)};
+function needName(){if(!$("name").value.trim()){$("sErr").textContent="Bitte zuerst deinen Namen eintragen.";$("name").focus();return false}store.set("qd.name",$("name").value.trim());$("sErr").textContent="";return true}
+function openDuel(code,mine){const g=games()[code];
+  if(g&&g.me){showEnd(code);return}
+  saveGame(code,{started:Date.now(),host:mine||(g&&g.host)||false});
+  $("rCode").textContent=code;
+  $("rInfo").innerHTML=g&&g.opp?`<b>${esc(g.oppName)}</b> hat schon gespielt. Sein bzw. ihr Ergebnis siehst du nach deinem Spiel.`:mine?"Schick den Link deinem Mitspieler – ihr könnt gleichzeitig oder nacheinander spielen.":"";
+  $("bShareDuel").hidden=!!(g&&g.opp);
+  history.replaceState(null,"","#"+code);
+  view("ready");G={code}}
+$("bShareDuel").onclick=()=>share(`🎯 Quiz-Duell! ${myName()} fordert dich heraus: 10 Fragen Allgemeinwissen.\nHier mitspielen: ${BASE}#${G.code}`,$("bShareDuel"));
+$("bGo").onclick=()=>startGame(G.code);
+
+/* ---------- Spiel ---------- */
+let timer=null,t0=0,locked=false;
+function startGame(code){G={code,qs:questions(code),k:0,ans:[],pts:[]};view("play");ask()}
+function ask(){const q=G.qs[G.k];locked=false;
+  $("hNum").textContent=`Frage ${G.k+1}/${N}`;$("hPts").textContent=G.pts.reduce((a,b)=>a+b,0);
+  $("hDots").innerHTML=G.qs.map((_,i)=>`<i class="${i<G.k?(G.pts[i]>0?"ok":"no"):i===G.k?"now":""}"></i>`).join("");
+  $("hCat").textContent=q.cat;$("hQ").textContent=q.q;$("fb").textContent="";
+  $("answers").innerHTML=q.opts.map((o,i)=>`<button class="ans" type="button" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("");
+  $("answers").querySelectorAll(".ans").forEach(b=>b.onclick=()=>pick(+b.dataset.i));
+  t0=performance.now();tick()}
+function tick(){const left=Math.max(0,SEC-(performance.now()-t0)/1000);$("hT").style.transform=`scaleX(${left/SEC})`;
+  if(left<=0){pick(4);return}timer=requestAnimationFrame(tick)}
+function pick(i){if(locked)return;locked=true;cancelAnimationFrame(timer);const q=G.qs[G.k],left=Math.max(0,SEC-(performance.now()-t0)/1000);
+  const ok=i===q.right,p=ok?100+Math.round(50*left/SEC/10)*10:0;G.ans.push(i);G.pts.push(p);
+  const bs=$("answers").querySelectorAll(".ans");bs.forEach(b=>b.disabled=true);bs[q.right].classList.add("right");if(i<4&&!ok)bs[i].classList.add("wrong");
+  $("fb").innerHTML=ok?`<span class="y">Richtig! +${p}</span>`:i===4?`<span class="x">Zeit abgelaufen</span>`:`<span class="x">Leider falsch</span>`;
+  $("hPts").textContent=G.pts.reduce((a,b)=>a+b,0);
+  setTimeout(()=>{G.k++;if(G.k<N)ask();else finish()},ok?1100:1900)}
+function finish(){const me={ans:G.ans,pts:G.pts};saveGame(G.code,{me,meName:myName(),done:Date.now()});showEnd(G.code)}
+
+/* ---------- Ergebnis ---------- */
+const sum=r=>r.pts.reduce((a,b)=>a+b,0),nRight=r=>r.pts.filter(p=>p>0).length;
+function showEnd(code){const g=games()[code];if(!g||!g.me){openDuel(code,false);return}G={code};
+  const qs=questions(code),me=g.me,op=g.opp,mn=g.meName||myName(),on=g.oppName||"Gegner";
+  history.replaceState(null,"","#"+code);
+  const pl=(cls,n,r,win)=>`<div class="pl ${cls} ${win?"win":""}"><div class="n">${esc(n)}</div><div class="s">${r?sum(r):"?"}</div><div class="r">${r?nRight(r)+" von "+N+" richtig":"spielt noch"}</div></div>`;
+  const a=sum(me),b=op?sum(op):null;
+  $("vs").innerHTML=pl("a",mn,me,op&&a>b)+`<div class="vsx">vs</div>`+pl("b",on,op,op&&b>a);
+  $("verdict").textContent=!op?"Warte auf das Ergebnis deines Gegners":a>b?"🏆 Du hast gewonnen!":a<b?`${on} gewinnt – Revanche?`:"Unentschieden!";
+  $("eMsg").textContent=op?"":"Schick dein Ergebnis los. Sobald dein Gegner seins zurückschickt und du den Link öffnest, steht hier der Vergleich.";
+  $("tbl").innerHTML=`<tr><td></td><td class="m" style="color:var(--p1)">${esc(mn.slice(0,6))}</td><td class="m" style="color:var(--p2)">${esc(op?on.slice(0,6):"")}</td></tr>`+
+    qs.map((q,k)=>`<tr><td>${esc(q.q)}<br><span class="mu">✔ ${esc(q.opts[q.right])}</span></td><td class="m ${me.pts[k]?"y":"x"}">${me.pts[k]?"✔ "+me.pts[k]:"✘"}</td><td class="m ${op?(op.pts[k]?"y":"x"):""}">${op?(op.pts[k]?"✔ "+op.pts[k]:"✘"):""}</td></tr>`).join("");
+  view("end")}
+$("bShareRes").onclick=()=>{const g=games()[G.code];share(`🎯 Quiz-Duell ${G.code}: Ich habe ${sum(g.me)} Punkte (${nRight(g.me)} von ${N} richtig)${g.opp?"":". Jetzt du!"}\n${resLink(G.code,g.meName||myName(),g.me)}`,$("bShareRes"))};
+$("bRevanche").onclick=()=>{openDuel(newCode(),true)};
+$("bHome").onclick=()=>{history.replaceState(null,"",BASE);drawStart();view("start")};
+
+/* ---------- Teilen ---------- */
+async function share(text,btn){try{if(navigator.share){await navigator.share({text});return}}catch(e){if(e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(text);const o=btn.textContent;btn.textContent="✓ Kopiert – jetzt in WhatsApp einfügen";setTimeout(()=>btn.textContent=o,2500)}catch(e){prompt("Text kopieren:",text)}}
+
+/* ---------- Bilanz ---------- */
+function drawStart(){const g=games(),done=Object.entries(g).filter(([,x])=>x.me&&x.opp).sort((a,b)=>(b[1].done||0)-(a[1].done||0));
+  $("bilanzBox").hidden=!done.length;if(!done.length)return;let w=0,l=0,d=0;
+  done.forEach(([,x])=>{const a=sum(x.me),b=sum(x.opp);a>b?w++:a<b?l++:d++});
+  const opp=done[0][1].oppName||"Gegner";
+  $("bilanz").innerHTML=`<span style="color:var(--p1)">${w}</span> : <span style="color:var(--p2)">${l}</span>${d?` <span class="mu" style="font-size:15px">(${d}× unentschieden)</span>`:""}<div class="mu" style="font-size:14px">Siege für dich : Siege für ${esc(opp)}${done.length>1?" und andere":""}</div>`;
+  $("hist").innerHTML=done.slice(0,6).map(([c,x])=>`<div><span>${new Date(x.done||Date.now()).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"})} · gegen ${esc(x.oppName||"?")}</span><b>${sum(x.me)} : ${sum(x.opp)}</b></div>`).join("")}
+
+/* ---------- Link auswerten ---------- */
+function route(){const h=decodeURIComponent(location.hash.slice(1));if(!h){drawStart();view("start");return}
+  const [c,nm,rs]=h.split("~"),code=normCode(c);if(code.length!==5){drawStart();view("start");return}
+  if(rs){const r=decRes(rs);if(r){const g=games()[code];
+      if(g&&g.me&&g.meName===nm){showEnd(code);return}           // eigener Link
+      saveGame(code,{opp:r,oppName:(nm||"Gegner").slice(0,16)})}}
+  const g=games()[code];
+  if(g&&g.me){showEnd(code);return}
+  // Einladung: erst Namen, dann spielen
+  drawStart();view("start");
+  $("invite").hidden=false;$("invite").innerHTML=g&&g.opp?`<b>${esc(g.oppName)}</b> fordert dich heraus (Duell ${code}) und hat schon gespielt. Trag deinen Namen ein und leg los!`:`Du wurdest zum Duell <b>${code}</b> eingeladen. Trag deinen Namen ein und leg los!`;
+  $("bNew").textContent="Duell annehmen";$("bNew").onclick=()=>{if(!needName())return;openDuel(code,false)};$("bJoinShow").hidden=true}
+addEventListener("hashchange",()=>{if(!G||!G.qs||G.k>=N)route()});
+route();
+</script>
+</body></html>
