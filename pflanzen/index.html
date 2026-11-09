@@ -29,8 +29,9 @@ button.g{background:transparent;color:#2f6b3a;border:2px solid #2f6b3a}
 <script>
 // Startseite mit eigenem Symbol: beim ersten Mal Anleitung zum Startbildschirm, danach direkt zur App in Claude
 var APP="https://claude.ai/artifact/XhxbSe2c9WagwvUa8uHoq4";
+if(location.hash==="#zuruecksetzen"){try{localStorage.removeItem("pd.setup")}catch(e){}}
 var done=false;try{done=localStorage.getItem("pd.setup")==="1"}catch(e){}
-if(done&&location.hash!=="#einrichten"){location.replace(APP)}
+if(done){location.replace(APP)}
 else{
   var sam=/SamsungBrowser/.test(navigator.userAgent);
   document.getElementById("box").innerHTML='<img src="icon-512.png" alt=""><h1>Pflanzen-Doktor</h1>'+
