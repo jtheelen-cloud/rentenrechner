@@ -74,7 +74,12 @@ button{font:inherit;color:inherit}
 #rtime{position:absolute;z-index:1000;left:50%;top:58px;white-space:nowrap;transform:translateX(-50%);background:#ddd;color:#111;border:1px solid #555;border-radius:8px;padding:3px 10px;font-size:20px;font-variant-numeric:tabular-nums}
 #rnote{position:absolute;z-index:1000;left:12px;top:14px;font-size:12px;color:#222;background:rgba(255,255,255,.7);border-radius:6px;padding:2px 6px}
 .ptemp span{position:absolute;transform:translate(14px,-50%);background:#fff;color:#111;border:2px solid #23239a;border-radius:9px;padding:1px 8px;font-size:17px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.dot{width:16px;height:16px;border-radius:50%;background:#23239a;border:2px solid #fff;margin:-8px 0 0 -8px}
+.dot{width:16px;height:16px;border-radius:50%;background:#23239a;border:2px solid #fff;margin:-8px 0 0 -8px;position:relative}
+.beam{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;pointer-events:none;display:none;will-change:transform}
+.beam.on{display:block}
+#cmp{width:46px;height:46px;font-size:22px;padding:0;flex:none}
+#cmp.on{background:linear-gradient(#ffe9b0,#f3c45a);border-color:#8a6a10}
+#cmpTxt{position:absolute;z-index:1000;left:50%;top:96px;transform:translateX(-50%);background:rgba(20,20,60,.85);color:#fff;border-radius:8px;padding:3px 10px;font-size:15px;white-space:nowrap}
 .cl span{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#45505c}
 .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.6)!important}
 #status{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2500;background:rgba(40,40,40,.92);color:#fff;padding:12px 16px;border-radius:12px;font-size:15px;max-width:85%;text-align:center}
@@ -145,7 +150,8 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
     <div id="map"></div>
     <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button></div>
     <div id="rtime">--:--</div>
-    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><div id="vbox"><input type="range" id="vsl" min="0" max="12" step="1" value="0" aria-label="Vorschau mit dem Wind"><small id="vlab">Schieben = Vorschau mit dem Wind</small></div><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
+    <div id="cmpTxt" hidden></div>
+    <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><div id="vbox"><input type="range" id="vsl" min="0" max="12" step="1" value="0" aria-label="Vorschau mit dem Wind"><small id="vlab">Schieben = Vorschau mit dem Wind</small></div><button class="pill" id="cmp" type="button" aria-label="Blickrichtung anzeigen" title="Blickrichtung">🧭</button><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
   </section>
 
   <section class="view" id="v-wind">
@@ -209,7 +215,7 @@ let place=store.get("wx_place")||{n:PLACES[0][0],lat:PLACES[0][1],lon:PLACES[0][
 
 // ---------- Ansicht ----------
 let view=store.get("wx_view")||"wet", range=store.get("wx_range")||2;if(view==="wind")view="wet";
-function setView(v){view=v;store.set("wx_view",v);
+function setView(v){if(v!=="radar"&&cmpOn)cmpToggle();view=v;store.set("wx_view",v);
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $("head").classList.toggle("map",v==="radar");
@@ -538,7 +544,7 @@ function initMap(){
   const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
   const lp=map.createPane("lbl");lp.style.zIndex=440;lp.style.pointerEvents="none";
   map.setView([place.lat,place.lon],7);
-  dot=L.marker([place.lat,place.lon],{icon:L.divIcon({className:"",iconSize:[0,0],html:'<div class="dot"></div>'}),interactive:false,pane:"lbl"}).addTo(map);
+  dot=L.marker([place.lat,place.lon],{icon:L.divIcon({className:"",iconSize:[0,0],html:'<div class="dot"><svg class="beam" viewBox="-75 -75 150 150"><defs><radialGradient id="bg" cx="0" cy="0" r="75" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2b5bff" stop-opacity=".75"/><stop offset="1" stop-color="#2b5bff" stop-opacity="0"/></radialGradient></defs><path d="M0 0L-30.7 -66.8A75 75 0 0 1 30.7 -66.8Z" fill="url(#bg)"/><path d="M0 -14L-6 -4H6Z" fill="#fff"/></svg></div>'}),interactive:false,pane:"lbl"}).addTo(map);if(cmpOn)setTimeout(cmpApply,0);
   $("zIn").onclick=()=>map.zoomIn(1);$("zOut").onclick=()=>map.zoomOut(1);
   map.on("zoomend",updLabels);
   getJSON("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json").then(topo=>{
@@ -640,6 +646,29 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)flowStop();
 function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField();flowStart()}).catch(e=>{if(String(e.message).includes("429")){$("rtime").textContent="Viele Abrufe – lädt in 1 Minute weiter …";setTimeout(()=>{if(layer!=="r")fieldLoad()},61000)}else $("rtime").textContent="Daten nicht erreichbar"})}
 let layer=store.get("wx_layer")||"r";if(layer==="t")layer="r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
+/* ---------- Blickrichtung (Kompass) ---------- */
+let cmpOn=false,cmpHead=null,cmpShown=null,cmpRaf=0,cmpSrc=null;
+function cmpWindFrom(){if(!W||!W.hourly)return null;const H=W.hourly,now=Date.now()/1000;let k=0;H.time.forEach((x,i)=>{if(x<=now)k=i});
+  let d=H.wind_direction_700hPa&&H.wind_direction_700hPa[k];if(d==null)d=H.wind_direction_10m&&H.wind_direction_10m[k];return d==null?null:d}
+function cmpRelTxt(){const wf=cmpWindFrom();if(wf==null||cmpHead==null)return"";const r=((wf-cmpHead)%360+360)%360;
+  const t=r<22.5||r>=337.5?"von vorne":r<67.5?"von vorne rechts":r<112.5?"von rechts":r<157.5?"von hinten rechts":r<202.5?"von hinten":r<247.5?"von hinten links":r<292.5?"von links":"von vorne links";
+  return"Wolken kommen "+t}
+function cmpApply(){const el=dot&&dot.getElement&&dot.getElement();const b=el&&el.querySelector(".beam");if(!b)return;
+  b.classList.toggle("on",cmpOn&&cmpHead!=null);if(cmpHead==null)return;
+  if(cmpShown==null)cmpShown=cmpHead;let d=((cmpHead-cmpShown+540)%360)-180;cmpShown+=d*.35;
+  b.style.transform=`rotate(${cmpShown.toFixed(1)}deg)`;const t=$("cmpTxt");t.textContent=cmpRelTxt()||"Blickrichtung";t.hidden=!cmpOn;
+  if(Math.abs(d)>.5){cancelAnimationFrame(cmpRaf);cmpRaf=requestAnimationFrame(cmpApply)}}
+function cmpEvt(e){let h=null;
+  if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;
+  else if(e.alpha!=null&&(e.absolute||e.type==="deviceorientationabsolute")){const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0;h=(360-e.alpha+so)%360}
+  if(h==null)return;cmpHead=h;cancelAnimationFrame(cmpRaf);cmpRaf=requestAnimationFrame(cmpApply)}
+async function cmpToggle(){if(cmpOn){cmpOn=false;removeEventListener("deviceorientationabsolute",cmpEvt);removeEventListener("deviceorientation",cmpEvt);$("cmp").classList.remove("on");cmpApply();$("cmpTxt").hidden=true;return}
+  try{if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")throw 0}}catch(e){$("cmpTxt").textContent="Kompass nicht erlaubt";$("cmpTxt").hidden=false;return}
+  cmpOn=true;cmpHead=null;cmpShown=null;$("cmp").classList.add("on");$("cmpTxt").textContent="Handy kurz flach halten …";$("cmpTxt").hidden=false;
+  if("ondeviceorientationabsolute" in window)addEventListener("deviceorientationabsolute",cmpEvt);else addEventListener("deviceorientation",cmpEvt);
+  setTimeout(()=>{if(cmpOn&&cmpHead==null)$("cmpTxt").textContent="Dieses Handy liefert keinen Kompass"},4000);
+  if(map&&place)map.panTo([place.lat,place.lon])}
+$("cmp").onclick=cmpToggle;
 function setLayer(l){layer=l;vReset();if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar();flowLoad()}
