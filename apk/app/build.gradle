@@ -2,10 +2,10 @@ plugins { id 'com.android.application' }
 // Eine Hülle, mehrere Apps: jede Variante öffnet eine andere Web-App
 android {
     namespace 'de.theelen.apps'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
         minSdk 26
-        targetSdk 34
+        targetSdk 36
         versionCode Integer.parseInt(System.getenv('VERSION_CODE') ?: '1')
         versionName '1.' + (System.getenv('VERSION_CODE') ?: '1')
     }

@@ -15,6 +15,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,7 +41,16 @@ public class MainActivity extends Activity {
         prefix = getString(R.string.url_prefix);
         web = new WebView(this);
         web.setBackgroundColor(Color.WHITE);
-        setContentView(web);
+        // Ab Android 15 zeichnen Apps bis unter die Statusleiste: Rahmen mit Abstand zu den Systemleisten
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(getColor(R.color.bar));
+        root.addView(web);
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            android.graphics.Insets b = insets.getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.ime());
+            v.setPadding(b.left, b.top, b.right, b.bottom);
+            return android.view.WindowInsets.CONSUMED;
+        });
+        setContentView(root);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
