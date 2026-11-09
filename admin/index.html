@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Meine Apps – Admin</title><meta name="theme-color" content="#15181d"><meta name="robots" content="noindex">
-<link rel="icon" href="../icon-192.png"><link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><link rel="manifest" href="manifest.json">
 <style>
 :root{--bg:#f4f5f7;--card:#ffffff;--line:#e2e5ea;--tx:#1b1f24;--mu:#66707c;--ac:#2563c9;--acs:#e6eefb;--ok:#1f8a4c;--oks:#e3f4ea;--wa:#b7791f;--was:#fbf0dc;--bad:#c0392b;--input:#fff;color-scheme:light}
 @media (prefers-color-scheme:dark){:root{--bg:#121418;--card:#1c2026;--line:#2c323a;--tx:#e8eaed;--mu:#9aa3ad;--ac:#6ea0ff;--acs:#1d2a40;--ok:#4cc27a;--oks:#173324;--wa:#e0a84a;--was:#3a2d16;--bad:#ff7b6b;--input:#15181d;color-scheme:dark}}
@@ -83,6 +83,21 @@ th{color:var(--mu);font-weight:600;font-size:12.5px}
 .dlg .in{background:var(--card);border-radius:16px;padding:18px;max-width:340px;width:100%;text-align:center;display:grid;gap:10px}
 #qr{background:#fff;padding:12px;border-radius:12px;display:grid;place-items:center;min-height:240px}
 .hide{display:none!important}
+.tm{display:grid;grid-template-columns:58px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.tm:last-of-type{border-bottom:0}
+.tm .d{border-radius:10px;background:var(--acs);text-align:center;padding:4px 0;line-height:1.1}
+.tm .d b{display:block;font-size:18px}.tm .d span{font-size:11px;color:var(--mu);text-transform:uppercase}
+.tm.soon .d{background:var(--was)}
+.tm .t{font-size:15px}.tm .t small{display:block;color:var(--mu);font-size:12.5px}
+.tm button{border:0;background:none;color:var(--mu);padding:4px 8px}
+details.nf{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+details.nf summary{cursor:pointer;font-weight:600;list-style:none;display:flex;gap:10px;align-items:center}
+details.nf summary::-webkit-details-marker{display:none}
+details.nf summary::after{content:"›";margin-left:auto;color:var(--mu);transition:transform .15s}
+details.nf[open] summary::after{transform:rotate(90deg)}
+details.nf dl{display:grid;grid-template-columns:110px 1fr;gap:4px 10px;margin:10px 0 0;font-size:14px}
+details.nf dt{color:var(--mu)}details.nf dd{margin:0}
+details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
 </style></head><body>
 <div id="gate"><form id="gf"><b>Admin-Bereich</b><div class="mu">Nur mit Master-Code.</div><input id="gc" autocomplete="off" placeholder="XXXX-XXXX" aria-label="Master-Code"><p class="err" id="ge"></p><button class="btn pri" style="justify-content:center">Öffnen</button></form></div>
 
@@ -94,6 +109,8 @@ th{color:var(--mu);font-weight:600;font-size:12.5px}
   <h2>Status</h2>
   <div class="cockpit" id="cockpit"></div>
   <div id="bkBanner"></div>
+  <h2>Als Nächstes</h2>
+  <div class="card" id="termine"></div>
   <h2>Schnellzugriff</h2>
   <div class="grid" id="quick" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr))"></div>
 </section>
@@ -153,6 +170,9 @@ th{color:var(--mu);font-weight:600;font-size:12.5px}
     <div class="card"><b>Rentenrechner-Kennzahlen</b><div class="mu">Geplante Aufgabe am 2. jedes Monats</div><div class="mu" id="sNext"></div></div>
     <div class="card"><b>Gesetzestexte (BR)</b><div class="mu">GitHub-Ablauf täglich früh</div><div class="mu" id="sGes"></div></div>
   </div>
+  <h2>Notfallkarten</h2>
+  <div class="stack" id="notfall"></div>
+  <p class="mu" style="margin:6px 0 0">Ausführliche Anleitungen mit allen Schritten stehen im Claude-Projekt „Eigene Apps“ (Wiederherstellung_…). Kennwörter und Codes stehen bewusst nicht hier, weil diese Seite öffentlich lesbar im Internet liegt.</p>
   <h2>Links</h2>
   <div class="grid">
     <a class="card link" href="https://login.tailscale.com/admin/machines" target="_blank" rel="noopener"><span class="ic">🔒</span><b>Tailscale</b><span class="s">Geräte, Exit Node, Schlüssel</span></a>
@@ -218,7 +238,7 @@ $("gf").onsubmit=e=>{e.preventDefault();const c=normCode($("gc").value);
 let tab=ls("admin.tab")||"start";
 function show(t){tab=t;lsSet("admin.tab",t);document.querySelectorAll(".tab").forEach(s=>s.hidden=s.id!=="t-"+t);
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));window.scrollTo(0,0);
-  if(t==="koll")drawKoll();if(t==="verw"){drawTodo();loadUse()}if(t==="apps")drawApps()}
+  if(t==="koll")drawKoll();if(t==="verw"){drawTodo();loadUse();drawNotfall()}if(t==="apps")drawApps()}
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.t));
 
 /* ---------- Daten holen ---------- */
@@ -257,6 +277,7 @@ function drawStart(){
   if($("bkNow"))$("bkNow").onclick=()=>backup(false);
   $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="../${a.path}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
    `<a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">NAS · Tailscale an</span></a>`;
+  drawTermine();
   $("tabBadge").innerHTML=open?`<span class="badge">${open}</span>`:""}
 
 /* ---------- Apps ---------- */
@@ -333,6 +354,40 @@ async function loadUse(){const box=$("use");
   box.innerHTML=rows.length?`<div class="mu">${S.use.total} Aufrufe insgesamt · deine eigenen zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table><tr><th>Wer</th><th>App</th><th style="text-align:right">Aufrufe</th><th>zuletzt</th></tr>`+
     rows.map(r=>`<tr><td>${esc(nm[r.dev]||r.dev)}</td><td>${sn[r.app]?sn[r.app].icon+" "+sn[r.app].name:esc(r.app)}</td><td style="text-align:right"><b>${r.n}</b></td><td style="white-space:nowrap">${f(r.last)}</td></tr>`).join("")+`</table></div>`
     :'<div class="mu">Noch keine Aufrufe gezählt. Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.</div>'}
+
+
+/* ---------- Termine ---------- */
+const WT=["So","Mo","Di","Mi","Do","Fr","Sa"],MK=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+function termine(){const now=new Date(),y=now.getFullYear(),L=[];const add=(d,t,sub,own)=>{if(d>=new Date(now.getFullYear(),now.getMonth(),now.getDate()))L.push({d,t,sub,own})};
+  const cd=lsJ("wx_cd",null);if(cd){if(cd.von)add(new Date(cd.von+"T00:00"),"Hinreise"+(cd.ziel?" – "+cd.ziel:""),"aus dem Urlaubs-Countdown");if(cd.bis)add(new Date(cd.bis+"T00:00"),"Rückreise"+(cd.ziel?" – "+cd.ziel:""),"aus dem Urlaubs-Countdown")}
+  add(new Date(2026,10,14,10),"Erinnerung: Aufgaben zu Hause","NAS, FRITZ!Box, Nutzungszähler, Heizungs-App");
+  const nx=new Date(y,now.getMonth()+(now.getDate()>2?1:0),2);add(nx,"Renten-Kennzahlen werden geprüft","automatisch, 7:52 und 8:37 Uhr");
+  [y,y+1].forEach(yy=>{add(new Date(yy,0,1),"Neue Steuer- und Beitragswerte","Kennzahlen-Update am 2. Januar prüfen");add(new Date(yy,6,1),"Rentenanpassung","neuer Rentenwert – Rentenrechner prüfen")});
+  const bk=+ls("admin.bk")||0,codes=APPS.reduce((n,a)=>n+list(a.id).length,0);if(codes){const due=bk?new Date(bk+30*864e5):now;add(due<now?now:due,"Codeliste sichern","Kollegen → Sicherung")}
+  lsJ("admin.termine",[]).forEach((x,i)=>add(new Date(x.d+"T00:00"),x.t,"eigener Termin",i));
+  return L.sort((a,b)=>a.d-b.d)}
+let tmAll=false;
+function drawTermine(){const L=termine(),now=Date.now(),show=tmAll?L:L.slice(0,5);
+  $("termine").innerHTML=show.map(x=>{const days=Math.round((new Date(x.d.getFullYear(),x.d.getMonth(),x.d.getDate())-new Date(new Date().toDateString()))/864e5);
+    return `<div class="tm ${days<=7?"soon":""}"><div class="d"><span>${WT[x.d.getDay()]}</span><b>${x.d.getDate()}</b><span>${MK[x.d.getMonth()]}</span></div><div class="t">${esc(x.t)}<small>${days===0?"heute":days===1?"morgen":"in "+days+" Tagen"} · ${esc(x.sub)}</small></div>${x.own!==undefined?`<button type="button" data-tdel="${x.own}" aria-label="Termin löschen">✕</button>`:"<span></span>"}</div>`}).join("")+
+   `<div class="row" style="margin-top:8px">${L.length>5?`<button class="btn sm" type="button" id="tmMore">${tmAll?"Weniger":"Alle "+L.length+" anzeigen"}</button>`:""}<button class="btn sm" type="button" id="tmAdd">+ Eigener Termin</button></div><div id="tmForm" hidden class="row" style="margin-top:8px"><input id="tmT" placeholder="Was?" style="flex:2;min-width:140px"><input id="tmD" type="date" style="flex:1;min-width:140px"><button class="btn sm pri" type="button" id="tmOk">Speichern</button></div>`;
+  if($("tmMore"))$("tmMore").onclick=()=>{tmAll=!tmAll;drawTermine()};
+  $("tmAdd").onclick=()=>{$("tmForm").hidden=false;$("tmT").focus()};
+  $("tmOk").onclick=()=>{const t=$("tmT").value.trim(),d=$("tmD").value;if(!t||!d)return;const l=lsJ("admin.termine",[]);l.push({t,d});lsSet("admin.termine",JSON.stringify(l));drawTermine()};
+  $("termine").querySelectorAll("[data-tdel]").forEach(b=>b.onclick=()=>{const l=lsJ("admin.termine",[]);l.splice(+b.dataset.tdel,1);lsSet("admin.termine",JSON.stringify(l));drawTermine()})}
+
+/* ---------- Notfallkarten ---------- */
+const NOTFALL=[
+ {i:"💶",n:"Rentenrechner",wo:"GitHub Pages, Repository jtheelen-cloud/rentenrechner (Hauptordner)",daten:"Eingaben nur auf den Handys der Nutzer; Kennzahlen in kennzahlen.json",sich:"Repository auf GitHub, Sicherungs-ZIP (webseite_repo)",schritte:["Prüfen, ob github.com/jtheelen-cloud/rentenrechner noch da ist","Falls weg: neues öffentliches Repository „rentenrechner“, Inhalt aus der Sicherung hochladen, unter Settings → Pages einschalten","Codeliste hier im Dashboard einspielen – vergebene Codes bleiben gültig"],doc:"Wiederherstellung_Rentenrechner"},
+ {i:"📘",n:"BR-Nachschlagen",wo:"GitHub Pages, Ordner br/",daten:"Gesetzestexte br/texte (täglich per GitHub-Ablauf), Tarif-Infos br/tarif.json",sich:"liegt im selben Repository",schritte:["Wenn Gesetze veraltet: GitHub → Actions → Ablauf von Hand starten","Wenn die Seite fehlt: wie beim Rentenrechner das Repository wiederherstellen"],doc:"Wiederherstellung_BR-Nachschlagewerk"},
+ {i:"⛅",n:"Wetter",wo:"GitHub Pages, Ordner wetter/",daten:"Ort, Countdown und AEMET-Schlüssel nur im Browser des Handys",sich:"liegt im selben Repository",schritte:["Lädt nichts: in der App ••• → „Neu laden“, sonst Browser-⟳","AEMET-Schlüssel nach Handywechsel im App-Menü neu eingeben (Mail von AEMET)"],doc:"Wiederherstellung_Wetterkarte"},
+ {i:"🌳",n:"Ahnenspur",wo:"GitHub Pages, Ordner ahnen/",daten:"Stammbäume nur auf den Handys der Nutzer (Browser-Speicher)",sich:"Jeder Nutzer selbst: Mehr → Sicherung speichern",schritte:["Daten weg: Mehr → Sicherung einspielen (eigene Sicherungsdatei)","App weg: Repository wiederherstellen, Daten auf den Handys bleiben erhalten"],doc:"Wiederherstellung_Ahnenspur"},
+ {i:"🔥",n:"Heizung",wo:"NAS, Docker-Projekt „heizung“, Port 8093",daten:"data-Ordner mit Messwerten, Einstellungsdatei, FRITZ!Box-Benutzer der App",sich:"App-Ordner auf USB-Platte und PC",schritte:["Seite lädt nicht: UGREEN-App → Docker → Projekt heizung → Starten, Protokoll ansehen","Keine Thermostate: FRITZ!Box-Benutzer der App und Recht „Smart Home“ prüfen","Nach NAS-Neuinstallation: Ordner an den alten Pfad kopieren, Projekt neu anlegen"],doc:"Wiederherstellung_Heizungs-App"},
+ {i:"🧳",n:"Urlaubskasse",wo:"NAS, Docker-Projekt „urlaubskasse“, Port 8090",daten:"Datenordner im App-Ordner",sich:"App-Ordner auf USB-Platte und PC",schritte:["Seite lädt nicht: Docker → Projekt urlaubskasse → Starten","Neu aufsetzen: Ordner zurückkopieren, Projekt mit docker-compose.yml anlegen"],doc:"Wiederherstellung_Urlaubskasse"},
+ {i:"🍀",n:"Lottogeld",wo:"NAS, Docker-Projekt „lottogeld“, Port 8091",daten:"Einzahlungen, Spielscheine, Gewinne im App-Ordner",sich:"App-Ordner auf USB-Platte und PC – wichtig als Nachweis im Gewinnfall",schritte:["Seite lädt nicht: Docker → Projekt lottogeld → Starten","Neu aufsetzen: Ordner zurückkopieren, Projekt anlegen"],doc:"Wiederherstellung_Lottokasse"},
+ {i:"📁",n:"Betriebsrat-App",wo:"NAS, Docker-Projekt „betriebsrat“, Port 8092",daten:"App-Ordner auf dem NAS",sich:"App-Ordner auf USB-Platte und PC",schritte:["Seite lädt nicht: Docker → Projekt betriebsrat → Starten, Protokoll ansehen","Neu aufsetzen: Ordner zurückkopieren, Projekt anlegen"],doc:"Wiederherstellung_Betriebsrat-App"},
+ {i:"🔒",n:"Fernzugriff (Tailscale)",wo:"Docker-Container „tailscale“ auf dem NAS, Adresse 100.124.80.87",daten:"Anmeldung über das Google-Konto",sich:"–",schritte:["NAS-Apps unterwegs nicht erreichbar: Tailscale-App am Handy an? ugreen-nas grün?","NAS grau: Container „tailscale“ in Docker starten (Auto-Neustart einschalten!)","Kein Internet mit Exit Node: Exit Node auf „Disable“"],doc:"Fernzugriff_Tailscale"}];
+function drawNotfall(){$("notfall").innerHTML=NOTFALL.map(x=>`<details class="nf"><summary><span>${x.i}</span>${esc(x.n)}</summary><dl><dt>Läuft auf</dt><dd>${esc(x.wo)}</dd><dt>Daten</dt><dd>${esc(x.daten)}</dd><dt>Sicherung</dt><dd>${esc(x.sich)}</dd></dl><ol>${x.schritte.map(t=>`<li>${esc(t)}</li>`).join("")}</ol><div class="mu" style="margin-top:6px">Ausführlich: Projekt „Eigene Apps“ → ${esc(x.doc)}</div></details>`).join("")}
 
 /* ---------- Start ---------- */
 async function start(){$("today").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
