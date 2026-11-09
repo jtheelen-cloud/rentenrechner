@@ -120,9 +120,10 @@ details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
   <h2>Apps im Internet <span style="text-transform:none;letter-spacing:0">(für Kollegen, mit Code)</span></h2>
   <div class="grid" id="appCards"></div>
   <p class="mu" style="margin:8px 0 0">Teilen schickt den Link mit kurzer Anleitung. Der QR-Code ist zum Abscannen direkt von deinem Handy.</p>
-  <h2>Für Familie und Freunde <span style="text-transform:none;letter-spacing:0">(ohne Code)</span></h2>
+  <h2>Für Familie und Freunde</h2>
   <div class="grid">
     <a class="card link" href="../quiz/"><span class="ic">🎯</span><b>Quiz-Duell</b><span class="s">Allgemeinwissen, 1:1 am eigenen Handy</span></a>
+    <a class="card link" href="https://claude.ai/artifact/XhxbSe2c9WagwvUa8uHoq4" target="_blank" rel="noopener"><span class="ic">🌱</span><b>Pflanzen-Doktor</b><span class="s">Foto → Bestimmung, Gesundheit, Pflege · läuft in Claude</span></a>
   </div>
   <h2>Nur für mich</h2>
   <div class="grid">
@@ -393,6 +394,7 @@ const NOTFALL=[
  {i:"🧳",n:"Urlaubskasse",wo:"NAS, Docker-Projekt „urlaubskasse“, Port 8090",daten:"Datenordner im App-Ordner",sich:"App-Ordner auf USB-Platte und PC",schritte:["Seite lädt nicht: Docker → Projekt urlaubskasse → Starten","Neu aufsetzen: Ordner zurückkopieren, Projekt mit docker-compose.yml anlegen"],doc:"Wiederherstellung_Urlaubskasse"},
  {i:"🍀",n:"Lottogeld",wo:"NAS, Docker-Projekt „lottogeld“, Port 8091",daten:"Einzahlungen, Spielscheine, Gewinne im App-Ordner",sich:"App-Ordner auf USB-Platte und PC – wichtig als Nachweis im Gewinnfall",schritte:["Seite lädt nicht: Docker → Projekt lottogeld → Starten","Neu aufsetzen: Ordner zurückkopieren, Projekt anlegen"],doc:"Wiederherstellung_Lottokasse"},
  {i:"📁",n:"Betriebsrat-App",wo:"NAS, Docker-Projekt „betriebsrat“, Port 8092",daten:"App-Ordner auf dem NAS",sich:"App-Ordner auf USB-Platte und PC",schritte:["Seite lädt nicht: Docker → Projekt betriebsrat → Starten, Protokoll ansehen","Neu aufsetzen: Ordner zurückkopieren, Projekt anlegen"],doc:"Wiederherstellung_Betriebsrat-App"},
+ {i:"🌱",n:"Pflanzen-Doktor",wo:"Claude-Seite (Artifact) in deinem Claude-Konto",daten:"Pflanzen jeder Person in ihrem eigenen Claude-Konto (bzw. im Browser)",sich:"Code liegt bei Claude; Kopie im Claude-Projekt möglich",schritte:["Seite öffnet nicht: bei Claude angemeldet? Mit der Frau geteilt (Teilen → E-Mail)?","„Untersuchen“ geht nicht: beim ersten Mal „Erlauben“ tippen; Claude-Kontingent aufgebraucht → später nochmal"],doc:"Meine Apps – Übersicht"},
  {i:"🔒",n:"Fernzugriff (Tailscale)",wo:"Docker-Container „tailscale“ auf dem NAS, Adresse 100.124.80.87",daten:"Anmeldung über das Google-Konto",sich:"–",schritte:["NAS-Apps unterwegs nicht erreichbar: Tailscale-App am Handy an? ugreen-nas grün?","NAS grau: Container „tailscale“ in Docker starten (Auto-Neustart einschalten!)","Kein Internet mit Exit Node: Exit Node auf „Disable“"],doc:"Fernzugriff_Tailscale"}];
 function drawNotfall(){$("notfall").innerHTML=NOTFALL.map(x=>`<details class="nf"><summary><span>${x.i}</span>${esc(x.n)}</summary><dl><dt>Läuft auf</dt><dd>${esc(x.wo)}</dd><dt>Daten</dt><dd>${esc(x.daten)}</dd><dt>Sicherung</dt><dd>${esc(x.sich)}</dd></dl><ol>${x.schritte.map(t=>`<li>${esc(t)}</li>`).join("")}</ol><div class="mu" style="margin-top:6px">Ausführlich: Projekt „Eigene Apps“ → ${esc(x.doc)}</div></details>`).join("")}
 
