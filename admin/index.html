@@ -413,12 +413,14 @@ if(unlocked())openAdm();
  if(standalone||ls(K)||!/Android|iPhone|iPad/i.test(navigator.userAgent))return;
  addEventListener("beforeinstallprompt",function(e){e.preventDefault();ev=e});
  addEventListener("appinstalled",function(){ls(K,"1");box.hidden=true});
- setTimeout(function(){box.hidden=false},4000);
+
  document.getElementById("jtInstX").onclick=function(){ls(K,"1");box.hidden=true};
  document.getElementById("jtInstOk").onclick=function(){
   if(ev){ev.prompt();ev.userChoice.then(function(c){if(c.outcome==="accepted"){ls(K,"1");box.hidden=true}});ev=null;return}
   var sam=/SamsungBrowser/.test(navigator.userAgent),ios=/iPhone|iPad/.test(navigator.userAgent);
   document.getElementById("jtInstT").textContent=sam?"Unten auf ≡ tippen → „Seite hinzufügen zu“ → „Startbildschirm“.":ios?"Unten auf Teilen tippen → „Zum Home-Bildschirm“.":"Oben rechts auf ⋮ tippen → „App installieren“ (oder „Zum Startbildschirm hinzufügen“).";
-  this.textContent="OK";this.onclick=function(){ls(K,"1");box.hidden=true}}})();
+  this.textContent="OK";this.onclick=function(){ls(K,"1");box.hidden=true}}
+ if(/SamsungBrowser/.test(navigator.userAgent)){document.getElementById("jtInstT").textContent="Ohne Adressleiste? Diese Seite in Chrome öffnen und dort über ⋮ „App installieren“. (Samsung Internet wird von Play Protect blockiert.)";var ok=document.getElementById("jtInstOk");ok.textContent="Verstanden";ok.onclick=function(){ls(K,"1");box.hidden=true};setTimeout(function(){box.hidden=false},4000);return}
+ setTimeout(function(){box.hidden=false},4000);})();
 </script>
 </body></html>
