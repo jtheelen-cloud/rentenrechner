@@ -374,7 +374,7 @@ function drawTree(recenter){document.querySelectorAll("#bMode button").forEach(b
   if(sib.length){const my=yF-BH/2-(RH-BH)/2;sib.forEach((s,i)=>{const x=cx0-(i+1)*SX;node(s,x,yF,{dim:true});lines.push(`M${x} ${yF-BH/2}V${my}H${cx0}`)})}
   // Partner rechts, Kinder unten
   const sf=spouseFams(F);let px=cx0;const kids=[];
-  sf.forEach((f,i)=>{const o=partnerIn(f,F);let x=cx0;if(o&&P(o)){px+=SX;x=px;node(o,x,yF,{partner:true});lines.push(`M${cx0+BW/2} ${yF}H${x-BW/2}`);const m=yr(f.heirat);lines.push({t:"⚭"+(m?" "+m:""),x:(cx0+x)/2+(i?0:0),y:yF-8})}
+  sf.forEach((f,i)=>{const o=partnerIn(f,F);let x=cx0;if(o&&P(o)){px+=SX;x=px;node(o,x,yF,{partner:true});lines.push(`M${cx0+BW/2} ${yF}H${x-BW/2}`);const m=yr(f.heirat);lines.push({t:(f.ende?"⚮":"⚭")+(m?" "+m:""),x:(cx0+x)/2+(i?0:0),y:yF-8})}
     f.kinder.filter(P).forEach(k=>kids.push({k,from:(cx0+x)/2}))});
   if(kids.length){const yK=yF+RH+6,mid=(cx0+px)/2,n=kids.length;
     kids.forEach((o,j)=>{const x=mid+(j-(n-1)/2)*SX;node(o.k,x,yK,{kid:true});const my=yK-BH/2-(RH-BH)/2+3;lines.push(`M${o.from} ${yF+(o.from===cx0?BH/2:0)}V${my}H${x}V${yK-BH/2}`)})}
@@ -471,8 +471,8 @@ function drawPerson(){const p=P(cur);if(!p){go("personen");return}const id=cur,k
   <section class="card" style="margin-top:10px"><h2 style="margin:0 0 4px">Familie</h2><div class="rel">
    <div class="lab">Eltern</div>${fa?pLink(fa.id," <span class='yr'>Vater</span>"):""}${mo?pLink(mo.id," <span class='yr'>Mutter</span>"):""}
    <div class="row">${fa?"":`<button class="chip" data-add="vater">+ Vater</button>`}${mo?"":`<button class="chip" data-add="mutter">+ Mutter</button>`}</div>`;
-  sf.forEach(f=>{const o=partnerIn(f,id),m=f.heirat||{};h+=`<div class="lab">${o&&P(o)?"Partner/in":"Kinder"}${m.d||m.o?` · ⚭ ${esc(m.d||"")} ${m.o?"in "+esc(m.o):""}`:""}</div>`;
-    if(o&&P(o))h+=pLink(o)+`<div class="row"><button class="chip" data-fam="${f.id}">Heirat bearbeiten</button></div>`;
+  sf.forEach(f=>{const o=partnerIn(f,id),m=f.heirat||{};h+=`<div class="lab">${o&&P(o)?(f.ende?"Frühere/r Partner/in":"Partner/in"):"Kinder"}${m.d||m.o?` · ⚭ ${esc(m.d||"")} ${m.o?"in "+esc(m.o):""}`:""}${f.ende?` · ⚮ ${esc(f.ende)}`:""}</div>`;
+    if(o&&P(o))h+=pLink(o)+`<div class="row"><button class="chip" data-fam="${f.id}">Heirat / Scheidung bearbeiten</button></div>`;
     const ks=f.kinder.filter(P);if(ks.length){if(o&&P(o))h+=`<div class="lab">Kinder${P(o)?" mit "+esc(P(o).vorname||""):""}</div>`;h+=ks.map(c=>pLink(c)).join("")}});
   h+=`<div class="row" style="margin-top:6px"><button class="chip" data-add="partner">+ Partner/in</button><button class="chip" data-add="kind">+ Kind</button><button class="chip" data-add="geschw">+ Geschwister</button></div>`;
   if(sib.length)h+=`<div class="lab">Geschwister</div>`+sib.map(s=>pLink(s)).join("");
@@ -596,7 +596,7 @@ function cleanFams(){fams().forEach(f=>{f.kinder=f.kinder.filter(P);if(f.a&&!P(f
   const n=(f.a?1:0)+(f.b?1:0);if(n+f.kinder.length<2&&!(f.heirat&&(f.heirat.d||f.heirat.o)))delete T.fams[f.id]})}
 function editFam(fid){const f=T.fams[fid];if(!f)return;const h=f.heirat||{};
   openSheet(`<div class="eyebrow">Ehe</div><h2 style="margin:2px 0 10px">${esc(fullName(P(f.a)))} ⚭ ${esc(fullName(P(f.b)))}</h2><div class="stack">${evField("heirat","Heirat",h)}
-   <div><label for="fSch">Scheidung / Ende (optional)</label><input id="fSch" value="${esc(f.ende||"")}"></div>
+   <div><label for="fSch">Scheidung / Ende (optional)</label><input id="fSch" value="${esc(f.ende||"")}" placeholder="z. B. geschieden 2005"></div>
    <div class="row"><button class="btn primary" type="button" id="fOk">Speichern</button><button class="btn" type="button" id="fNo2">Abbrechen</button><button class="btn danger" type="button" id="fDelF">Verbindung lösen</button></div></div>`);
   $("fNo2").onclick=closeSheet;
   $("fOk").onclick=()=>{const n={};document.querySelectorAll("[data-e]").forEach(i=>{n[i.dataset.e.split(".")[1]]=i.value.trim()});f.heirat=n;f.ende=$("fSch").value.trim();save();closeSheet();route()};
