@@ -343,7 +343,7 @@ $("bkLoad").onclick=()=>{const f=$("fileIn");f.value="";f.onchange=async()=>{try
   $("bkMsg").textContent=`${n} Einträge übernommen.`;drawKoll();drawStart()}catch(e){$("bkMsg").textContent=e.message}};f.click()};
 
 /* ---------- Verwaltung ---------- */
-const TODO=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","Heizungs-App: Text beim Schlafzimmer und Heizstunden-Zählung korrigieren, Urlaubsdaten auswerten"];
+const TODO=["Tailscale-Container: Auto-Neustart einschalten","Exit Node dauerhaft: TS_EXTRA_ARGS=--advertise-exit-node","Tailscale-Container aktualisieren","FRITZ!Box: Ports 1024/1027 schließen, UPnP aus, ShieldsUP wiederholen","FRITZ!Box: verschlüsseltes DNS (Quad9) + FRITZ!OS-Update","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Ordnernamen der NAS-Apps in die Anleitungen","Tailscale-Konto: Zwei-Faktor-Anmeldung","Starkes NAS-Passwort, UGOS und Docker-Apps aktualisieren","Backup der NAS-Daten auf externe Platte","Passwort-Manager (KeePass) einrichten","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","Heizungs-App: Text beim Schlafzimmer und Heizstunden-Zählung korrigieren, Urlaubsdaten auswerten","NAS-Apps auf https umstellen (Tailscale), damit sie ohne Adressleiste als App laufen"];
 function drawTodo(){const done=lsJ("admin.todo",{});const o=todoOpen();$("todoCnt").textContent=`(${o} offen)`;
   $("todo").innerHTML=TODO.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
   $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked);$("todoCnt").textContent=`(${todoOpen()} offen)`;drawStart()}}
@@ -401,4 +401,24 @@ async function start(){$("today").textContent=new Date().toLocaleDateString("de-
   drawStart();show(tab);await gather();drawStart();drawAuto();if(tab==="apps")drawApps();if(tab==="verw")loadUse();if(tab==="koll")drawKoll()}
 $("reload").onclick=async()=>{$("reload").textContent="…";await gather();drawStart();drawAuto();show(tab);$("reload").textContent="⟳"};
 if(unlocked())openAdm();
-</script></body></html>
+</script><div id="jtInst" hidden style="position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9999;max-width:520px;margin:0 auto;background:#1f2937;color:#fff;border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.3);font:15px/1.35 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;gap:10px;align-items:center">
+<span style="font-size:22px">📲</span><span id="jtInstT" style="flex:1">Als App installieren – ohne Adressleiste. Daten bleiben erhalten.</span>
+<button id="jtInstOk" type="button" style="font:inherit;font-weight:700;border:0;border-radius:10px;padding:8px 12px;background:#fbbf24;color:#1f2937;cursor:pointer">Installieren</button>
+<button id="jtInstX" type="button" aria-label="Hinweis ausblenden" style="font:inherit;border:0;background:none;color:#cbd5e1;font-size:18px;padding:4px 6px;cursor:pointer">✕</button></div>
+<script>
+/* Hinweis „Als App installieren“ – nur im Browser-Tab, einmal ausblendbar */
+(function(){var K="jt.inst.admin",ev=null,box=document.getElementById("jtInst");
+ function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+ var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone||/TheelenApp/.test(navigator.userAgent);
+ if(standalone||ls(K)||!/Android|iPhone|iPad/i.test(navigator.userAgent))return;
+ addEventListener("beforeinstallprompt",function(e){e.preventDefault();ev=e});
+ addEventListener("appinstalled",function(){ls(K,"1");box.hidden=true});
+ setTimeout(function(){box.hidden=false},4000);
+ document.getElementById("jtInstX").onclick=function(){ls(K,"1");box.hidden=true};
+ document.getElementById("jtInstOk").onclick=function(){
+  if(ev){ev.prompt();ev.userChoice.then(function(c){if(c.outcome==="accepted"){ls(K,"1");box.hidden=true}});ev=null;return}
+  var sam=/SamsungBrowser/.test(navigator.userAgent),ios=/iPhone|iPad/.test(navigator.userAgent);
+  document.getElementById("jtInstT").textContent=sam?"Unten auf ≡ tippen → „Seite hinzufügen zu“ → „Startbildschirm“.":ios?"Unten auf Teilen tippen → „Zum Home-Bildschirm“.":"Oben rechts auf ⋮ tippen → „App installieren“ (oder „Zum Startbildschirm hinzufügen“).";
+  this.textContent="OK";this.onclick=function(){ls(K,"1");box.hidden=true}}})();
+</script>
+</body></html>
