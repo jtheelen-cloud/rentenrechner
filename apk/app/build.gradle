@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+// Eine Hülle, mehrere Apps: jede Variante öffnet eine andere Web-App
+android {
+    namespace 'de.theelen.apps'
+    compileSdk 34
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
+        versionCode Integer.parseInt(System.getenv('VERSION_CODE') ?: '1')
+        versionName '1.' + (System.getenv('VERSION_CODE') ?: '1')
+    }
+    flavorDimensions 'app'
+    productFlavors {
+        rente {
+            dimension 'app'
+            applicationId 'de.theelen.rentenrechner'
+            resValue 'string', 'app_name', 'Rentenrechner'
+            resValue 'string', 'start_url', 'https://jtheelen-cloud.github.io/rentenrechner/'
+            resValue 'string', 'url_prefix', 'https://jtheelen-cloud.github.io/rentenrechner/'
+            resValue 'color', 'bar', '#1f3b5c'
+        }
+        br {
+            dimension 'app'
+            applicationId 'de.theelen.brnachschlagen'
+            resValue 'string', 'app_name', 'BR-Nachschlagen'
+            resValue 'string', 'start_url', 'https://jtheelen-cloud.github.io/rentenrechner/br/'
+            resValue 'string', 'url_prefix', 'https://jtheelen-cloud.github.io/rentenrechner/'
+            resValue 'color', 'bar', '#1f3b5c'
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('KS_PATH') ?: 'none.jks')
+            storePassword System.getenv('KS_PASS') ?: ''
+            keyAlias 'apps'
+            keyPassword System.getenv('KS_PASS') ?: ''
+        }
+    }
+    buildTypes { release { minifyEnabled false; signingConfig signingConfigs.release } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
