@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-08",
+ "stand": "2026-11-09",
  "gesetze": {
   "betrvg": {
    "stand": "2026-07-13",
@@ -167,6 +167,13 @@
    "n": 31,
    "name": "Gesetz zur Regelung der Arbeitnehmerüberlassung",
    "kurz": "AÜG",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+  },
+  "mitbestg": {
+   "stand": "2021-08-07",
+   "n": 42,
+   "name": "Gesetz über die Mitbestimmung der Arbeitnehmer",
+   "kurz": "MitbestG",
    "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   }
  }
