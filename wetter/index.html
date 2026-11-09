@@ -647,7 +647,7 @@ function fieldLoad(){loadGrid().then(()=>{fieldSlider();drawField();flowStart()}
 let layer=store.get("wx_layer")||"r";if(layer==="t")layer="r";
 document.querySelectorAll("#lsel button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
 /* ---------- Blickrichtung (Kompass) ---------- */
-let cmpOn=false,cmpHead=null,cmpShown=null,cmpRaf=0,cmpSrc=null;
+let cmpRel=0,cmpOn=false,cmpHead=null,cmpShown=null,cmpRaf=0,cmpSrc=null;
 function cmpWindFrom(){if(!W||!W.hourly)return null;const H=W.hourly,now=Date.now()/1000;let k=0;H.time.forEach((x,i)=>{if(x<=now)k=i});
   let d=H.wind_direction_700hPa&&H.wind_direction_700hPa[k];if(d==null)d=H.wind_direction_10m&&H.wind_direction_10m[k];return d==null?null:d}
 function cmpRelTxt(){const wf=cmpWindFrom();if(wf==null||cmpHead==null)return"";const r=((wf-cmpHead)%360+360)%360;
@@ -661,12 +661,12 @@ function cmpApply(){const el=dot&&dot.getElement&&dot.getElement();const b=el&&e
 function cmpEvt(e){let h=null;
   if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;
   else if(e.alpha!=null&&(e.absolute||e.type==="deviceorientationabsolute")){const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0;h=(360-e.alpha+so)%360}
-  if(h==null)return;cmpHead=h;cancelAnimationFrame(cmpRaf);cmpRaf=requestAnimationFrame(cmpApply)}
+  if(h==null){if(e.alpha!=null)cmpRel++;return}cmpHead=h;cancelAnimationFrame(cmpRaf);cmpRaf=requestAnimationFrame(cmpApply)}
 async function cmpToggle(){if(cmpOn){cmpOn=false;removeEventListener("deviceorientationabsolute",cmpEvt);removeEventListener("deviceorientation",cmpEvt);$("cmp").classList.remove("on");cmpApply();$("cmpTxt").hidden=true;return}
   try{if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==="function"){const r=await DeviceOrientationEvent.requestPermission();if(r!=="granted")throw 0}}catch(e){$("cmpTxt").textContent="Kompass nicht erlaubt";$("cmpTxt").hidden=false;return}
   cmpOn=true;cmpHead=null;cmpShown=null;$("cmp").classList.add("on");$("cmpTxt").textContent="Handy kurz flach halten …";$("cmpTxt").hidden=false;
-  if("ondeviceorientationabsolute" in window)addEventListener("deviceorientationabsolute",cmpEvt);else addEventListener("deviceorientation",cmpEvt);
-  setTimeout(()=>{if(cmpOn&&cmpHead==null)$("cmpTxt").textContent="Dieses Handy liefert keinen Kompass"},4000);
+  addEventListener("deviceorientationabsolute",cmpEvt);addEventListener("deviceorientation",cmpEvt);cmpRel=0;
+  setTimeout(()=>{if(cmpOn&&cmpHead==null)$("cmpTxt").textContent=cmpRel?"Browser gibt keine Himmelsrichtung – bitte in Chrome öffnen":"Kein Kompass-Signal – Bewegungssensoren erlaubt?"},4000);
   if(map&&place)map.panTo([place.lat,place.lon])}
 $("cmp").onclick=cmpToggle;
 function setLayer(l){layer=l;vReset();if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
