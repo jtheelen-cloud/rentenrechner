@@ -176,7 +176,7 @@ function drawTable(){
       <tr><th style="background:${p.col}">Jahre ab</th>${v.map(x=>`<th style="background:${p.col}">${x.y?x.y+" J.":"Einstieg"}</th>`).join("")}</tr>
       <tr><td>${p.kind==="lg"?"Lohngruppe":"Gehaltsgruppe"}</td>${v.map(x=>`<td class="g">${x.grp}</td>`).join("")}</tr>
       <tr><td>Aufschlag</td>${v.map(x=>`<td>${x.a?pct(x.a):"–"}</td>`).join("")}</tr>
-      ${p.kind==="lg"?`<tr class="big"><td>Tabellenlohn</td>${v.map(x=>`<td>${eur(x.h)}</td>`).join("")}</tr><tr><td>Monat</td>${v.map(x=>`<td>${eur(x.m,0)}</td>`).join("")}</tr><tr><td style="font-weight:400;font-size:12px">mit Zulage mittel + ${num(C.leist*100,0)} %</td>${v.map(x=>`<td style="color:var(--muted)">${eur(x.hv)}</td>`).join("")}</tr>`
+      ${p.kind==="lg"?`<tr class="big"><td>Tabellenlohn</td>${v.map(x=>`<td>${eur(x.h)}</td>`).join("")}</tr><tr><td>Monat</td>${v.map(x=>`<td>${eur(x.m,0)}</td>`).join("")}</tr>`
         :`<tr class="big"><td>Monatsgehalt</td>${v.map(x=>`<td>${eur(x.m,0)}</td>`).join("")}</tr><tr><td>Stundenwert</td>${v.map(x=>`<td>${eur(x.h)}</td>`).join("")}</tr>`}
     </table></div>
     ${p.kind==="lg"?`<p class="mu" style="margin:8px 0 0">Tabellenlohn = Tarif + Erfahrung, ohne Erschwerniszulage und Leistungsgrad. Die kommen je nach Arbeitsplatz dazu (siehe 🧮 Person).</p>`:""}<p class="mu" style="margin:8px 0 0">Spanne: ${eur(first.m,0)} → ${eur(last.m,0)} im Monat · <b style="color:var(--acc2)">${pct(last.m/first.m-1)}</b></p></div>`});
