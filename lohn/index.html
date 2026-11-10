@@ -133,7 +133,7 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 /* ---------- Standardwerte ---------- */
 const AUF=[[15,.02],[20,.04],[25,.06],[30,.08],[40,.10]];
 const DEF={ver:2,
-  erschw:1.59,leist:1.10,std:152,luecke:6,zulage:0.50,meisterPlus:0.05,
+  erschw:1.59,leist:1.10,std:152,luecke:6,zulage:0.50,meisterPlus:0.05,kf:0.05,va:0.10,
   lg:[14.69,15.20,15.65,16.40,17.12,18.00,18.94,20.33,22.11],
   m:{2:[3950.18,4141.02,4332.72,4525.33],3:[4525.33,4730.72,4928.89,5133.32],4:[5133.32,5454.72,5786.13,5786.13]},
   tarifStand:"gültig ab 01.01.2026",
@@ -145,9 +145,9 @@ const DEF={ver:2,
     {id:"mb",name:"Meister mit Brief",sub:"inkl. Prüfer Stufe 3",col:"#6b4c7a",kind:"m",steps:[[0,3,1,0],[1,3,2,0],[2,3,3,0],[3,3,4,0],[10,4,4,0],[15,4,4,.02],[20,4,4,.03],[25,4,4,.04],[30,4,4,.05]]}
   ]};
 let C;try{C=JSON.parse(LSg("entgelt.cfg",""))}catch(e){}
-if(!C||!C.paths||C.ver!==DEF.ver)C=structuredClone(DEF);if(C.erschw==null)C.erschw=DEF.erschw;
+if(!C||!C.paths||C.ver!==DEF.ver)C=structuredClone(DEF);if(C.erschw==null)C.erschw=DEF.erschw;if(C.kf==null)C.kf=DEF.kf;if(C.va==null)C.va=DEF.va;
 const save=()=>LSs("entgelt.cfg",JSON.stringify(C));
-const RULES=[["A. Einstieg: welche Lohngruppe?", [["Ungelernt", "Einstieg in LG 1. Aufstieg nach Jahren bis LG 5 (siehe Tabelle Ungelernte)."], ["Gelernt im Gießereiberuf", "Former, Kernmacher, Gießereimechaniker, Gießer o. ä. mit Facharbeiter- bzw. Gesellenbrief: Einstieg in LG 6. Aufstieg nach Jahren bis LG 8, danach Erfahrungsaufschläge. LG 9 nur über einen höher bewerteten Arbeitsplatz (z. B. Anlagenführer mit Linienverantwortung)."], ["Gelernt, aber fachfremd", "Anderer anerkannter Metallberuf (z. B. Industriemechaniker, Schlosser): wie gelernt. Nicht-Metallberuf: wie ungelernt."], ["Zertifizierte Fachkraft", "Ohne 3-jährige Ausbildung, aber mit gültiger Schweißerprüfung (z. B. DIN EN ISO 9606) oder Prüfzertifikat Stufe 1 (DIN EN ISO 9712): Einstieg in LG 4, Aufstieg nach Jahren bis LG 7."], ["Meister mit Brief", "Geprüfter Industrie- bzw. Gießereimeister (IHK/HWK): Einstieg in M 3. Nach 10 Jahren M 4."], ["Werksmeister (ohne Brief)", "Vom Betrieb zum Meister ernannt, ohne Meisterprüfung: Einstieg in M 2. Nach 10 Jahren M 3. Mit bestandener Meisterprüfung Wechsel zu „Meister mit Brief“, die Jahre als Meister zählen mit."], ["Aufstieg zum Meister", "Wer aus der Laufbahn Gelernte/Ungelernte Meister wird, bekommt mindestens seinen bisherigen Monatslohn + 5 %. Die Meisterjahre beginnen mit der Ernennung."], ["Externenprüfung bestanden", "Wechsel in die Laufbahn Gelernte. Die bisherigen Jahre zählen dort mit."], ["Arbeitsplatz höher bewertet", "Es gilt immer die höhere Lohngruppe: Tarif nach Arbeitsplatz geht vor."], ["Abstand gelernt/ungelernt", "Gelernte liegen in jeder Erfahrungsstufe rund 17–20 % über Ungelernten (ca. 3,50–4,50 € je Stunde). Die Ausbildung lohnt sich ein Berufsleben lang."]]], ["B. Einstieg: welche Erfahrungsstufe?", [["Grundsatz", "Stufe nach Jahren Erfahrung: im Betrieb + anerkannte Jahre aus anderen Betrieben."], ["Was angerechnet wird", "Nur Jahre in gleicher oder gleichwertiger Tätigkeit: Formerei, Kernmacherei, Gießerei, Schmelzbetrieb, Putzerei."], ["Nachweis", "Arbeitszeugnis, Arbeitgeberbescheinigung oder Versicherungsverlauf der Rentenversicherung. Einreichen bis 3 Monate nach Einstellung; später eingereichte Nachweise gelten ab dem Monat der Vorlage."], ["6-Monats-Regel", "Die Jahre zählen, wenn zwischen dem Ende des letzten Jobs und dem Start bei uns höchstens 6 Monate liegen. Mehrere frühere Betriebe zählen zusammen, solange zwischen ihnen jeweils höchstens 6 Monate Lücke sind."], ["Ausbildung", "Die Ausbildungszeit selbst zählt nicht als Erfahrung; die Jahre beginnen mit dem Ende der Ausbildung."], ["Teilzeit", "Zählt voll."], ["Fachfremde Erfahrung", "Wird nicht angerechnet."]]], ["C. Im Betrieb", [["Aufstieg", "Automatisch zum Monatsersten nach Erreichen der Jahre – in die nächste Lohngruppe bzw. den nächsten Erfahrungsaufschlag. Kein Antrag, keine Beurteilung."], ["Höhergruppierung", "Wer über den Arbeitsplatz in eine höhere Lohngruppe kommt, behält seine Jahre; die Laufbahn läuft von dort weiter."], ["Unterbrechungen", "Elternzeit, Pflegezeit, Wehr-/Zivildienst und Krankheit über 6 Wochen: Die Stufe bleibt erhalten, die Zeit läuft in der Unterbrechung nicht weiter."], ["Streitfälle", "Entscheidet eine paritätische Kommission (2 × Betriebsrat, 2 × Arbeitgeber)."]]], ["D. Zertifikate (Schweißer und Prüfer)", [["Prüfer Stufe 1", "Prüft nach Anweisung: Laufbahn Zertifizierte Fachkraft."], ["Prüfer Stufe 2", "Prüft selbstständig, bewertet und unterschreibt: Laufbahn Gelernte (ab LG 6)."], ["Prüfer Stufe 3", "Legt Prüfverfahren fest und bildet aus: Laufbahn Meister mit Brief (ab M 3)."], ["Gültigkeit", "Die Einstufung gilt, solange das Zertifikat gültig ist. Der Betrieb zahlt Verlängerung bzw. Rezertifizierung und stellt dafür frei."], ["Brief + Zertifikat", "Bleibt in seiner Laufbahn und bekommt eine Zertifikatszulage von 0,50 €/Std., solange das Zertifikat im Betrieb eingesetzt wird."], ["Erfahrung", "Zählt ab Erwerb des ersten Zertifikats; Jahre aus anderen Betrieben wie bei allen anderen (6-Monats-Regel)."]]]];
+const RULES=[["A. Einstieg: welche Lohngruppe?", [["Ungelernt", "Einstieg in LG 1. Aufstieg nach Jahren bis LG 5 (siehe Tabelle Ungelernte)."], ["Gelernt im Gießereiberuf", "Former, Kernmacher, Gießereimechaniker, Gießer o. ä. mit Facharbeiter- bzw. Gesellenbrief: Einstieg in LG 6. Aufstieg nach Jahren bis LG 8, danach Erfahrungsaufschläge. LG 9 nur über einen höher bewerteten Arbeitsplatz (z. B. Anlagenführer mit Linienverantwortung)."], ["Gelernt, aber fachfremd", "Anderer anerkannter Metallberuf (z. B. Industriemechaniker, Schlosser): wie gelernt. Nicht-Metallberuf: wie ungelernt."], ["Zertifizierte Fachkraft", "Ohne 3-jährige Ausbildung, aber mit gültiger Schweißerprüfung (z. B. DIN EN ISO 9606) oder Prüfzertifikat Stufe 1 (DIN EN ISO 9712): Einstieg in LG 4, Aufstieg nach Jahren bis LG 7."], ["Meister mit Brief", "Geprüfter Industrie- bzw. Gießereimeister (IHK/HWK): Einstieg in M 3. Nach 10 Jahren M 4."], ["Werksmeister (ohne Brief)", "Vom Betrieb zum Meister ernannt, ohne Meisterprüfung: Einstieg in M 2. Nach 10 Jahren M 3. Mit bestandener Meisterprüfung Wechsel zu „Meister mit Brief“, die Jahre als Meister zählen mit."], ["Aufstieg zum Meister", "Wer aus der Laufbahn Gelernte/Ungelernte Meister wird, bekommt mindestens seinen bisherigen Monatslohn + 5 %. Die Meisterjahre beginnen mit der Ernennung."], ["Externenprüfung bestanden", "Wechsel in die Laufbahn Gelernte. Die bisherigen Jahre zählen dort mit."], ["Arbeitsplatz höher bewertet", "Es gilt immer die höhere Lohngruppe: Tarif nach Arbeitsplatz geht vor."], ["Abstand gelernt/ungelernt", "Gelernte liegen in jeder Erfahrungsstufe rund 17–20 % über Ungelernten (ca. 3,50–4,50 € je Stunde). Die Ausbildung lohnt sich ein Berufsleben lang."]]], ["B. Einstieg: welche Erfahrungsstufe?", [["Grundsatz", "Stufe nach Jahren Erfahrung: im Betrieb + anerkannte Jahre aus anderen Betrieben."], ["Was angerechnet wird", "Nur Jahre in gleicher oder gleichwertiger Tätigkeit: Formerei, Kernmacherei, Gießerei, Schmelzbetrieb, Putzerei."], ["Nachweis", "Arbeitszeugnis, Arbeitgeberbescheinigung oder Versicherungsverlauf der Rentenversicherung. Einreichen bis 3 Monate nach Einstellung; später eingereichte Nachweise gelten ab dem Monat der Vorlage."], ["6-Monats-Regel", "Die Jahre zählen, wenn zwischen dem Ende des letzten Jobs und dem Start bei uns höchstens 6 Monate liegen. Mehrere frühere Betriebe zählen zusammen, solange zwischen ihnen jeweils höchstens 6 Monate Lücke sind."], ["Ausbildung", "Die Ausbildungszeit selbst zählt nicht als Erfahrung; die Jahre beginnen mit dem Ende der Ausbildung."], ["Teilzeit", "Zählt voll."], ["Fachfremde Erfahrung", "Wird nicht angerechnet."]]], ["C. Im Betrieb", [["Aufstieg", "Automatisch zum Monatsersten nach Erreichen der Jahre – in die nächste Lohngruppe bzw. den nächsten Erfahrungsaufschlag. Kein Antrag, keine Beurteilung."], ["Höhergruppierung", "Wer über den Arbeitsplatz in eine höhere Lohngruppe kommt, behält seine Jahre; die Laufbahn läuft von dort weiter."], ["Kolonnenführer / Vorarbeiter", "Zusätzlich zur Laufbahn: Kolonnenführer +5 %, Vorarbeiter +10 %, jeweils bezogen auf den Stundenlohn LG 8 (Einstieg), solange die Funktion ausgeübt wird."], ["Unterbrechungen", "Elternzeit, Pflegezeit, Wehr-/Zivildienst und Krankheit über 6 Wochen: Die Stufe bleibt erhalten, die Zeit läuft in der Unterbrechung nicht weiter."], ["Streitfälle", "Entscheidet eine paritätische Kommission (2 × Betriebsrat, 2 × Arbeitgeber)."]]], ["D. Zertifikate (Schweißer und Prüfer)", [["Prüfer Stufe 1", "Prüft nach Anweisung: Laufbahn Zertifizierte Fachkraft."], ["Prüfer Stufe 2", "Prüft selbstständig, bewertet und unterschreibt: Laufbahn Gelernte (ab LG 6)."], ["Prüfer Stufe 3", "Legt Prüfverfahren fest und bildet aus: Laufbahn Meister mit Brief (ab M 3)."], ["Gültigkeit", "Die Einstufung gilt, solange das Zertifikat gültig ist. Der Betrieb zahlt Verlängerung bzw. Rezertifizierung und stellt dafür frei."], ["Brief + Zertifikat", "Bleibt in seiner Laufbahn und bekommt eine Zertifikatszulage von 0,50 €/Std., solange das Zertifikat im Betrieb eingesetzt wird."], ["Erfahrung", "Zählt ab Erwerb des ersten Zertifikats; Jahre aus anderen Betrieben wie bei allen anderen (6-Monats-Regel)."]]]];
 
 /* ---------- Format ---------- */
 const eur=(v,d=2)=>isFinite(v)?v.toLocaleString("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:d,maximumFractionDigits:d}):"–";
@@ -188,18 +188,19 @@ function drawTable(){
 }
 
 /* ---------- Person ---------- */
-let P={path:"gel",jb:"",ja:"",luecke:"",zert:false,heute:""};
+let P={path:"gel",fn:"",jb:"",ja:"",luecke:"",zert:false,heute:""};
 try{Object.assign(P,JSON.parse(LSg("entgelt.person","{}")))}catch(e){}
 function drawPersonForm(){
   $("pForm").innerHTML=`
    <div class="row"><label>Laufbahn<small>nach Ausbildung bzw. Zertifikat</small></label><select class="n" id="pPath">${C.paths.map(p=>`<option value="${p.id}" ${p.id===P.path?"selected":""}>${esc(p.name)}</option>`).join("")}</select></div>
+   <div class="row"><label>Funktion<small>Zuschlag bezogen auf LG 8 (${eur(einstieg(8))})</small></label><select class="n" id="pFn">${[["","keine"],["kf","Kolonnenführer +"+num(C.kf*100,1)+" %"],["va","Vorarbeiter +"+num(C.va*100,1)+" %"]].map(o=>`<option value="${o[0]}" ${o[0]===P.fn?"selected":""}>${o[1]}</option>`).join("")}</select></div>
    <div class="row"><label>Jahre im Betrieb<small>in dieser Tätigkeit</small></label><input class="n" id="pJb" inputmode="decimal" value="${esc(P.jb)}" placeholder="0"></div>
    <div class="row"><label>Jahre im letzten Betrieb<small>gleiche Tätigkeit, mit Nachweis</small></label><input class="n" id="pJa" inputmode="decimal" value="${esc(P.ja)}" placeholder="0"></div>
    <div class="row"><label>Lücke dazwischen (Monate)<small>angerechnet bis ${num(C.luecke,0)} Monate</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.luecke)}" placeholder="0"></div>
    <div class="row"><label>Heutiger Stundenlohn<small>optional, zum Vergleich (bei Meistern: Monatsgehalt)</small></label><input class="n" id="pHeute" inputmode="decimal" value="${esc(P.heute)}" placeholder="€"></div>
    <label class="chk"><input type="checkbox" id="pZert" ${P.zert?"checked":""}><span>Hat Brief <b>und</b> setzt ein Zertifikat ein (Schweißer/Prüfer)<br><small class="mu">+${eur(C.zulage)} je Stunde Zertifikatszulage</small></span></label>`;
-  ["pPath","pJb","pJa","pLu","pHeute","pZert"].forEach(id=>$(id).addEventListener("input",()=>{
-    P={path:$("pPath").value,jb:$("pJb").value,ja:$("pJa").value,luecke:$("pLu").value,zert:$("pZert").checked,heute:$("pHeute").value};
+  ["pPath","pFn","pJb","pJa","pLu","pHeute","pZert"].forEach(id=>$(id).addEventListener("input",()=>{
+    P={path:$("pPath").value,fn:$("pFn").value,jb:$("pJb").value,ja:$("pJa").value,luecke:$("pLu").value,zert:$("pZert").checked,heute:$("pHeute").value};
     LSs("entgelt.person",JSON.stringify(P));drawPersonRes()}));
   drawPersonRes();
 }
@@ -208,7 +209,7 @@ function drawPersonRes(){
   const jb=pn(P.jb)||0,ja=pn(P.ja)||0,lu=pn(P.luecke)||0;
   const anr=lu<=C.luecke?ja:0,jahre=jb+anr;
   const {cur,next}=stepFor(p,jahre);const v=stepVal(p,cur);
-  const zul=P.zert&&p.kind==="lg"?C.zulage:0;
+  const fz=p.kind==="lg"&&P.fn?r2(einstieg(8)*C[P.fn]):0;const zul=(P.zert&&p.kind==="lg"?C.zulage:0)+fz;
   const h=r2(v.h+zul),m=p.kind==="lg"?Math.round(h*C.std):v.m;
   const heute=pn(P.heute);
   let cmp="";
@@ -224,7 +225,7 @@ function drawPersonRes(){
   $("pRes").innerHTML=`<div class="res">
     <div class="sub">${esc(p.name)} · ${num(jahre,1)} Jahre gerechnet${ja?` (davon ${num(anr,1)} angerechnet${lu>C.luecke?" – Lücke zu lang, nicht angerechnet":""})`:""}</div>
     <div class="big">${p.kind==="lg"?eur(h)+" <span style='font-size:16px;font-weight:600'>je Std.</span>":eur(m,0)+" <span style='font-size:16px;font-weight:600'>im Monat</span>"}</div>
-    <div class="sub">${v.grp}${v.a?" + "+pct(v.a):""}${zul?" + Zertifikatszulage "+eur(zul):""} · ${p.kind==="lg"?eur(m,0)+" im Monat":eur(v.h)+" je Std."}</div>
+    <div class="sub">${v.grp}${v.a?" "+pct(v.a):""}${fz?" + "+(P.fn==="kf"?"Kolonnenführer":"Vorarbeiter")+" "+eur(fz):""}${zul-fz?" + Zertifikatszulage "+eur(zul-fz):""} · ${p.kind==="lg"?eur(m,0)+" im Monat":eur(v.h)+" je Std."}</div>
     ${cmp}${nx}</div>`;
 }
 
@@ -238,7 +239,9 @@ function drawWerte(){
    <div class="row"><label>Bezahlte Stunden pro Monat</label>${inp("std",C.std)}</div>
    <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label>${inp("luecke",C.luecke)}</div>
    <div class="row"><label>Zertifikatszulage €/Std.<small>für Brief + Zertifikat</small></label>${inp("zulage",C.zulage)}</div>
-   <div class="row"><label>Mindest-Plus beim Aufstieg zum Meister in %</label>${inp("mplusP",C.meisterPlus*100)}</div></div>
+   <div class="row"><label>Mindest-Plus beim Aufstieg zum Meister in %</label>${inp("mplusP",C.meisterPlus*100)}</div>
+   <div class="row"><label>Kolonnenführer-Zuschlag in %<small>bezogen auf LG 8: ${eur(einstieg(8)*C.kf)}/Std.</small></label>${inp("kfP",C.kf*100)}</div>
+   <div class="row"><label>Vorarbeiter-Zuschlag in %<small>bezogen auf LG 8: ${eur(einstieg(8)*C.va)}/Std.</small></label>${inp("vaP",C.va*100)}</div></div>
   <div class="card"><h2>Tarif</h2><p class="lead">Eisen und Stahl NRW, ${esc(C.tarifStand)}</p>
    <table class="ed"><tr><th>Gruppe</th><th>Tarif €/Std.</th><th>Einstieg im Betrieb</th></tr>
    ${C.lg.map((t,i)=>`<tr><td><b>LG ${i+1}</b></td><td>${`<input data-k="lg.${i}" inputmode="decimal" value="${num(t,2)}">`}</td><td style="text-align:right">${eur(einstieg(i+1))}</td></tr>`).join("")}</table>
@@ -256,10 +259,10 @@ function drawWerte(){
      <div class="btns"><button class="btn" data-add="${pi}">＋ Stufe</button></div></details>`).join("")}
    <div class="btns"><button class="btn" id="bReset">Alles auf Ausgangswerte zurücksetzen</button></div></div>`;
   $("werte").innerHTML=h;
-  const re=()=>{save();drawTable();drawPersonRes()};
+  const re=()=>{save();drawTable();drawPersonForm()};
   document.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("change",()=>{
     const k=el.dataset.k,x=pn(el.value);if(!isFinite(x))return drawWerte();
-    if(k==="leistP")C.leist=x/100;else if(k==="mplusP")C.meisterPlus=x/100;
+    if(k==="leistP")C.leist=x/100;else if(k==="kfP")C.kf=x/100;else if(k==="vaP")C.va=x/100;else if(k==="mplusP")C.meisterPlus=x/100;
     else if(k.startsWith("lg."))C.lg[+k.split(".")[1]]=x;
     else if(k.startsWith("m.")){const[,g,j]=k.split(".");C.m[g][+j]=x}
     else C[k]=x;re();drawWerte()}));
