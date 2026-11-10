@@ -198,10 +198,10 @@ function drawPersonForm(){
    <div class="row"><label>Jahre im letzten Betrieb<small>gleiche Tätigkeit, mit Nachweis</small></label><input class="n" id="pJa" inputmode="decimal" value="${esc(P.ja)}" placeholder="0"></div>
    <div class="row"><label>Lücke dazwischen (Monate)<small>angerechnet bis ${num(C.luecke,0)} Monate</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.luecke)}" placeholder="0"></div>
    <div class="row"><label>Heutiger Stundenlohn<small>optional, zum Vergleich (bei Meistern: Monatsgehalt)</small></label><input class="n" id="pHeute" inputmode="decimal" value="${esc(P.heute)}" placeholder="€"></div>
-   <label class="chk"><input type="checkbox" id="pZert" ${P.zert?"checked":""}><span>Hat Brief <b>und</b> setzt ein Zertifikat ein (Schweißer/Prüfer)<br><small class="mu">+${eur(C.zulage)} je Stunde Zertifikatszulage</small></span></label>`;
+   <label class="chk" id="pZertRow" ${P.path==="gel"?"":"hidden"}><input type="checkbox" id="pZert" ${P.zert?"checked":""}><span>Arbeitet zusätzlich als Schweißer oder Prüfer<br><small class="mu">Facharbeiter mit gültigem Schweiß- oder Prüfschein: +${eur(C.zulage)} je Stunde</small></span></label>`;
   ["pPath","pFn","pJb","pJa","pLu","pHeute","pZert"].forEach(id=>$(id).addEventListener("input",()=>{
     P={path:$("pPath").value,fn:$("pFn").value,jb:$("pJb").value,ja:$("pJa").value,luecke:$("pLu").value,zert:$("pZert").checked,heute:$("pHeute").value};
-    LSs("entgelt.person",JSON.stringify(P));drawPersonRes()}));
+    LSs("entgelt.person",JSON.stringify(P));$("pZertRow").hidden=P.path!=="gel";drawPersonRes()}));
   drawPersonRes();
 }
 function drawPersonRes(){
@@ -209,7 +209,7 @@ function drawPersonRes(){
   const jb=pn(P.jb)||0,ja=pn(P.ja)||0,lu=pn(P.luecke)||0;
   const anr=lu<=C.luecke?ja:0,jahre=jb+anr;
   const {cur,next}=stepFor(p,jahre);const v=stepVal(p,cur);
-  const fz=p.kind==="lg"&&P.fn?r2(v.h*C[P.fn]):0;const zul=(P.zert&&p.kind==="lg"?C.zulage:0)+fz;
+  const fz=p.kind==="lg"&&P.fn?r2(v.h*C[P.fn]):0;const zul=(P.zert&&p.id==="gel"?C.zulage:0)+fz;
   const h=r2(v.h+zul),m=p.kind==="lg"?Math.round(h*C.std):v.m;
   const heute=pn(P.heute);
   let cmp="";
@@ -238,7 +238,7 @@ function drawWerte(){
    <div class="row"><label>Leistungsgrad in %</label>${inp("leistP",C.leist*100)}</div>
    <div class="row"><label>Bezahlte Stunden pro Monat</label>${inp("std",C.std)}</div>
    <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label>${inp("luecke",C.luecke)}</div>
-   <div class="row"><label>Zertifikatszulage €/Std.<small>für Brief + Zertifikat</small></label>${inp("zulage",C.zulage)}</div>
+   <div class="row"><label>Zulage Schweißer/Prüfer €/Std.<small>für Facharbeiter mit zusätzlichem Schein</small></label>${inp("zulage",C.zulage)}</div>
    <div class="row"><label>Mindest-Plus beim Aufstieg zum Meister in %</label>${inp("mplusP",C.meisterPlus*100)}</div>
    <div class="row"><label>Kolonnenführer-Zuschlag in %<small>auf den eigenen Stundenlohn</small></label>${inp("kfP",C.kf*100)}</div>
    <div class="row"><label>Vorarbeiter-Zuschlag in %<small>auf den eigenen Stundenlohn</small></label>${inp("vaP",C.va*100)}</div></div>
