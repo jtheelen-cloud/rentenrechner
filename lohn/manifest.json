@@ -1,6 +1,6 @@
 {
- "name": "Lohnrechner – faire Lohnstruktur",
- "short_name": "Lohnrechner",
+ "name": "Entgelttabelle Formerei",
+ "short_name": "Entgelttabelle",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
