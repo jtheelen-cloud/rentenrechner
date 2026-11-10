@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a4d">
+<title>Lohnrechner</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#eef1f3;--card:#ffffff;--ink:#1b2730;--muted:#62707b;--line:#d8dee3;
+  --acc:#1f3a4d;--acc2:#2f7d6d;--soft:#e3eef0;--red:#c62828;--redsoft:#fde7e7;--warn:#b26a00;--ok:#2e7d32;
+  --sh:0 1px 2px rgba(20,30,40,.06),0 6px 18px rgba(20,30,40,.06);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#11171c;--card:#1a232a;--ink:#e6edf2;--muted:#94a3ae;--line:#2c3943;
+  --acc:#9cc3dc;--acc2:#5cc3ad;--soft:#1f2f36;--red:#ff7a7a;--redsoft:#3a1f22;--warn:#f0b04a;--ok:#7ccf83;
+  --sh:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+button,input,select{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--acc);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
+@media (prefers-color-scheme:dark){header{background:#16232c;color:var(--ink)}}
+header h1{margin:0;font-size:19px}header p{margin:2px 0 0;font-size:13px;opacity:.8}
+main{max-width:760px;margin:0 auto;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+main>*,.tab>*{min-width:0}
+.tab{display:grid;gap:14px;min-width:0}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.card h2{margin:0 0 4px;font-size:17px}.card .lead{margin:0 0 12px;color:var(--muted);font-size:14px}
+.row{display:grid;grid-template-columns:1fr 150px;gap:8px 12px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row label{font-size:15px}.row small{display:block;color:var(--muted);font-size:12.5px;line-height:1.3}
+.row input,.row select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);text-align:right;font-variant-numeric:tabular-nums}
+.row select{text-align:left}
+.row.pf input{border:2px solid var(--red);background:var(--redsoft)}
+.row.pf.done input{border-color:var(--line);background:var(--bg)}
+.pfl{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--red);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.row.pf.done .pfl{background:var(--ok)}
+.out{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.sec{margin:14px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{border:0;background:none;padding:9px 2px 8px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.tabs button b{font-size:19px;font-weight:400}
+.tabs button[aria-selected=true]{color:var(--acc2);font-weight:700}
+.tabs .dot{position:absolute;top:6px;right:calc(50% - 20px);width:9px;height:9px;border-radius:50%;background:var(--red)}
+.banner{border-radius:12px;padding:10px 12px;font-size:14px;background:var(--redsoft);color:var(--ink);border-left:4px solid var(--red)}
+.banner.ok{background:var(--soft);border-left-color:var(--ok)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:var(--bg);border-radius:12px;padding:9px 10px}.kpi b{display:block;font-size:16px;font-variant-numeric:tabular-nums}.kpi span{font-size:12px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.tbl th{font-size:12px;color:var(--muted);text-align:right;font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{text-align:right;padding:7px 4px;border-bottom:1px solid var(--line)}
+.tbl tr.sum td{font-weight:700;border-bottom:0}
+.scroll{overflow-x:auto;margin:0 -16px;padding:0 16px}
+.grp{border-top:1px solid var(--line);padding:10px 0}.grp:first-of-type{border-top:0}
+.grp .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.grp .hd b{font-size:15px}.grp .hd span{font-size:13px;color:var(--muted)}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;font-size:13px;margin-top:6px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--acc2);border-radius:99px}
+.bar.ist i{background:var(--muted)}
+.pos{color:var(--ok)}.neg{color:var(--red)}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;font-weight:600}
+.btn.p{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.mu{color:var(--muted);font-size:13px}
+#gate{min-height:100vh;display:grid;place-items:center;padding:24px}
+#gate .card{max-width:380px;width:100%;text-align:center}
+#gate input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);text-align:center;font-size:20px;letter-spacing:.1em;text-transform:uppercase;margin:12px 0}
+[hidden]{display:none!important}
+@media (max-width:420px){.row{grid-template-columns:1fr 128px}.kpis{grid-template-columns:1fr 1fr}}
+@media print{.tabs,header,#gate{display:none!important}.tab{display:block!important}body{padding:0}}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="card">
+    <div style="font-size:44px">⚖️</div>
+    <h2>Lohnrechner</h2>
+    <p class="mu">Nur für den Besitzer. Bitte Master-Code eingeben.</p>
+    <input id="gCode" autocomplete="off" placeholder="XXXX-XXXX">
+    <button class="btn p" id="gGo" style="width:100%">Öffnen</button>
+    <p id="gErr" class="mu" style="color:var(--red)" hidden>Code stimmt nicht.</p>
+  </div>
+</div>
+
+<div id="app" hidden>
+<header><h1>⚖️ Lohnrechner – faire Lohnstruktur</h1><p>Pay-Ratio und Erfolgsbeteiligung · Eisen und Stahl NRW</p></header>
+<main>
+  <!-- 1 FIRMA -->
+  <section class="tab" id="t1">
+    <div class="card">
+      <h2>Jahresabschluss</h2>
+      <p class="lead">Aus der Gewinn- und Verlustrechnung abschreiben (Unternehmensregister oder Wirtschaftsausschuss). Beträge in €, z. B. „48,5 Mio“ oder „48500000“. <b style="color:var(--red)">Rot = zwingend nötig.</b></p>
+      <div id="f1"></div>
+    </div>
+    <div class="card">
+      <h2>Ergebnis</h2>
+      <div id="o1"></div>
+    </div>
+  </section>
+
+  <!-- 2 BELEGSCHAFT -->
+  <section class="tab" id="t2" hidden>
+    <div class="card">
+      <h2>Belegschaft</h2>
+      <p class="lead">Das weißt du als Betriebsrat. <b style="color:var(--red)">Rot = zwingend nötig.</b></p>
+      <div id="f2"></div>
+    </div>
+    <div class="card">
+      <h2>Wie viele in welcher Gruppe?</h2>
+      <p class="lead">Anzahl Köpfe je Gruppe (ohne Geschäftsführung). Die Summe sollte die Beschäftigten oben ergeben.</p>
+      <div id="f2b"></div>
+      <div id="o2"></div>
+    </div>
+    <div class="card">
+      <h2>Ist-Löhne heute</h2>
+      <p class="lead">Tarif NRW (aus der BR-App) plus Erschwerniszulage und Leistungsgrad, so wie bei dir in LG 8.</p>
+      <div id="f2c"></div>
+    </div>
+  </section>
+
+  <!-- 3 REGELN -->
+  <section class="tab" id="t3" hidden>
+    <div class="card">
+      <h2>Faire Verteilung</h2>
+      <p class="lead">Das sind keine Daten, sondern deine Vorstellungen. Faktor 1,0 = Ungelernte.</p>
+      <div id="f3"></div>
+    </div>
+    <div class="card">
+      <h2>Erfolgsbeteiligung</h2>
+      <div id="f3b"></div>
+    </div>
+    <div class="card">
+      <h2>Weitere Annahmen</h2>
+      <div id="f3c"></div>
+    </div>
+  </section>
+
+  <!-- 4 ERGEBNIS -->
+  <section class="tab" id="t4" hidden>
+    <div id="o4"></div>
+  </section>
+</main>
+<nav class="tabs" role="tablist">
+  <button data-t="1" aria-selected="true"><b>🏭</b>Firma</button>
+  <button data-t="2"><b>👷</b>Belegschaft</button>
+  <button data-t="3"><b>⚖️</b>Regeln</button>
+  <button data-t="4"><b>📊</b>Ergebnis</button>
+</nav>
+</div>
+
+<script>
+"use strict";
+/* ---------------- Zugang (nur Master) ---------------- */
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const KEY_OK="lohn.zugang";
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+const $=id=>document.getElementById(id);
+const LSg=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}};
+const LSs=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
+(function gate(){
+  const keys=[KEY_OK,"admin.zugang","rentenrechner.zugang","br.zugang","wetter.zugang","ahnen.zugang"];
+  if(keys.some(k=>LSg(k,"")==="M:"+CODE_HASH)) return unlock();
+  const go=()=>{const c=$("gCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");const f=c.length===8?c.slice(0,4)+"-"+c.slice(4):c;
+    if(sha256js("rentenrechner:"+f)===CODE_HASH){LSs(KEY_OK,"M:"+CODE_HASH);unlock()}else $("gErr").hidden=false};
+  $("gGo").onclick=go;$("gCode").onkeydown=e=>{if(e.key==="Enter")go()};
+})();
+
+/* ---------------- Tarif ---------------- */
+const TARIF_FALLBACK={lg:{"LG 1":14.69,"LG 2":15.20,"LG 3":15.65,"LG 4":16.40,"LG 5":17.12,"LG 6":18.00,"LG 7":18.94,"LG 8":20.33,"LG 9":22.11},
+ kt:{"K/T 1":[1992,2139.9,2295.99,2435.7],"K/T 2":[2243.95,2415.6,2579.91,2747.87],"K/T 3":[2493.18,2679.4,2867.47,3057.39],"K/T 4":[3194.34,3428.94,3673.61,3914.63],"K/T 5":[4040.62,4346.39,4645.89,4946.23],"K/T 6":[5108.69,5493.93,5875.53,5875.53]},
+ m:{"M 2":[3950.18,4141.02,4332.72,4525.33],"M 3":[4525.33,4730.72,4928.89,5133.32],"M 4":[5133.32,5454.72,5786.13,5786.13]},stand:"gültig ab 01.01.2026"};
+let T=TARIF_FALLBACK;
+const pn=s=>{s=String(s??"").trim();if(!s)return NaN;let m=1;const low=s.toLowerCase();
+  if(/mio|million/.test(low))m=1e6;else if(/tsd|tausend|\bk\b/.test(low))m=1e3;
+  s=s.replace(/[^\d,.\-]/g,"");if(/,/.test(s))s=s.replace(/\./g,"").replace(",",".");else if(/^\-?\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,"");
+  const x=parseFloat(s);return isFinite(x)?x*m:NaN};
+async function loadTarif(){try{const r=await fetch("../br/tarif.json",{cache:"no-store"});const j=await r.json();const B=j.entgelte.bloecke;
+  const n=v=>pn(v);const t={lg:{},kt:{},m:{},stand:j.entgelte.stand};
+  const lgB=B.find(b=>/Löhne/.test(b.t)),ktB=B.find(b=>/Gehälter/.test(b.t)),mB=B.find(b=>/Meister/.test(b.t));
+  lgB.z.forEach(z=>{t.lg[z[0].replace(/\s*\(.*\)/,"")]=n(z[1])});
+  const st=z=>{const a=z.slice(1).map(n);if(!isFinite(a[3]))a[3]=a[2];return a};
+  ktB.z.forEach(z=>t.kt[z[0]]=st(z));mB.z.forEach(z=>t.m[z[0]]=st(z));
+  if(Object.keys(t.lg).length>=8&&Object.keys(t.kt).length&&Object.keys(t.m).length)T=t}catch(e){}}
+
+/* ---------------- Daten ---------------- */
+const GRP=[
+ {id:"ung",nm:"Ungelernte",tg:"LG 1–5",f:1.0,n:0},
+ {id:"fa",nm:"Facharbeiter",tg:"LG 6–8",f:1.21,n:0},
+ {id:"kf",nm:"Kolonnenführer",tg:"LG 8 + Zuschlag",f:1.35,n:0},
+ {id:"va",nm:"Vorarbeiter",tg:"LG 8 + Zuschlag",f:1.45,n:0},
+ {id:"me",nm:"Meister",tg:"Meistergehalt",f:1.7,n:0},
+ {id:"ing",nm:"Ingenieure / Angestellte",tg:"K/T-Gehalt",f:1.95,n:0},
+ {id:"lt",nm:"Abteilungs-/Betriebsleiter",tg:"AT",f:2.6,n:0},
+ {id:"gf",nm:"Geschäftsführung",tg:"–",f:15}];
+const DEF={ja:{umsatz:"",personal:"",abf:"",jue:"",material:"",energie:"",afa:"",sonst:"",zins:"",steuern:""},
+ rueck:0.2,eDelta:0.3,stSatz:0.3,
+ b:{gesamt:"",gf:2,lg8:24.11,leist:1.1,kf:0.05,va:0.10,me:"M 3",meS:4,ing:"K/T 6",ingS:4},
+ n:{ung:"",fa:"",kf:"",va:"",me:"",ing:"",lt:""},
+ f:{ung:1,fa:1.21,kf:1.35,va:1.45,me:1.7,ing:1.95,lt:2.6,gf:15},
+ s:{ratio:20,beteil:0.15,kopf:0.5,agsv:0.197,std:152,monate:13.1}};
+let S;try{S=JSON.parse(LSg("lohn.daten",""))}catch(e){}
+S=Object.assign(structuredClone(DEF),S||{});for(const k of ["ja","b","n","f","s"])S[k]=Object.assign(structuredClone(DEF[k]),S[k]||{});
+const save=()=>LSs("lohn.daten",JSON.stringify(S));
+
+/* ---------------- Format ---------------- */
+const eur=(v,d=0)=>isFinite(v)?v.toLocaleString("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:d,maximumFractionDigits:d}):"–";
+const mio=v=>isFinite(v)?(Math.abs(v)>=1e6?(v/1e6).toLocaleString("de-DE",{maximumFractionDigits:2})+" Mio. €":eur(v)):"–";
+const pct=(v,d=1)=>isFinite(v)?(v*100).toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d})+" %":"–";
+const num=(v,d=2)=>isFinite(v)?v.toLocaleString("de-DE",{maximumFractionDigits:d}):"";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------------- Felder ---------------- */
+// field: [pfad, label, hinweis, typ(eur|pct|n|sel), pflicht, optionen]
+function fieldHTML(p,lab,hint,typ,pf,opt){
+  const v=get(p);let val="";
+  if(typ==="pct")val=v===""?"":num(v*100,1);else if(typ==="eur")val=v===""?"":num(+v,0);else val=v===""?"":num(+v,2);
+  const ctl=typ==="sel"?`<select data-p="${p}">${opt.map(o=>`<option value="${esc(o[0])}" ${String(o[0])===String(v)?"selected":""}>${esc(o[1])}</option>`).join("")}</select>`
+    :`<input data-p="${p}" data-t="${typ}" inputmode="decimal" autocomplete="off" value="${esc(val)}" placeholder="${typ==="eur"?"€":typ==="pct"?"%":""}">`;
+  return `<div class="row ${pf?"pf":""}" data-row="${p}"><label>${esc(lab)}${pf?'<span class="pfl">Pflicht</span>':""}${hint?`<small>${hint}</small>`:""}</label>${ctl}</div>`}
+function get(p){return p.split(".").reduce((o,k)=>o?.[k],S)}
+function set(p,v){const ks=p.split(".");let o=S;for(let i=0;i<ks.length-1;i++)o=o[ks[i]];o[ks.at(-1)]=v}
+function bindAll(){document.querySelectorAll("[data-p]").forEach(el=>{
+  const h=()=>{const p=el.dataset.p,t=el.dataset.t;let v;
+    if(el.tagName==="SELECT")v=isNaN(+el.value)?el.value:+el.value;
+    else{const x=pn(el.value);v=el.value.trim()===""?"":(isFinite(x)?(t==="pct"?x/100:x):get(p))}
+    set(p,v);save();calc()};
+  el.addEventListener("input",h);el.addEventListener("change",()=>{h();if(el.dataset.t==="eur"&&get(el.dataset.p)!=="")el.value=num(+get(el.dataset.p),0)})})}
+
+function buildForms(){
+  $("f1").innerHTML=
+   fieldHTML("ja.umsatz","Umsatzerlöse","","eur",1)+
+   fieldHTML("ja.personal","Personalaufwand","Löhne, Gehälter, Sozialabgaben, Altersversorgung","eur",1)+
+   fieldHTML("ja.abf","Aufwand aus Gewinnabführung an die Mutter","0 eintragen, wenn nichts abgeführt wird","eur",1)+
+   fieldHTML("ja.jue","Jahresüberschuss laut Abschluss","Reicht zusammen mit der Abführung. Dann sind die Posten darunter nicht nötig.","eur",0)+
+   `<div class="sec">Nur nötig, wenn der Jahresüberschuss fehlt</div>`+
+   fieldHTML("ja.material","Materialaufwand","","eur",0)+
+   fieldHTML("ja.afa","Abschreibungen","","eur",0)+
+   fieldHTML("ja.sonst","Sonstige betriebliche Aufwendungen","inkl. Konzernumlage","eur",0)+
+   fieldHTML("ja.zins","Zinsen (Saldo)","","eur",0)+
+   fieldHTML("ja.steuern","Steuern vom Einkommen und Ertrag","","eur",0)+
+   `<div class="sec">Was wäre wenn: Energie</div>`+
+   fieldHTML("ja.energie","Energiekosten (Strom, Gas)","meist im Materialaufwand, im Wirtschaftsausschuss erfragen","eur",0)+
+   fieldHTML("eDelta","Änderung Energiepreis","z. B. 30 = +30 %, −20 = −20 %","pct",0)+
+   fieldHTML("stSatz","Steuersatz GmbH (ca.)","Körperschaft- + Gewerbesteuer","pct",0);
+  $("f2").innerHTML=
+   fieldHTML("b.gesamt","Beschäftigte gesamt","inkl. Geschäftsführung","n",1)+
+   fieldHTML("b.gf","Anzahl Geschäftsführer","","n",1);
+  $("f2b").innerHTML=GRP.filter(g=>g.id!=="gf").map(g=>fieldHTML("n."+g.id,g.nm,g.tg,"n",1)).join("");
+  const st=[[1,"1. Jahr"],[2,"2. Jahr"],[3,"3. Jahr"],[4,"danach"]];
+  $("f2c").innerHTML=
+   fieldHTML("b.lg8","Dein Ist-Stundenlohn in LG 8","von der Abrechnung","n",1)+
+   fieldHTML("b.leist","Leistungsgrad","110 % = 110","pct",0)+
+   fieldHTML("b.kf","Zuschlag Kolonnenführer auf LG 8","","pct",0)+
+   fieldHTML("b.va","Zuschlag Vorarbeiter auf LG 8","","pct",0)+
+   fieldHTML("b.me","Meister: Gehaltsgruppe","","sel",0,Object.keys(T.m).map(k=>[k,k]))+
+   fieldHTML("b.meS","Meister: Stufe","","sel",0,st)+
+   fieldHTML("b.ing","Ingenieure: Gehaltsgruppe","","sel",0,Object.keys(T.kt).map(k=>[k,k]))+
+   fieldHTML("b.ingS","Ingenieure: Stufe","","sel",0,st)+
+   `<p class="mu">Tarif ${esc(T.stand)} · Leiter und Geschäftsführung sind außertariflich (kein Ist-Wert).</p>`;
+  $("f3").innerHTML=GRP.map(g=>fieldHTML("f."+g.id,"Faktor "+g.nm,g.id==="gf"?"wird auf die max. Pay-Ratio gekappt":"","n",0)).join("")+
+   fieldHTML("s.ratio","Max. Pay-Ratio Geschäftsführung : Ungelernte","z. B. 20 = höchstens 20-fach","n",0);
+  $("f3b").innerHTML=
+   fieldHTML("s.beteil","Anteil vom Gewinn für die Belegschaft","","pct",0)+
+   fieldHTML("s.kopf","Davon gleich je Kopf","Rest nach Höhe des Jahresbruttos","pct",0)+
+   fieldHTML("rueck","Rücklage für Investitionen","wird vom Gewinn vor Abführung zuerst abgezogen","pct",0);
+  $("f3c").innerHTML=
+   fieldHTML("s.agsv","Arbeitgeberanteil Sozialversicherung","","pct",0)+
+   fieldHTML("s.std","Bezahlte Stunden pro Monat","35-Std.-Woche ≈ 152","n",0)+
+   fieldHTML("s.monate","Monatsentgelte pro Jahr","inkl. Urlaubs- und Weihnachtsgeld","n",0)+
+   `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="bPrint">🖨️ Drucken / PDF</button><button class="btn" id="bReset">Alle Eingaben löschen</button></div>
+   <p class="mu">Alle Eingaben bleiben nur auf diesem Gerät gespeichert. Nichts geht ins Internet.</p>`;
+  bindAll();
+  $("bPrint").onclick=()=>window.print();
+  $("bReset").onclick=()=>{if(confirm("Wirklich alle Eingaben löschen?")){S=structuredClone(DEF);save();buildForms();calc()}};
+}
+
+/* ---------------- Rechnen ---------------- */
+const V=x=>x===""||x==null?NaN:+x;
+function compute(){
+  const j=S.ja,R={miss:[]};
+  const U=V(j.umsatz),P=V(j.personal),A=V(j.abf),J=V(j.jue);
+  if(!(U>0))R.miss.push(["ja.umsatz","Umsatzerlöse",1]);
+  if(!(P>0))R.miss.push(["ja.personal","Personalaufwand",1]);
+  if(!isFinite(A))R.miss.push(["ja.abf","Gewinnabführung (0, wenn keine)",1]);
+  const parts=["material","afa","sonst","zins","steuern"].map(k=>V(j[k]));
+  let ebt,gva;
+  if(isFinite(J)){gva=J+(A||0);ebt=gva+(V(j.steuern)||0)}
+  else if(parts.every(isFinite)&&U>0&&P>0){ebt=U-parts[0]-P-parts[1]-parts[2]-parts[3];gva=ebt-parts[4]}
+  else R.miss.push(["ja.jue","Jahresüberschuss (oder alle Einzelposten)",1]);
+  R.U=U;R.P=P;R.A=A;R.ebt=ebt;R.gva=gva;R.rest=isFinite(gva)&&isFinite(A)?gva-A:NaN;
+  R.pq=P/U;R.mq=V(j.material)/U;R.eq=V(j.energie)/U;R.rendite=gva/U;R.mutter=gva>0?A/gva:NaN;
+  const basis=Math.max(0,(gva||0)*(1-S.rueck));R.topf=basis*S.s.beteil;
+  const E=V(j.energie);R.eMehr=E*S.eDelta;R.gvaE=gva-R.eMehr*(1-S.stSatz);R.topfE=Math.max(0,R.gvaE*(1-S.rueck))*S.s.beteil;
+  // Belegschaft
+  const N=V(S.b.gesamt),GF=V(S.b.gf);
+  if(!(N>0))R.miss.push(["b.gesamt","Beschäftigte gesamt",2]);
+  if(!(GF>=0))R.miss.push(["b.gf","Anzahl Geschäftsführer",2]);
+  const cnt={};let sumN=0;GRP.forEach(g=>{if(g.id==="gf")return;cnt[g.id]=V(S.n[g.id]);if(!isFinite(cnt[g.id]))R.miss.push(["n."+g.id,"Anzahl "+g.nm,2]);else sumN+=cnt[g.id]});
+  cnt.gf=GF;R.sumN=sumN;R.N=N;
+  // Ist-Löhne
+  const lgT=T.lg,er=S.b.lg8/S.b.leist-lgT["LG 8"],ist=t=>(t+er)*S.b.leist;
+  const avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
+  const sIdx=i=>Math.max(0,Math.min(3,(+i||4)-1));
+  const istH={ung:avg(["LG 1","LG 2","LG 3","LG 4","LG 5"].map(k=>ist(lgT[k]))),fa:avg(["LG 6","LG 7","LG 8"].map(k=>ist(lgT[k]))),
+    kf:ist(lgT["LG 8"])*(1+S.b.kf),va:ist(lgT["LG 8"])*(1+S.b.va),
+    me:(T.m[S.b.me]||[])[sIdx(S.b.meS)]/S.s.std,ing:(T.kt[S.b.ing]||[])[sIdx(S.b.ingS)]/S.s.std,lt:NaN,gf:NaN};
+  R.erschw=er;
+  // Verteilung
+  const brutto=P/(1+S.s.agsv);R.brutto=brutto;
+  const fEff=g=>Math.min(V(S.f[g.id]),S.s.ratio);
+  const wk=GRP.reduce((s,g)=>s+(cnt[g.id]||0)*fEff(g),0);
+  const base=wk>0?brutto/wk:NaN;R.base=base;
+  R.rows=GRP.map(g=>{const fe=fEff(g),sy=base*fe,sm=sy/S.s.monate,sh=sm/S.s.std,ih=istH[g.id];
+    return{g,n:cnt[g.id]||0,fe,sy,sm,sh,ih,im:ih*S.s.std,diff:isFinite(ih)?sh/ih-1:NaN}});
+  const totN=R.rows.reduce((s,r)=>s+r.n,0),totL=R.rows.reduce((s,r)=>s+r.n*r.sy,0);R.totN=totN;R.totL=totL;
+  R.rows.forEach(r=>{r.eb=(totN>0?R.topf*S.s.kopf/totN:0)+(totL>0?R.topf*(1-S.s.kopf)*r.sy/totL:0);r.tot=r.sy+r.eb});
+  const u=R.rows[0].tot;R.rows.forEach(r=>r.pr=u>0?r.tot/u:NaN);
+  R.istSum=R.rows.reduce((s,r)=>s+(isFinite(r.im)?r.n*r.im*S.s.monate:0),0);
+  R.istN=R.rows.reduce((s,r)=>s+(isFinite(r.im)?r.n:0),0);
+  return R}
+
+function calc(){
+  const R=compute();
+  // Pflicht-Markierung
+  document.querySelectorAll(".row.pf").forEach(el=>{const p=el.dataset.row;el.classList.toggle("done",!R.miss.some(m=>m[0]===p)&&get(p)!=="")});
+  const missBy=t=>R.miss.filter(m=>m[2]===t).length;
+  document.querySelectorAll(".tabs button").forEach(b=>{const t=+b.dataset.t;b.querySelector(".dot")?.remove();if((t===1&&missBy(1))||(t===2&&missBy(2)))b.insertAdjacentHTML("beforeend",'<span class="dot"></span>')});
+  // Tab 1 Ergebnis
+  const L=(a,b,c)=>`<div class="row"><label>${a}${c?`<small>${c}</small>`:""}</label><div class="out">${b}</div></div>`;
+  $("o1").innerHTML=
+    L("Ergebnis vor Steuern",mio(R.ebt))+
+    L("Gewinn nach Steuern, vor Abführung",mio(R.gva))+
+    L("Geht an die Mutter",mio(R.A),isFinite(R.mutter)?pct(R.mutter,0)+" des Gewinns":"")+
+    L("Bleibt in der GmbH",mio(R.rest))+
+    `<div class="sec">Kennzahlen</div>`+
+    L("Personalquote",pct(R.pq),"Personalaufwand ÷ Umsatz")+
+    L("Materialquote",pct(R.mq))+L("Energiequote",pct(R.eq))+
+    L("Umsatzrendite nach Steuern",pct(R.rendite),"vor Abführung")+
+    (isFinite(R.eMehr)?`<div class="sec">Energie ${S.eDelta>=0?"+":""}${num(S.eDelta*100,0)} %</div>`+
+      L("Mehrkosten Energie",mio(R.eMehr))+L("Gewinn vor Abführung danach",mio(R.gvaE))+
+      L("Topf Erfolgsbeteiligung heute → danach",`${eur(R.topf)} → ${eur(R.topfE)}`):"");
+  // Tab 2
+  const d=R.N-(V(S.b.gf)||0)-R.sumN;
+  $("o2").innerHTML=`<div class="row"><label>Summe der Gruppen</label><div class="out">${num(R.sumN,0)}</div></div>`+
+    (isFinite(R.N)&&isFinite(d)&&Math.abs(d)>0.5?`<div class="banner">Die Gruppen ergeben ${num(R.sumN,0)}, ohne Geschäftsführung sollten es ${num(R.N-(V(S.b.gf)||0),0)} sein (${d>0?"es fehlen ":"zu viel: "}${num(Math.abs(d),0)}).</div>`:"");
+  // Tab 4
+  if(R.miss.length){
+    $("o4").innerHTML=`<div class="card"><h2>Noch nicht vollständig</h2><p class="lead">Diese Pflichtangaben fehlen noch:</p>
+      ${R.miss.map(m=>`<div class="row"><label>${esc(m[1])}</label><button class="btn" data-go="${m[2]}" data-f="${m[0]}">${m[2]===1?"🏭 Firma":"👷 Belegschaft"} →</button></div>`).join("")}</div>`;
+    $("o4").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{tab(+b.dataset.go);setTimeout(()=>document.querySelector(`[data-p="${b.dataset.f}"]`)?.focus(),50)});
+    return}
+  const ok=Math.abs(R.rows.reduce((s,r)=>s+r.n*r.sy,0)-R.brutto)<1;
+  const maxT=Math.max(...R.rows.filter(r=>r.g.id!=="gf").map(r=>Math.max(r.sm||0,r.im||0)).filter(isFinite));
+  const gfR=R.rows.find(r=>r.g.id==="gf");
+  $("o4").innerHTML=`
+  <div class="card">
+    <h2>Das Ergebnis auf einen Blick</h2>
+    <div class="kpis">
+      <div class="kpi"><b>${mio(R.brutto)}</b><span>Bruttolohnsumme</span></div>
+      <div class="kpi"><b>${eur(R.topf)}</b><span>Topf Erfolgsbeteiligung</span></div>
+      <div class="kpi"><b>${num(gfR.pr,1)} : 1</b><span>Pay-Ratio GF : Ungelernte</span></div>
+      <div class="kpi"><b>${eur(R.rows[0].sm)}</b><span>Soll-Monat Ungelernte</span></div>
+      <div class="kpi"><b>${eur(R.topf*S.s.kopf/R.totN)}</b><span>Beteiligung je Kopf (Sockel)</span></div>
+      <div class="kpi"><b>${num(R.totN,0)}</b><span>Köpfe gerechnet</span></div>
+    </div>
+    <div class="banner ${ok?"ok":""}" style="margin-top:12px">${ok?"✓ Lohnsumme verteilt, Kontrolle stimmt.":"Abweichung bei der Lohnsumme – Eingaben prüfen."}</div>
+  </div>
+  <div class="card">
+    <h2>Soll gegen Ist je Gruppe</h2>
+    <p class="lead">Monatsbrutto · grau = heute (Ist), grün = fair nach deinen Regeln (Soll).</p>
+    ${R.rows.map(r=>`<div class="grp"><div class="hd"><b>${esc(r.g.nm)}</b><span>${num(r.n,0)} Köpfe · Faktor ${num(r.fe,2)}</span></div>
+      <div class="bars">
+        <span>Ist</span><div class="bar ist"><i style="width:${isFinite(r.im)?Math.min(100,r.im/maxT*100):0}%"></i></div><span>${isFinite(r.im)?eur(r.im):"AT"}</span>
+        <span>Soll</span><div class="bar"><i style="width:${Math.min(100,r.sm/maxT*100)}%"></i></div><span><b>${eur(r.sm)}</b></span>
+      </div>
+      ${isFinite(r.diff)?`<div class="mu">Soll-Stundenlohn ${eur(r.sh,2)} statt ${eur(r.ih,2)} · <b class="${r.diff>=0?"pos":"neg"}">${r.diff>=0?"+":""}${pct(r.diff)}</b></div>`:`<div class="mu">Soll-Stundenlohn ${eur(r.sh,2)}</div>`}
+    </div>`).join("")}
+  </div>
+  <div class="card">
+    <h2>Jahr gesamt mit Erfolgsbeteiligung</h2>
+    <div class="scroll"><table class="tbl">
+      <tr><th>Gruppe</th><th>Soll-Jahr</th><th>Beteiligung</th><th>Gesamt</th><th>Ratio</th></tr>
+      ${R.rows.map(r=>`<tr><td>${esc(r.g.nm)}</td><td>${eur(r.sy)}</td><td>${eur(r.eb)}</td><td><b>${eur(r.tot)}</b></td><td>${num(r.pr,1)}</td></tr>`).join("")}
+      <tr class="sum"><td>Summe</td><td>${mio(R.totL)}</td><td>${eur(R.topf)}</td><td>${mio(R.totL+R.topf)}</td><td></td></tr>
+    </table></div>
+    <p class="mu">Beteiligung: ${pct(S.s.beteil,0)} vom Gewinn nach Rücklage (${pct(S.rueck,0)}), davon ${pct(S.s.kopf,0)} gleich je Kopf und der Rest nach Jahresbrutto.</p>
+  </div>
+  <div class="card">
+    <h2>So rechnet das Programm</h2>
+    <p class="mu" style="margin:0">1. Personalaufwand ohne Arbeitgeberanteil = Bruttolohnsumme (${mio(R.brutto)}).<br>
+    2. Die wird nach Faktoren auf alle Köpfe verteilt, Ungelernte = 1,0; die Geschäftsführung höchstens ${num(S.s.ratio,0)}-fach.<br>
+    3. Soll-Monat = Soll-Jahr ÷ ${num(S.s.monate,1)}, Soll-Stunde = Monat ÷ ${num(S.s.std,0)}.<br>
+    4. Ist-Löhne = Tarif NRW + Erschwerniszulage (${eur(R.erschw,2)}/Std., aus deinem LG-8-Lohn) × Leistungsgrad.<br>
+    5. Der Personalaufwand enthält auch Zuschläge, Mehrarbeit und Altersversorgung, das Soll ist deshalb eher zu hoch angesetzt.<br>
+    Der Tarifvertrag geht immer vor (§ 4 TVG). Das ist ein Gedankenmodell, keine Rechtsberatung.</p>
+  </div>`;
+}
+
+/* ---------------- Tabs & Start ---------------- */
+function tab(t){document.querySelectorAll(".tab").forEach(s=>s.hidden=s.id!=="t"+t);
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(+b.dataset.t===t)));LSs("lohn.tab",String(t));scrollTo(0,0)}
+async function start(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(+b.dataset.t));
+  await loadTarif();buildForms();calc();tab(+LSg("lohn.tab","1")||1);
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
