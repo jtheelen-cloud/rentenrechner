@@ -140,13 +140,14 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 })();
 
 /* ---------- Modell (aus Verguetungsmodell_320_Mitarbeiter.xlsx) ---------- */
-const DEF={ver:3,
+const DEF={ver:4,
+  sz:{tze1:1000,tze2:644,weih:1.10,gewinn:0,stand:"Tarif Eisen und Stahl NRW"},
   basis:2250, woche:35, maxErf:40, luecke:12, maxRatio:8,
   E:{s:2.40,m:1.59,l:0}, leist:1.10,
   pos:[
-    {n:"Geschäftsführer",f:6.0,sub:"Fixgehalt"},
-    {n:"Werksleiter",f:4.0},
-    {n:"Betriebsleiter",f:2.9},
+    {n:"Geschäftsführer",f:6.0,sub:"Fixgehalt",at:1},
+    {n:"Werksleiter",f:4.0,at:1},
+    {n:"Betriebsleiter",f:2.9,at:1},
     {n:"Meister mit Brief",f:2.0,sub:"Industrie- oder Gießereimeister"},
     {n:"Werksmeister",f:1.8,sub:"Meister ohne Meisterbrief"},
     {n:"Vorarbeiter",f:1.32,g:1},
@@ -165,7 +166,7 @@ const save=()=>LSs("verg.cfg",JSON.stringify(C));
 const eur=(v,d=2)=>isFinite(v)?v.toLocaleString("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:d,maximumFractionDigits:d}):"–";
 const pct=(v,d=1)=>isFinite(v)?(v*100).toLocaleString("de-DE",{minimumFractionDigits:0,maximumFractionDigits:d})+" %":"–";
 const num=(v,d=2)=>isFinite(v)?v.toLocaleString("de-DE",{maximumFractionDigits:d}):"";
-const pn=s=>{s=String(s??"").trim().replace(/\s|€|%/g,"");if(!s)return NaN;if(/,/.test(s))s=s.replace(/\./g,"").replace(",",".");const x=parseFloat(s);return isFinite(x)?x:NaN};
+const pn=s=>{s=String(s??"").trim().replace(/\s|€|%/g,"");if(!s)return NaN;if(/,/.test(s))s=s.replace(/\./g,"").replace(",",".");else if(/^-?\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,"");const x=parseFloat(s);return isFinite(x)?x:NaN};
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const r2=x=>Math.round(x*100)/100;
 const stdMonat=()=>C.woche*52/12;
@@ -224,6 +225,7 @@ function drawPersonForm(){
     LSs("verg.person",JSON.stringify(P));gwVis();drawPersonRes()}));
   gwVis();drawPersonRes();
 }
+function jahr(p,m){if(p.at)return{w:0,t:0,g:0,sum:m*12};const w=m*C.sz.weih,t=C.sz.tze1+C.sz.tze2,g=C.sz.gewinn||0;return{w,t,g,sum:m*12+w+t+g}}
 function gwVis(){const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];document.querySelectorAll("#pForm .gw").forEach(el=>el.hidden=!p.g||(el.id==="pEigRow"&&P.bel!=="e"))}
 function drawPersonRes(){
   const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];
@@ -240,9 +242,10 @@ function drawPersonRes(){
     <div class="sub">${esc(p.n)} · Faktor ${num(p.f,2)} · ${num(erf,1)} Jahre Erfahrung${ja?` (davon ${num(anr,1)} angerechnet${lu>C.luecke?" – Lücke zu lang":""})`:""} · ${num(jb,1)} Jahre im Betrieb</div>
     <div class="big">${p.g?eur(th)+' <span style="font-size:16px;font-weight:600">je Stunde</span>':eur(tm,0)+' <span style="font-size:16px;font-weight:600">im Monat</span>'}</div>
     <div class="sub">Grundlohn: ${eur(C.basis,0)} × ${num(fe(p),2)} + Erfahrung ${pct(r.ez)} + Betriebstreue ${pct(r.tz)} = ${eur(r.m,0)} im Monat (${eur(r.h)}/Std.)${p.g?` · mit Erschwerniszulage ${eur(E)} und ${num(LG*100,1)} %: (${eur(r.h)} + ${eur(E)}) × ${num(LG*100,1)} % = ${eur(th)}`:""}</div>
-    <div class="kp"><div><b>${eur(tm,0)}</b><span>im Monat</span></div><div><b>${eur(tm*12,0)}</b><span>im Jahr (×12)</span></div><div><b>${eur(th)}</b><span>je Stunde</span></div></div>
+    <div class="kp"><div><b>${eur(tm,0)}</b><span>im Monat</span></div><div><b>${eur(jahr(p,tm).sum,0)}</b><span>im Jahr inkl. Sonderzahlungen</span></div><div><b>${eur(th)}</b><span>je Stunde</span></div></div>
+    <p class="mu" style="margin:8px 0 0">${(()=>{const J=jahr(p,tm);return p.at?`12 × ${eur(tm,0)} = ${eur(J.sum,0)} · außertariflich: tarifliche Sonderzahlungen gelten nicht`:`12 × ${eur(tm,0)} + Weihnachtsgeld ${eur(J.w,0)} + Tarifzusatzentgelt ${eur(J.t,0)}${J.g?" + Gewinnbeteiligung "+eur(J.g,0):""} = ${eur(J.sum,0)}`})()}</p>
     ${isFinite(heute)&&heute>0?`<p style="margin:10px 0 0">Gegenüber heute: <b class="${tm>=heute?"pos":"neg"}">${tm>=heute?"+":""}${eur(tm-heute,0)} im Monat (${tm>=heute?"+":""}${pct(tm/heute-1)})</b></p>`:""}
-    <p class="mu" style="margin:10px 0 0">${nx?`Nächste Steigerung in <b>${nx.y} ${nx.y===1?"Jahr":"Jahren"}</b>: ${eur(nx.m,0)} (+${eur(nx.m-tm,0)})`:"Höchststufe erreicht."} Sonderzahlungen kommen dazu.</p></div>`;
+    <p class="mu" style="margin:10px 0 0">${nx?`Nächste Steigerung in <b>${nx.y} ${nx.y===1?"Jahr":"Jahren"}</b>: ${eur(nx.m,0)} (+${eur(nx.m-tm,0)})`:"Höchststufe erreicht."} Überstunden kommen dazu.</p></div>`;
 }
 
 /* ---------- Werte ---------- */
@@ -257,6 +260,12 @@ function drawWerte(openIx){
    <div class="row"><label>Leistungsgrad Standard in %<small>nur Gewerbliche</small></label><input class="n" data-k="leistP" inputmode="decimal" value="${num(C.leist*100,1)}"></div>
    <div class="row"><label>Max. anrechenbare Erfahrung (Jahre)</label><input class="n" data-k="maxErf" inputmode="decimal" value="${num(C.maxErf,0)}"></div>
    <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label><input class="n" data-k="luecke" inputmode="decimal" value="${num(C.luecke,0)}"></div></div>
+  <div class="card"><h2>Sonderzahlungen</h2><p class="lead">Aus der BR-App (${esc(C.sz.stand)}). Gelten für Tarifbeschäftigte, nicht für Betriebs-, Werksleiter und Geschäftsführer.</p>
+   <div class="row"><label>Weihnachtsgeld in % eines Monats</label><input class="n" data-k="sz.weihP" inputmode="decimal" value="${num(C.sz.weih*100,1)}"></div>
+   <div class="row"><label>Tarifzusatzentgelt I (Juli) €</label><input class="n" data-k="sz.tze1" inputmode="decimal" value="${num(C.sz.tze1,2)}"></div>
+   <div class="row"><label>Tarifzusatzentgelt II (Februar) €</label><input class="n" data-k="sz.tze2" inputmode="decimal" value="${num(C.sz.tze2,2)}"></div>
+   <div class="row"><label>Gewinnbeteiligung € im Jahr<small>betrieblich – bleibt nur auf diesem Handy</small></label><input class="n" data-k="sz.gewinn" inputmode="decimal" value="${num(C.sz.gewinn,2)}"></div>
+   <div class="btns"><button class="btn" id="bSz">↻ Aus der BR-App holen</button></div></div>
   <div class="card"><h2>Positionen und Faktoren</h2><p class="lead">Faktor 1 = Grundlohn Ungelernter. Ausgangswerte so gewählt, dass die Gesamtvergütung marktüblich ist (Stand 2026, Schätzung). Faktoren über dem Pay-Ratio-Deckel werden gekappt.</p>
    <table class="ed"><tr><th>Position</th><th style="width:90px">Faktor</th><th style="text-align:right">Grundlohn</th><th></th></tr>
    ${C.pos.map((p,i)=>`<tr><td><input data-pn="${i}" value="${esc(p.n)}" style="text-align:left;background:var(--bg)"></td><td><input data-pf="${i}" inputmode="decimal" value="${num(p.f,2)}"></td><td style="text-align:right;white-space:nowrap">${eur(C.basis*fe(p),0)}${p.f>C.maxRatio?" ⚠️":""}</td><td><button class="x" data-pd="${i}">✕</button></td></tr>`).join("")}</table>
@@ -272,7 +281,7 @@ function drawWerte(openIx){
    <div class="btns"><button class="btn" id="bReset">Alles auf Ausgangswerte zurücksetzen</button></div></div>`;
   const re=()=>{save();drawTable();drawPersonForm()};
   const W=$("werte");
-  W.querySelectorAll("[data-k]").forEach(el=>el.onchange=()=>{const k=el.dataset.k,x=pn(el.value);if(isFinite(x)&&x>=0){if(k==="leistP")C.leist=x/100;else if(k.startsWith("E."))C.E[k.slice(2)]=x;else if(x>0)C[k]=x}re();drawWerte()});
+  W.querySelectorAll("[data-k]").forEach(el=>el.onchange=()=>{const k=el.dataset.k,x=pn(el.value);if(isFinite(x)&&x>=0){if(k==="leistP")C.leist=x/100;else if(k==="sz.weihP")C.sz.weih=x/100;else if(k.startsWith("sz."))C.sz[k.slice(3)]=x;else if(k.startsWith("E."))C.E[k.slice(2)]=x;else if(x>0)C[k]=x}re();drawWerte()});
   W.querySelectorAll("[data-pn]").forEach(el=>el.onchange=()=>{const v=el.value.trim();if(v){if(P.pos===C.pos[+el.dataset.pn].n)P.pos=v;C.pos[+el.dataset.pn].n=v;delete C.pos[+el.dataset.pn].neu}re();drawWerte()});
   W.querySelectorAll("[data-pf]").forEach(el=>el.onchange=()=>{const x=pn(el.value);if(isFinite(x)&&x>0){C.pos[+el.dataset.pf].f=x;delete C.pos[+el.dataset.pf].neu}re();drawWerte()});
   W.querySelectorAll("[data-pd]").forEach(b=>b.onclick=()=>{if(C.pos.length<2)return;if(!confirm(`Position „${C.pos[+b.dataset.pd].n}“ löschen?`))return;C.pos.splice(+b.dataset.pd,1);re();drawWerte()});
@@ -283,6 +292,7 @@ function drawWerte(openIx){
   W.querySelectorAll("[data-td]").forEach(b=>b.onclick=()=>{if(C.treue.length>1){C.treue.splice(+b.dataset.td,1);re();drawWerte()}});
   $("bAddE").onclick=()=>{const l=C.erf.at(-1);C.erf.push([l[0]+5,l[1]]);re();drawWerte()};
   $("bAddT").onclick=()=>{const l=C.treue.at(-1);C.treue.push([l[0]+5,l[1]]);re();drawWerte()};
+  $("bSz").onclick=()=>loadSz(true);
   $("bReset").onclick=()=>{if(confirm("Alle Werte auf die marktüblichen Ausgangswerte zurücksetzen?")){C=structuredClone(DEF);save();drawAll()}};
 }
 
@@ -293,7 +303,7 @@ const RULES=[
   ["Pay-Ratio","Keine Position verdient mehr als das 8-Fache des Ungelernten (Geschäftsführer heute 6 : 1)."],
   ["Zuschläge","Auf das Grundgehalt kommen zwei Zuschläge: Berufserfahrung (bis 12 %) und Betriebszugehörigkeit (bis 5 %)."],
   ["Gewerbliche","Bei gewerblichen Beschäftigten kommen Erschwerniszulage nach Arbeitsplatz und Leistungsgrad dazu: (Grundlohn + Erschwerniszulage) × Leistungsgrad. Damit liegt die Gesamtvergütung im marktüblichen Bereich."],
-  ["Separat","Überstunden und Sonderzahlungen kommen bei allen separat dazu."]]],
+  ["Sonderzahlungen","Tarifbeschäftigte bekommen dazu Weihnachtsgeld und die Tarifzusatzentgelte (Werte aus der BR-App) sowie die betriebliche Gewinnbeteiligung; Überstunden separat."]]],
  ["Wer ist welche Position?",[
   ["Ungelernter","Ohne abgeschlossene Ausbildung."],
   ["Zertifizierte Fachkraft","Ungelernte mit gültigem Schweiß- oder Prüfschein sowie Beschäftigte mit 2-jähriger Ausbildung (z. B. Maschinen- und Anlagenführer)."],
@@ -318,12 +328,25 @@ function drawRegeln(){
    RULES.map(([t,it])=>`<div class="rh">${esc(t)}</div>`+it.map(([a,b])=>`<div class="rule"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")).join("");
 }
 
+async function loadSz(manual){
+  try{const j=await (await fetch("../br/tarif.json",{cache:"no-store"})).json();
+    const b=j.entgelte.bloecke.find(x=>/Sonderzahl/.test(x.t));if(!b)throw 0;
+    const get=re=>(b.z.find(z=>re.test(z[0]))||[])[1]||"";
+    const eu=t=>{const m=t.match(/(\d{1,3}(?:\.\d{3})*|\d+)(?:,\d+)?\s*€/);return m?pn(m[0]):NaN};
+    const t1=eu(get(/zusatzentgelt I\b|zusatzentgelt I \(/i));
+    const t2s=get(/zusatzentgelt II/i),t2r=t2s.match(/rund\s+([\d.,]+)\s*€/);const t2=t2r?pn(t2r[1]):eu(t2s);
+    const wm=get(/Weihnacht/i).match(/(\d+)\s*%/);
+    if(isFinite(t1))C.sz.tze1=t1;if(isFinite(t2))C.sz.tze2=t2;if(wm)C.sz.weih=+wm[1]/100;
+    C.sz.stand=(j.entgelte.stand?"Stand "+j.entgelte.stand:"Tarif Eisen und Stahl NRW");save();
+    if(manual){drawAll();alert("Sonderzahlungen übernommen: Weihnachtsgeld "+num(C.sz.weih*100,0)+" %, Tarifzusatzentgelt "+eur(C.sz.tze1,0)+" + "+eur(C.sz.tze2,0))}else{drawPersonForm();drawWerte()}}
+  catch(e){if(manual)alert("Die BR-App-Daten konnten nicht geladen werden.")}
+}
 function drawAll(){drawTable();drawPersonForm();drawWerte();drawRegeln()}
 function tab(t){document.querySelectorAll(".tab").forEach(s=>s.hidden=s.id!=="t"+t);
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(+b.dataset.t===t)));LSs("verg.tab",String(t));scrollTo(0,0)}
 function start(){
   document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(+b.dataset.t));
-  drawAll();tab(+LSg("verg.tab","1")||1);
+  drawAll();tab(+LSg("verg.tab","1")||1);loadSz(false);
   if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(()=>{});
 }
 </script>
