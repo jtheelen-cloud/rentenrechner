@@ -112,6 +112,9 @@ ul.i{padding-left:18px;margin:6px 0}ul.i li{margin:4px 0;font-size:14.5px}
         <li><b>Keine Buchmacher-Quoten</b> – die Prognose rechnet nur mit dem Spielgeschehen.</li>
       </ul>
     </div>
+    <div class="card"><h2>Europapokal, Pokal und Pausen</h2>
+      <p class="lead" style="margin:0">Claude trägt mit jeder Liste ein, wer unter der Woche in Champions League, Europa League, Conference League oder DFB-Pokal gespielt hat (Datum, heim oder auswärts). Die App zählt die Tage Pause bis zum Bundesligaspiel. Bei 2–3 Tagen Pause sinkt der Angriff um 5–7 % und die Abwehr lässt 4–5 % mehr zu, bei 4 Tagen etwa die Hälfte davon, nach einem Auswärtsspiel mit Reise noch etwas mehr. Ab 6 Tagen Pause gibt es keinen Abzug. Beim Spiel steht dann „Europapokal-Belastung“.</p>
+    </div>
     <div class="card"><h2>xG (erwartete Tore)</h2>
       <p class="lead" style="margin:0">Mit jeder Ausfall-Liste liest Claude auch die xG- und xGA-Werte aller Vereine dieser Saison ab (erspielte und zugelassene Torchancen). Für kommende Spiele mischt die App dann echte Tore und xG je zur Hälfte – Glückstore und Pech schlagen so weniger durch. Der Rückblick-Test rechnet ohne xG, weil es keine alten xG-Stände gibt; ob xG hilft, zeigt der Kasten „Deine Prognosen“ nach ein paar Wochen.</p>
     </div>
@@ -231,9 +234,19 @@ function strength(F,id,useXG){const n=F.cnt[id]||0;let r;if(!n)r={att:NEW.att,de
     r={att:r.att*(1-w)+(a.xg.xg/a.xg.spiele/X.avgF)*w,def:r.def*(1-w)+(a.xg.xga/a.xg.spiele/X.avgA)*w,xg:1}}}
   return r}   // Aufsteiger mit wenigen Spielen vorsichtig
 const ADJ={a:[null,1,.92,.84],d:[null,1,1.07,1.14]};
+/* Pause seit dem letzten Pflichtspiel (Bundesliga + Europapokal/DFB-Pokal aus der Liste) */
+const DAY=864e5,dayOf=t=>Math.floor((t+36e5)/DAY);
+function restInfo(id,t){let last=null,src=null;
+  M.forEach(x=>{if((x.h===id||x.a===id)&&x.t<t-6*36e5&&(!last||x.t>last)){last=x.t;src={w:"Bundesliga",aw:x.a===id}}});
+  const a=teamAus(id);(a&&a.extra||[]).forEach(e=>{const tt=Date.parse(e.datum);if(isFinite(tt)&&tt<t-6*36e5&&(!last||tt>last)){last=tt;src={w:e.wettbewerb||"Pokal",aw:!!e.auswaerts,ort:e.ort||""}}});
+  if(!last||t-last>30*DAY)return null;return{tage:dayOf(t)-dayOf(last),...src}}
+function restFac(r){if(!r||r.w==="Bundesliga")return{a:1,d:1};const g=r.tage;
+  let a=g<=2?.93:g===3?.95:g===4?.97:g===5?.99:1, d=g<=2?1.05:g===3?1.04:g===4?1.02:g===5?1.01:1;
+  if(r.aw&&g<=4){a*=.985;d*=1.01}return{a,d}}
 function facs(m,j,auto){const ah=auto?ausFor(m.h,m.t):null,aa=auto?ausFor(m.a,m.t):null;
   const f=(sel,arr,au,sign)=>sel?arr[sel]:(au?1+sign*Math.min(.3,Math.max(0,+au||0)):1);
-  return{ho:f(j.ho|0,ADJ.a,ah&&ah.angriff,-1),hd:f(j.hd|0,ADJ.d,ah&&ah.abwehr,1),ao:f(j.ao|0,ADJ.a,aa&&aa.angriff,-1),ad:f(j.ad|0,ADJ.d,aa&&aa.abwehr,1),ah,aa}}
+  const rh=auto?restInfo(m.h,m.t):null,ra=auto?restInfo(m.a,m.t):null,fh=restFac(rh),fa=restFac(ra);
+  return{ho:f(j.ho|0,ADJ.a,ah&&ah.angriff,-1)*fh.a,hd:f(j.hd|0,ADJ.d,ah&&ah.abwehr,1)*fh.d,ao:f(j.ao|0,ADJ.a,aa&&aa.angriff,-1)*fa.a,ad:f(j.ad|0,ADJ.d,aa&&aa.abwehr,1)*fa.d,ah,aa,rh,ra,tired:fh.a<1||fa.a<1}}
 function lambdas(F,m,adj,auto){
   const H=strength(F,m.h,auto),A=strength(F,m.a,auto),j=adj||{},x=facs(m,j,auto);
   let lh=F.muH*H.att*A.def, la=F.muA*A.att*H.def;
@@ -287,7 +300,7 @@ function renderMD(){
     let pr;
     if(started&&PRED[m.id])pr=PRED[m.id];
     else{const F=fitFor(Math.min(m.t,now));const[lh,la]=lambdas(F,m,adj,!started);pr=predict(lh,la);
-      const fx=facs(m,adj,true);pr.auto=!started&&!!((fx.ah&&(fx.ah.angriff||fx.ah.abwehr))||(fx.aa&&(fx.aa.angriff||fx.aa.abwehr)));
+      const fx=facs(m,adj,true);pr.tired=!started&&fx.tired;pr.auto=!started&&!!((fx.ah&&(fx.ah.angriff||fx.ah.abwehr))||(fx.aa&&(fx.aa.angriff||fx.aa.abwehr)));
       if(!started){PRED[m.id]={h:pr.h,a:pr.a,p1:pr.p1,px:pr.px,p2:pr.p2,ten:pr.ten,lh:pr.lh,la:pr.la,at:now,adj:(Object.keys(adj).length||pr.auto)?1:0};changed=true}
       else pr.back=true}
     const res=m.hg!=null?`${m.hg}:${m.ag}`:"–:–";
@@ -299,13 +312,19 @@ function renderMD(){
     return `<div class="m">
       <div class="mt"><div class="tm">${icon(H)}<span>${esc(H.s)}</span></div><div class="sc">${res}<small>${st}</small></div><div class="tm r"><span>${esc(A.s)}</span>${icon(A)}</div></div>
       <div class="mt mu" style="margin-top:3px"><div>${formOf(m.h,m.t)}</div><div></div><div style="text-align:right">${formOf(m.a,m.t)}</div></div>
+      ${restLine(m,started)}
       <div class="bar"><div class="b1" style="width:${w(pr.p1)}%">${pct(pr.p1)}</div><div class="bx" style="width:${w(pr.px)}%">${pct(pr.px)}</div><div class="b2" style="width:${w(pr.p2)}%">${pct(pr.p2)}</div></div>
-      <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj||pr.auto||(started&&pr.adj)?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}${!started&&xgIndex()?'<span class="mark">mit xG</span>':""}</span>${hit}</div>
+      <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj||pr.auto||(started&&pr.adj)?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}${!started&&xgIndex()?'<span class="mark">mit xG</span>':""}${pr.tired?'<span class="mark">Europapokal-Belastung</span>':""}</span>${hit}</div>
       ${started?"":adjForm(m,adj)}
     </div>`}).join("");
   if(changed)savePred();
   bindAdj();
 }
+function restTxt(r){if(!r)return"";const int=r.w!=="Bundesliga";return `${r.tage} Tage Pause${int?` · zuletzt ${esc(r.w)}${r.aw?" auswärts":" zu Hause"}`:""}`}
+function restLine(m,started){if(started)return"";const a=restInfo(m.h,m.t),b=restInfo(m.a,m.t);
+  if(!(a&&a.w!=="Bundesliga")&&!(b&&b.w!=="Bundesliga"))return"";
+  const c=r=>r&&r.w!=="Bundesliga"&&r.tage<=5?"color:var(--red)":"";
+  return `<div class="mt mu" style="margin-top:2px;font-size:12px"><div style="${c(a)}">${restTxt(a)}</div><div></div><div style="text-align:right;${c(b)}">${restTxt(b)}</div></div>`}
 function sel(id,k,v,opts){return `<select data-m="${id}" data-k="${k}">${opts.map((o,i)=>`<option value="${i}"${(v|0)===i?" selected":""}>${o}</option>`).join("")}</select>`}
 const pctm=v=>v?"−"+Math.round(v*100)+" %":"0 %";
 function ausList(au){if(!au)return `<div class="mu" style="margin-top:4px">keine Liste</div>`;const L=au.spieler||[];
