@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-ver="202611092211">
+<html lang="de" data-ver="202611110805">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
@@ -310,7 +310,7 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderCd()
 
 // ---------- Daten ----------
 let W=null;
-async function getJSON(u){const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function getJSON(u){let last;for(let i=0;i<3;i++){try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return await r.json()}catch(e){last=e;await new Promise(z=>setTimeout(z,1500*(i+1)))}}throw last}
 async function loadWeather(force){
   const key="wx6_"+place.lat+"_"+place.lon, c=store.get("wx_cache");
   if(!force&&c&&c.key===key&&Date.now()-c.ts<10*60000){W=c.d;return}
@@ -371,7 +371,15 @@ async function aemetMerge(key){
 function isCanary(){return place.lat>26.5&&place.lat<30&&place.lon>-19&&place.lon<-12.8}
 async function loadAll(force){
   try{status("Lade Wetterdaten …");await loadWeather(force);status(null);drawAll();if(map){loadRadar();drawArrow();placeTemp(null)}}
-  catch(e){status("Wetterdaten konnten nicht geladen werden. Bitte über ••• → Neu laden erneut versuchen.")}
+  catch(e){
+    const c=store.get("wx_cache"),key="wx6_"+place.lat+"_"+place.lon;
+    if(c&&c.key===key&&c.d){W=c.d;try{drawAll();if(map){loadRadar();drawArrow();placeTemp(null)}}catch(x){}
+      const t=new Date(c.ts).toLocaleString("de-DE",{weekday:"short",hour:"2-digit",minute:"2-digit"});
+      status("Wetterdienst gerade nicht erreichbar – Anzeige vom "+t+". Neuer Versuch läuft automatisch.")}
+    else status("Wetterdienst gerade nicht erreichbar. Neuer Versuch läuft automatisch …");
+    loadAll.retry=(loadAll.retry||0)+1;if(loadAll.retry<=5)setTimeout(()=>loadAll(true),30000*loadAll.retry);
+    return}
+  loadAll.retry=0;
   loadWarn().then(drawWarn).catch(()=>{});
 }
 
