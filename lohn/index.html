@@ -140,21 +140,21 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 })();
 
 /* ---------- Modell (aus Verguetungsmodell_320_Mitarbeiter.xlsx) ---------- */
-const DEF={ver:1,
-  basis:2900, woche:35, maxErf:40, luecke:12,
+const DEF={ver:2,
+  basis:2750, woche:35, maxErf:40, luecke:12,
   pos:[
-    {n:"Geschäftsführer",f:7},
-    {n:"Werksleiter",f:5},
-    {n:"Betriebsleiter",f:4.2},
-    {n:"Meister mit Brief",f:3.2,sub:"Industrie- oder Gießereimeister"},
-    {n:"Werksmeister",f:2.85,sub:"Meister ohne Meisterbrief",neu:1},
-    {n:"Vorarbeiter",f:2.5},
-    {n:"Kolonnenführer",f:2},
-    {n:"Facharbeiter",f:1.5,sub:"mit Brief, z. B. Former, Kernmacher, Werkstoffprüfer"},
-    {n:"Zertifizierte Fachkraft",f:1.25,sub:"Ungelernte mit Schweiß- oder Prüfschein, 2-jährige Ausbildung",neu:1},
+    {n:"Geschäftsführer",f:5.0,sub:"Fixgehalt; Tantieme separat"},
+    {n:"Werksleiter",f:3.3},
+    {n:"Betriebsleiter",f:2.4},
+    {n:"Meister mit Brief",f:1.65,sub:"Industrie- oder Gießereimeister"},
+    {n:"Werksmeister",f:1.5,sub:"Meister ohne Meisterbrief"},
+    {n:"Vorarbeiter",f:1.32},
+    {n:"Kolonnenführer",f:1.26},
+    {n:"Facharbeiter",f:1.2,sub:"mit Brief, z. B. Former, Kernmacher, Werkstoffprüfer"},
+    {n:"Zertifizierte Fachkraft",f:1.1,sub:"Ungelernte mit Schweiß- oder Prüfschein, 2-jährige Ausbildung"},
     {n:"Ungelernter",f:1}],
-  erf:[[0,0],[5,.04],[10,.07],[15,.10],[20,.13],[25,.15],[30,.17],[35,.19],[40,.20]],
-  treue:[[0,0],[3,.02],[6,.04],[11,.05],[16,.06],[21,.07],[26,.08],[31,.09],[36,.10]]
+  erf:[[0,0],[5,.03],[10,.05],[15,.07],[20,.09],[25,.10],[30,.11],[40,.12]],
+  treue:[[0,0],[3,.01],[6,.02],[11,.03],[21,.04],[31,.05]]
 };
 let C;try{C=JSON.parse(LSg("verg.cfg",""))}catch(e){}
 if(!C||C.ver!==DEF.ver)C=structuredClone(DEF);
@@ -244,7 +244,7 @@ function drawWerte(openIx){
    <div class="row"><label>Wochenarbeitszeit (Std.)<small>${num(stdMonat(),2)} Std. im Monat</small></label><input class="n" data-k="woche" inputmode="decimal" value="${num(C.woche,2)}"></div>
    <div class="row"><label>Max. anrechenbare Erfahrung (Jahre)</label><input class="n" data-k="maxErf" inputmode="decimal" value="${num(C.maxErf,0)}"></div>
    <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label><input class="n" data-k="luecke" inputmode="decimal" value="${num(C.luecke,0)}"></div></div>
-  <div class="card"><h2>Positionen und Faktoren</h2><p class="lead">Faktor 1 = Grundgehalt. „Vorschlag“ = neu eingefügt, Faktor bitte prüfen.</p>
+  <div class="card"><h2>Positionen und Faktoren</h2><p class="lead">Faktor 1 = Grundgehalt. Ausgangswerte = marktübliche Gehälter (Stand 2026, Schätzung).</p>
    <table class="ed"><tr><th>Position</th><th style="width:90px">Faktor</th><th style="text-align:right">Grundgehalt</th><th></th></tr>
    ${C.pos.map((p,i)=>`<tr><td><input data-pn="${i}" value="${esc(p.n)}" style="text-align:left;background:var(--bg)"></td><td><input data-pf="${i}" inputmode="decimal" value="${num(p.f,2)}"></td><td style="text-align:right;white-space:nowrap">${eur(C.basis*p.f,0)}</td><td><button class="x" data-pd="${i}">✕</button></td></tr>`).join("")}</table>
    <div class="btns"><button class="btn" id="bAddPos">＋ Position</button></div></div>
@@ -270,30 +270,30 @@ function drawWerte(openIx){
   W.querySelectorAll("[data-td]").forEach(b=>b.onclick=()=>{if(C.treue.length>1){C.treue.splice(+b.dataset.td,1);re();drawWerte()}});
   $("bAddE").onclick=()=>{const l=C.erf.at(-1);C.erf.push([l[0]+5,l[1]]);re();drawWerte()};
   $("bAddT").onclick=()=>{const l=C.treue.at(-1);C.treue.push([l[0]+5,l[1]]);re();drawWerte()};
-  $("bReset").onclick=()=>{if(confirm("Alle Werte auf den Stand der Excel-Datei zurücksetzen?")){C=structuredClone(DEF);save();drawAll()}};
+  $("bReset").onclick=()=>{if(confirm("Alle Werte auf die marktüblichen Ausgangswerte zurücksetzen?")){C=structuredClone(DEF);save();drawAll()}};
 }
 
 /* ---------- Regeln ---------- */
 const RULES=[
  ["Grundsätze",[
-  ["Grundgehalt","Alle Gehälter bauen auf dem Grundgehalt einer ungelernten Vollzeitkraft auf (2.900 € im Monat bei 35 Wochenstunden). Jede Position hat einen festen Faktor."],
-  ["Zuschläge","Auf das Grundgehalt kommen zwei Zuschläge: Berufserfahrung (bis 20 %) und Betriebszugehörigkeit (bis 10 %)."],
+  ["Grundgehalt","Alle Gehälter bauen auf dem Grundgehalt einer ungelernten Vollzeitkraft auf (Ausgangswert 2.750 € im Monat bei 35 Wochenstunden, marktüblich für Produktionshelfer). Jede Position hat einen festen Faktor."],
+  ["Zuschläge","Auf das Grundgehalt kommen zwei Zuschläge: Berufserfahrung (bis 12 %) und Betriebszugehörigkeit (bis 5 %)."],
   ["Separat","Zulagen (z. B. Erschwerniszulage), Überstunden und Sonderzahlungen kommen separat dazu."]]],
  ["Wer ist welche Position?",[
   ["Ungelernter","Ohne abgeschlossene Ausbildung."],
-  ["Zertifizierte Fachkraft","Ungelernte mit gültigem Schweiß- oder Prüfschein sowie Beschäftigte mit 2-jähriger Ausbildung (z. B. Maschinen- und Anlagenführer). Faktor ist ein Vorschlag."],
+  ["Zertifizierte Fachkraft","Ungelernte mit gültigem Schweiß- oder Prüfschein sowie Beschäftigte mit 2-jähriger Ausbildung (z. B. Maschinen- und Anlagenführer)."],
   ["Facharbeiter","Mit Facharbeiter- bzw. Gesellenbrief, z. B. Former, Kernmacher, Gießereimechaniker, Werkstoffprüfer, Industriemechaniker."],
   ["Kolonnenführer","Facharbeiter, die eine Kolonne führen, solange sie die Funktion ausüben."],
   ["Vorarbeiter","Führen einen Bereich bzw. mehrere Kolonnen, solange sie die Funktion ausüben."],
-  ["Werksmeister","Vom Betrieb zum Meister ernannt, ohne Meisterprüfung. Mit bestandener Meisterprüfung Wechsel zu „Meister mit Brief“. Faktor ist ein Vorschlag."],
+  ["Werksmeister","Vom Betrieb zum Meister ernannt, ohne Meisterprüfung. Mit bestandener Meisterprüfung Wechsel zu „Meister mit Brief“."],
   ["Meister mit Brief","Geprüfter Industrie- oder Gießereimeister."],
   ["Betriebsleiter, Werksleiter, Geschäftsführer","Leitende Funktionen; die Faktoren begrenzen den Abstand zur untersten Gruppe."]]],
  ["Berufserfahrung",[
   ["Was zählt","Nur Jahre in derselben oder einer nachweislich gleichwertigen Tätigkeit, nachgewiesen durch Arbeitszeugnis, Arbeitgeberbescheinigung oder Versicherungsverlauf."],
   ["Unterbrechungen","Beschäftigungsabschnitte werden zusammengerechnet, wenn die Unterbrechung jeweils höchstens 12 Monate beträgt."],
-  ["Höhe","Je volles Jahr steigt der Zuschlag; höchstens 40 Jahre und 20 % werden angerechnet."]]],
+  ["Höhe","Je volles Jahr steigt der Zuschlag; höchstens 40 Jahre und 12 % werden angerechnet."]]],
  ["Betriebszugehörigkeit",[
-  ["Stufen","Ab 3 Jahren 2 %, ab 6 Jahren 4 %, danach je 5 Jahre +1 %, ab 36 Jahren höchstens 10 %."],
+  ["Stufen","Ab 3 Jahren 1 %, ab 6 Jahren 2 %, ab 11 Jahren 3 %, ab 21 Jahren 4 %, ab 31 Jahren höchstens 5 %."],
   ["Getrennt","Die Betriebszugehörigkeit wird zusätzlich zur Berufserfahrung belohnt."]]],
  ["Hinweis",[
   ["Planungsmodell","Diskussions- und Planungsmodell; ersetzt keine tarifliche, arbeitsrechtliche oder individuelle Vergütungsprüfung. Der Tarif bleibt die Untergrenze."]]]
