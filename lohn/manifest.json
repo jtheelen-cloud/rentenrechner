@@ -1,6 +1,6 @@
 {
- "name": "Entgelttabelle Formerei",
- "short_name": "Entgelttabelle",
+ "name": "Vergütungsmodell",
+ "short_name": "Vergütung",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
