@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-ver="202611112207">
+<html lang="de" data-ver="202611112214">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
@@ -148,7 +148,7 @@ h3{font-size:14px;margin:14px 0 2px;color:#bbb}
 
   <section class="view" id="v-radar">
     <div id="map"></div>
-    <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button><button type="button" data-l="s">🛰️ Satellit</button></div>
+    <div id="lsel"><button type="button" data-l="r">🌧️ Regen</button><button type="button" data-l="c">☁️ Wolken</button></div>
     <div id="rtime">--:--</div>
     <div id="cmpTxt" hidden></div>
     <div id="mapbar"><button class="pill" id="play" type="button" aria-label="Abspielen" hidden>▶</button><input type="range" id="tsl" min="0" max="0" value="0" aria-label="Zeit" hidden><div id="vbox"><input type="range" id="vsl" min="0" max="12" step="1" value="0" aria-label="Vorschau mit dem Wind"><small id="vlab">Schieben = Vorschau mit dem Wind</small></div><button class="pill" id="cmp" type="button" aria-label="Blickrichtung anzeigen" title="Blickrichtung">🧭</button><div class="pill" id="zoom"><button id="zOut" type="button" aria-label="Verkleinern">−</button><button id="zIn" type="button" aria-label="Vergrößern">+</button></div></div>
@@ -548,7 +548,7 @@ function amM(m){const ok=l=>{for(let i=1;i<l.length;i++)if(Math.abs(l[i][0]-l[i-
 function initMap(){
   if(map)return;
   map=L.map("map",{zoomControl:false,attributionControl:true,minZoom:3.5,maxZoom:9,zoomSnap:.5,maxBounds:[[20,-42],[73,48]],maxBoundsViscosity:1,bounceAtZoomLimits:false});
-  map.attributionControl.setPrefix(false).addAttribution('Radar: <a href="https://www.rainviewer.com/">RainViewer</a> · Satellit: <a href="https://view.eumetsat.int/">EUMETSAT</a> · Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> · Karte: Natural Earth');
+  map.attributionControl.setPrefix(false).addAttribution('Radar: <a href="https://www.rainviewer.com/">RainViewer</a> · Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> · Karte: Natural Earth');
   map.on("zoomend",()=>{if(vMin)vApply()});map.createPane("land").style.zIndex=200;map.createPane("radar").style.zIndex=300;map.createPane("nowc").style.zIndex=301;map.on("zoomend viewreset",()=>{if(layer==="r"&&TL[ti]&&TL[ti].k==="n")showT(ti)});
   const bp=map.createPane("borders");bp.style.zIndex=420;bp.style.pointerEvents="none";
   const lp=map.createPane("lbl");lp.style.zIndex=440;lp.style.pointerEvents="none";
@@ -569,7 +569,7 @@ function initMap(){
   }).catch(()=>{});
   map.on("zoomend",fineCoast);fineCoast();
   arrowGroup=L.layerGroup().addTo(map);drawArrow();
-  setLayer(layer);setInterval(()=>{if(layer==="r")loadRadar();else if(layer==="s")satOn()},5*60000);
+  setLayer(layer);setInterval(()=>{if(layer==="r")loadRadar()},5*60000);
 }
 let landL=null,bordL=null,otherL=null,coarse=null,fineState=0,fineLand=null;
 function landTheme(){const c=layer==="c"?"#6e8569":"#c3cfdb";[landL,fineLand].forEach(l=>l&&l.setStyle({fillColor:c}))}
@@ -678,22 +678,8 @@ async function cmpToggle(){if(cmpOn){cmpOn=false;removeEventListener("deviceorie
   setTimeout(()=>{if(cmpOn&&cmpHead==null)$("cmpTxt").textContent=cmpRel?"Browser gibt keine Himmelsrichtung – bitte in Chrome öffnen":"Kein Kompass-Signal – Bewegungssensoren erlaubt?"},4000);
   if(map&&place)map.panTo([place.lat,place.lon])}
 $("cmp").onclick=cmpToggle;
-/* ---------- Satellit (EUMETSAT, echtes Bild, ohne Schlüssel) ---------- */
-let satL=null,satIdx=0,satErr=0,satList=[];
-function satDay(){const d=new Date(),h=d.getUTCHours()+d.getUTCMinutes()/60,lon=place?place.lon:7;const sh=(h+lon/15+24)%24;return sh>=8&&sh<17}
-function satOff(){if(satL){map.removeLayer(satL);satL=null}}
-function satOn(){satOff();satList=satDay()?[["mtg_fd:rgb_truecolour","Echtfarben"],["msg_fes:rgb_naturalenhncd","Echtfarben"],["mtg_fd:ir105_hrfi","Infrarot"],["msg_fes:ir108","Infrarot"]]:[["mtg_fd:ir105_hrfi","Infrarot"],["msg_fes:ir108","Infrarot"]];satIdx=0;satLoad()}
-function satLoad(){satOff();if(satIdx>=satList.length){$("rtime").textContent="Satellitenbild gerade nicht erreichbar";return}
-  const [ly,nm]=satList[satIdx];satErr=0;let ok=0;
-  satL=L.tileLayer.wms("https://view.eumetsat.int/geoserver/wms",{layers:ly,format:"image/png",transparent:true,version:"1.3.0",pane:"radar",opacity:nm==="Infrarot"?.85:.95,tileSize:512,zIndex:5,crossOrigin:false});
-  satL.on("tileload",()=>{ok++;if(ok===1)$("rtime").textContent="Satellit · "+nm+" · live"});
-  satL.on("tileerror",()=>{satErr++;if(!ok&&satErr>=3){satIdx++;satLoad()}});
-  satL.addTo(map);$("rtime").textContent="Satellitenbild lädt …"}
-function setLayer(l){layer=l;vReset();if(arrowGroup){if(l==="r"||l==="c"||l==="s")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
+function setLayer(l){layer=l;vReset();if(arrowGroup){if(l==="r"||l==="c")arrowGroup.addTo(map);else map.removeLayer(arrowGroup)}store.set("wx_layer",l);if(playing){clearInterval(playing);playing=null;$("play").textContent="▶"}
   document.querySelectorAll("#lsel button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));landTheme();
-  if(l==="s"){ncOff();if(rainOv){map.removeLayer(rainOv);rainOv=null}Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;
-    if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}$("play").hidden=true;$("tsl").hidden=true;$("vbox").hidden=true;satOn();legend();return}
-  satOff();$("vbox").hidden=false;
   if(l==="r"){if(fieldOv){map.removeLayer(fieldOv);fieldOv=null}if(fieldOvK){map.removeLayer(fieldOvK);fieldOvK=null}loadRadar();flowLoad()}
   else{ncOff();if(rainOv){map.removeLayer(rainOv);rainOv=null}Object.values(rlayers).forEach(x=>map.removeLayer(x));rlayers={};gh=0;fieldLoad()}
   legend();}
@@ -704,7 +690,6 @@ const tCol=v=>{if(isNaN(v))return null;const c=ramp(TSTOPS,v);return[c[0],c[1],c
 const cCol=(v,hi)=>{if(v>=40){const a=70+Math.pow((v-40)/60,1.2)*180;return[255,255,255,a]}const w=Math.max(0,Math.min(1,(hi-30)/60))*55,lm=v>=20?(v-20)/20*70:0,a=Math.max(w,lm);return a>4?[236,241,248,a]:null};
 function legend(){if(!$("leg"))return;const css=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
   $("leg").innerHTML=layer==="t"?`<span>-10°</span><span class="g" style="background:linear-gradient(90deg,${TSTOPS.slice(1,9).map(s=>css(s[1])).join(",")})"></span><span>30°</span>`:
-   layer==="s"?`<span>grau = tief</span><span class="g" style="background:linear-gradient(90deg,#555,#bbb,#fff)"></span><span>weiß = hoch, oft Schauer</span>`:
    layer==="c"?`<span>wolkig</span><span class="g" style="background:linear-gradient(90deg,rgba(255,255,255,.3),#fff);border:1px solid #999"></span><span>bedeckt</span>`:
    `<span>leicht</span><span class="g" style="background:linear-gradient(90deg,#9fd3ff,#2f7fd8,#1b3fa8,#d23c8c)"></span><span>stark</span>`}
 const LAT0=25,LAT1=70,LON0=-38,LON1=40,STEP=3,NR=(LAT1-LAT0)/STEP+1,NC=(LON1-LON0)/STEP+1,NP=NR*NC;
