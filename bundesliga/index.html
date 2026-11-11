@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14532d">
+<title>Bundesliga-Prognose</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#eef2ef;--card:#fff;--ink:#17231b;--muted:#5f6f64;--line:#d6dfd8;--acc:#14532d;--acc2:#1f8a4c;--soft:#e7efe9;--yel:#fff4cc;--red:#c62828;--ok:#2e7d32;--draw:#8a6d1f;
+  --sh:0 1px 2px rgba(20,40,25,.06),0 6px 18px rgba(20,40,25,.06);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1511;--card:#18211b;--ink:#e5eee7;--muted:#93a399;--line:#2a372e;--acc:#7fd19b;--acc2:#4cc77d;--soft:#1f2b23;--yel:#3a3420;--red:#ff7a7a;--ok:#7ccf83;--draw:#e0c068;--sh:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+button,input,select{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:#14532d;color:#fff;padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
+header h1{margin:0;font-size:19px}header p{margin:2px 0 0;font-size:13px;opacity:.85}
+main{max-width:860px;margin:0 auto;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.tab{display:grid;gap:14px;min-width:0}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh);min-width:0}
+.card h2{margin:0 0 4px;font-size:17px}
+.lead{margin:0 0 12px;color:var(--muted);font-size:14px}
+.mu{color:var(--muted);font-size:13px}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer}
+.btn.p{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.btn.s{padding:5px 10px;font-size:13px}
+.md{display:flex;align-items:center;gap:8px}
+.md select{flex:1;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.m{border-top:1px solid var(--line);padding:12px 0}.m:first-child{border-top:0;padding-top:4px}
+.mt{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.tm{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.tm.r{justify-content:flex-end;text-align:right}
+.tm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm img{width:26px;height:26px;object-fit:contain;flex:none}
+.sc{font-variant-numeric:tabular-nums;font-weight:800;font-size:20px;text-align:center;min-width:64px}
+.sc small{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.live{color:var(--red)}
+.bar{display:flex;height:22px;border-radius:7px;overflow:hidden;margin-top:9px;font-size:12px;font-weight:700;color:#fff}
+.bar div{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap}
+.b1{background:var(--acc2)}.bx{background:#9a8a5a}.b2{background:#3d6fa8}
+.tip{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:7px;font-size:13.5px}
+.tip b{font-variant-numeric:tabular-nums}
+.hit{font-weight:700;border-radius:6px;padding:1px 7px;font-size:12.5px}
+.h4{background:#1f8a4c;color:#fff}.h3{background:#5fae73;color:#fff}.h2{background:#a9cfa9;color:#17231b}.h0{background:var(--soft);color:var(--muted)}
+.form{display:inline-flex;gap:2px;vertical-align:middle}
+.form i{font-style:normal;font-size:10px;font-weight:800;width:15px;height:15px;border-radius:4px;display:inline-grid;place-items:center;color:#fff}
+.fS{background:#1f8a4c}.fU{background:#9a8a5a}.fN{background:#c0453a}
+.adj{margin-top:8px;font-size:13.5px}
+.adj summary{cursor:pointer;color:var(--acc2);font-weight:600;list-style:none}.adj summary::-webkit-details-marker{display:none}
+.adjg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.adjg div{background:var(--soft);border-radius:10px;padding:8px}
+.adjg label{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+.adjg select{width:100%;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-size:13.5px}
+.adjg .ck{display:flex;gap:6px;align-items:center;color:var(--ink);font-size:13px;margin-top:6px}
+.mark{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--yel);margin-left:4px}
+.scroll{overflow-x:auto;margin:0 -16px;padding:0 16px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th{font-size:12px;color:var(--muted);font-weight:600;text-align:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+td.t{text-align:left;font-weight:600}td.t img{width:20px;height:20px;object-fit:contain;vertical-align:-5px;margin-right:6px}
+tr.cl td:first-child{box-shadow:inset 3px 0 0 #1f8a4c}tr.el td:first-child{box-shadow:inset 3px 0 0 #3d6fa8}tr.ab td:first-child{box-shadow:inset 3px 0 0 #c0453a}tr.rl td:first-child{box-shadow:inset 3px 0 0 #e0a030}
+.kp{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:620px){.kp{grid-template-columns:repeat(4,1fr)}}
+.kp div{background:var(--soft);border-radius:12px;padding:10px}
+.kp b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.kp span{font-size:12.5px;color:var(--muted)}
+.verdict{border-radius:12px;padding:12px;margin-top:12px;font-size:14.5px;background:var(--yel)}
+.msg{border-radius:12px;padding:10px 12px;font-size:14px;background:var(--yel)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{border:0;background:none;padding:9px 2px 8px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.tabs button b{font-size:19px;font-weight:400}
+.tabs button[aria-selected=true]{color:var(--acc2);font-weight:700}
+#gate{min-height:100vh;display:grid;place-items:center;padding:24px}
+#gate .card{max-width:380px;width:100%;text-align:center}
+#gate input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);text-align:center;font-size:20px;letter-spacing:.1em;text-transform:uppercase;margin:12px 0}
+ul.i{padding-left:18px;margin:6px 0}ul.i li{margin:4px 0;font-size:14.5px}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card">
+  <div style="font-size:44px">⚽</div><h2>Bundesliga-Prognose</h2>
+  <p class="mu">Nur für den Besitzer. Bitte Master-Code eingeben.</p>
+  <input id="gCode" autocomplete="off" placeholder="XXXX-XXXX">
+  <button class="btn p" id="gGo" style="width:100%">Öffnen</button>
+  <p id="gErr" class="mu" style="color:var(--red)" hidden>Code stimmt nicht.</p>
+</div></div>
+
+<div id="app" hidden>
+<header><h1>⚽ Bundesliga-Prognose</h1><p id="hSub">Saison wird geladen …</p></header>
+<main>
+  <div id="msg"></div>
+  <section class="tab" id="t1">
+    <div class="card">
+      <div class="md"><button class="btn" id="mdPrev" aria-label="Spieltag zurück">‹</button><select id="mdSel" aria-label="Spieltag"></select><button class="btn" id="mdNext" aria-label="Spieltag vor">›</button></div>
+      <div id="mdInfo" class="mu" style="margin-top:8px"></div>
+    </div>
+    <div class="card" id="matches"></div>
+  </section>
+  <section class="tab" id="t2" hidden><div class="card"><h2>Tabelle</h2><p class="lead" id="tabInfo"></p><div class="scroll" id="table"></div></div></section>
+  <section class="tab" id="t3" hidden><div id="acc"></div></section>
+  <section class="tab" id="t4" hidden>
+    <div class="card"><h2>So rechnet die Prognose</h2>
+      <ul class="i">
+        <li><b>Grundlage sind nur Tore</b> aus dieser und der letzten Saison. Neuere Spiele zählen mehr; ein Spiel von vor einem halben Jahr zählt noch halb so viel.</li>
+        <li>Für jede Mannschaft werden <b>Angriffs- und Abwehrstärke</b> berechnet, gegen wen sie gespielt hat, wird mit eingerechnet. Dazu kommt der Heimvorteil der Liga.</li>
+        <li>Daraus ergeben sich die <b>erwarteten Tore</b> und mit der Poisson-Verteilung die Wahrscheinlichkeiten für Heimsieg, Unentschieden und Auswärtssieg.</li>
+        <li><b>Tipp</b> = wahrscheinlichster Ausgang, darin das wahrscheinlichste Ergebnis.</li>
+        <li><b>Ausfälle und Trainerwechsel</b> trägst du je Spiel selbst ein (z. B. nach Flashscore 60 Minuten vor Anpfiff). Sie verändern die erwarteten Tore.</li>
+        <li>Für Aufsteiger ohne Daten gilt anfangs eine vorsichtige Schätzung (schwächer als der Ligaschnitt).</li>
+        <li><b>Keine Buchmacher-Quoten</b> – die Prognose rechnet nur mit dem Spielgeschehen.</li>
+      </ul>
+    </div>
+    <div class="card"><h2>Was nicht drin ist</h2>
+      <p class="lead" style="margin:0">xG-Werte (Torchancen) gibt es nicht kostenlos und ohne Server, deshalb rechnet die App mit echten Toren. Ob das reicht, siehst du unter „Treffer“: Dort steht, wie oft die Prognose richtig lag, im Vergleich zu „immer Heimsieg tippen“.</p>
+    </div>
+    <div class="card"><h2>Daten</h2>
+      <p class="lead">Spiele und Ergebnisse kommen kostenlos von OpenLigaDB (ohne Anmeldung), frisch beim Öffnen. Deine Prognosen, Ausfälle und die Trefferliste speichert die App nur auf diesem Gerät.</p>
+      <div class="btns" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="reload">Daten neu laden</button><button class="btn" id="exp">Sicherung speichern</button><button class="btn" id="imp">Sicherung einspielen</button></div>
+      <input type="file" id="impFile" accept="application/json" hidden>
+      <p class="mu" id="dataInfo"></p>
+    </div>
+  </section>
+</main>
+<nav class="tabs">
+  <button data-t="1" aria-selected="true"><b>📅</b>Spieltag</button>
+  <button data-t="2" aria-selected="false"><b>📊</b>Tabelle</button>
+  <button data-t="3" aria-selected="false"><b>🎯</b>Treffer</button>
+  <button data-t="4" aria-selected="false"><b>ℹ️</b>Info</button>
+</nav>
+</div>
+
+<script>
+"use strict";
+const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
+const KEY_OK="bl.zugang";
+function sha256js(str){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];
+const b=[...new TextEncoder().encode(str)],l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);for(let i=7;i>=0;i--)b.push(Math.floor(l/2**(8*i))&255);
+let H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const r=(x,n)=>(x>>>n)|(x<<(32-n));
+for(let o=0;o<b.length;o+=64){const w=[];for(let i=0;i<16;i++)w[i]=(b[o+4*i]<<24)|(b[o+4*i+1]<<16)|(b[o+4*i+2]<<8)|b[o+4*i+3];
+for(let i=16;i<64;i++){const s0=r(w[i-15],7)^r(w[i-15],18)^(w[i-15]>>>3),s1=r(w[i-2],17)^r(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0}
+let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h),t1=(k+S1+ch+K[i]+w[i])|0,S0=r(a,2)^r(a,13)^r(a,22),mj=(a&c)^(a&d)^(c&d),t2=(S0+mj)|0;k=h;h=g;g=f;f=(e+t1)|0;e=d;d=c;c=a;a=(t1+t2)|0}
+H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
+const $=id=>document.getElementById(id);
+const LSg=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}};
+const LSs=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
+const LJ=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const SJ=(k,v)=>LSs(k,JSON.stringify(v));
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
+(function(){
+  const keys=[KEY_OK,"admin.zugang","rentenrechner.zugang","br.zugang","wetter.zugang","ahnen.zugang","lohn.zugang"];
+  if(keys.some(k=>LSg(k,"")==="M:"+CODE_HASH)) return setTimeout(unlock,0);
+  const go=()=>{const c=$("gCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");const f=c.length===8?c.slice(0,4)+"-"+c.slice(4):c;
+    if(sha256js("rentenrechner:"+f)===CODE_HASH){LSs(KEY_OK,"M:"+CODE_HASH);unlock()}else $("gErr").hidden=false};
+  $("gGo").onclick=go;$("gCode").onkeydown=e=>{if(e.key==="Enter")go()};
+})();
+
+/* ---------- Daten (OpenLigaDB) ---------- */
+const API="https://api.openligadb.de";
+const now0=new Date();
+const SEASON=now0.getMonth()>=6?now0.getFullYear():now0.getFullYear()-1;   // Saisonstart-Jahr (Juli)
+let TEAMS={}, M=[], PREV=[], loadedAt=0;
+function slim(arr,teams){return (arr||[]).map(x=>{
+  [x.team1,x.team2].forEach(t=>{if(t&&t.teamId&&!teams[t.teamId])teams[t.teamId]={n:t.teamName,s:t.shortName||t.teamName,i:t.teamIconUrl||""}});
+  const rs=(x.matchResults||[]).slice().sort((a,b)=>(b.resultOrderID||0)-(a.resultOrderID||0));
+  const end=rs.find(r=>r.resultTypeID===2)||rs[0];
+  let hg=end?end.pointsTeam1:null, ag=end?end.pointsTeam2:null;
+  if(!end&&x.goals&&x.goals.length){const g=x.goals[x.goals.length-1];hg=g.scoreTeam1;ag=g.scoreTeam2}
+  return{id:x.matchID,t:Date.parse(x.matchDateTimeUTC||x.matchDateTime),g:x.group?x.group.groupOrderID:0,h:x.team1.teamId,a:x.team2.teamId,hg,ag,fin:!!x.matchIsFinished};
+}).filter(m=>m.h&&m.a&&isFinite(m.t))}
+async function getJSON(u){let last;for(let i=0;i<3;i++){try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return await r.json()}catch(e){last=e;await new Promise(r=>setTimeout(r,800*(i+1)))}}throw last}
+async function loadData(force){
+  const cache=LJ("bl.data",null);
+  if(cache&&cache.season===SEASON){TEAMS=cache.teams;M=cache.m;PREV=cache.prev||[];loadedAt=cache.at}
+  if(!force&&cache&&cache.season===SEASON&&Date.now()-cache.at<5*60e3)return;
+  try{
+    const teams={};
+    const cur=await getJSON(`${API}/getmatchdata/bl1/${SEASON}`);
+    let prev=cache&&cache.season===SEASON&&cache.prev&&cache.prev.length?null:await getJSON(`${API}/getmatchdata/bl1/${SEASON-1}`).catch(()=>[]);
+    const m=slim(cur,teams);if(!m.length)throw new Error("Keine Spiele erhalten");
+    const p=prev?slim(prev,teams).filter(x=>x.fin):PREV;
+    if(!prev&&cache)Object.assign(teams,cache.teams,teams);
+    TEAMS=Object.assign({},TEAMS,teams);M=m;PREV=p;loadedAt=Date.now();
+    SJ("bl.data",{season:SEASON,at:loadedAt,teams:TEAMS,m:M,prev:PREV});
+    $("msg").innerHTML="";
+  }catch(e){
+    if(M.length)$("msg").innerHTML=`<div class="msg">Spieldaten gerade nicht erreichbar – Anzeige vom ${new Date(loadedAt).toLocaleString("de-DE",{dateStyle:"short",timeStyle:"short"})}.</div>`;
+    else $("msg").innerHTML=`<div class="msg">Spieldaten konnten nicht geladen werden (${esc(e.message)}). Bitte später „Daten neu laden“ unter Info.</div>`;
+  }
+}
+
+/* ---------- Modell: Angriffs-/Abwehrstärke mit Zeitgewichtung ---------- */
+const HALF=180*864e5, RHO=-0.08, MAXG=8;
+function fit(until){
+  const games=PREV.concat(M).filter(m=>m.fin&&m.hg!=null&&m.t<until);
+  const W=games.map(m=>Math.pow(.5,(until-m.t)/HALF));
+  let sw=0,sh=0,sa=0;games.forEach((m,i)=>{sw+=W[i];sh+=W[i]*m.hg;sa+=W[i]*m.ag});
+  const muH=sw?sh/sw:1.6, muA=sw?sa/sw:1.3;
+  const ids=new Set();games.forEach(m=>{ids.add(m.h);ids.add(m.a)});
+  const att={},def={};ids.forEach(i=>{att[i]=1;def[i]=1});
+  for(let it=0;it<20;it++){
+    const gs={},es={},gc={},ec={};ids.forEach(i=>{gs[i]=0;es[i]=0;gc[i]=0;ec[i]=0});
+    games.forEach((m,k)=>{const w=W[k];
+      gs[m.h]+=w*m.hg;es[m.h]+=w*muH*def[m.a];gs[m.a]+=w*m.ag;es[m.a]+=w*muA*def[m.h];
+      gc[m.h]+=w*m.ag;ec[m.h]+=w*muA*att[m.a];gc[m.a]+=w*m.hg;ec[m.a]+=w*muH*att[m.h]});
+    const K=2;ids.forEach(i=>{att[i]=(gs[i]+K)/(es[i]+K);def[i]=(gc[i]+K)/(ec[i]+K)});
+    let ma=0,md=0;ids.forEach(i=>{ma+=att[i];md+=def[i]});ma/=ids.size||1;md/=ids.size||1;
+    ids.forEach(i=>{att[i]/=ma;def[i]/=md});
+  }
+  const cnt={};games.forEach(m=>{cnt[m.h]=(cnt[m.h]||0)+1;cnt[m.a]=(cnt[m.a]||0)+1});
+  return{muH,muA,att,def,cnt};
+}
+const NEW={att:.85,def:1.15};
+function strength(F,id){const n=F.cnt[id]||0;if(!n)return{att:NEW.att,def:NEW.def};
+  const s=Math.min(1,n/6);return{att:F.att[id]*s+NEW.att*(1-s),def:F.def[id]*s+NEW.def*(1-s)}}   // Aufsteiger mit wenigen Spielen vorsichtig
+const ADJ={a:[1,.92,.84],d:[1,1.07,1.14]};
+function lambdas(F,m,adj){
+  const H=strength(F,m.h),A=strength(F,m.a),j=adj||{};
+  let lh=F.muH*H.att*A.def, la=F.muA*A.att*H.def;
+  lh*=ADJ.a[j.ho|0]*ADJ.d[j.ad|0]*(j.ht?1.05:1);
+  la*=ADJ.a[j.ao|0]*ADJ.d[j.hd|0]*(j.at?1.05:1);
+  return[Math.max(.15,lh),Math.max(.15,la)];
+}
+function fact(n){let f=1;for(let i=2;i<=n;i++)f*=i;return f}
+function predict(lh,la){
+  const P=[];let p1=0,px=0,p2=0,sum=0;
+  for(let i=0;i<=MAXG;i++){P[i]=[];for(let j=0;j<=MAXG;j++){
+    let p=Math.exp(-lh)*Math.pow(lh,i)/fact(i)*Math.exp(-la)*Math.pow(la,j)/fact(j);
+    if(i===0&&j===0)p*=1-lh*la*RHO;else if(i===0&&j===1)p*=1+lh*RHO;else if(i===1&&j===0)p*=1+la*RHO;else if(i===1&&j===1)p*=1-RHO;
+    P[i][j]=p;sum+=p}}
+  let best={1:[0,0,-1],X:[0,0,-1],2:[0,0,-1]};
+  for(let i=0;i<=MAXG;i++)for(let j=0;j<=MAXG;j++){const p=P[i][j]/sum,k=i>j?"1":i===j?"X":"2";if(k==="1")p1+=p;else if(k==="X")px+=p;else p2+=p;if(p>best[k][2])best[k]=[i,j,p]}
+  const ten=p1>=px&&p1>=p2?"1":p2>=px?"2":"X";
+  return{p1,px,p2,ten,h:best[ten][0],a:best[ten][1],lh,la};
+}
+const tendOf=(h,a)=>h>a?"1":h===a?"X":"2";
+function points(ph,pa,h,a){if(ph===h&&pa===a)return 4;if(ph-pa===h-a&&h!==a)return 3;if(tendOf(ph,pa)===tendOf(h,a))return 2;return 0}
+
+/* ---------- Gespeicherte Prognosen & Ausfälle ---------- */
+let PRED=LJ("bl.pred",{}), ADJS=LJ("bl.adj",{});
+function savePred(){SJ("bl.pred",PRED)}function saveAdj(){SJ("bl.adj",ADJS)}
+
+/* ---------- Ansicht ---------- */
+let MD=0, FITCACHE={};
+function fitFor(t){const k=Math.floor(t/36e5);return FITCACHE[k]||(FITCACHE[k]=fit(t))}
+function groups(){return [...new Set(M.map(m=>m.g))].sort((a,b)=>a-b)}
+function currentMD(){const gs=groups();const open=gs.find(g=>M.some(m=>m.g===g&&!m.fin));
+  if(open==null)return gs[gs.length-1]||1;
+  const prev=gs[gs.indexOf(open)-1];
+  if(prev!=null&&M.filter(m=>m.g===open).every(m=>m.t>Date.now()+2*864e5)&&M.some(m=>m.g===prev&&m.t>Date.now()-864e5))return prev;
+  return open}
+function team(id){return TEAMS[id]||{n:"?",s:"?",i:""}}
+function icon(t){return t.i?`<img src="${esc(t.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`:""}
+function formOf(id,before){const r=M.filter(m=>m.fin&&m.t<before&&(m.h===id||m.a===id)).sort((a,b)=>b.t-a.t).slice(0,5).reverse();
+  return `<span class="form" title="letzte 5 Spiele">${r.map(m=>{const gf=m.h===id?m.hg:m.ag,ga=m.h===id?m.ag:m.hg;const c=gf>ga?"S":gf===ga?"U":"N";return `<i class="f${c}">${c}</i>`}).join("")}</span>`}
+const fmtT=t=>new Date(t).toLocaleString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+const pct=p=>Math.round(p*100)+" %";
+function renderMD(){
+  const gs=groups();if(!gs.length){$("matches").innerHTML=`<p class="mu">Noch keine Spiele.</p>`;return}
+  $("mdSel").innerHTML=gs.map(g=>`<option value="${g}"${g===MD?" selected":""}>${g}. Spieltag</option>`).join("");
+  const ms=M.filter(m=>m.g===MD).sort((a,b)=>a.t-b.t||a.id-b.id);
+  const fin=ms.filter(m=>m.fin).length;
+  $("mdInfo").textContent=ms.length?`${fmtT(ms[0].t)} bis ${fmtT(ms[ms.length-1].t)} · ${fin} von ${ms.length} Spielen beendet`:"";
+  const now=Date.now();let changed=false;
+  $("matches").innerHTML=ms.map(m=>{
+    const H=team(m.h),A=team(m.a),adj=ADJS[m.id]||{},started=m.t<=now;
+    let pr;
+    if(started&&PRED[m.id])pr=PRED[m.id];
+    else{const F=fitFor(Math.min(m.t,now));const[lh,la]=lambdas(F,m,adj);pr=predict(lh,la);
+      if(!started){PRED[m.id]={h:pr.h,a:pr.a,p1:pr.p1,px:pr.px,p2:pr.p2,ten:pr.ten,lh:pr.lh,la:pr.la,at:now,adj:Object.keys(adj).length?1:0};changed=true}
+      else pr.back=true}
+    const res=m.hg!=null?`${m.hg}:${m.ag}`:"–:–";
+    const st=m.fin?"Ende":started?`<span class="live">läuft</span>`:new Date(m.t).toLocaleString("de-DE",{weekday:"short",hour:"2-digit",minute:"2-digit"});
+    let hit="";
+    if(m.fin&&m.hg!=null){const p=points(pr.h,pr.a,m.hg,m.ag);hit=`<span class="hit h${p}">${p===4?"Volltreffer":p===3?"Tordifferenz":p===2?"Tendenz":"daneben"} · ${p} P.</span>`}
+    const w=x=>Math.max(0,Math.round(x*100));
+    const hasAdj=Object.keys(adj).some(k=>adj[k]);
+    return `<div class="m">
+      <div class="mt"><div class="tm">${icon(H)}<span>${esc(H.s)}</span></div><div class="sc">${res}<small>${st}</small></div><div class="tm r"><span>${esc(A.s)}</span>${icon(A)}</div></div>
+      <div class="mt mu" style="margin-top:3px"><div>${formOf(m.h,m.t)}</div><div></div><div style="text-align:right">${formOf(m.a,m.t)}</div></div>
+      <div class="bar"><div class="b1" style="width:${w(pr.p1)}%">${pct(pr.p1)}</div><div class="bx" style="width:${w(pr.px)}%">${pct(pr.px)}</div><div class="b2" style="width:${w(pr.p2)}%">${pct(pr.p2)}</div></div>
+      <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}</span>${hit}</div>
+      ${started?"":adjForm(m,adj)}
+    </div>`}).join("");
+  if(changed)savePred();
+  bindAdj();
+}
+function sel(id,k,v,opts){return `<select data-m="${id}" data-k="${k}">${opts.map((o,i)=>`<option value="${i}"${(v|0)===i?" selected":""}>${o}</option>`).join("")}</select>`}
+function adjForm(m,a){const H=team(m.h),A=team(m.a),open=Object.keys(a).some(k=>a[k]);
+  const oa=["komplett","wichtiger Spieler fehlt","mehrere Stammspieler fehlen"];
+  const box=(t,o,d,c,side)=>`<div><b style="font-size:13px">${esc(t.s)}</b><label>Angriff</label>${sel(m.id,o,a[o],oa)}<label>Abwehr / Torwart</label>${sel(m.id,d,a[d],oa)}<label class="ck"><input type="checkbox" data-m="${m.id}" data-k="${c}"${a[c]?" checked":""}> neuer Trainer</label></div>`;
+  return `<details class="adj"${open?" open":""}><summary>Ausfälle / Trainerwechsel eintragen</summary><div class="adjg">${box(H,"ho","hd","ht")}${box(A,"ao","ad","at")}</div></details>`}
+function bindAdj(){document.querySelectorAll("#matches [data-m]").forEach(el=>el.onchange=()=>{
+  const id=el.dataset.m,k=el.dataset.k,a=ADJS[id]||(ADJS[id]={});a[k]=el.type==="checkbox"?(el.checked?1:0):+el.value;
+  if(!Object.keys(a).some(x=>a[x]))delete ADJS[id];saveAdj();
+  const keepOpen=el.closest("details");renderMD();
+  const d=document.querySelector(`#matches [data-m="${id}"]`);if(d&&keepOpen)d.closest("details").open=true})}
+
+function renderTable(){
+  const T={};const add=id=>T[id]||(T[id]={id,sp:0,s:0,u:0,n:0,tf:0,tg:0,p:0});
+  M.forEach(m=>{add(m.h);add(m.a)});
+  M.filter(m=>m.fin&&m.hg!=null).forEach(m=>{const h=T[m.h],a=T[m.a];h.sp++;a.sp++;h.tf+=m.hg;h.tg+=m.ag;a.tf+=m.ag;a.tg+=m.hg;
+    if(m.hg>m.ag){h.s++;a.n++;h.p+=3}else if(m.hg<m.ag){a.s++;h.n++;a.p+=3}else{h.u++;a.u++;h.p++;a.p++}});
+  const L=Object.values(T).sort((x,y)=>y.p-x.p||(y.tf-y.tg)-(x.tf-x.tg)||y.tf-x.tf||team(x.id).n.localeCompare(team(y.id).n));
+  const cls=i=>i<4?"cl":i<6?"el":i===15?"rl":i>=16?"ab":"";
+  $("tabInfo").textContent=`Saison ${SEASON}/${String(SEASON+1).slice(2)} · ${M.filter(m=>m.fin).length} Spiele gewertet`;
+  $("table").innerHTML=`<table><thead><tr><th>#</th><th style="text-align:left">Verein</th><th>Sp</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff</th><th>Pkt</th><th>Form</th></tr></thead><tbody>${
+    L.map((r,i)=>`<tr class="${cls(i)}"><td>${i+1}</td><td class="t">${icon(team(r.id))}${esc(team(r.id).s)}</td><td>${r.sp}</td><td>${r.s}</td><td>${r.u}</td><td>${r.n}</td><td>${r.tf}:${r.tg}</td><td>${r.tf-r.tg>0?"+":""}${r.tf-r.tg}</td><td><b>${r.p}</b></td><td>${formOf(r.id,Infinity)}</td></tr>`).join("")
+  }</tbody></table><p class="mu">Grün Champions League, blau Europa League, gelb Relegation, rot Abstieg.</p>`;
+}
+
+function stats(list){const n=list.length;if(!n)return null;let t=0,e=0,d=0,pts=0,home=0;
+  list.forEach(x=>{const p=points(x.ph,x.pa,x.h,x.a);pts+=p;if(p>=2)t++;if(p===4)e++;if(p>=3)d++;if(x.h>x.a)home++});
+  return{n,ten:t/n,ex:e/n,pts,ppg:pts/n,home:home/n}}
+function backtest(){
+  const fin=M.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const out=[];
+  const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
+  Object.values(byG).forEach(ms=>{const t0=Math.min(...M.filter(x=>x.g===ms[0].g).map(x=>x.t));const F=fit(t0);
+    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag})})});
+  return out}
+function renderAcc(){
+  const fin=M.filter(m=>m.fin&&m.hg!=null);
+  const mine=fin.filter(m=>PRED[m.id]&&PRED[m.id].at<m.t).map(m=>({ph:PRED[m.id].h,pa:PRED[m.id].a,h:m.hg,a:m.ag,adj:PRED[m.id].adj}));
+  const bt=backtest();
+  const box=(title,lead,s)=>{if(!s)return `<div class="card"><h2>${title}</h2><p class="lead" style="margin:0">${lead}</p><p class="mu">Noch keine beendeten Spiele.</p></div>`;
+    const diff=s.ten-s.home;
+    const v=diff>=.08?`Die Prognose liegt deutlich besser als „immer Heimsieg“ (+${Math.round(diff*100)} Prozentpunkte).`:diff>=.02?`Die Prognose ist etwas besser als „immer Heimsieg“ (+${Math.round(diff*100)} Prozentpunkte).`:diff>-.02?"Die Prognose ist nicht besser als einfach immer auf Heimsieg zu tippen.":"Die Prognose ist schlechter als „immer Heimsieg“.";
+    return `<div class="card"><h2>${title}</h2><p class="lead">${lead}</p><div class="kp">
+      <div><b>${pct(s.ten)}</b><span>richtige Tendenz (${s.n} Spiele)</span></div>
+      <div><b>${pct(s.ex)}</b><span>exaktes Ergebnis</span></div>
+      <div><b>${s.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel (4/3/2 wie Kicktipp)</span></div>
+      <div><b>${pct(s.home)}</b><span>„immer Heimsieg“ hätte getroffen</span></div></div>
+      <div class="verdict">${v}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
+  $("acc").innerHTML=
+    box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
+    box("Rückblick-Test dieser Saison","Für jeden Spieltag nachgerechnet, nur mit den Daten, die vor dem Spieltag bekannt waren (ohne Ausfälle). Zeigt sofort, ob sich das Modell lohnt.",stats(bt))+
+    `<div class="card"><h2>Zum Vergleich</h2><p class="lead" style="margin:0">Gute Tipper und Buchmacher treffen in der Bundesliga die Tendenz meist in 50 bis 55 % der Spiele. „Immer Heimsieg“ liegt oft bei 42 bis 46 %. Unter 45 % lohnt sich ein Modell kaum.</p></div>`;
+}
+
+function render(){renderMD();renderTable();if(TAB===3)renderAcc();
+  $("hSub").textContent=`Saison ${SEASON}/${String(SEASON+1).slice(2)} · ${M.length?"Stand "+new Date(loadedAt).toLocaleString("de-DE",{dateStyle:"short",timeStyle:"short"}):"keine Daten"}`;
+  $("dataInfo").textContent=`${M.length} Spiele dieser Saison, ${PREV.length} der Vorsaison · ${Object.keys(PRED).length} gespeicherte Prognosen.`}
+let TAB=+LSg("bl.tab","1")||1;
+function tab(t){TAB=t;for(let i=1;i<=4;i++)$("t"+i).hidden=i!==t;
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(+b.dataset.t===t)));LSs("bl.tab",String(t));if(t===3)renderAcc();scrollTo(0,0)}
+async function start(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(+b.dataset.t));tab(TAB);
+  $("mdSel").onchange=()=>{MD=+$("mdSel").value;renderMD()};
+  $("mdPrev").onclick=()=>{const g=groups(),i=g.indexOf(MD);if(i>0){MD=g[i-1];renderMD()}};
+  $("mdNext").onclick=()=>{const g=groups(),i=g.indexOf(MD);if(i<g.length-1){MD=g[i+1];renderMD()}};
+  $("reload").onclick=async()=>{$("reload").disabled=true;await loadData(true);FITCACHE={};render();$("reload").disabled=false};
+  $("exp").onclick=()=>{const b=new Blob([JSON.stringify({app:"bundesliga",v:1,pred:PRED,adj:ADJS},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="Bundesliga_Prognosen_"+new Date().toISOString().slice(0,10)+".json";a.click()};
+  $("imp").onclick=()=>$("impFile").click();
+  $("impFile").onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(j.app!=="bundesliga")throw 0;PRED=Object.assign({},j.pred,PRED);ADJS=Object.assign({},j.adj,ADJS);savePred();saveAdj();render();$("dataInfo").textContent="Sicherung eingespielt."}catch(x){$("dataInfo").textContent="Das ist keine Sicherung dieser App."}};
+  await loadData(false);
+  MD=currentMD();render();
+  if(Date.now()-loadedAt>5*60e3){await loadData(true);FITCACHE={};render()}
+  setInterval(async()=>{if(document.hidden)return;if(M.some(m=>!m.fin&&m.t<Date.now()&&m.t>Date.now()-3*36e5)){await loadData(true);FITCACHE={};render()}},120e3);
+}
+if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{})}
+</script>
+</body>
+</html>
