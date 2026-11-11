@@ -140,7 +140,8 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 })();
 
 /* ---------- Modell (aus Verguetungsmodell_320_Mitarbeiter.xlsx) ---------- */
-const DEF={ver:5,
+const DEF={ver:6,
+  staffel:[[12,1],[36,.5],[60,.25]], maxFremd:15,
   wiederMax:10,
   sz:{tze1:1000,tze2:644,weih:1.10,gewinn:0,stand:"Tarif Eisen und Stahl NRW"},
   basis:2250, woche:35, maxErf:40, luecke:12, maxRatio:8,
@@ -219,7 +220,7 @@ function drawPersonForm(){
    <div class="row wi"><label>Jahre weg vom Betrieb<small>zählt, wenn höchstens ${num(C.wiederMax,0)} Jahre</small></label><input class="n" id="pWg" inputmode="decimal" value="${esc(P.wg)}" placeholder="0"></div>
    <div class="row"><label>Jahre im Betrieb<small>seit der (Wieder-)Einstellung</small></label><input class="n" id="pJb" inputmode="decimal" value="${esc(P.jb)}" placeholder="0"></div>
    <div class="row"><label>Jahre in anderen Betrieben<small>gleiche oder gleichwertige Tätigkeit, nachgewiesen (bei Wiedereinstellung: die Jahre dazwischen)</small></label><input class="n" id="pJa" inputmode="decimal" value="${esc(P.ja)}" placeholder="0"></div>
-   <div class="row"><label>Längste Lücke dazwischen (Monate)<small>angerechnet bis ${num(C.luecke,0)} Monate</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.lu)}" placeholder="0"></div>
+   <div class="row"><label>Lücke seit der letzten gleichwertigen Tätigkeit (Monate)<small>${C.staffel.map(([m,f])=>"bis "+num(m,0)+" Mon.: "+(f===1?"voll":num(f*100,0)+" %")).join(" · ")} · max. ${num(C.maxFremd,0)} Jahre</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.lu)}" placeholder="0"></div>
    <div class="row gw"><label>Erschwerniszulage<small>nach Belastung am Arbeitsplatz</small></label><select class="n" id="pBel">${[["","keine"],["l","leicht "+eur(C.E.l)],["m","mittel "+eur(C.E.m)],["s","schwer "+eur(C.E.s)],["e","eigener Betrag"]].map(o=>`<option value="${o[0]}" ${o[0]===P.bel?"selected":""}>${o[1]}</option>`).join("")}</select></div>
    <div class="row gw" id="pEigRow"><label>Eigene Erschwerniszulage €/Std.</label><input class="n" id="pEig" inputmode="decimal" value="${esc(P.eig)}" placeholder="€"></div>
    <div class="row gw"><label>Leistungsgrad in %<small>leer = Standard ${num(C.leist*100,0)} %</small></label><input class="n" id="pLg" inputmode="decimal" value="${esc(P.lg)}" placeholder="${num(C.leist*100,0)}"></div>
@@ -229,13 +230,14 @@ function drawPersonForm(){
     LSs("verg.person",JSON.stringify(P));gwVis();drawPersonRes()}));
   gwVis();drawPersonRes();
 }
+function anrF(m){for(const[x,f]of[...C.staffel].sort((a,b)=>a[0]-b[0]))if(m<=x)return f;return 0}
 function jahr(p,m){if(p.at)return{w:0,t:0,g:0,sum:m*12};const w=m*C.sz.weih,t=C.sz.tze1+C.sz.tze2,g=C.sz.gewinn||0;return{w,t,g,sum:m*12+w+t+g}}
 function gwVis(){document.querySelectorAll("#pForm .wi").forEach(el=>el.hidden=!P.wi);const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];document.querySelectorAll("#pForm .gw").forEach(el=>el.hidden=!p.g||(el.id==="pEigRow"&&P.bel!=="e"))}
 function drawPersonRes(){
   const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];
   const jb=pn(P.jb)||0,ja=pn(P.ja)||0,lu=pn(P.lu)||0;
   const wj=P.wi?(pn(P.wj)||0):0,wg=pn(P.wg)||0,wOk=P.wi&&wj>0&&wg<=C.wiederMax,wAn=wOk?wj:0;
-  const anr=(lu<=C.luecke||P.wi)?ja:0,erf=jb+anr+wAn,tr=jb+wAn;
+  const sf=P.wi?1:anrF(lu),anr=Math.min(ja*sf,C.maxFremd),erf=jb+anr+wAn,tr=jb+wAn;
   const r=calc(p,erf,tr);
   const E=p.g?(P.bel==="e"?(pn(P.eig)||0):(P.bel?C.E[P.bel]:0)):0,LG=p.g?((pn(P.lg)||C.leist*100)/100):1;
   const tot=x=>p.g?r2((x.h+E)*LG):x.h, totM=x=>p.g?Math.round(tot(x)*stdMonat()):x.m;
@@ -244,7 +246,7 @@ function drawPersonRes(){
   let nx=null;for(let y=1;y<=45;y++){const n=calc(p,erf+y,tr+y);if(n.m>r.m+0.5){nx={y,n,m:totM(n)};break}}
   const heute=pn(P.heute);
   $("pRes").innerHTML=`<div class="res">
-    <div class="sub">${esc(p.n)} · Faktor ${num(p.f,2)} · ${num(erf,1)} Jahre Erfahrung${ja?` (davon ${num(anr,1)} aus anderen Betrieben${anr?"":" – Lücke zu lang"})`:""} · ${num(tr,1)} Jahre Betriebszugehörigkeit${P.wi?(wOk?` (inkl. ${num(wj,1)} frühere Jahre – Wiedereinstellung)`:wj?` (frühere Jahre zählen nicht: länger als ${num(C.wiederMax,0)} Jahre weg)`:""):""}</div>
+    <div class="sub">${esc(p.n)} · Faktor ${num(p.f,2)} · ${num(erf,1)} Jahre Erfahrung${ja?` (davon ${num(anr,1)} aus anderen Betrieben${sf===0?" – Lücke zu lang":sf<1?` – ${num(sf*100,0)} % wegen Lücke`:""}${ja*sf>C.maxFremd?` – höchstens ${num(C.maxFremd,0)} Jahre`:""})`:""} · ${num(tr,1)} Jahre Betriebszugehörigkeit${P.wi?(wOk?` (inkl. ${num(wj,1)} frühere Jahre – Wiedereinstellung)`:wj?` (frühere Jahre zählen nicht: länger als ${num(C.wiederMax,0)} Jahre weg)`:""):""}</div>
     <div class="big">${p.g?eur(th)+' <span style="font-size:16px;font-weight:600">je Stunde</span>':eur(tm,0)+' <span style="font-size:16px;font-weight:600">im Monat</span>'}</div>
     <div class="sub">Grundlohn: ${eur(C.basis,0)} × ${num(fe(p),2)} + Erfahrung ${pct(r.ez)} + Betriebstreue ${pct(r.tz)} = ${eur(r.m,0)} im Monat (${eur(r.h)}/Std.)${p.g?` · mit Erschwerniszulage ${eur(E)} und ${num(LG*100,1)} %: (${eur(r.h)} + ${eur(E)}) × ${num(LG*100,1)} % = ${eur(th)}`:""}</div>
     <div class="kp"><div><b>${eur(tm,0)}</b><span>im Monat</span></div><div><b>${eur(jahr(p,tm).sum,0)}</b><span>im Jahr inkl. Sonderzahlungen</span></div><div><b>${eur(th)}</b><span>je Stunde</span></div></div>
@@ -265,7 +267,10 @@ function drawWerte(openIx){
    <div class="row"><label>Leistungsgrad Standard in %<small>nur Gewerbliche</small></label><input class="n" data-k="leistP" inputmode="decimal" value="${num(C.leist*100,1)}"></div>
    <div class="row"><label>Max. anrechenbare Erfahrung (Jahre)</label><input class="n" data-k="maxErf" inputmode="decimal" value="${num(C.maxErf,0)}"></div>
    <div class="row"><label>Wiedereinstellung: frühere Jahre zählen bis … Jahre nach dem Ausscheiden</label><input class="n" data-k="wiederMax" inputmode="decimal" value="${num(C.wiederMax,0)}"></div>
-   <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label><input class="n" data-k="luecke" inputmode="decimal" value="${num(C.luecke,0)}"></div></div>
+   <div class="row"><label>Höchstens anrechenbare fremde Jahre</label><input class="n" data-k="maxFremd" inputmode="decimal" value="${num(C.maxFremd,0)}"></div></div>
+  <div class="card"><h2>Anrechnung fremder Erfahrung</h2><p class="lead">Je länger die Lücke seit der letzten gleichwertigen Tätigkeit, desto weniger wird angerechnet. Darüber: nichts.</p>
+   <table class="ed"><tr><th>Lücke bis (Monate)</th><th>Anrechnung %</th></tr>
+   ${C.staffel.map((s,i)=>`<tr><td><input data-st="${i}.0" inputmode="decimal" value="${num(s[0],0)}"></td><td><input data-st="${i}.1" inputmode="decimal" value="${num(s[1]*100,0)}"></td></tr>`).join("")}</table></div>
   <div class="card"><h2>Sonderzahlungen</h2><p class="lead">Aus der BR-App (${esc(C.sz.stand)}). Gelten für Tarifbeschäftigte, nicht für Betriebs-, Werksleiter und Geschäftsführer.</p>
    <div class="row"><label>Weihnachtsgeld in % eines Monats</label><input class="n" data-k="sz.weihP" inputmode="decimal" value="${num(C.sz.weih*100,1)}"></div>
    <div class="row"><label>Tarifzusatzentgelt I (Juli) €</label><input class="n" data-k="sz.tze1" inputmode="decimal" value="${num(C.sz.tze1,2)}"></div>
@@ -293,7 +298,7 @@ function drawWerte(openIx){
   W.querySelectorAll("[data-pd]").forEach(b=>b.onclick=()=>{if(C.pos.length<2)return;if(!confirm(`Position „${C.pos[+b.dataset.pd].n}“ löschen?`))return;C.pos.splice(+b.dataset.pd,1);re();drawWerte()});
   $("bAddPos").onclick=()=>{C.pos.push({n:"Neue Position",f:1,g:1});re();drawWerte()};
   const tbl=(attr,arr)=>{W.querySelectorAll(`[data-${attr}]`).forEach(el=>el.onchange=()=>{const[i,k]=el.dataset[attr].split(".").map(Number);const x=pn(el.value);if(isFinite(x))C[arr][i][k]=k?x/100:x;re();drawWerte()})};
-  tbl("e","erf");tbl("t","treue");
+  tbl("e","erf");tbl("t","treue");tbl("st","staffel");
   W.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{if(C.erf.length>2){C.erf.splice(+b.dataset.ed,1);re();drawWerte()}});
   W.querySelectorAll("[data-td]").forEach(b=>b.onclick=()=>{if(C.treue.length>1){C.treue.splice(+b.dataset.td,1);re();drawWerte()}});
   $("bAddE").onclick=()=>{const l=C.erf.at(-1);C.erf.push([l[0]+5,l[1]]);re();drawWerte()};
@@ -321,11 +326,12 @@ const RULES=[
   ["Betriebsleiter, Werksleiter, Geschäftsführer","Leitende Funktionen; die Faktoren begrenzen den Abstand zur untersten Gruppe."]]],
  ["Berufserfahrung",[
   ["Was zählt","Nur Jahre in derselben oder einer nachweislich gleichwertigen Tätigkeit, nachgewiesen durch Arbeitszeugnis, Arbeitgeberbescheinigung oder Versicherungsverlauf."],
-  ["Unterbrechungen","Beschäftigungsabschnitte werden zusammengerechnet, wenn die Unterbrechung jeweils höchstens 12 Monate beträgt."],
+  ["Lücke","Bei Neueinstellung wird fremde Erfahrung nach der Lücke seit der letzten gleichwertigen Tätigkeit angerechnet: bis 12 Monate voll, bis 3 Jahre zur Hälfte, bis 5 Jahre zu einem Viertel, danach nicht mehr."],
+  ["Obergrenze","Aus anderen Betrieben werden höchstens 15 Jahre angerechnet; die Betriebstreue wird ohnehin extra belohnt."],
   ["Höhe","Je volles Jahr steigt der Zuschlag; höchstens 40 Jahre und 12 % werden angerechnet."]]],
  ["Wiedereinstellung",[
   ["Grundsatz","Wer früher bei uns gearbeitet hat und wieder eingestellt wird, behält seine früheren Jahre – für Berufserfahrung und Betriebszugehörigkeit."],
-  ["Frist","Gilt, wenn die Wiedereinstellung höchstens 10 Jahre nach dem Ausscheiden erfolgt. Die 12-Monats-Grenze für Lücken gilt dann nicht."],
+  ["Frist","Gilt, wenn die Wiedereinstellung höchstens 10 Jahre nach dem Ausscheiden erfolgt. Die Lückenstaffel gilt dann nicht."],
   ["Zwischenzeit","Jahre in gleicher oder gleichwertiger Tätigkeit bei anderen Betrieben in der Zwischenzeit zählen zusätzlich zur Berufserfahrung (mit Nachweis)."],
   ["Neueinstellung","Für alle, die vorher nicht bei uns waren, gelten die normalen Regeln."]]],
  ["Betriebszugehörigkeit",[
