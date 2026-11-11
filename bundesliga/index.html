@@ -262,7 +262,9 @@ function lambdas(F,m,adj,auto){
   return[Math.max(.15,lh),Math.max(.15,la)];
 }
 function fact(n){let f=1;for(let i=2;i<=n;i++)f*=i;return f}
-function predict(lh,la){
+let DRAW=+LSg("bl.draw","0");if(!isFinite(DRAW))DRAW=0;
+const DRAWS=[0,.04,.08,.12],DRN={0:"aus",0.04:"sehr knapp",0.08:"knapp",0.12:"eng"};
+function predict(lh,la,dr){dr=dr==null?DRAW:dr;
   const P=[];let p1=0,px=0,p2=0,sum=0;
   for(let i=0;i<=MAXG;i++){P[i]=[];for(let j=0;j<=MAXG;j++){
     let p=Math.exp(-lh)*Math.pow(lh,i)/fact(i)*Math.exp(-la)*Math.pow(la,j)/fact(j);
@@ -270,7 +272,7 @@ function predict(lh,la){
     P[i][j]=p;sum+=p}}
   let best={1:[0,0,-1],X:[0,0,-1],2:[0,0,-1]};
   for(let i=0;i<=MAXG;i++)for(let j=0;j<=MAXG;j++){const p=P[i][j]/sum,k=i>j?"1":i===j?"X":"2";if(k==="1")p1+=p;else if(k==="X")px+=p;else p2+=p;if(p>best[k][2])best[k]=[i,j,p]}
-  const ten=p1>=px&&p1>=p2?"1":p2>=px?"2":"X";
+  let ten=p1>=px&&p1>=p2?"1":p2>=px?"2":"X";if(dr>0&&ten!=="X"&&Math.abs(p1-p2)<dr)ten="X";
   return{p1,px,p2,ten,h:best[ten][0],a:best[ten][1],lh,la};
 }
 const tendOf=(h,a)=>h>a?"1":h===a?"X":"2";
@@ -375,10 +377,19 @@ function prevBox(){const nm=`${SEASON-1}/${String(SEASON).slice(2)}`;
    <div class="scroll"><table><thead><tr><th style="text-align:left">Belastung</th>${th}</tr></thead><tbody>
    ${row("richtige Tendenz",P,S)}${row("exaktes Ergebnis",E,S)}${row("Punkte je Spiel",G,S)}${row(`nur betroffene Spiele (${C[0]?C[0].n:0})`,P,C)}
    <tr><td class="t">„immer Heimsieg“</td><td colspan="4">${pct(S[0].home)}</td></tr></tbody></table></div>
-   <div class="verdict">Am besten lag „Belastung ${SCN[SCALES[best]]}“. Unterschiede von 1 Prozentpunkt sind bei 306 Spielen nur rund 3 Spiele – also eher Zufall.</div>${sel}</div>`}
-function stats(list){const n=list.length;if(!n)return null;let t=0,e=0,d=0,pts=0,home=0;
-  list.forEach(x=>{const p=points(x.ph,x.pa,x.h,x.a);pts+=p;if(p>=2)t++;if(p===4)e++;if(p>=3)d++;if(x.h>x.a)home++});
-  return{n,ten:t/n,ex:e/n,pts,ppg:pts/n,home:home/n}}
+   <div class="verdict">Am besten lag „Belastung ${SCN[SCALES[best]]}“. Unterschiede von 1 Prozentpunkt sind bei 306 Spielen nur rund 3 Spiele – also eher Zufall.</div>${sel}</div>`+drawBox()}
+function drawBox(){if(!PREVBT||!PREVBT.D)return"";const S=PREVBT.D.map(stats);if(!S[0])return"";
+  const score=x=>x.ppg+x.ten/100;let best=0;S.forEach((x,i)=>{if(score(x)>score(S[best])+1e-9)best=i});
+  const th=DRAWS.map((d,i)=>`<th${i===best?' style="color:var(--acc2)"':""}>${DRN[d]}</th>`).join("");
+  const row=(l,f)=>`<tr><td class="t">${l}</td>${S.map((x,i)=>`<td${i===best?' style="font-weight:800"':""}>${f(x)}</td>`).join("")}</tr>`;
+  const sel=`<div class="md" style="margin-top:10px"><span class="mu" style="flex:none">Für kommende Spiele:</span><select id="drawSel">${DRAWS.map(d=>`<option value="${d}"${d===DRAW?" selected":""}>Unentschieden ${DRN[d]}</option>`).join("")}</select></div>`;
+  return `<div class="card"><h2>Unentschieden-Regel (${S[0].n} Spiele)</h2><p class="lead">Tipp „Unentschieden“, wenn Heim- und Auswärtssieg fast gleich wahrscheinlich sind: „sehr knapp“ = weniger als 4 Prozentpunkte Abstand, „knapp“ = unter 8, „eng“ = unter 12. In der Saison gab es ${S[0].draws} Unentschieden (${pct(S[0].draws/S[0].n)}).</p>
+   <div class="scroll"><table><thead><tr><th style="text-align:left">Regel</th>${th}</tr></thead><tbody>
+   ${row("richtige Tendenz",x=>pct(x.ten))}${row("exaktes Ergebnis",x=>pct(x.ex))}${row("Punkte je Spiel",x=>x.ppg.toFixed(2).replace(".",","))}${row("X getippt / richtig",x=>`${x.tx} / ${x.xh}`)}</tbody></table></div>
+   <div class="verdict">${best===0?"Ohne Unentschieden-Regel lag die Prognose am besten – öfter X tippen bringt nichts.":`Am besten lag die Regel „${DRN[DRAWS[best]]}“ (+${((S[best].ppg-S[0].ppg)).toFixed(2).replace(".",",")} Punkte je Spiel gegenüber „aus“).`}</div>${sel}</div>`}
+function stats(list){const n=list.length;if(!n)return null;let t=0,e=0,d=0,pts=0,home=0,tx=0,xh=0,dr=0;
+  list.forEach(x=>{const p=points(x.ph,x.pa,x.h,x.a);pts+=p;if(p>=2)t++;if(p===4)e++;if(p>=3)d++;if(x.h>x.a)home++;if(x.h===x.a)dr++;if(x.ph===x.pa){tx++;if(x.h===x.a)xh++}});
+  return{n,ten:t/n,ex:e/n,pts,ppg:pts/n,home:home/n,tx,xh,draws:dr}}
 function backtest(){
   const fin=M.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const out=[];
   const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
@@ -386,14 +397,15 @@ function backtest(){
     ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag})})});
   return out}
 function backtestPrev(){
-  const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const O=SCALES.map(()=>[]),A=SCALES.map(()=>[]);
+  const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const O=SCALES.map(()=>[]),A=SCALES.map(()=>[]),D=DRAWS.map(()=>[]);
   const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
   const ex={};Object.keys(TEAMS).forEach(id=>ex[id]=histExtra(+id));
   Object.values(byG).forEach(ms=>{const t0=Math.min(...ms.map(x=>x.t));const F=fit(t0);
     ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});
       const rh=restInfo(m.h,m.t,PREV,ex[m.h]),ra=restInfo(m.a,m.t,PREV,ex[m.a]),aff=restFac(rh,1).a<1||restFac(ra,1).a<1;
-      SCALES.forEach((sc,i)=>{const fh=restFac(rh,sc),fa=restFac(ra,sc);const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d)),r={ph:q.h,pa:q.a,h:m.hg,a:m.ag};O[i].push(r);if(aff)A[i].push(r)})})});
-  return{O,A}}
+      SCALES.forEach((sc,i)=>{const fh=restFac(rh,sc),fa=restFac(ra,sc);const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d),0),r={ph:q.h,pa:q.a,h:m.hg,a:m.ag};O[i].push(r);if(aff)A[i].push(r)});
+      const fh=restFac(rh),fa=restFac(ra);DRAWS.forEach((dr,i)=>{const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d),dr);D[i].push({ph:q.h,pa:q.a,h:m.hg,a:m.ag})})})});
+  return{O,A,D}}
 function renderAcc(){
   const fin=M.filter(m=>m.fin&&m.hg!=null);
   const mine=fin.filter(m=>PRED[m.id]&&PRED[m.id].at<m.t).map(m=>({ph:PRED[m.id].h,pa:PRED[m.id].a,h:m.hg,a:m.ag,adj:PRED[m.id].adj}));
@@ -407,7 +419,8 @@ function renderAcc(){
       <div><b>${s.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel (4/3/2 wie Kicktipp)</span></div>
       <div><b>${pct(s.home)}</b><span>„immer Heimsieg“ hätte getroffen</span></div></div>
       <div class="verdict">${v}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
-  setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));FITCACHE={};renderMD()}renderAcc()},30)};
+  setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));const D=PREVBT.D.map(stats);let bd=0;D.forEach((x,i)=>{if(x.ppg+x.ten/100>D[bd].ppg+D[bd].ten/100+1e-9)bd=i});DRAW=DRAWS[bd];LSs("bl.draw",String(DRAW));FITCACHE={};renderMD()}renderAcc()},30)};
+    const dsel=$("drawSel");if(dsel)dsel.onchange=()=>{DRAW=+dsel.value;LSs("bl.draw",String(DRAW));renderMD()};
     const r=$("restSel");if(r)r.onchange=()=>{REST=+r.value;LSs("bl.rest",String(REST));FITCACHE={};renderMD()}},0);
   $("acc").innerHTML=
     box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
