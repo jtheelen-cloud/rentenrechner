@@ -164,7 +164,7 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 const API="https://api.openligadb.de";
 const now0=new Date();
 const SEASON=now0.getMonth()>=6?now0.getFullYear():now0.getFullYear()-1;   // Saisonstart-Jahr (Juli)
-let TEAMS={}, M=[], PREV=[], loadedAt=0;
+let TEAMS={}, M=[], PREV=[], PREV2=LJ("bl.prev2",null), loadedAt=0, HIST=null;
 function slim(arr,teams){return (arr||[]).map(x=>{
   [x.team1,x.team2].forEach(t=>{if(t&&t.teamId&&!teams[t.teamId])teams[t.teamId]={n:t.teamName,s:t.shortName||t.teamName,i:t.teamIconUrl||""}});
   const rs=(x.matchResults||[]).slice().sort((a,b)=>(b.resultOrderID||0)-(a.resultOrderID||0));
@@ -185,6 +185,9 @@ function ausFor(id,t){if(!AUS||!AUS.teams)return null;const st=Date.parse(AUS.gu
   if(isFinite(st)&&t<st-864e5)return null;if(isFinite(bis)&&t>bis+864e5)return null;if(!isFinite(bis)&&isFinite(st)&&t>st+9*864e5)return null;
   const tm=TEAMS[id];if(!tm)return null;const n=norm(tm.n)+"|"+norm(tm.s);
   return AUS.teams.find(x=>(x.keys||[]).some(k=>k&&n.includes(norm(k))))||null}
+async function loadPrev2(){if(PREV2&&PREV2.season===SEASON-2)return;try{const teams={};const r=await getJSON(`${API}/getmatchdata/bl1/${SEASON-2}`);
+  const g=slim(r,teams).filter(x=>x.fin);Object.keys(teams).forEach(k=>{if(!TEAMS[k])TEAMS[k]=teams[k]});PREV2={season:SEASON-2,m:g,teams};SJ("bl.prev2",PREV2)}catch(e){}}
+async function loadHist(){if(HIST)return;try{const r=await fetch(`europa_${SEASON-1}.json`,{cache:"no-store"});if(r.ok)HIST=await r.json()}catch(e){}}
 async function loadData(force){
   const cache=LJ("bl.data",null);
   if(cache&&cache.season===SEASON){TEAMS=cache.teams;M=cache.m;PREV=cache.prev||[];loadedAt=cache.at}
@@ -208,7 +211,7 @@ async function loadData(force){
 /* ---------- Modell: Angriffs-/Abwehrstärke mit Zeitgewichtung ---------- */
 const HALF=180*864e5, RHO=-0.08, MAXG=8;
 function fit(until){
-  const games=PREV.concat(M).filter(m=>m.fin&&m.hg!=null&&m.t<until);
+  const games=(PREV2&&PREV2.m||[]).concat(PREV,M).filter(m=>m.fin&&m.hg!=null&&m.t<until);
   const W=games.map(m=>Math.pow(.5,(until-m.t)/HALF));
   let sw=0,sh=0,sa=0;games.forEach((m,i)=>{sw+=W[i];sh+=W[i]*m.hg;sa+=W[i]*m.ag});
   const muH=sw?sh/sw:1.6, muA=sw?sa/sw:1.3;
@@ -236,9 +239,11 @@ function strength(F,id,useXG){const n=F.cnt[id]||0;let r;if(!n)r={att:NEW.att,de
 const ADJ={a:[null,1,.92,.84],d:[null,1,1.07,1.14]};
 /* Pause seit dem letzten Pflichtspiel (Bundesliga + Europapokal/DFB-Pokal aus der Liste) */
 const DAY=864e5,dayOf=t=>Math.floor((t+36e5)/DAY);
-function restInfo(id,t){let last=null,src=null;
-  M.forEach(x=>{if((x.h===id||x.a===id)&&x.t<t-6*36e5&&(!last||x.t>last)){last=x.t;src={w:"Bundesliga",aw:x.a===id}}});
-  const a=teamAus(id);(a&&a.extra||[]).forEach(e=>{const tt=Date.parse(e.datum);if(isFinite(tt)&&tt<t-6*36e5&&(!last||tt>last)){last=tt;src={w:e.wettbewerb||"Pokal",aw:!!e.auswaerts,ort:e.ort||""}}});
+function histExtra(id){if(!HIST||!HIST.spiele)return[];const tm=TEAMS[id];if(!tm)return[];const n=norm(tm.n)+"|"+norm(tm.s);
+  return HIST.spiele.filter(e=>n.includes(norm(e.key)))}
+function restInfo(id,t,pool,extra){let last=null,src=null;
+  (pool||M).forEach(x=>{if((x.h===id||x.a===id)&&x.t<t-6*36e5&&(!last||x.t>last)){last=x.t;src={w:"Bundesliga",aw:x.a===id}}});
+  const a=teamAus(id);(extra||(a&&a.extra)||[]).forEach(e=>{const tt=Date.parse(e.datum);if(isFinite(tt)&&tt<t-6*36e5&&(!last||tt>last)){last=tt;src={w:e.wettbewerb||"Pokal",aw:!!e.auswaerts,ort:e.ort||""}}});
   if(!last||t-last>30*DAY)return null;return{tage:dayOf(t)-dayOf(last),...src}}
 function restFac(r){if(!r||r.w==="Bundesliga")return{a:1,d:1};const g=r.tage;
   let a=g<=2?.93:g===3?.95:g===4?.97:g===5?.99:1, d=g<=2?1.05:g===3?1.04:g===4?1.02:g===5?1.01:1;
@@ -355,6 +360,18 @@ function renderTable(){
   }</tbody></table><p class="mu">Grün Champions League, blau Europa League, gelb Relegation, rot Abstieg.</p>`;
 }
 
+let PREVBT=null;
+function prevBox(){const nm=`${SEASON-1}/${String(SEASON).slice(2)}`;
+  if(!PREVBT)return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Rückblick über alle 34 Spieltage der letzten Saison, einmal ohne und einmal mit Europapokal-/Pokal-Belastung.</p><button class="btn p" id="runPrev">Jetzt durchrechnen</button></div>`;
+  const a=stats(PREVBT.o0),b=stats(PREVBT.o1),c=stats(PREVBT.aff0),d=stats(PREVBT.aff1);if(!a)return `<div class="card"><h2>Saison ${nm}</h2><p class="mu">Keine Daten der letzten Saison.</p></div>`;
+  const row=(l,f)=>`<tr><td class="t">${l}</td><td>${f(a)}</td><td>${f(b)}</td></tr>`;
+  const P=x=>pct(x.ten),E=x=>pct(x.ex),G=x=>x.ppg.toFixed(2).replace(".",",");
+  const diff=b.ten-a.ten,dd=d&&c?d.ten-c.ten:0;
+  return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Alle ${a.n} Spiele, jeder Spieltag nur mit den Daten von davor nachgerechnet (Tore, Form, Heimvorteil). Rechts zusätzlich mit Europapokal- und Pokal-Belastung (${HIST&&HIST.spiele?HIST.spiele.length:0} Spiele unter der Woche). Ohne Ausfälle und xG – dazu gibt es keine alten Daten.</p>
+   <div class="scroll"><table><thead><tr><th style="text-align:left"></th><th>ohne Belastung</th><th>mit Belastung</th></tr></thead><tbody>
+   ${row("richtige Tendenz",P)}${row("exaktes Ergebnis",E)}${row("Punkte je Spiel",G)}<tr><td class="t">„immer Heimsieg“</td><td colspan="2">${pct(a.home)}</td></tr></tbody></table></div>
+   ${c?`<p class="mu" style="margin-top:8px">Nur die ${c.n} Spiele, in denen ein Team kurz vorher international oder im Pokal gespielt hat: Tendenz ${pct(c.ten)} ohne → ${pct(d.ten)} mit Belastung.</p>`:""}
+   <div class="verdict">${Math.abs(diff)<.005&&Math.abs(dd)<.01?"Die Europapokal-Belastung ändert über die ganze Saison kaum etwas.":diff>0||dd>0?`Die Europapokal-Belastung verbessert die Prognose (${diff>=0?"+":""}${(diff*100).toFixed(1).replace(".",",")} Prozentpunkte gesamt${c?`, ${dd>=0?"+":""}${(dd*100).toFixed(1).replace(".",",")} in den betroffenen Spielen`:""}).`:`Die Europapokal-Belastung verschlechtert die Prognose leicht (${(diff*100).toFixed(1).replace(".",",")} Prozentpunkte) – der Abzug ist wohl zu stark.`}</div></div>`}
 function stats(list){const n=list.length;if(!n)return null;let t=0,e=0,d=0,pts=0,home=0;
   list.forEach(x=>{const p=points(x.ph,x.pa,x.h,x.a);pts+=p;if(p>=2)t++;if(p===4)e++;if(p>=3)d++;if(x.h>x.a)home++});
   return{n,ten:t/n,ex:e/n,pts,ppg:pts/n,home:home/n}}
@@ -364,6 +381,16 @@ function backtest(){
   Object.values(byG).forEach(ms=>{const t0=Math.min(...M.filter(x=>x.g===ms[0].g).map(x=>x.t));const F=fit(t0);
     ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag})})});
   return out}
+function backtestPrev(){
+  const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const o0=[],o1=[],aff0=[],aff1=[];
+  const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
+  const ex={};Object.keys(TEAMS).forEach(id=>ex[id]=histExtra(+id));
+  Object.values(byG).forEach(ms=>{const t0=Math.min(...ms.map(x=>x.t));const F=fit(t0);
+    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la),r0={ph:p.h,pa:p.a,h:m.hg,a:m.ag};o0.push(r0);
+      const rh=restInfo(m.h,m.t,PREV,ex[m.h]),ra=restInfo(m.a,m.t,PREV,ex[m.a]),fh=restFac(rh),fa=restFac(ra);
+      const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d)),r1={ph:q.h,pa:q.a,h:m.hg,a:m.ag};o1.push(r1);
+      if(fh.a<1||fa.a<1){aff0.push(r0);aff1.push(r1)}})});
+  return{o0,o1,aff0,aff1}}
 function renderAcc(){
   const fin=M.filter(m=>m.fin&&m.hg!=null);
   const mine=fin.filter(m=>PRED[m.id]&&PRED[m.id].at<m.t).map(m=>({ph:PRED[m.id].h,pa:PRED[m.id].a,h:m.hg,a:m.ag,adj:PRED[m.id].adj}));
@@ -377,9 +404,11 @@ function renderAcc(){
       <div><b>${s.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel (4/3/2 wie Kicktipp)</span></div>
       <div><b>${pct(s.home)}</b><span>„immer Heimsieg“ hätte getroffen</span></div></div>
       <div class="verdict">${v}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
+  setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();renderAcc()},30)}},0);
   $("acc").innerHTML=
     box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
     box("Rückblick-Test dieser Saison","Für jeden Spieltag nachgerechnet, nur mit den Daten, die vor dem Spieltag bekannt waren (ohne Ausfälle). Zeigt sofort, ob sich das Modell lohnt.",stats(bt))+
+    prevBox()+
     `<div class="card"><h2>Zum Vergleich</h2><p class="lead" style="margin:0">Gute Tipper und Buchmacher treffen in der Bundesliga die Tendenz meist in 50 bis 55 % der Spiele. „Immer Heimsieg“ liegt oft bei 42 bis 46 %. Unter 45 % lohnt sich ein Modell kaum.</p></div>`;
 }
 

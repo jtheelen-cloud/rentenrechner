@@ -1,0 +1,965 @@
+{
+"saison": "2025/26",
+"hinweis": "Europapokal- und DFB-Pokal-Spiele der Bundesligisten 2025/26 für den Rückblick-Test (Quellen: Wikipedia-Saisonübersichten, UEFA)",
+"spiele": [
+{
+"key": "bremen",
+"datum": "2025-08-15",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Arminia Bielefeld"
+},
+{
+"key": "leverkusen",
+"datum": "2025-08-15",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Sonnenhof Großaspach"
+},
+{
+"key": "union",
+"datum": "2025-08-15",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "FC Gütersloh"
+},
+{
+"key": "freiburg",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Sportfreunde Lotte"
+},
+{
+"key": "hamburg",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "FK Pirmasens"
+},
+{
+"key": "heidenheim",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Bahlinger SC"
+},
+{
+"key": "hoffenheim",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Hansa Rostock"
+},
+{
+"key": "leipzig",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "SV Sandhausen"
+},
+{
+"key": "pauli",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Eintracht Norderstedt"
+},
+{
+"key": "wolfsburg",
+"datum": "2025-08-16",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "SV Hemelingen"
+},
+{
+"key": "augsburg",
+"datum": "2025-08-17",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Hallescher FC"
+},
+{
+"key": "frankfurt",
+"datum": "2025-08-17",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "FV Engers"
+},
+{
+"key": "gladbach",
+"datum": "2025-08-17",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Atlas Delmenhorst"
+},
+{
+"key": "koeln",
+"datum": "2025-08-17",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Jahn Regensburg"
+},
+{
+"key": "dortmund",
+"datum": "2025-08-18",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Rot-Weiss Essen"
+},
+{
+"key": "mainz",
+"datum": "2025-08-18",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Dynamo Dresden"
+},
+{
+"key": "mainz",
+"datum": "2025-08-21",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "Rosenborg BK"
+},
+{
+"key": "stuttgart",
+"datum": "2025-08-26",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Eintracht Braunschweig"
+},
+{
+"key": "bayern",
+"datum": "2025-08-27",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Wehen Wiesbaden"
+},
+{
+"key": "mainz",
+"datum": "2025-08-28",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "Rosenborg BK"
+},
+{
+"key": "dortmund",
+"datum": "2025-09-16",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Juventus"
+},
+{
+"key": "bayern",
+"datum": "2025-09-17",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Chelsea"
+},
+{
+"key": "frankfurt",
+"datum": "2025-09-18",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Galatasaray"
+},
+{
+"key": "leverkusen",
+"datum": "2025-09-18",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Copenhagen"
+},
+{
+"key": "freiburg",
+"datum": "2025-09-24",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Basel"
+},
+{
+"key": "stuttgart",
+"datum": "2025-09-25",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Celta Vigo"
+},
+{
+"key": "bayern",
+"datum": "2025-09-30",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Pafos"
+},
+{
+"key": "frankfurt",
+"datum": "2025-09-30",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Atlético Madrid"
+},
+{
+"key": "dortmund",
+"datum": "2025-10-01",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Athletic Bilbao"
+},
+{
+"key": "leverkusen",
+"datum": "2025-10-01",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "PSV Eindhoven"
+},
+{
+"key": "freiburg",
+"datum": "2025-10-02",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Bologna"
+},
+{
+"key": "mainz",
+"datum": "2025-10-02",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "AC Omonia"
+},
+{
+"key": "stuttgart",
+"datum": "2025-10-02",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Basel"
+},
+{
+"key": "dortmund",
+"datum": "2025-10-21",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Copenhagen"
+},
+{
+"key": "leverkusen",
+"datum": "2025-10-21",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Paris Saint-Germain"
+},
+{
+"key": "bayern",
+"datum": "2025-10-22",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Club Brugge"
+},
+{
+"key": "frankfurt",
+"datum": "2025-10-22",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Liverpool"
+},
+{
+"key": "freiburg",
+"datum": "2025-10-23",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Utrecht"
+},
+{
+"key": "mainz",
+"datum": "2025-10-23",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "Zrinjski Mostar"
+},
+{
+"key": "stuttgart",
+"datum": "2025-10-23",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Fenerbahçe"
+},
+{
+"key": "augsburg",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "VfL Bochum"
+},
+{
+"key": "dortmund",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Eintracht Frankfurt"
+},
+{
+"key": "frankfurt",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Borussia Dortmund"
+},
+{
+"key": "gladbach",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Karlsruher SC"
+},
+{
+"key": "hamburg",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "1. FC Heidenheim"
+},
+{
+"key": "heidenheim",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Hamburger SV"
+},
+{
+"key": "hoffenheim",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "FC St. Pauli"
+},
+{
+"key": "leipzig",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Energie Cottbus"
+},
+{
+"key": "pauli",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "TSG Hoffenheim"
+},
+{
+"key": "wolfsburg",
+"datum": "2025-10-28",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Holstein Kiel"
+},
+{
+"key": "bayern",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "1. FC Köln"
+},
+{
+"key": "freiburg",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Fortuna Düsseldorf"
+},
+{
+"key": "koeln",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Bayern Munich"
+},
+{
+"key": "leverkusen",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "SC Paderborn"
+},
+{
+"key": "mainz",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "VfB Stuttgart"
+},
+{
+"key": "stuttgart",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Mainz 05"
+},
+{
+"key": "union",
+"datum": "2025-10-29",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Arminia Bielefeld"
+},
+{
+"key": "bayern",
+"datum": "2025-11-04",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Paris Saint-Germain"
+},
+{
+"key": "frankfurt",
+"datum": "2025-11-04",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Napoli"
+},
+{
+"key": "dortmund",
+"datum": "2025-11-05",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Manchester City"
+},
+{
+"key": "leverkusen",
+"datum": "2025-11-05",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Benfica"
+},
+{
+"key": "freiburg",
+"datum": "2025-11-06",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Nice"
+},
+{
+"key": "mainz",
+"datum": "2025-11-06",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "AC Fiorentina"
+},
+{
+"key": "stuttgart",
+"datum": "2025-11-06",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Feyenoord"
+},
+{
+"key": "dortmund",
+"datum": "2025-11-25",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Villarreal"
+},
+{
+"key": "frankfurt",
+"datum": "2025-11-25",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Atalanta"
+},
+{
+"key": "leverkusen",
+"datum": "2025-11-25",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Manchester City"
+},
+{
+"key": "bayern",
+"datum": "2025-11-26",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Arsenal"
+},
+{
+"key": "freiburg",
+"datum": "2025-11-27",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Viktoria Plzeň"
+},
+{
+"key": "mainz",
+"datum": "2025-11-27",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "Universitatea Craiova"
+},
+{
+"key": "stuttgart",
+"datum": "2025-11-27",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Go Ahead Eagles"
+},
+{
+"key": "dortmund",
+"datum": "2025-12-02",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Bayer Leverkusen"
+},
+{
+"key": "gladbach",
+"datum": "2025-12-02",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "FC St. Pauli"
+},
+{
+"key": "leipzig",
+"datum": "2025-12-02",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "1. FC Magdeburg"
+},
+{
+"key": "leverkusen",
+"datum": "2025-12-02",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Borussia Dortmund"
+},
+{
+"key": "pauli",
+"datum": "2025-12-02",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Borussia Mönchengladbach"
+},
+{
+"key": "bayern",
+"datum": "2025-12-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Union Berlin"
+},
+{
+"key": "freiburg",
+"datum": "2025-12-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Darmstadt 98"
+},
+{
+"key": "hamburg",
+"datum": "2025-12-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Holstein Kiel"
+},
+{
+"key": "stuttgart",
+"datum": "2025-12-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "VfL Bochum"
+},
+{
+"key": "union",
+"datum": "2025-12-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Bayern Munich"
+},
+{
+"key": "bayern",
+"datum": "2025-12-09",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Sporting CP"
+},
+{
+"key": "frankfurt",
+"datum": "2025-12-09",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Barcelona"
+},
+{
+"key": "dortmund",
+"datum": "2025-12-10",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Bodø/Glimt"
+},
+{
+"key": "leverkusen",
+"datum": "2025-12-10",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Newcastle United"
+},
+{
+"key": "freiburg",
+"datum": "2025-12-11",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Red Bull Salzburg"
+},
+{
+"key": "mainz",
+"datum": "2025-12-11",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "Lech Poznan"
+},
+{
+"key": "stuttgart",
+"datum": "2025-12-11",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Maccabi Tel Aviv"
+},
+{
+"key": "mainz",
+"datum": "2025-12-18",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "Samsunspor"
+},
+{
+"key": "dortmund",
+"datum": "2026-01-20",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Tottenham Hotspur"
+},
+{
+"key": "leverkusen",
+"datum": "2026-01-20",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Olympiacos"
+},
+{
+"key": "bayern",
+"datum": "2026-01-21",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Union Saint-Gilloise"
+},
+{
+"key": "frankfurt",
+"datum": "2026-01-21",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Qarabağ"
+},
+{
+"key": "freiburg",
+"datum": "2026-01-22",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Maccabi Tel Aviv"
+},
+{
+"key": "stuttgart",
+"datum": "2026-01-22",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Roma"
+},
+{
+"key": "bayern",
+"datum": "2026-01-28",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "PSV Eindhoven"
+},
+{
+"key": "dortmund",
+"datum": "2026-01-28",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Inter Milan"
+},
+{
+"key": "frankfurt",
+"datum": "2026-01-28",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Tottenham Hotspur"
+},
+{
+"key": "leverkusen",
+"datum": "2026-01-28",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Villarreal"
+},
+{
+"key": "freiburg",
+"datum": "2026-01-29",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Lille"
+},
+{
+"key": "stuttgart",
+"datum": "2026-01-29",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Young Boys"
+},
+{
+"key": "leverkusen",
+"datum": "2026-02-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "FC St. Pauli"
+},
+{
+"key": "pauli",
+"datum": "2026-02-03",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Bayer Leverkusen"
+},
+{
+"key": "stuttgart",
+"datum": "2026-02-04",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Holstein Kiel"
+},
+{
+"key": "freiburg",
+"datum": "2026-02-10",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Hertha BSC"
+},
+{
+"key": "bayern",
+"datum": "2026-02-11",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "RB Leipzig"
+},
+{
+"key": "leipzig",
+"datum": "2026-02-11",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Bayern Munich"
+},
+{
+"key": "dortmund",
+"datum": "2026-02-17",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Atalanta"
+},
+{
+"key": "leverkusen",
+"datum": "2026-02-18",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Olympiacos"
+},
+{
+"key": "stuttgart",
+"datum": "2026-02-19",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Celtic"
+},
+{
+"key": "leverkusen",
+"datum": "2026-02-24",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Olympiacos"
+},
+{
+"key": "dortmund",
+"datum": "2026-02-25",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Atalanta"
+},
+{
+"key": "stuttgart",
+"datum": "2026-02-26",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Celtic"
+},
+{
+"key": "bayern",
+"datum": "2026-03-10",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Atalanta"
+},
+{
+"key": "leverkusen",
+"datum": "2026-03-11",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Arsenal"
+},
+{
+"key": "freiburg",
+"datum": "2026-03-12",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Genk"
+},
+{
+"key": "mainz",
+"datum": "2026-03-12",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "Sigma Olomouc"
+},
+{
+"key": "stuttgart",
+"datum": "2026-03-12",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Porto"
+},
+{
+"key": "leverkusen",
+"datum": "2026-03-17",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Arsenal"
+},
+{
+"key": "bayern",
+"datum": "2026-03-18",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Atalanta"
+},
+{
+"key": "freiburg",
+"datum": "2026-03-19",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Genk"
+},
+{
+"key": "mainz",
+"datum": "2026-03-19",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "Sigma Olomouc"
+},
+{
+"key": "stuttgart",
+"datum": "2026-03-19",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Porto"
+},
+{
+"key": "bayern",
+"datum": "2026-04-07",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Real Madrid"
+},
+{
+"key": "freiburg",
+"datum": "2026-04-09",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Celta"
+},
+{
+"key": "mainz",
+"datum": "2026-04-09",
+"wettbewerb": "Conference League",
+"auswaerts": false,
+"gegner": "RC Strasbourg"
+},
+{
+"key": "bayern",
+"datum": "2026-04-15",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Real Madrid"
+},
+{
+"key": "freiburg",
+"datum": "2026-04-16",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Celta"
+},
+{
+"key": "mainz",
+"datum": "2026-04-16",
+"wettbewerb": "Conference League",
+"auswaerts": true,
+"gegner": "RC Strasbourg"
+},
+{
+"key": "bayern",
+"datum": "2026-04-22",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "Bayer Leverkusen"
+},
+{
+"key": "leverkusen",
+"datum": "2026-04-22",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "Bayern Munich"
+},
+{
+"key": "freiburg",
+"datum": "2026-04-23",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": true,
+"gegner": "VfB Stuttgart"
+},
+{
+"key": "stuttgart",
+"datum": "2026-04-23",
+"wettbewerb": "DFB-Pokal",
+"auswaerts": false,
+"gegner": "SC Freiburg"
+},
+{
+"key": "bayern",
+"datum": "2026-04-28",
+"wettbewerb": "Champions League",
+"auswaerts": true,
+"gegner": "Paris Saint-Germain"
+},
+{
+"key": "freiburg",
+"datum": "2026-04-30",
+"wettbewerb": "Europa League",
+"auswaerts": true,
+"gegner": "Braga"
+},
+{
+"key": "bayern",
+"datum": "2026-05-05",
+"wettbewerb": "Champions League",
+"auswaerts": false,
+"gegner": "Paris Saint-Germain"
+},
+{
+"key": "freiburg",
+"datum": "2026-05-07",
+"wettbewerb": "Europa League",
+"auswaerts": false,
+"gegner": "Braga"
+}
+]
+}
