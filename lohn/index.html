@@ -140,24 +140,26 @@ function unlock(){$("gate").hidden=true;$("app").hidden=false;start()}
 })();
 
 /* ---------- Modell (aus Verguetungsmodell_320_Mitarbeiter.xlsx) ---------- */
-const DEF={ver:2,
-  basis:2750, woche:35, maxErf:40, luecke:12,
+const DEF={ver:3,
+  basis:2250, woche:35, maxErf:40, luecke:12, maxRatio:8,
+  E:{s:2.40,m:1.59,l:0}, leist:1.10,
   pos:[
-    {n:"Geschäftsführer",f:5.0,sub:"Fixgehalt; Tantieme separat"},
-    {n:"Werksleiter",f:3.3},
-    {n:"Betriebsleiter",f:2.4},
-    {n:"Meister mit Brief",f:1.65,sub:"Industrie- oder Gießereimeister"},
-    {n:"Werksmeister",f:1.5,sub:"Meister ohne Meisterbrief"},
-    {n:"Vorarbeiter",f:1.32},
-    {n:"Kolonnenführer",f:1.26},
-    {n:"Facharbeiter",f:1.2,sub:"mit Brief, z. B. Former, Kernmacher, Werkstoffprüfer"},
-    {n:"Zertifizierte Fachkraft",f:1.1,sub:"Ungelernte mit Schweiß- oder Prüfschein, 2-jährige Ausbildung"},
-    {n:"Ungelernter",f:1}],
+    {n:"Geschäftsführer",f:6.0,sub:"Fixgehalt"},
+    {n:"Werksleiter",f:4.0},
+    {n:"Betriebsleiter",f:2.9},
+    {n:"Meister mit Brief",f:2.0,sub:"Industrie- oder Gießereimeister"},
+    {n:"Werksmeister",f:1.8,sub:"Meister ohne Meisterbrief"},
+    {n:"Vorarbeiter",f:1.32,g:1},
+    {n:"Kolonnenführer",f:1.26,g:1},
+    {n:"Facharbeiter",f:1.2,g:1,sub:"mit Brief, z. B. Former, Kernmacher, Werkstoffprüfer"},
+    {n:"Zertifizierte Fachkraft",f:1.1,g:1,sub:"Ungelernte mit Schweiß- oder Prüfschein, 2-jährige Ausbildung"},
+    {n:"Ungelernter",f:1,g:1}],
   erf:[[0,0],[5,.03],[10,.05],[15,.07],[20,.09],[25,.10],[30,.11],[40,.12]],
   treue:[[0,0],[3,.01],[6,.02],[11,.03],[21,.04],[31,.05]]
 };
 let C;try{C=JSON.parse(LSg("verg.cfg",""))}catch(e){}
 if(!C||C.ver!==DEF.ver)C=structuredClone(DEF);
+const fe=p=>Math.min(p.f,C.maxRatio); /* Pay-Ratio-Deckel */
 const save=()=>LSs("verg.cfg",JSON.stringify(C));
 
 const eur=(v,d=2)=>isFinite(v)?v.toLocaleString("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:d,maximumFractionDigits:d}):"–";
@@ -172,7 +174,7 @@ function erfZ(j){j=Math.max(0,Math.min(Math.floor(j),C.maxErf));const P=[...C.er
   for(let i=0;i<P.length-1;i++){const[a,x]=P[i],[b,y]=P[i+1];if(j>=a&&j<=b)return x+(y-x)*(j-a)/(b-a)}return P.at(-1)[1]}
 /* Betriebszugehörigkeit: Stufen */
 function treueZ(j){let z=0;[...C.treue].sort((a,b)=>a[0]-b[0]).forEach(([a,v])=>{if(j>=a)z=v});return z}
-function calc(p,erf,treue){const grund=C.basis*p.f,ez=erfZ(erf),tz=treueZ(treue),m=grund*(1+ez+tz);return{grund,ez,tz,m,j:m*12,h:m/stdMonat()}}
+function calc(p,erf,treue){const grund=C.basis*fe(p),ez=erfZ(erf),tz=treueZ(treue),m=grund*(1+ez+tz);return{grund,ez,tz,m,j:m*12,h:m/stdMonat()}}
 
 /* ---------- Übersicht ---------- */
 let OV={erf:"0",tr:"0"};try{Object.assign(OV,JSON.parse(LSg("verg.ov","{}")))}catch(e){}
@@ -180,12 +182,12 @@ function drawTable(){
   const e=pn(OV.erf)||0,t=pn(OV.tr)||0;
   const rows=C.pos.map(p=>({p,...calc(p,e,t)}));const max=Math.max(...rows.map(r=>r.m));
   const u=C.pos.find(p=>p.f===Math.min(...C.pos.map(x=>x.f)));
-  let h=`<div class="card"><h2>Alle Positionen</h2><p class="lead">Monatsbrutto bei gleichen Jahren – Jahre hier ändern zum Vergleichen.</p>
+  let h=`<div class="card"><h2>Alle Positionen</h2><p class="lead">Grundlohn im Monat bei gleichen Jahren – Jahre hier ändern zum Vergleichen.</p>
    <div class="yrs"><div><label>Berufserfahrung (Jahre)</label><input id="ovE" inputmode="numeric" value="${esc(OV.erf)}"></div>
    <div><label>Betriebszugehörigkeit (Jahre)</label><input id="ovT" inputmode="numeric" value="${esc(OV.tr)}"></div></div>
    <p class="mu" style="margin:0 0 6px">Zuschlag: Erfahrung ${pct(erfZ(e))} + Betriebstreue ${pct(treueZ(t))} = <b>${pct(erfZ(e)+treueZ(t))}</b></p>
-   ${rows.map(r=>`<div class="pl"><span><span class="n">${esc(r.p.n)}</span>${r.p.neu?'<span class="tag">Vorschlag</span>':""}<br><span class="f">Faktor ${num(r.p.f,2)} · ${eur(r.h)} je Std.</span></span><span class="v">${eur(r.m,0)}</span><div class="bar"><i style="width:${r.m/max*100}%"></i></div></div>`).join("")}
-   <p class="mu" style="margin:10px 0 0">Spanne oben zu unten: ${num(Math.max(...C.pos.map(p=>p.f))/u.f,1)} : 1. Grundgehälter bei ${num(C.woche,0)} Wochenstunden; Zulagen, Überstunden und Sonderzahlungen kommen separat dazu.</p></div>`;
+   ${rows.map(r=>`<div class="pl"><span><span class="n">${esc(r.p.n)}</span>${r.p.neu?'<span class="tag">Vorschlag</span>':""}<br><span class="f">Faktor ${num(fe(r.p),2)} · ${eur(r.h)} je Std.${r.p.g?" Grundlohn":""}</span></span><span class="v">${eur(r.m,0)}</span><div class="bar"><i style="width:${r.m/max*100}%"></i></div></div>`).join("")}
+   <p class="mu" style="margin:10px 0 0">Pay-Ratio oben zu unten: <b>${num(Math.max(...C.pos.map(fe))/fe(u),1)} : 1</b> (Deckel ${num(C.maxRatio,0)} : 1). Grundlöhne bei ${num(C.woche,0)} Wochenstunden. Bei Gewerblichen kommen Erschwerniszulage und Leistungsgrad dazu (siehe 🧮 Person), bei allen Überstunden und Sonderzahlungen.</p></div>`;
   // Zuschlagstabellen
   const ys=[0,5,10,15,20,25,30,35,40];
   h+=`<div class="card"><h2>Zuschläge</h2>
@@ -204,7 +206,7 @@ function drawTable(){
 }
 
 /* ---------- Person ---------- */
-let P={pos:"Facharbeiter",jb:"",ja:"",lu:"",zul:"",heute:""};
+let P={pos:"Facharbeiter",jb:"",ja:"",lu:"",bel:"m",eig:"",lg:"",heute:""};
 try{Object.assign(P,JSON.parse(LSg("verg.person","{}")))}catch(e){}
 function drawPersonForm(){
   if(!C.pos.some(p=>p.n===P.pos))P.pos=C.pos.at(-1).n;
@@ -213,28 +215,34 @@ function drawPersonForm(){
    <div class="row"><label>Jahre im Betrieb<small>Betriebszugehörigkeit</small></label><input class="n" id="pJb" inputmode="decimal" value="${esc(P.jb)}" placeholder="0"></div>
    <div class="row"><label>Jahre in anderen Betrieben<small>gleiche oder gleichwertige Tätigkeit, nachgewiesen</small></label><input class="n" id="pJa" inputmode="decimal" value="${esc(P.ja)}" placeholder="0"></div>
    <div class="row"><label>Längste Lücke dazwischen (Monate)<small>angerechnet bis ${num(C.luecke,0)} Monate</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.lu)}" placeholder="0"></div>
-   <div class="row"><label>Zulagen €/Std.<small>optional, z. B. Erschwerniszulage – kommt separat dazu</small></label><input class="n" id="pZul" inputmode="decimal" value="${esc(P.zul)}" placeholder="0"></div>
-   <div class="row"><label>Heutiges Monatsbrutto<small>optional, zum Vergleich (ohne Zulagen)</small></label><input class="n" id="pHeute" inputmode="decimal" value="${esc(P.heute)}" placeholder="€"></div>`;
-  ["pPos","pJb","pJa","pLu","pZul","pHeute"].forEach(id=>$(id).addEventListener("input",()=>{
-    P={pos:$("pPos").value,jb:$("pJb").value,ja:$("pJa").value,lu:$("pLu").value,zul:$("pZul").value,heute:$("pHeute").value};
-    LSs("verg.person",JSON.stringify(P));drawPersonRes()}));
-  drawPersonRes();
+   <div class="row gw"><label>Erschwerniszulage<small>nach Belastung am Arbeitsplatz</small></label><select class="n" id="pBel">${[["","keine"],["l","leicht "+eur(C.E.l)],["m","mittel "+eur(C.E.m)],["s","schwer "+eur(C.E.s)],["e","eigener Betrag"]].map(o=>`<option value="${o[0]}" ${o[0]===P.bel?"selected":""}>${o[1]}</option>`).join("")}</select></div>
+   <div class="row gw" id="pEigRow"><label>Eigene Erschwerniszulage €/Std.</label><input class="n" id="pEig" inputmode="decimal" value="${esc(P.eig)}" placeholder="€"></div>
+   <div class="row gw"><label>Leistungsgrad in %<small>leer = Standard ${num(C.leist*100,0)} %</small></label><input class="n" id="pLg" inputmode="decimal" value="${esc(P.lg)}" placeholder="${num(C.leist*100,0)}"></div>
+   <div class="row"><label>Heutiges Monatsbrutto<small>optional, zum Vergleich (gleich gerechnet: mit Zulage und Leistungsgrad)</small></label><input class="n" id="pHeute" inputmode="decimal" value="${esc(P.heute)}" placeholder="€"></div>`;
+  ["pPos","pJb","pJa","pLu","pBel","pEig","pLg","pHeute"].forEach(id=>$(id).addEventListener("input",()=>{
+    P={pos:$("pPos").value,jb:$("pJb").value,ja:$("pJa").value,lu:$("pLu").value,bel:$("pBel").value,eig:$("pEig").value,lg:$("pLg").value,heute:$("pHeute").value};
+    LSs("verg.person",JSON.stringify(P));gwVis();drawPersonRes()}));
+  gwVis();drawPersonRes();
 }
+function gwVis(){const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];document.querySelectorAll("#pForm .gw").forEach(el=>el.hidden=!p.g||(el.id==="pEigRow"&&P.bel!=="e"))}
 function drawPersonRes(){
   const p=C.pos.find(x=>x.n===P.pos)||C.pos[0];
   const jb=pn(P.jb)||0,ja=pn(P.ja)||0,lu=pn(P.lu)||0;
   const anr=lu<=C.luecke?ja:0,erf=jb+anr;
-  const r=calc(p,erf,jb),zul=pn(P.zul)||0,zm=zul*stdMonat();
+  const r=calc(p,erf,jb);
+  const E=p.g?(P.bel==="e"?(pn(P.eig)||0):(P.bel?C.E[P.bel]:0)):0,LG=p.g?((pn(P.lg)||C.leist*100)/100):1;
+  const tot=x=>p.g?r2((x.h+E)*LG):x.h, totM=x=>p.g?Math.round(tot(x)*stdMonat()):x.m;
+  const th=tot(r),tm=totM(r);
   // nächste Steigerung
-  let nx=null;for(let y=1;y<=45;y++){const n=calc(p,erf+y,jb+y);if(n.m>r.m+0.5){nx={y,n};break}}
+  let nx=null;for(let y=1;y<=45;y++){const n=calc(p,erf+y,jb+y);if(n.m>r.m+0.5){nx={y,n,m:totM(n)};break}}
   const heute=pn(P.heute);
   $("pRes").innerHTML=`<div class="res">
     <div class="sub">${esc(p.n)} · Faktor ${num(p.f,2)} · ${num(erf,1)} Jahre Erfahrung${ja?` (davon ${num(anr,1)} angerechnet${lu>C.luecke?" – Lücke zu lang":""})`:""} · ${num(jb,1)} Jahre im Betrieb</div>
-    <div class="big">${eur(r.m,0)} <span style="font-size:16px;font-weight:600">im Monat</span></div>
-    <div class="sub">${eur(C.basis,0)} × ${num(p.f,2)} = ${eur(r.grund,0)} + Erfahrung ${pct(r.ez)} + Betriebstreue ${pct(r.tz)}</div>
-    <div class="kp"><div><b>${eur(r.h)}</b><span>je Stunde</span></div><div><b>${eur(r.j,0)}</b><span>im Jahr (×12)</span></div><div><b>${zul?eur(r.m+zm,0):"–"}</b><span>${zul?"mit Zulagen":"keine Zulagen"}</span></div></div>
-    ${isFinite(heute)&&heute>0?`<p style="margin:10px 0 0">Gegenüber heute: <b class="${r.m>=heute?"pos":"neg"}">${r.m>=heute?"+":""}${eur(r.m-heute,0)} im Monat (${r.m>=heute?"+":""}${pct(r.m/heute-1)})</b></p>`:""}
-    <p class="mu" style="margin:10px 0 0">${nx?`Nächste Steigerung in <b>${nx.y} ${nx.y===1?"Jahr":"Jahren"}</b>: ${eur(nx.n.m,0)} (+${eur(nx.n.m-r.m,0)})`:"Höchststufe erreicht."}</p></div>`;
+    <div class="big">${p.g?eur(th)+' <span style="font-size:16px;font-weight:600">je Stunde</span>':eur(tm,0)+' <span style="font-size:16px;font-weight:600">im Monat</span>'}</div>
+    <div class="sub">Grundlohn: ${eur(C.basis,0)} × ${num(fe(p),2)} + Erfahrung ${pct(r.ez)} + Betriebstreue ${pct(r.tz)} = ${eur(r.m,0)} im Monat (${eur(r.h)}/Std.)${p.g?` · mit Erschwerniszulage ${eur(E)} und ${num(LG*100,1)} %: (${eur(r.h)} + ${eur(E)}) × ${num(LG*100,1)} % = ${eur(th)}`:""}</div>
+    <div class="kp"><div><b>${eur(tm,0)}</b><span>im Monat</span></div><div><b>${eur(tm*12,0)}</b><span>im Jahr (×12)</span></div><div><b>${eur(th)}</b><span>je Stunde</span></div></div>
+    ${isFinite(heute)&&heute>0?`<p style="margin:10px 0 0">Gegenüber heute: <b class="${tm>=heute?"pos":"neg"}">${tm>=heute?"+":""}${eur(tm-heute,0)} im Monat (${tm>=heute?"+":""}${pct(tm/heute-1)})</b></p>`:""}
+    <p class="mu" style="margin:10px 0 0">${nx?`Nächste Steigerung in <b>${nx.y} ${nx.y===1?"Jahr":"Jahren"}</b>: ${eur(nx.m,0)} (+${eur(nx.m-tm,0)})`:"Höchststufe erreicht."} Sonderzahlungen kommen dazu.</p></div>`;
 }
 
 /* ---------- Werte ---------- */
@@ -242,11 +250,16 @@ function drawWerte(openIx){
   $("werte").innerHTML=`<div class="card"><h2>Grundwerte</h2><p class="lead">Gelbe Felder ändern – alles rechnet sofort neu und bleibt nur auf diesem Gerät.</p>
    <div class="row"><label>Grundgehalt Ungelernter €/Monat<small>Basis für alle Faktoren</small></label><input class="n" data-k="basis" inputmode="decimal" value="${num(C.basis,2)}"></div>
    <div class="row"><label>Wochenarbeitszeit (Std.)<small>${num(stdMonat(),2)} Std. im Monat</small></label><input class="n" data-k="woche" inputmode="decimal" value="${num(C.woche,2)}"></div>
+   <div class="row"><label>Max. Pay-Ratio (oben : Ungelernter)<small>kein Faktor darf höher sein</small></label><input class="n" data-k="maxRatio" inputmode="decimal" value="${num(C.maxRatio,1)}"></div>
+   <div class="row"><label>Erschwerniszulage schwer €/Std.<small>Schmelzbetrieb, Gießen, Putzerei – vorläufig geschätzt</small></label><input class="n" data-k="E.s" inputmode="decimal" value="${num(C.E.s,2)}"></div>
+   <div class="row"><label>Erschwerniszulage mittel €/Std.<small>Kernmacherei, Formerei – Wert Kernmacher</small></label><input class="n" data-k="E.m" inputmode="decimal" value="${num(C.E.m,2)}"></div>
+   <div class="row"><label>Erschwerniszulage leicht €/Std.<small>Prüferei, Labor</small></label><input class="n" data-k="E.l" inputmode="decimal" value="${num(C.E.l,2)}"></div>
+   <div class="row"><label>Leistungsgrad Standard in %<small>nur Gewerbliche</small></label><input class="n" data-k="leistP" inputmode="decimal" value="${num(C.leist*100,1)}"></div>
    <div class="row"><label>Max. anrechenbare Erfahrung (Jahre)</label><input class="n" data-k="maxErf" inputmode="decimal" value="${num(C.maxErf,0)}"></div>
    <div class="row"><label>Max. Lücke für Anrechnung (Monate)</label><input class="n" data-k="luecke" inputmode="decimal" value="${num(C.luecke,0)}"></div></div>
-  <div class="card"><h2>Positionen und Faktoren</h2><p class="lead">Faktor 1 = Grundgehalt. Ausgangswerte = marktübliche Gehälter (Stand 2026, Schätzung).</p>
-   <table class="ed"><tr><th>Position</th><th style="width:90px">Faktor</th><th style="text-align:right">Grundgehalt</th><th></th></tr>
-   ${C.pos.map((p,i)=>`<tr><td><input data-pn="${i}" value="${esc(p.n)}" style="text-align:left;background:var(--bg)"></td><td><input data-pf="${i}" inputmode="decimal" value="${num(p.f,2)}"></td><td style="text-align:right;white-space:nowrap">${eur(C.basis*p.f,0)}</td><td><button class="x" data-pd="${i}">✕</button></td></tr>`).join("")}</table>
+  <div class="card"><h2>Positionen und Faktoren</h2><p class="lead">Faktor 1 = Grundlohn Ungelernter. Ausgangswerte so gewählt, dass die Gesamtvergütung marktüblich ist (Stand 2026, Schätzung). Faktoren über dem Pay-Ratio-Deckel werden gekappt.</p>
+   <table class="ed"><tr><th>Position</th><th style="width:90px">Faktor</th><th style="text-align:right">Grundlohn</th><th></th></tr>
+   ${C.pos.map((p,i)=>`<tr><td><input data-pn="${i}" value="${esc(p.n)}" style="text-align:left;background:var(--bg)"></td><td><input data-pf="${i}" inputmode="decimal" value="${num(p.f,2)}"></td><td style="text-align:right;white-space:nowrap">${eur(C.basis*fe(p),0)}${p.f>C.maxRatio?" ⚠️":""}</td><td><button class="x" data-pd="${i}">✕</button></td></tr>`).join("")}</table>
    <div class="btns"><button class="btn" id="bAddPos">＋ Position</button></div></div>
   <div class="card"><h2>Zuschlag Berufserfahrung</h2><p class="lead">Stützstellen; dazwischen wird je vollem Jahr gleichmäßig gesteigert.</p>
    <table class="ed"><tr><th>ab Jahren</th><th>Zuschlag %</th><th></th></tr>
@@ -259,11 +272,11 @@ function drawWerte(openIx){
    <div class="btns"><button class="btn" id="bReset">Alles auf Ausgangswerte zurücksetzen</button></div></div>`;
   const re=()=>{save();drawTable();drawPersonForm()};
   const W=$("werte");
-  W.querySelectorAll("[data-k]").forEach(el=>el.onchange=()=>{const x=pn(el.value);if(isFinite(x)&&x>0)C[el.dataset.k]=x;re();drawWerte()});
+  W.querySelectorAll("[data-k]").forEach(el=>el.onchange=()=>{const k=el.dataset.k,x=pn(el.value);if(isFinite(x)&&x>=0){if(k==="leistP")C.leist=x/100;else if(k.startsWith("E."))C.E[k.slice(2)]=x;else if(x>0)C[k]=x}re();drawWerte()});
   W.querySelectorAll("[data-pn]").forEach(el=>el.onchange=()=>{const v=el.value.trim();if(v){if(P.pos===C.pos[+el.dataset.pn].n)P.pos=v;C.pos[+el.dataset.pn].n=v;delete C.pos[+el.dataset.pn].neu}re();drawWerte()});
   W.querySelectorAll("[data-pf]").forEach(el=>el.onchange=()=>{const x=pn(el.value);if(isFinite(x)&&x>0){C.pos[+el.dataset.pf].f=x;delete C.pos[+el.dataset.pf].neu}re();drawWerte()});
   W.querySelectorAll("[data-pd]").forEach(b=>b.onclick=()=>{if(C.pos.length<2)return;if(!confirm(`Position „${C.pos[+b.dataset.pd].n}“ löschen?`))return;C.pos.splice(+b.dataset.pd,1);re();drawWerte()});
-  $("bAddPos").onclick=()=>{C.pos.push({n:"Neue Position",f:1});re();drawWerte()};
+  $("bAddPos").onclick=()=>{C.pos.push({n:"Neue Position",f:1,g:1});re();drawWerte()};
   const tbl=(attr,arr)=>{W.querySelectorAll(`[data-${attr}]`).forEach(el=>el.onchange=()=>{const[i,k]=el.dataset[attr].split(".").map(Number);const x=pn(el.value);if(isFinite(x))C[arr][i][k]=k?x/100:x;re();drawWerte()})};
   tbl("e","erf");tbl("t","treue");
   W.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{if(C.erf.length>2){C.erf.splice(+b.dataset.ed,1);re();drawWerte()}});
@@ -276,9 +289,11 @@ function drawWerte(openIx){
 /* ---------- Regeln ---------- */
 const RULES=[
  ["Grundsätze",[
-  ["Grundgehalt","Alle Gehälter bauen auf dem Grundgehalt einer ungelernten Vollzeitkraft auf (Ausgangswert 2.750 € im Monat bei 35 Wochenstunden, marktüblich für Produktionshelfer). Jede Position hat einen festen Faktor."],
+  ["Grundlohn","Alle Gehälter bauen auf dem Grundlohn einer ungelernten Vollzeitkraft auf (Ausgangswert 2.250 € im Monat bei 35 Wochenstunden, etwa Tarifniveau). Jede Position hat einen festen Faktor."],
+  ["Pay-Ratio","Keine Position verdient mehr als das 8-Fache des Ungelernten (Geschäftsführer heute 6 : 1)."],
   ["Zuschläge","Auf das Grundgehalt kommen zwei Zuschläge: Berufserfahrung (bis 12 %) und Betriebszugehörigkeit (bis 5 %)."],
-  ["Separat","Zulagen (z. B. Erschwerniszulage), Überstunden und Sonderzahlungen kommen separat dazu."]]],
+  ["Gewerbliche","Bei gewerblichen Beschäftigten kommen Erschwerniszulage nach Arbeitsplatz und Leistungsgrad dazu: (Grundlohn + Erschwerniszulage) × Leistungsgrad. Damit liegt die Gesamtvergütung im marktüblichen Bereich."],
+  ["Separat","Überstunden und Sonderzahlungen kommen bei allen separat dazu."]]],
  ["Wer ist welche Position?",[
   ["Ungelernter","Ohne abgeschlossene Ausbildung."],
   ["Zertifizierte Fachkraft","Ungelernte mit gültigem Schweiß- oder Prüfschein sowie Beschäftigte mit 2-jähriger Ausbildung (z. B. Maschinen- und Anlagenführer)."],
