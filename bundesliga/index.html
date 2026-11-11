@@ -113,7 +113,7 @@ ul.i{padding-left:18px;margin:6px 0}ul.i li{margin:4px 0;font-size:14.5px}
       </ul>
     </div>
     <div class="card"><h2>Europapokal, Pokal und Pausen</h2>
-      <p class="lead" style="margin:0">Claude trägt mit jeder Liste ein, wer unter der Woche in Champions League, Europa League, Conference League oder DFB-Pokal gespielt hat (Datum, heim oder auswärts). Die App zählt die Tage Pause bis zum Bundesligaspiel. Bei 2–3 Tagen Pause sinkt der Angriff um 5–7 % und die Abwehr lässt 4–5 % mehr zu, bei 4 Tagen etwa die Hälfte davon, nach einem Auswärtsspiel mit Reise noch etwas mehr. Ab 6 Tagen Pause gibt es keinen Abzug. Beim Spiel steht dann „Europapokal-Belastung“.</p>
+      <p class="lead" style="margin:0">Claude trägt mit jeder Liste ein, wer unter der Woche in Champions League, Europa League, Conference League oder DFB-Pokal gespielt hat (Datum, heim oder auswärts). Die App zählt die Tage Pause bis zum Bundesligaspiel. Bei 2–3 Tagen Pause sinkt der Angriff um 5–7 % und die Abwehr lässt 4–5 % mehr zu, bei 4 Tagen etwa die Hälfte davon, nach einem Auswärtsspiel mit Reise noch etwas mehr. Ab 6 Tagen Pause gibt es keinen Abzug. Beim Spiel steht dann „Europapokal-Belastung“. Das sind die Werte bei „voll“. Wie stark der Abzug wirklich wirkt, stellst du unter „Treffer“ beim Saison-Rückblick ein. Nach dem Durchrechnen wählt die App automatisch die Stufe, die in der letzten Saison am besten lag.</p>
     </div>
     <div class="card"><h2>xG (erwartete Tore)</h2>
       <p class="lead" style="margin:0">Mit jeder Ausfall-Liste liest Claude auch die xG- und xGA-Werte aller Vereine dieser Saison ab (erspielte und zugelassene Torchancen). Für kommende Spiele mischt die App dann echte Tore und xG je zur Hälfte – Glückstore und Pech schlagen so weniger durch. Der Rückblick-Test rechnet ohne xG, weil es keine alten xG-Stände gibt; ob xG hilft, zeigt der Kasten „Deine Prognosen“ nach ein paar Wochen.</p>
@@ -245,9 +245,11 @@ function restInfo(id,t,pool,extra){let last=null,src=null;
   (pool||M).forEach(x=>{if((x.h===id||x.a===id)&&x.t<t-6*36e5&&(!last||x.t>last)){last=x.t;src={w:"Bundesliga",aw:x.a===id}}});
   const a=teamAus(id);(extra||(a&&a.extra)||[]).forEach(e=>{const tt=Date.parse(e.datum);if(isFinite(tt)&&tt<t-6*36e5&&(!last||tt>last)){last=tt;src={w:e.wettbewerb||"Pokal",aw:!!e.auswaerts,ort:e.ort||""}}});
   if(!last||t-last>30*DAY)return null;return{tage:dayOf(t)-dayOf(last),...src}}
-function restFac(r){if(!r||r.w==="Bundesliga")return{a:1,d:1};const g=r.tage;
+let REST=+LSg("bl.rest","0.5");if(!isFinite(REST))REST=.5;
+const SCALES=[0,.25,.5,1],SCN={0:"aus",0.25:"¼",0.5:"½",1:"voll"};
+function restFac(r,sc){sc=sc==null?REST:sc;if(!r||r.w==="Bundesliga"||!sc)return{a:1,d:1};const g=r.tage;
   let a=g<=2?.93:g===3?.95:g===4?.97:g===5?.99:1, d=g<=2?1.05:g===3?1.04:g===4?1.02:g===5?1.01:1;
-  if(r.aw&&g<=4){a*=.985;d*=1.01}return{a,d}}
+  if(r.aw&&g<=4){a*=.985;d*=1.01}return{a:1-(1-a)*sc,d:1+(d-1)*sc}}
 function facs(m,j,auto){const ah=auto?ausFor(m.h,m.t):null,aa=auto?ausFor(m.a,m.t):null;
   const f=(sel,arr,au,sign)=>sel?arr[sel]:(au?1+sign*Math.min(.3,Math.max(0,+au||0)):1);
   const rh=auto?restInfo(m.h,m.t):null,ra=auto?restInfo(m.a,m.t):null,fh=restFac(rh),fa=restFac(ra);
@@ -362,16 +364,18 @@ function renderTable(){
 
 let PREVBT=null;
 function prevBox(){const nm=`${SEASON-1}/${String(SEASON).slice(2)}`;
-  if(!PREVBT)return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Rückblick über alle 34 Spieltage der letzten Saison, einmal ohne und einmal mit Europapokal-/Pokal-Belastung.</p><button class="btn p" id="runPrev">Jetzt durchrechnen</button></div>`;
-  const a=stats(PREVBT.o0),b=stats(PREVBT.o1),c=stats(PREVBT.aff0),d=stats(PREVBT.aff1);if(!a)return `<div class="card"><h2>Saison ${nm}</h2><p class="mu">Keine Daten der letzten Saison.</p></div>`;
-  const row=(l,f)=>`<tr><td class="t">${l}</td><td>${f(a)}</td><td>${f(b)}</td></tr>`;
+  if(!PREVBT)return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Rückblick über alle 34 Spieltage der letzten Saison, mit verschieden starkem Abzug für Europapokal-/Pokal-Belastung.</p><button class="btn p" id="runPrev">Jetzt durchrechnen</button></div>`;
+  const S=PREVBT.O.map(stats),C=PREVBT.A.map(stats);if(!S[0])return `<div class="card"><h2>Saison ${nm}</h2><p class="mu">Keine Daten der letzten Saison.</p></div>`;
+  const score=x=>x.ppg+x.ten/100;let best=0;S.forEach((x,i)=>{if(score(x)>score(S[best])+1e-9)best=i});
+  const th=SCALES.map((sc,i)=>`<th${i===best?' style="color:var(--acc2)"':""}>${SCN[sc]}</th>`).join("");
+  const row=(l,f,arr)=>`<tr><td class="t">${l}</td>${arr.map((x,i)=>`<td${i===best?' style="font-weight:800"':""}>${x?f(x):"–"}</td>`).join("")}</tr>`;
   const P=x=>pct(x.ten),E=x=>pct(x.ex),G=x=>x.ppg.toFixed(2).replace(".",",");
-  const diff=b.ten-a.ten,dd=d&&c?d.ten-c.ten:0;
-  return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Alle ${a.n} Spiele, jeder Spieltag nur mit den Daten von davor nachgerechnet (Tore, Form, Heimvorteil). Rechts zusätzlich mit Europapokal- und Pokal-Belastung (${HIST&&HIST.spiele?HIST.spiele.length:0} Spiele unter der Woche). Ohne Ausfälle und xG – dazu gibt es keine alten Daten.</p>
-   <div class="scroll"><table><thead><tr><th style="text-align:left"></th><th>ohne Belastung</th><th>mit Belastung</th></tr></thead><tbody>
-   ${row("richtige Tendenz",P)}${row("exaktes Ergebnis",E)}${row("Punkte je Spiel",G)}<tr><td class="t">„immer Heimsieg“</td><td colspan="2">${pct(a.home)}</td></tr></tbody></table></div>
-   ${c?`<p class="mu" style="margin-top:8px">Nur die ${c.n} Spiele, in denen ein Team kurz vorher international oder im Pokal gespielt hat: Tendenz ${pct(c.ten)} ohne → ${pct(d.ten)} mit Belastung.</p>`:""}
-   <div class="verdict">${Math.abs(diff)<.005&&Math.abs(dd)<.01?"Die Europapokal-Belastung ändert über die ganze Saison kaum etwas.":diff>0||dd>0?`Die Europapokal-Belastung verbessert die Prognose (${diff>=0?"+":""}${(diff*100).toFixed(1).replace(".",",")} Prozentpunkte gesamt${c?`, ${dd>=0?"+":""}${(dd*100).toFixed(1).replace(".",",")} in den betroffenen Spielen`:""}).`:`Die Europapokal-Belastung verschlechtert die Prognose leicht (${(diff*100).toFixed(1).replace(".",",")} Prozentpunkte) – der Abzug ist wohl zu stark.`}</div></div>`}
+  const sel=`<div class="md" style="margin-top:10px"><span class="mu" style="flex:none">Für kommende Spiele:</span><select id="restSel">${SCALES.map(sc=>`<option value="${sc}"${sc===REST?" selected":""}>Belastung ${SCN[sc]}</option>`).join("")}</select></div>`;
+  return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Alle ${S[0].n} Spiele, jeder Spieltag nur mit den Daten von davor (Tore, Form, Heimvorteil). Die Spalten zeigen den Europapokal-/Pokal-Abzug: aus, ein Viertel, die Hälfte, voll. Ohne Ausfälle und xG – dazu gibt es keine alten Daten.</p>
+   <div class="scroll"><table><thead><tr><th style="text-align:left">Belastung</th>${th}</tr></thead><tbody>
+   ${row("richtige Tendenz",P,S)}${row("exaktes Ergebnis",E,S)}${row("Punkte je Spiel",G,S)}${row(`nur betroffene Spiele (${C[0]?C[0].n:0})`,P,C)}
+   <tr><td class="t">„immer Heimsieg“</td><td colspan="4">${pct(S[0].home)}</td></tr></tbody></table></div>
+   <div class="verdict">Am besten lag „Belastung ${SCN[SCALES[best]]}“. Unterschiede von 1 Prozentpunkt sind bei 306 Spielen nur rund 3 Spiele – also eher Zufall.</div>${sel}</div>`}
 function stats(list){const n=list.length;if(!n)return null;let t=0,e=0,d=0,pts=0,home=0;
   list.forEach(x=>{const p=points(x.ph,x.pa,x.h,x.a);pts+=p;if(p>=2)t++;if(p===4)e++;if(p>=3)d++;if(x.h>x.a)home++});
   return{n,ten:t/n,ex:e/n,pts,ppg:pts/n,home:home/n}}
@@ -382,15 +386,14 @@ function backtest(){
     ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag})})});
   return out}
 function backtestPrev(){
-  const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const o0=[],o1=[],aff0=[],aff1=[];
+  const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const O=SCALES.map(()=>[]),A=SCALES.map(()=>[]);
   const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
   const ex={};Object.keys(TEAMS).forEach(id=>ex[id]=histExtra(+id));
   Object.values(byG).forEach(ms=>{const t0=Math.min(...ms.map(x=>x.t));const F=fit(t0);
-    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la),r0={ph:p.h,pa:p.a,h:m.hg,a:m.ag};o0.push(r0);
-      const rh=restInfo(m.h,m.t,PREV,ex[m.h]),ra=restInfo(m.a,m.t,PREV,ex[m.a]),fh=restFac(rh),fa=restFac(ra);
-      const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d)),r1={ph:q.h,pa:q.a,h:m.hg,a:m.ag};o1.push(r1);
-      if(fh.a<1||fa.a<1){aff0.push(r0);aff1.push(r1)}})});
-  return{o0,o1,aff0,aff1}}
+    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});
+      const rh=restInfo(m.h,m.t,PREV,ex[m.h]),ra=restInfo(m.a,m.t,PREV,ex[m.a]),aff=restFac(rh,1).a<1||restFac(ra,1).a<1;
+      SCALES.forEach((sc,i)=>{const fh=restFac(rh,sc),fa=restFac(ra,sc);const q=predict(Math.max(.15,lh*fh.a*fa.d),Math.max(.15,la*fa.a*fh.d)),r={ph:q.h,pa:q.a,h:m.hg,a:m.ag};O[i].push(r);if(aff)A[i].push(r)})})});
+  return{O,A}}
 function renderAcc(){
   const fin=M.filter(m=>m.fin&&m.hg!=null);
   const mine=fin.filter(m=>PRED[m.id]&&PRED[m.id].at<m.t).map(m=>({ph:PRED[m.id].h,pa:PRED[m.id].a,h:m.hg,a:m.ag,adj:PRED[m.id].adj}));
@@ -404,7 +407,8 @@ function renderAcc(){
       <div><b>${s.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel (4/3/2 wie Kicktipp)</span></div>
       <div><b>${pct(s.home)}</b><span>„immer Heimsieg“ hätte getroffen</span></div></div>
       <div class="verdict">${v}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
-  setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();renderAcc()},30)}},0);
+  setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));FITCACHE={};renderMD()}renderAcc()},30)};
+    const r=$("restSel");if(r)r.onchange=()=>{REST=+r.value;LSs("bl.rest",String(REST));FITCACHE={};renderMD()}},0);
   $("acc").innerHTML=
     box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
     box("Rückblick-Test dieser Saison","Für jeden Spieltag nachgerechnet, nur mit den Daten, die vor dem Spieltag bekannt waren (ohne Ausfälle). Zeigt sofort, ob sich das Modell lohnt.",stats(bt))+
