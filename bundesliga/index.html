@@ -375,7 +375,7 @@ function prevBox(){const nm=`${SEASON-1}/${String(SEASON).slice(2)}`;
   const sel=`<div class="md" style="margin-top:10px"><span class="mu" style="flex:none">Für kommende Spiele:</span><select id="restSel">${SCALES.map(sc=>`<option value="${sc}"${sc===REST?" selected":""}>Belastung ${SCN[sc]}</option>`).join("")}</select></div>`;
   return `<div class="card"><h2>Saison ${nm} komplett</h2><p class="lead">Alle ${S[0].n} Spiele, jeder Spieltag nur mit den Daten von davor (Tore, Form, Heimvorteil). Die Spalten zeigen den Europapokal-/Pokal-Abzug: aus, ein Viertel, die Hälfte, voll. Ohne Ausfälle und xG – dazu gibt es keine alten Daten.</p>
    <div class="scroll"><table><thead><tr><th style="text-align:left">Belastung</th>${th}</tr></thead><tbody>
-   ${row("richtige Tendenz",P,S)}${row("exaktes Ergebnis",E,S)}${row("Punkte je Spiel",G,S)}${row(`nur betroffene Spiele (${C[0]?C[0].n:0})`,P,C)}
+   ${row("richtige Tendenz",P,S)}${row("exaktes Ergebnis",E,S)}${row("Punkte je Spiel",G,S)}${row("Kicktipp-Punkte gesamt",x=>`<b>${x.pts}</b>`,S)}${row(`nur betroffene Spiele (${C[0]?C[0].n:0})`,P,C)}
    <tr><td class="t">„immer Heimsieg“</td><td colspan="4">${pct(S[0].home)}</td></tr></tbody></table></div>
    <div class="verdict">Am besten lag „Belastung ${SCN[SCALES[best]]}“. Unterschiede von 1 Prozentpunkt sind bei 306 Spielen nur rund 3 Spiele – also eher Zufall.</div>${sel}</div>`+drawBox()}
 function drawBox(){if(!PREVBT||!PREVBT.D)return"";const S=PREVBT.D.map(stats);if(!S[0])return"";
@@ -394,8 +394,22 @@ function backtest(){
   const fin=M.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const out=[];
   const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
   Object.values(byG).forEach(ms=>{const t0=Math.min(...M.filter(x=>x.g===ms[0].g).map(x=>x.t));const F=fit(t0);
-    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag})})});
+    ms.forEach(m=>{const[lh,la]=lambdas(F,m,{});const p=predict(lh,la);out.push({ph:p.h,pa:p.a,h:m.hg,a:m.ag,g:m.g,id:m.id})})});
   return out}
+function kicktippBox(bt){
+  const by={};bt.forEach(x=>{const sv=PRED[x.id],m=M.find(y=>y.id===x.id);const own=sv&&m&&sv.at<m.t;
+    const ph=own?sv.h:x.ph,pa=own?sv.a:x.pa,pt=points(ph,pa,x.h,x.a);const g=by[x.g]||(by[x.g]={g:x.g,p:0,n:0,own:0,v:0,d:0,t:0});
+    g.p+=pt;g.n++;if(own)g.own++;if(pt===4)g.v++;else if(pt===3)g.d++;else if(pt===2)g.t++});
+  const L=Object.values(by).sort((a,b)=>a.g-b.g);if(!L.length)return `<div class="card"><h2>Kicktipp-Punkte</h2><p class="mu">Noch keine beendeten Spiele.</p></div>`;
+  let cum=0;const tot=L.reduce((s,x)=>s+x.p,0),n=L.reduce((s,x)=>s+x.n,0),best=L.reduce((a,b)=>b.p>a.p?b:a),worst=L.reduce((a,b)=>b.p<a.p?b:a);
+  const V=L.reduce((s,x)=>s+x.v,0),D=L.reduce((s,x)=>s+x.d,0),T=L.reduce((s,x)=>s+x.t,0);
+  return `<div class="card"><h2>Kicktipp-Punkte dieser Saison</h2><p class="lead">So viele Punkte hättest du mit unserer Tippstrategie (immer der Tipp der App) in einer Kicktipp-Runde: 4 für das exakte Ergebnis, 3 für die richtige Tordifferenz, 2 für die richtige Tendenz. Wo die App ihre Prognose vor dem Anpfiff gespeichert hat, zählt diese (mit Ausfällen), sonst der Rückblick-Test.</p>
+   <div class="kp"><div><b>${tot}</b><span>Punkte nach ${L.length} Spieltagen</span></div><div><b>${(tot/L.length).toFixed(1).replace(".",",")}</b><span>Punkte je Spieltag</span></div>
+   <div><b>${best.p}</b><span>bester Spieltag (${best.g}.)</span></div><div><b>${worst.p}</b><span>schwächster Spieltag (${worst.g}.)</span></div></div>
+   <p class="mu" style="margin:10px 0 6px">${V}× Volltreffer · ${D}× Tordifferenz · ${T}× Tendenz · ${n-V-D-T}× daneben (${n} Spiele)</p>
+   <div class="scroll"><table><thead><tr><th>Spieltag</th><th>Punkte</th><th>gesamt</th><th>4er</th><th>3er</th><th>2er</th></tr></thead><tbody>${
+    L.map(x=>{cum+=x.p;return `<tr><td>${x.g}.${x.own?' <span class="mark">gespeichert</span>':""}</td><td><b>${x.p}</b></td><td>${cum}</td><td>${x.v}</td><td>${x.d}</td><td>${x.t}</td></tr>`}).join("")
+   }</tbody></table></div></div>`}
 function backtestPrev(){
   const fin=PREV.filter(m=>m.fin&&m.hg!=null).sort((a,b)=>a.t-b.t);const O=SCALES.map(()=>[]),A=SCALES.map(()=>[]),D=DRAWS.map(()=>[]);
   const byG={};fin.forEach(m=>(byG[m.g]=byG[m.g]||[]).push(m));
@@ -422,7 +436,7 @@ function renderAcc(){
   setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));const D=PREVBT.D.map(stats);let bd=0;D.forEach((x,i)=>{if(x.ppg+x.ten/100>D[bd].ppg+D[bd].ten/100+1e-9)bd=i});DRAW=DRAWS[bd];LSs("bl.draw",String(DRAW));FITCACHE={};renderMD()}renderAcc()},30)};
     const dsel=$("drawSel");if(dsel)dsel.onchange=()=>{DRAW=+dsel.value;LSs("bl.draw",String(DRAW));renderMD()};
     const r=$("restSel");if(r)r.onchange=()=>{REST=+r.value;LSs("bl.rest",String(REST));FITCACHE={};renderMD()}},0);
-  $("acc").innerHTML=
+  $("acc").innerHTML=kicktippBox(bt)+
     box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
     box("Rückblick-Test dieser Saison","Für jeden Spieltag nachgerechnet, nur mit den Daten, die vor dem Spieltag bekannt waren (ohne Ausfälle). Zeigt sofort, ob sich das Modell lohnt.",stats(bt))+
     prevBox()+
