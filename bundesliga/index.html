@@ -432,7 +432,7 @@ function renderAcc(){
       <div><b>${pct(s.ex)}</b><span>exaktes Ergebnis</span></div>
       <div><b>${s.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel (4/3/2 wie Kicktipp)</span></div>
       <div><b>${pct(s.home)}</b><span>„immer Heimsieg“ hätte getroffen</span></div></div>
-      <div class="verdict">${v}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
+      <div class="verdict">${v}${s.home>=.48?` Achtung: Bisher haben die Heimteams ${pct(s.home)} der Spiele gewonnen – normal sind in der Bundesliga etwa 42 bis 45 %. Wenn das so ungewöhnlich oft passiert, ist „immer Heimsieg“ kaum zu schlagen; das gleicht sich meist im Lauf der Saison aus.`:""}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
   setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));const D=PREVBT.D.map(stats);let bd=0;D.forEach((x,i)=>{if(x.ppg+x.ten/100>D[bd].ppg+D[bd].ten/100+1e-9)bd=i});DRAW=DRAWS[bd];LSs("bl.draw",String(DRAW));FITCACHE={};renderMD()}renderAcc()},30)};
     const dsel=$("drawSel");if(dsel)dsel.onchange=()=>{DRAW=+dsel.value;LSs("bl.draw",String(DRAW));renderMD()};
     const r=$("restSel");if(r)r.onchange=()=>{REST=+r.value;LSs("bl.rest",String(REST));FITCACHE={};renderMD()}},0);
