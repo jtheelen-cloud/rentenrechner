@@ -221,8 +221,8 @@ const BASE="https://jtheelen-cloud.github.io/rentenrechner/";
 
 /* Apps: Schlüssel und Geheimnisse wie in den Apps selbst */
 const APPS=[
- {id:"rentenrechner",stat:"rr",name:"Rentenrechner",icon:"💶",path:"",apk:"Rentenrechner.apk",secret:"626f2bcb894cb11343fa07977990cf73"},
- {id:"br",stat:"br",name:"BR-Nachschlagen",icon:"📘",path:"br/",apk:"BR-Nachschlagen.apk",secret:"f79494342ca27ba833673da8f60b12cd"},
+ {id:"rentenrechner",stat:"rr",name:"Rentenrechner",icon:"💶",path:"",secret:"626f2bcb894cb11343fa07977990cf73"},
+ {id:"br",stat:"br",name:"BR-Nachschlagen",icon:"📘",path:"br/",secret:"f79494342ca27ba833673da8f60b12cd"},
  {id:"wetter",stat:"wetter",name:"Wetter",icon:"⛅",path:"wetter/",secret:"7ad4bf26f3a3036759e67fdf56bcdf9a"},
  {id:"ahnen",stat:"ahnen",name:"Ahnenspur",icon:"🌳",path:"ahnen/",secret:"f79494342ca27ba833673da8f60b12cd"}];
 const APP=Object.fromEntries(APPS.map(a=>[a.id,a]));
@@ -294,11 +294,9 @@ function appStatus(a){if(a.id==="rentenrechner")return S.k?`<span class="dot ${S
   return `<span class="dot ok"></span>Daten nur auf den Handys`}
 function drawApps(){$("appCards").innerHTML=APPS.map((a,i)=>`<div class="card app"><span class="ic">${a.icon}</span><h3>${a.name}</h3>
   <div class="s">${S.ups&&!S.ups[i]?'<span class="dot wa"></span>nicht erreichbar':appStatus(a)} · ${nC(list(a.id).length)}</div>
-  <div class="acts"><a class="btn sm" href="../${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button>${a.apk?`<button class="btn sm" type="button" data-apk="${a.id}">Android-App (APK) schicken</button>`:""}</div></div>`).join("");
+  <div class="acts"><a class="btn sm" href="../${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
   document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>shareApp(b.dataset.share,b));
   document.querySelectorAll("[data-qr]").forEach(b=>b.onclick=()=>showQR(b.dataset.qr));
-  document.querySelectorAll("[data-apk]").forEach(b=>b.onclick=()=>{const a=APP[b.dataset.apk],u="https://github.com/jtheelen-cloud/rentenrechner/releases/download/apps/"+a.apk;
-    share(`Hier ist „${a.name}“ als Android-App: ${u}\nLink antippen, Datei herunterladen und öffnen, Installation erlauben. Dann zeigt die App eine Gerätenummer – schick sie mir, dann bekommst du deinen Zugangscode.`,b)});
   document.querySelectorAll("[data-code]").forEach(b=>b.onclick=()=>{show("koll");$("kApp").value=b.dataset.code;$("kDev").focus();upd()})}
 async function share(txt,btn){try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){return}try{await navigator.clipboard.writeText(txt);btn.textContent="✓ Kopiert"}catch(e){}}
 async function shareApp(id,btn){const a=APP[id],url=BASE+a.path;
