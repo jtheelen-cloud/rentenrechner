@@ -259,5 +259,81 @@
   ],
   "miav_q": "§ 17 BBiG, Mindestausbildungsvergütung für Ausbildungsbeginn 2026",
   "u": "https://www.dgb.de/service/ratgeber/mindestausbildungsverguetung/"
+ },
+ "wirtschaft": {
+  "stand": "November 2026",
+  "quelle": "Statistisches Bundesamt (Destatis)",
+  "inflation": {
+   "monat": "Oktober 2026",
+   "rate": "2,8",
+   "vormonat": "-0,2",
+   "kern": "2,1",
+   "energie": "12,2",
+   "nahrung": "0,4",
+   "vorlaeufig": true,
+   "u": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/10/PD26_382_611.html"
+  },
+  "jahre": [
+   [
+    "2023",
+    "5,9"
+   ],
+   [
+    "2024",
+    "2,2"
+   ],
+   [
+    "2025",
+    "2,2"
+   ]
+  ],
+  "jahre_u": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/01/PD26_019_611.html",
+  "reallohn": {
+   "zeitraum": "2. Quartal 2026",
+   "real": "1,5",
+   "nominal": "4,1",
+   "preise": "2,5",
+   "u": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/08/PD26_308_62321.html"
+  },
+  "reallohn_jahr": {
+   "jahr": "2025",
+   "real": "1,9",
+   "nominal": "4,2",
+   "preise": "2,2",
+   "u": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/02/PD26_068_62321.html"
+  },
+  "vpi": {
+   "2024-12": 120.5,
+   "2025-01": 120.3,
+   "2025-10": 123.0,
+   "2025-12": 122.7,
+   "2026-01": 122.8,
+   "2026-02": 123.1,
+   "2026-03": 124.5,
+   "2026-04": 125.2,
+   "2026-05": 125.0,
+   "2026-06": 124.6,
+   "2026-07": 125.6,
+   "2026-08": 125.8,
+   "2026-09": 126.6,
+   "2026-10": 126.4
+  },
+  "vpi_u": "https://www-genesis.destatis.de/datenbank/online/statistic/61111/table/61111-0002",
+  "kaufkraft": {
+   "basis": "2024-12",
+   "schritte": [
+    {
+     "ab": "2025-01",
+     "pct": 5.5,
+     "t": "+5,5 % (Abschluss Dez. 2023)"
+    },
+    {
+     "ab": "2026-01",
+     "pct": 1.75,
+     "t": "+1,75 % (Abschluss Okt. 2025)"
+    }
+   ],
+   "hinweis": "Nur prozentuale Tariferhöhungen der Eisen- und Stahlindustrie; Einmalzahlungen wie der Inflationsausgleich 2024 sind nicht eingerechnet."
+  }
  }
 }
