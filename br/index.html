@@ -76,14 +76,15 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .norm .text{font-size:16px;line-height:1.55;overflow-wrap:anywhere}
 .ft{font-size:14px;color:var(--ink);margin-top:4px}
 .obadge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.02em;padding:1px 7px;border-radius:999px;background:#fdecc8;color:#7a4a00;vertical-align:middle;white-space:nowrap}
-.obadge.warn{background:#fbd5d0;color:#8a1f12}
+.obadge.warn{background:#fbd5d0;color:#8a1f12;font-size:11px;margin-top:0}
+.olaw{margin-top:6px;font-size:13px;color:var(--muted);line-height:1.5}.item.hasoeff{border-color:#e7c27a}
 .obox{background:#fff7e6;border:1px solid #f0d7a1;border-left:4px solid #e0a020;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45;margin-top:10px}
 .obox.grund{background:#eef4fb;border-color:#c9daee;border-left-color:#3d6fa8}
 .obox a{color:var(--accent2);font-weight:600}
 .vrow{background:var(--surface,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:10px 12px;margin-bottom:8px}.vk{font-weight:700;margin-bottom:4px}.vg,.vt{display:grid;grid-template-columns:62px 1fr;gap:8px;font-size:15px;padding:2px 0}.vg span,.vt span{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding-top:2px}.vg{color:var(--muted)}.vt{font-weight:700}.vt span{color:var(--accent2)}
 .owarn{margin:8px 0 0;padding:8px 10px;border-radius:8px;background:#fff1d6;border:1px solid #f0c674;font-size:14px}
 @media (prefers-color-scheme:dark){.owarn{background:#3a2a08;border-color:#7a5a12}}
-@media (prefers-color-scheme:dark){.obadge{background:#5a3d06;color:#ffe2a8}.obadge.warn{background:#5c1d15;color:#ffc9c0}.obox{background:#2e2410;border-color:#5a4718}.obox.grund{background:#15222f;border-color:#2b4560}}
+@media (prefers-color-scheme:dark){.item.hasoeff{border-color:#5a4718}.obadge{background:#5a3d06;color:#ffe2a8}.obadge.warn{background:#5c1d15;color:#ffc9c0}.obox{background:#2e2410;border-color:#5a4718}.obox.grund{background:#15222f;border-color:#2b4560}}
 .star{font-size:22px;background:none;border:0;cursor:pointer;color:var(--accent2);padding:4px}
 .nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
 .back{background:none;border:0;color:var(--accent2);font:inherit;font-weight:600;cursor:pointer;padding:6px 0}
@@ -163,6 +164,7 @@ textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--input);bo
   <section id="v-gesetze" class="view" hidden>
     <h2>Gesetze</h2>
     <a class="card obox" href="#oeffnung" style="display:block;text-decoration:none;color:inherit;margin-bottom:12px"><b>Öffnungsklauseln</b> – wo Tarifvertrag oder Betriebsvereinbarung vom Gesetz abweichen dürfen, auch zum Schlechteren ›</a>
+    <p class="sub" style="margin:0 0 10px"><span class="obadge">Öffnungsklausel</span> abweichen erlaubt · <span class="obadge warn">Öffnungsklausel</span> auch zum Schlechteren</p>
     <div class="lawgrid" id="laws"></div>
   </section>
 
@@ -348,12 +350,16 @@ window.addEventListener("hashchange",route);
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.go}));
 
 /* ---------- Gesetze ---------- */
-function renderLaws(){ $("laws").innerHTML=GESETZE.map(g=>`<a class="item" href="#g-${g.id}"><div class="k">${esc(g.kurz)}</div><div class="n">${esc(g.name)}</div></a>`).join(""); }
+function renderLaws(){ $("laws").innerHTML=GESETZE.map(g=>{ const L=OEFF.filter(o=>o[0]===g.id);
+  const ok=L.length?`<div class="olaw"><span class="obadge${L.some(o=>o[4])?" warn":""}">Öffnungsklausel</span> <span>${L.length>1?"§§":"§"} ${L.map(o=>esc(o[1])).join(", ")}</span></div>`:"";
+  return `<a class="item${L.length?" hasoeff":""}" href="#g-${g.id}"><div class="k">${esc(g.kurz)}</div><div class="n">${esc(g.name)}</div>${ok}</a>`; }).join(""); }
 function openLaw(id){ const g=GESETZE.find(x=>x.id===id); if(!g){show("gesetze");return} cur.law=g; show("gesetz");
   $("lawTitle").textContent=g.kurz;
   $("lawMeta").innerHTML=`${esc(g.name)} · <a href="${urlL(g.slug)}" target="_blank" rel="noopener">Inhaltsübersicht ↗</a>`;
   $("numIn").value="";
-  const drawList=T=>{ let h=g.p.length?`<div class="grp">Wichtige Paragrafen</div>`+g.p.map(([nr,t])=>pLink(g,nr,t)).join(""):"";
+  const drawList=T=>{ const L=OEFF.filter(o=>o[0]===g.id), titel=nr=>((T&&T.p.find(x=>String(x[0]).toLowerCase()===nr))||[])[2]||(g.p.find(x=>String(x[0]).toLowerCase()===nr)||[])[1]||"";
+    let h=L.length?`<div class="grp">Öffnungsklauseln in diesem Gesetz · ${L.length}</div>`+L.map(o=>pLink(g,o[1],titel(o[1]))).join(""):"";
+    h+=g.p.length?`<div class="grp">Wichtige Paragrafen</div>`+g.p.map(([nr,t])=>pLink(g,nr,t)).join(""):"";
     if(T){ h+=`<div class="grp">${g.id==="bgb"?"Arbeitsrecht im BGB (§§ 611–630 und weitere)":"Alle Paragrafen"} · ${T.p.length}</div>`+T.p.map(x=>pLink(g,x[0],x[2])).join("");
       $("lawMeta").innerHTML=`${esc(T.name||g.name)} · Stand ${esc(dDE(T.stand))} · <a href="${urlL(g.slug)}" target="_blank" rel="noopener">Original ↗</a>`; }
     else h+='<p class="sub">Volltext noch nicht auf dem Gerät – einmal mit Internet öffnen. Paragrafen öffnen dann den Originaltext.</p>';
