@@ -82,6 +82,15 @@ details[open] summary::after{content:"▴"}
 .yrs label{font-size:13px;color:var(--muted)}.yrs input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--yel);text-align:right;font-size:16px}
 .row{grid-template-columns:1fr 175px}@media (max-width:440px){.row{grid-template-columns:1fr 160px}}
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:1px}
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--soft);border-radius:12px;padding:4px}
+.seg2 button{border:0;border-radius:9px;padding:9px 6px;background:none;font-weight:700;color:var(--muted)}
+.seg2 button.on{background:var(--acc2);color:#fff}
+.lbx{border-top:1px solid var(--line);padding:10px 0}.lbx:first-of-type{border-top:0}
+.lbh{display:flex;flex-direction:column;margin-bottom:6px}.lbh .mu{font-size:12.5px}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+.steps div{background:var(--soft);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;font-variant-numeric:tabular-nums}
+.steps span{font-size:12px;color:var(--muted)}.steps b{font-size:15px}.steps i{font-style:normal;font-size:13px}
+table.lb td small{font-size:11px}
 </style>
 </head>
 <body>
@@ -181,7 +190,7 @@ function calc(p,erf,treue){const grund=C.basis*fe(p),ez=erfZ(erf),tz=treueZ(treu
 
 /* ---------- Übersicht ---------- */
 let OV={erf:"0",tr:"0"};try{Object.assign(OV,JSON.parse(LSg("verg.ov","{}")))}catch(e){}
-function drawTable(){
+function drawTableOwn(){
   const e=pn(OV.erf)||0,t=pn(OV.tr)||0;
   const rows=C.pos.map(p=>({p,...calc(p,e,t)}));const max=Math.max(...rows.map(r=>r.m));
   const u=C.pos.find(p=>p.f===Math.min(...C.pos.map(x=>x.f)));
@@ -211,7 +220,7 @@ function drawTable(){
 /* ---------- Person ---------- */
 let P={pos:"Facharbeiter",jb:"",ja:"",lu:"",wi:false,wj:"",wg:"",bel:"m",eig:"",lg:"",heute:""};
 try{Object.assign(P,JSON.parse(LSg("verg.person","{}")))}catch(e){}
-function drawPersonForm(){
+function drawPersonFormOwn(){
   if(!C.pos.some(p=>p.n===P.pos))P.pos=C.pos.at(-1).n;
   $("pForm").innerHTML=`
    <div class="row"><label>Position</label><select class="n" id="pPos">${C.pos.map(p=>`<option ${p.n===P.pos?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
@@ -256,7 +265,7 @@ function drawPersonRes(){
 }
 
 /* ---------- Werte ---------- */
-function drawWerte(openIx){
+function drawWerteOwn(openIx){
   $("werte").innerHTML=`<div class="card"><h2>Grundwerte</h2><p class="lead">Gelbe Felder ändern – alles rechnet sofort neu und bleibt nur auf diesem Gerät.</p>
    <div class="row"><label>Grundgehalt Ungelernter €/Monat<small>Basis für alle Faktoren</small></label><input class="n" data-k="basis" inputmode="decimal" value="${num(C.basis,2)}"></div>
    <div class="row"><label>Wochenarbeitszeit (Std.)<small>${num(stdMonat(),2)} Std. im Monat</small></label><input class="n" data-k="woche" inputmode="decimal" value="${num(C.woche,2)}"></div>
@@ -344,13 +353,157 @@ const RULES=[
  ["Hinweis",[
   ["Planungsmodell","Diskussions- und Planungsmodell; ersetzt keine tarifliche, arbeitsrechtliche oder individuelle Vergütungsprüfung. Der Tarif bleibt die Untergrenze."]]]
 ];
-function drawRegeln(){
+function drawRegelnOwn(){
   $("regeln").innerHTML=`<h2>📖 Regeln des Vergütungsmodells</h2><p class="lead">Entwurf – gilt nur, wenn es vereinbart wird.</p>`+
    RULES.map(([t,it])=>`<div class="rh">${esc(t)}</div>`+it.map(([a,b])=>`<div class="rule"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")).join("");
 }
 
+
+/* ---------- Tarif-Laufbahn: gleiche Tariftabelle, nur transparent nach Jahren ---------- */
+const TL_DEF=[
+  {n:"Ungelernter",g:1,sub:"ohne abgeschlossene Ausbildung",st:[[0,"LG 1"],[2,"LG 2"],[4,"LG 3"],[7,"LG 4"],[10,"LG 5"]]},
+  {n:"Zertifizierte Fachkraft",g:1,sub:"Ungelernte mit Schweiß- oder Prüfschein, 2-jährige Ausbildung",st:[[0,"LG 4"],[5,"LG 5"]]},
+  {n:"Facharbeiter",g:1,sub:"mit Brief, z. B. Former, Kernmacher, Werkstoffprüfer",st:[[0,"LG 6"],[3,"LG 7"],[8,"LG 8"],[15,"LG 9"]]},
+  {n:"Kolonnenführer",g:1,base:"Facharbeiter",zu:.05,sub:"Laufbahn Facharbeiter + Funktionszulage"},
+  {n:"Vorarbeiter",g:1,base:"Facharbeiter",zu:.10,sub:"Laufbahn Facharbeiter + Funktionszulage"},
+  {n:"Werksmeister",m:"M 2",sub:"Meister ohne Meisterbrief"},
+  {n:"Meister mit Brief",m:"M 3",sub:"Industrie- oder Gießereimeister"}];
+DEF.tl=TL_DEF;DEF.mode="tarif";
+if(!C.tl)C.tl=structuredClone(TL_DEF);
+if(!C.mode)C.mode="tarif";
+/* Tarifwerte Eisen und Stahl NRW ab 01.01.2026 – werden beim Start aus der BR-App (br/tarif.json) aktualisiert */
+let TAR={stand:"gültig ab 01.01.2026",
+  lg:{"LG 1":14.69,"LG 2":15.20,"LG 3":15.65,"LG 4":16.40,"LG 5":17.12,"LG 6":18.00,"LG 7":18.94,"LG 8":20.33,"LG 9":22.11},
+  m:{"M 2":[3950.18,4141.02,4332.72,4525.33],"M 3":[4525.33,4730.72,4928.89,5133.32],"M 4":[5133.32,5454.72,5786.13,5786.13]}};
+const LGS=()=>Object.keys(TAR.lg), MS=()=>Object.keys(TAR.m);
+const tlBase=t=>t.base?(C.tl.find(x=>x.n===t.base)||t):t;
+function tStep(t,y){const b=tlBase(t);if(!b.st)return null;let s=b.st[0];[...b.st].sort((a,c)=>a[0]-c[0]).forEach(x=>{if(y>=x[0])s=x});return s}
+function tNext(t,y){const b=tlBase(t);if(!b.st)return null;return [...b.st].sort((a,c)=>a[0]-c[0]).find(x=>x[0]>y)||null}
+function tCalc(t,y){
+  if(t.m){const a=TAR.m[t.m]||[0,0,0,0],i=Math.max(0,Math.min(3,Math.floor(y)));const m=a[i]||a[i-1]||0;return{grp:t.m,stufe:i,m,h:m/stdMonat(),zu:0}}
+  const s=tStep(t,y),lg=s?s[1]:LGS()[0],zu=t.zu||0,h=r2((TAR.lg[lg]||0)*(1+zu));return{grp:lg,h,m:h*stdMonat(),zu}}
+const stufeTxt=i=>["1. Jahr","2. Jahr","3. Jahr","ab 4. Jahr"][i];
+
+function modeBar(){return `<div class="card noprint"><div class="seg2"><button data-mode="tarif" class="${C.mode==="tarif"?"on":""}">Nach Tarif (heute)</button><button data-mode="eigen" class="${C.mode!=="tarif"?"on":""}">Eigenes Modell</button></div>
+  <p class="mu" style="margin:8px 0 0">${C.mode==="tarif"?"Gleiche Tariftabelle wie heute – nur transparent: Wer kommt nach wie vielen Jahren in welche Lohngruppe?":"Eigener Entwurf mit Grundgehalt × Faktor, Erfahrungs- und Treuezuschlag."}</p></div>`}
+function bindMode(){document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{C.mode=b.dataset.mode;save();setHead();drawAll()})}
+function setHead(){document.querySelector("header p").textContent=C.mode==="tarif"?"Tarif Eisen und Stahl NRW · Laufbahn nach Jahren · 35-Stunden-Woche · Entwurf":"Grundgehalt × Positionsfaktor + Erfahrung + Betriebstreue · 35-Stunden-Woche · Entwurf"}
+
+function drawTable(){
+  if(C.mode!=="tarif"){drawTableOwn();$("tabelle").insertAdjacentHTML("afterbegin",modeBar());bindMode();return}
+  const ys=[0,2,3,4,5,7,8,10,15,20];
+  let h=modeBar();
+  h+=`<div class="card"><h2>Laufbahnen nach Jahren</h2><p class="lead">Tariflohn Eisen und Stahl NRW (${esc(TAR.stand)}). Gezählt werden die Jahre Berufserfahrung, wie im Reiter 🧮 Person.</p>`+
+   C.tl.map(t=>{
+    if(t.m){const a=TAR.m[t.m]||[];return `<div class="lbx"><div class="lbh"><b>${esc(t.n)}</b><span class="mu">${esc(t.sub||"")}</span></div>
+      <div class="steps">${[0,1,2,3].map(i=>`<div><span>${stufeTxt(i)}</span><b>${esc(t.m)}</b><i>${eur(a[i]||a[i-1]||0,0)}</i></div>`).join("")}</div></div>`}
+    const b=tlBase(t);return `<div class="lbx"><div class="lbh"><b>${esc(t.n)}</b><span class="mu">${esc(t.sub||"")}${t.zu?` · +${pct(t.zu,0)}`:""}</span></div>
+      <div class="steps">${[...(b.st||[])].sort((x,y)=>x[0]-y[0]).map(([y,lg])=>{const c=tCalc(t,y);return `<div><span>${y?"ab "+num(y,0)+" J.":"Einstieg"}</span><b>${esc(lg)}</b><i>${eur(c.h)}/Std.</i><i>${eur(c.m,0)}</i></div>`}).join("")}</div></div>`}).join("")+
+   `<p class="mu" style="margin:10px 0 0">Monatswerte = Stundenlohn × ${num(stdMonat(),2)} Std. (${num(C.woche,0)}-Stunden-Woche). Dazu kommen bei Gewerblichen Erschwerniszulage und Leistungsgrad, bei allen Sonderzahlungen und Überstunden.</p></div>`;
+  h+=`<div class="card"><h2>Tabelle: Grundlohn nach Jahren</h2><p class="lead">Lohngruppe und Monatsbrutto ohne Zulagen.</p>
+   <div class="scroll"><table class="lb"><tr><th style="background:#1f3a4d">Position</th>${ys.map(y=>`<th style="background:#1f3a4d">${y?y+" J.":"Einstieg"}</th>`).join("")}</tr>
+   ${C.tl.map(t=>`<tr><td>${esc(t.n)}</td>${ys.map(y=>{const c=tCalc(t,y);return `<td><small class="mu">${esc(c.grp)}</small><br>${eur(c.m,0)}</td>`}).join("")}</tr>`).join("")}</table></div>
+   <p class="mu" style="margin:8px 0 0">Betriebsleiter, Werksleiter und Geschäftsführer sind außertariflich und stehen deshalb nicht in der Tariftabelle.</p>
+   <div class="btns noprint"><button class="btn" onclick="print()">🖨️ Drucken / PDF</button></div></div>`;
+  $("tabelle").innerHTML=h;bindMode();
+}
+
+function drawPersonForm(){
+  if(C.mode!=="tarif")return drawPersonFormOwn();
+  if(!C.tl.some(t=>t.n===P.pos))P.pos=C.tl[0].n;
+  $("pForm").innerHTML=`
+   <div class="row"><label>Position</label><select class="n" id="pPos">${C.tl.map(t=>`<option ${t.n===P.pos?"selected":""}>${esc(t.n)}</option>`).join("")}</select></div>
+   <label class="chk"><input type="checkbox" id="pWi" ${P.wi?"checked":""}><span><b>Wiedereinstellung</b> – war früher schon bei uns</span></label>
+   <div class="row wi"><label>Frühere Jahre bei uns</label><input class="n" id="pWj" inputmode="decimal" value="${esc(P.wj)}" placeholder="0"></div>
+   <div class="row wi"><label>Jahre weg vom Betrieb<small>zählt, wenn höchstens ${num(C.wiederMax,0)} Jahre</small></label><input class="n" id="pWg" inputmode="decimal" value="${esc(P.wg)}" placeholder="0"></div>
+   <div class="row"><label>Jahre im Betrieb<small>in dieser Position bzw. gleichwertiger Tätigkeit</small></label><input class="n" id="pJb" inputmode="decimal" value="${esc(P.jb)}" placeholder="0"></div>
+   <div class="row"><label>Jahre in anderen Betrieben<small>gleiche oder gleichwertige Tätigkeit, nachgewiesen</small></label><input class="n" id="pJa" inputmode="decimal" value="${esc(P.ja)}" placeholder="0"></div>
+   <div class="row"><label>Lücke seit der letzten gleichwertigen Tätigkeit (Monate)<small>${C.staffel.map(([m,f])=>"bis "+num(m,0)+" Mon.: "+(f===1?"voll":num(f*100,0)+" %")).join(" · ")} · max. ${num(C.maxFremd,0)} Jahre</small></label><input class="n" id="pLu" inputmode="decimal" value="${esc(P.lu)}" placeholder="0"></div>
+   <div class="row gw"><label>Erschwerniszulage<small>nach Belastung am Arbeitsplatz</small></label><select class="n" id="pBel">${[["","keine"],["l","leicht "+eur(C.E.l)],["m","mittel "+eur(C.E.m)],["s","schwer "+eur(C.E.s)],["e","eigener Betrag"]].map(o=>`<option value="${o[0]}" ${o[0]===P.bel?"selected":""}>${o[1]}</option>`).join("")}</select></div>
+   <div class="row gw" id="pEigRow"><label>Eigene Erschwerniszulage €/Std.</label><input class="n" id="pEig" inputmode="decimal" value="${esc(P.eig)}" placeholder="€"></div>
+   <div class="row gw"><label>Leistungsgrad in %<small>leer = Standard ${num(C.leist*100,0)} %</small></label><input class="n" id="pLg" inputmode="decimal" value="${esc(P.lg)}" placeholder="${num(C.leist*100,0)}"></div>
+   <div class="row"><label>Heutiges Monatsbrutto<small>optional, zum Vergleich</small></label><input class="n" id="pHeute" inputmode="decimal" value="${esc(P.heute)}" placeholder="€"></div>`;
+  ["pPos","pWi","pWj","pWg","pJb","pJa","pLu","pBel","pEig","pLg","pHeute"].forEach(id=>$(id).addEventListener("input",()=>{
+    P={pos:$("pPos").value,wi:$("pWi").checked,wj:$("pWj").value,wg:$("pWg").value,jb:$("pJb").value,ja:$("pJa").value,lu:$("pLu").value,bel:$("pBel").value,eig:$("pEig").value,lg:$("pLg").value,heute:$("pHeute").value};
+    LSs("verg.person",JSON.stringify(P));tGwVis();tPersonRes()}));
+  tGwVis();tPersonRes();
+}
+function tGwVis(){document.querySelectorAll("#pForm .wi").forEach(el=>el.hidden=!P.wi);const t=C.tl.find(x=>x.n===P.pos)||C.tl[0];document.querySelectorAll("#pForm .gw").forEach(el=>el.hidden=!t.g||(el.id==="pEigRow"&&P.bel!=="e"))}
+function tPersonRes(){
+  const t=C.tl.find(x=>x.n===P.pos)||C.tl[0];
+  const jb=pn(P.jb)||0,ja=pn(P.ja)||0,lu=pn(P.lu)||0,wj=P.wi?(pn(P.wj)||0):0,wg=pn(P.wg)||0,wOk=P.wi&&wj>0&&wg<=C.wiederMax,wAn=wOk?wj:0;
+  const sf=P.wi?1:anrF(lu),anr=Math.min(ja*sf,C.maxFremd),erf=jb+anr+wAn;
+  const c=tCalc(t,erf);
+  const E=t.g?(P.bel==="e"?(pn(P.eig)||0):(P.bel?C.E[P.bel]:0)):0,LG=t.g?((pn(P.lg)||C.leist*100)/100):1;
+  const th=t.g?r2((c.h+E)*LG):c.h,tm=t.g?Math.round(th*stdMonat()):c.m;
+  const J=jahr({},tm),heute=pn(P.heute);
+  let nx="";
+  if(t.m){if(c.stufe<3){const n=tCalc(t,Math.floor(erf)+1);nx=`Nächste Stufe in ${num(Math.max(1,Math.ceil(Math.floor(erf)+1-erf)),0)} Jahr: ${eur(n.m,0)} (+${eur(n.m-c.m,0)})`}else nx="Höchste Stufe der Gruppe erreicht."}
+  else{const n=tNext(t,erf);if(n){const nc=tCalc(t,n[0]),nth=t.g?r2((nc.h+E)*LG):nc.h;nx=`Nächste Lohngruppe <b>${esc(n[1])}</b> in <b>${num(Math.ceil(n[0]-erf),0)} ${Math.ceil(n[0]-erf)===1?"Jahr":"Jahren"}</b>: ${eur(nth)}/Std. (+${eur(nth-th)})`}else nx="Höchste Lohngruppe der Laufbahn erreicht."}
+  $("pRes").innerHTML=`<div class="res">
+    <div class="sub">${esc(t.n)} · ${num(erf,1)} Jahre Erfahrung${ja?` (davon ${num(anr,1)} aus anderen Betrieben${sf===0?" – Lücke zu lang":sf<1?` – ${num(sf*100,0)} % wegen Lücke`:""})`:""}${P.wi?(wOk?` · inkl. ${num(wj,1)} frühere Jahre`:wj?` · frühere Jahre zählen nicht`:""):""}</div>
+    <div class="big">${esc(c.grp)}${t.m?` <span style="font-size:16px;font-weight:600">${stufeTxt(c.stufe)}</span>`:""}</div>
+    <div class="sub">${t.m?`Tarifgehalt ${eur(c.m,0)} im Monat`:`Tariflohn ${eur(TAR.lg[c.grp])}/Std.${c.zu?` + Funktionszulage ${pct(c.zu,0)} = ${eur(c.h)}`:""}${t.g?` · mit Erschwerniszulage ${eur(E)} und ${num(LG*100,1)} %: (${eur(c.h)} + ${eur(E)}) × ${num(LG*100,1)} % = <b>${eur(th)}</b>`:""}`}</div>
+    <div class="kp"><div><b>${eur(tm,0)}</b><span>im Monat</span></div><div><b>${eur(J.sum,0)}</b><span>im Jahr inkl. Sonderzahlungen</span></div><div><b>${eur(th)}</b><span>je Stunde</span></div></div>
+    <p class="mu" style="margin:8px 0 0">12 × ${eur(tm,0)} + Weihnachtsgeld ${eur(J.w,0)} + Tarifzusatzentgelt ${eur(J.t,0)}${J.g?" + Gewinnbeteiligung "+eur(J.g,0):""} = ${eur(J.sum,0)}</p>
+    ${isFinite(heute)&&heute>0?`<p style="margin:10px 0 0">Gegenüber heute: <b class="${tm>=heute?"pos":"neg"}">${tm>=heute?"+":""}${eur(tm-heute,0)} im Monat (${tm>=heute?"+":""}${pct(tm/heute-1)})</b></p>`:""}
+    <p class="mu" style="margin:10px 0 0">${nx} Überstunden kommen dazu.</p></div>`;
+}
+
+function drawWerte(openIx){
+  drawWerteOwn(openIx);
+  const W=$("werte");W.insertAdjacentHTML("afterbegin",modeBar());bindMode();
+  if(C.mode!=="tarif")return;
+  // im Tarif-Modus: Faktoren, Pay-Ratio und Zuschlagstabellen ausblenden
+  W.querySelectorAll(".card").forEach(c=>{const h=c.querySelector("h2");if(h&&/Positionen und Faktoren|Zuschlag Berufserfahrung|Zuschlag Betriebszugehörigkeit/.test(h.textContent))c.hidden=true});
+  W.querySelectorAll('[data-k="basis"],[data-k="maxRatio"],[data-k="maxErf"]').forEach(el=>el.closest(".row").hidden=true);
+  const lgOpt=sel=>LGS().map(g=>`<option ${g===sel?"selected":""}>${g}</option>`).join(""),mOpt=sel=>MS().map(g=>`<option ${g===sel?"selected":""}>${g}</option>`).join("");
+  const html=`<div class="card"><h2>Laufbahnen</h2><p class="lead">Ab wie vielen Jahren Erfahrung welche Lohngruppe gilt. Vorschlag – frei anpassbar.</p>
+   ${C.tl.map((t,i)=>`<div class="lbx"><div class="lbh"><b>${esc(t.n)}</b></div>
+     ${t.m?`<div class="row"><label>Meistergruppe</label><select class="n" data-tm="${i}">${mOpt(t.m)}</select></div>`
+      :t.base?`<div class="row"><label>Funktionszulage auf Laufbahn ${esc(t.base)} in %</label><input class="n" data-tz="${i}" inputmode="decimal" value="${num((t.zu||0)*100,1)}"></div>`
+      :`<table class="ed"><tr><th>ab Jahren</th><th>Lohngruppe</th><th></th></tr>${t.st.map((s,k)=>`<tr><td><input data-ty="${i}.${k}" inputmode="decimal" value="${num(s[0],0)}"></td><td><select data-tg="${i}.${k}">${lgOpt(s[1])}</select></td><td>${k?`<button class="x" data-tx="${i}.${k}">✕</button>`:""}</td></tr>`).join("")}</table>
+        <div class="btns"><button class="btn" data-ta="${i}">＋ Stufe</button></div>`}</div>`).join("")}
+   <div class="btns"><button class="btn" id="bTlReset">Laufbahnen zurücksetzen</button></div></div>
+  <div class="card"><h2>Tariftabelle</h2><p class="lead">Eisen und Stahl NRW, ${esc(TAR.stand)} – kommt automatisch aus der BR-App.</p>
+   <div class="scroll"><table class="lb"><tr>${LGS().map(g=>`<th style="background:#2f7d6d">${g}</th>`).join("")}</tr><tr>${LGS().map(g=>`<td>${eur(TAR.lg[g])}</td>`).join("")}</tr></table></div>
+   <div class="scroll" style="margin-top:8px"><table class="lb"><tr><th style="background:#2f7d6d">Meister</th>${[0,1,2,3].map(i=>`<th style="background:#2f7d6d">${stufeTxt(i)}</th>`).join("")}</tr>${MS().map(g=>`<tr><td>${g}</td>${TAR.m[g].map(v=>`<td>${eur(v,0)}</td>`).join("")}</tr>`).join("")}</table></div></div>`;
+  W.querySelector(".card:not(.noprint)").insertAdjacentHTML("beforebegin",html);
+  const re=()=>{save();drawTable();drawPersonForm();drawWerte()};
+  W.querySelectorAll("[data-ty]").forEach(el=>el.onchange=()=>{const[i,k]=el.dataset.ty.split(".").map(Number),x=pn(el.value);if(isFinite(x)&&x>=0)C.tl[i].st[k][0]=x;re()});
+  W.querySelectorAll("[data-tg]").forEach(el=>el.onchange=()=>{const[i,k]=el.dataset.tg.split(".").map(Number);C.tl[i].st[k][1]=el.value;re()});
+  W.querySelectorAll("[data-tx]").forEach(b=>b.onclick=()=>{const[i,k]=b.dataset.tx.split(".").map(Number);C.tl[i].st.splice(k,1);re()});
+  W.querySelectorAll("[data-ta]").forEach(b=>b.onclick=()=>{const t=C.tl[+b.dataset.ta],l=t.st.at(-1),g=LGS(),n=g[Math.min(g.length-1,g.indexOf(l[1])+1)];t.st.push([l[0]+5,n]);re()});
+  W.querySelectorAll("[data-tm]").forEach(el=>el.onchange=()=>{C.tl[+el.dataset.tm].m=el.value;re()});
+  W.querySelectorAll("[data-tz]").forEach(el=>el.onchange=()=>{const x=pn(el.value);if(isFinite(x)&&x>=0)C.tl[+el.dataset.tz].zu=x/100;re()});
+  $("bTlReset").onclick=()=>{if(confirm("Laufbahnen auf den Vorschlag zurücksetzen?")){C.tl=structuredClone(TL_DEF);re()}};
+}
+
+function drawRegeln(){
+  if(C.mode!=="tarif")return drawRegelnOwn();
+  const lb=C.tl.map(t=>[t.n,t.m?`Tarifgruppe ${t.m}; die Stufen richten sich nach den Jahren in der Gruppe (1., 2., 3. Jahr, danach).`
+    :t.base?`Laufbahn ${t.base}, dazu ${pct(t.zu||0,0)} Funktionszulage, solange die Funktion ausgeübt wird.`
+    :[...t.st].sort((a,b)=>a[0]-b[0]).map(([y,g])=>(y?"ab "+num(y,0)+" Jahren ":"Einstieg ")+g).join(" · ")]);
+  const R=[["Grundsätze",[
+     ["Tarif bleibt","Bezahlt wird nach der Tariftabelle Eisen und Stahl NRW. Es gibt keine eigene Lohntabelle und kein zusätzliches Geld – nur klare Regeln."],
+     ["Transparenz","Jeder kann nachlesen, nach wie vielen Jahren Erfahrung er in welche Lohngruppe kommt. Keine Höhergruppierung nach Nasenfaktor."],
+     ["Gewerbliche","(Tarifstundenlohn + Erschwerniszulage) × Leistungsgrad."],
+     ["Sonderzahlungen","Weihnachtsgeld und Tarifzusatzentgelte nach Tarif; Überstunden separat."]]],
+   ["Laufbahnen",lb],
+   ...RULES.filter(([t])=>/Berufserfahrung|Interner Wechsel|Wiedereinstellung/.test(t)).map(([t,it])=>[t,it.filter(([a])=>a!=="Höhe")]),
+   ["Hinweis",[["Klären","Die Eingruppierung richtet sich nach Tarif grundsätzlich nach der Tätigkeit. Ob feste Jahresstufen per Betriebsvereinbarung möglich sind, mit der IG Metall klären."],["Planungsmodell","Diskussionsentwurf; ersetzt keine tarifliche oder arbeitsrechtliche Prüfung."]]]];
+  $("regeln").innerHTML=`<h2>📖 Regeln – Tarif-Laufbahn</h2><p class="lead">Entwurf – gilt nur, wenn es vereinbart wird.</p>`+
+   R.map(([t,it])=>`<div class="rh">${esc(t)}</div>`+it.map(([a,b])=>`<div class="rule"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")).join("");
+}
+function loadTar(j){try{
+  const bl=j.entgelte.bloecke,g=bl.find(b=>/gewerblich/i.test(b.t)),m=bl.find(b=>/Meister/i.test(b.t));
+  if(g){const o={};g.z.forEach(z=>{const k=(z[0].match(/LG\s*\d+/)||[])[0];const v=pn(z[1]);if(k&&isFinite(v))o[k.replace(/\s+/," ")]=v});if(Object.keys(o).length>=5)TAR.lg=o}
+  if(m){const o={};m.z.forEach(z=>{const v=z.slice(1).map(pn);for(let i=1;i<4;i++)if(!isFinite(v[i]))v[i]=v[i-1];if(isFinite(v[0]))o[z[0]]=v});if(Object.keys(o).length)TAR.m=o}
+  if(j.entgelte.stand)TAR.stand=j.entgelte.stand}catch(e){}}
+
 async function loadSz(manual){
   try{const j=await (await fetch("../br/tarif.json",{cache:"no-store"})).json();
+    loadTar(j);
     const b=j.entgelte.bloecke.find(x=>/Sonderzahl/.test(x.t));if(!b)throw 0;
     const get=re=>(b.z.find(z=>re.test(z[0]))||[])[1]||"";
     const eu=t=>{const m=t.match(/(\d{1,3}(?:\.\d{3})*|\d+)(?:,\d+)?\s*€/);return m?pn(m[0]):NaN};
@@ -359,7 +512,7 @@ async function loadSz(manual){
     const wm=get(/Weihnacht/i).match(/(\d+)\s*%/);
     if(isFinite(t1))C.sz.tze1=t1;if(isFinite(t2))C.sz.tze2=t2;if(wm)C.sz.weih=+wm[1]/100;
     C.sz.stand=(j.entgelte.stand?"Stand "+j.entgelte.stand:"Tarif Eisen und Stahl NRW");save();
-    if(manual){drawAll();alert("Sonderzahlungen übernommen: Weihnachtsgeld "+num(C.sz.weih*100,0)+" %, Tarifzusatzentgelt "+eur(C.sz.tze1,0)+" + "+eur(C.sz.tze2,0))}else{drawPersonForm();drawWerte()}}
+    if(manual){drawAll();alert("Sonderzahlungen übernommen: Weihnachtsgeld "+num(C.sz.weih*100,0)+" %, Tarifzusatzentgelt "+eur(C.sz.tze1,0)+" + "+eur(C.sz.tze2,0))}else{drawAll()}}
   catch(e){if(manual)alert("Die BR-App-Daten konnten nicht geladen werden.")}
 }
 function drawAll(){drawTable();drawPersonForm();drawWerte();drawRegeln()}
@@ -367,7 +520,7 @@ function tab(t){document.querySelectorAll(".tab").forEach(s=>s.hidden=s.id!=="t"
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(+b.dataset.t===t)));LSs("verg.tab",String(t));scrollTo(0,0)}
 function start(){
   document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>tab(+b.dataset.t));
-  drawAll();tab(+LSg("verg.tab","1")||1);loadSz(false);
+  setHead();drawAll();tab(+LSg("verg.tab","1")||1);loadSz(false);
   if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(()=>{});
 }
 </script>
