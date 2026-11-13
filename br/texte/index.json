@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-12",
+ "stand": "2026-11-13",
  "gesetze": {
   "betrvg": {
    "stand": "2026-07-13",
@@ -181,6 +181,20 @@
    "n": 147,
    "name": "Arbeitsgerichtsgesetz",
    "kurz": "ArbGG",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+  },
+  "gewo": {
+   "stand": "2026-02-04",
+   "n": 6,
+   "name": "Gewerbeordnung",
+   "kurz": "GewO",
+   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+  },
+  "sgb9": {
+   "stand": "2017-03-29",
+   "n": 9,
+   "name": "Sozialgesetzbuch (SGB) Neuntes Buch (IX) - Rehabilitation und Teilhabe behinderter Menschen - (Artikel 1 des Gesetzes v. 19.6.2001, BGBl. I S. 1046)",
+   "kurz": "SGB 9",
    "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   }
  }
