@@ -434,11 +434,11 @@ function zoomAt(f,sx,sy){const box=$("tbox").getBoundingClientRect();const px=VB
   if(ls.get("ahnen.hint",0))$("thint").hidden=true;
   $("zHome").onclick=()=>{focus=T.proband;drawTree(true)};
   addEventListener("resize",()=>{if(view==="baum"&&BB)applyVB()})})();
-const UPD="2026-11-12";
+const UPD="2026-11-13";
 window.updSeen=function(open){ls.set("ahnen.upd",UPD);if(open){fTab="anl";ls.set("ahnen.fTab","anl");go("forschen")}else drawBanner()};
 function drawBanner(){const n=Object.keys(T.persons).length,b=$("bBanner");
   if(ls.get("ahnen.upd","")!==UPD&&(T.demo||!n))ls.set("ahnen.upd",UPD);
-  if(ls.get("ahnen.upd","")!==UPD){b.innerHTML=`<div class="banner"><span><b>Neu in Ahnenspur:</b> Unter „Forschen → Anlaufstellen“ steht jetzt, wo du welche Unterlagen findest – Standesamt, Archive, Kirchenbücher, Datenbanken, Kriegsunterlagen und Vereine.</span><button class="btn small primary" type="button" onclick="updSeen(true)">Ansehen</button><button class="btn small" type="button" onclick="updSeen(false)">OK</button></div>`;return}
+  if(ls.get("ahnen.upd","")!==UPD){b.innerHTML=`<div class="banner"><span><b>Neu in Ahnenspur:</b> Unter „Forschen → Anlaufstellen“ steht, wo du welche Unterlagen findest – neu dazu das <b>Landesarchiv NRW</b> mit vielen alten Standesamts- und Kirchenbuch-Registern kostenlos online.</span><button class="btn small primary" type="button" onclick="updSeen(true)">Ansehen</button><button class="btn small" type="button" onclick="updSeen(false)">OK</button></div>`;return}
   if(T.demo){b.innerHTML=`<div class="banner"><span><b>Beispiel-Familie „Muster“</b> – alle Namen sind erfunden. So sieht ein Stammbaum aus; tipp auf eine Person oder ein leeres Feld zum Ausprobieren.</span><button class="btn small primary" type="button" onclick="clearDemo()">Beispiel löschen und eigenen Stammbaum anfangen</button></div>`;return}
   const old=!T.backup||Date.now()-T.backup>14*864e5;
   if(n>=3&&T.changed>T.backup&&old)b.innerHTML=`<div class="banner"><span>${T.backup?"Letzte Sicherung am "+new Date(T.backup).toLocaleDateString("de-DE"):"Noch keine Sicherung gemacht"} – deine Daten liegen nur auf diesem Handy.</span><button class="btn small" type="button" onclick="doBackup()">Sichern</button></div>`;
@@ -881,6 +881,9 @@ const ANL=[
  ["2. Standesamt und Stadtarchiv (ab 1874)",[
   ["Standesamt des Ereignisorts","Geburten jünger als 110, Heiraten jünger als 80, Sterbefälle jünger als 30 Jahre bekommt nur, wer direkt verwandt ist – Abstammung nachweisen (eigene Urkunden mitschicken).",""],
   ["Stadt- oder Kreisarchiv","Ältere Register, dazu Adressbücher, Meldekarteien, Zeitungen. Vorher Termin machen. In Mülheim an der Ruhr: Stadtarchiv im Haus der Stadtgeschichte.","https://kultur.muelheim-ruhr.de/sites/default/files/2025-01/Best%C3%A4nde%C3%BCbersicht_01_2025.pdf"]]],
+ ["2b. Landesarchiv NRW – oft der größte Schatz",[
+  ["Archivportal NRW (archive.nrw.de)","Kostenlos online: viele digitalisierte Standesamts-Zweitbücher (Sterberegister im Rheinland meist 1876–1938, Geburten und Heiraten nach Ablauf der Sperrfristen), dazu Zivilstandsregister 1810–1875 und Kirchenbuch-Duplikate. Für Mülheim an der Ruhr und das westliche Ruhrgebiet zuständig: Abteilung Rheinland in Duisburg; für Westfalen (z. B. Bochum, Dortmund): Abteilung Westfalen. In der Suche Ort und „Personenstandsregister“ eingeben, dann Jahrgang wählen und Seite für Seite blättern. Das Portal enthält auch die Findbücher vieler Stadtarchive.","https://www.archive.nrw.de"],
+  ["Ratgeber des Landesarchivs","Kostenlose Broschüre „Familienforschung im Landesarchiv“ mit allen Beständen und Tipps.","https://www.archive.nrw.de/sites/default/files/media/files/LAV%20Brosch%20Genealogie%202025-26%20WEB.pdf"]]],
  ["3. Kirchenbücher (vor 1874)",[
   ["Archion – evangelisch","Kirchenbücher aus Rheinland, Westfalen und vielen anderen Landeskirchen online, kleine Gebühr.","https://www.archion.de"],
   ["Matricula – katholisch","Viele Bistümer kostenlos online. Für das Ruhrgebiet zuständig: Bistum Essen, ältere Bücher teils im Archiv des Erzbistums Köln oder Münster.","https://data.matricula-online.eu/de/"],
