@@ -137,7 +137,7 @@ details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
     <a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">Port 8093</span></a>
     <a class="card link" href="http://100.124.80.87:8090" target="_blank" rel="noopener"><span class="ic">🧳</span><b>Urlaubskasse</b><span class="s">Port 8090</span></a>
     <a class="card link" href="http://100.124.80.87:8091" target="_blank" rel="noopener"><span class="ic">🍀</span><b>Lottogeld</b><span class="s">Port 8091</span></a>
-    <a class="card link" id="nasDash" href="http://100.124.80.87:8092" target="_blank" rel="noopener"><span class="ic">🗂️</span><b>Dashboard (NAS)</b><span class="s">Port 8092 · gleicher Stand auf PC und Handy</span></a>
+    <a class="card link" id="nasDash" href="http://100.124.80.87:8092" target="_blank" rel="noopener"><span class="ic">🗂️</span><b>Dashboard (NAS)</b><span class="s">Port 8092 · alle Apps mit gleichem Stand auf PC und Handy</span></a>
     <a class="card link" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.ugreen.pro;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.ugreen.pro;end"><span class="ic">📱</span><b>NAS (UGREEN-App)</b><span class="s">Dateien, Fotos, Docker</span></a>
   </div>
   <p class="mu" style="margin:8px 0 0">NAS-Adresse unterwegs 100.124.80.87, zu Hause auch 192.168.178.24. Ob die NAS-Apps laufen, kann diese Seite nicht prüfen (der Browser blockt den Zugriff von https auf http).</p>
@@ -172,6 +172,12 @@ details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
 <section id="t-verw" class="tab" hidden>
   <h2>Offen (zu Hause) <span id="todoCnt" style="text-transform:none;letter-spacing:0"></span></h2>
   <div class="card todo" id="todo"></div>
+  <h2>Alle Daten dieses Geräts</h2>
+  <div class="card stack">
+    <p class="mu" style="margin:0" id="allHint">Für den Umzug aufs NAS: hier sichern, dann im Dashboard auf dem NAS (Verwaltung) einspielen. Die Datei enthält die Daten aller Apps auf diesem Gerät, auch den Stammbaum mit Bildern.</p>
+    <div class="row"><button class="btn pri" type="button" id="allSave">Alle Daten in eine Datei sichern</button><button class="btn" type="button" id="allLoad">Daten-Datei einspielen</button></div>
+    <p class="mu" id="allMsg" style="margin:0" aria-live="polite"></p>
+  </div>
   <h2>Nutzung (Test)</h2>
   <div class="card" id="use">…</div>
   <h2>Automatisch</h2>
@@ -215,50 +221,29 @@ let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=
 H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
 const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
 const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,v);syncPush(k,v);return true}catch(e){return false}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
 const lsJ=(k,d)=>{try{const v=JSON.parse(ls(k));return v==null?d:v}catch(e){return d}};
 const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today=()=>new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
 const BASE="https://jtheelen-cloud.github.io/rentenrechner/";
 
 /* ---------- NAS-Betrieb ----------
-   Wird die Seite vom NAS geladen (http), liegen Codelisten, Aufgaben-Häkchen und eigene Termine dort
-   und gelten für alle Geräte (PC, Handy). Im Internet (GitHub Pages) bleibt alles wie bisher im Browser. */
-const NAS=location.protocol==="http:";
-const ROOT=NAS?BASE:"../";
-const SYNCKEY=/^(admin\.(todo\d*|termine|bk|statsKey)|(rentenrechner|br|wetter|ahnen)\.vergeben)$/;
-let syncRev=-1,syncOk=false,syncAt=0;const syncPend={};
-function syncApply(st){ /* Stand vom NAS in den Browser übernehmen; gibt true zurück, wenn sich etwas geändert hat */
-  if(!st||typeof st.rev!=="number"||!st.data)return false;
-  let ch=false;
-  for(const k in st.data){if(!SYNCKEY.test(k)||k in syncPend)continue;const v=String(st.data[k]);if(ls(k)!==v){try{localStorage.setItem(k,v);ch=true}catch(e){}}}
-  /* was nur dieser Browser kennt (erster Start), einmal aufs NAS legen */
-  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(SYNCKEY.test(k)&&!(k in st.data))syncPend[k]=localStorage.getItem(k)}}catch(e){}
-  syncRev=st.rev;syncOk=true;syncAt=Date.now();return ch}
-function syncFirst(){if(!NAS)return;try{const x=new XMLHttpRequest();x.open("GET","api/state?t="+Date.now(),false);x.send();if(x.status===200)syncApply(JSON.parse(x.responseText))}catch(e){syncOk=false}}
-function syncPush(k,v){if(!NAS||!SYNCKEY.test(k))return;syncPend[k]=String(v);syncFlush()}
-let syncBusy=false;
-async function syncFlush(){if(!NAS||syncBusy)return;syncBusy=true;
-  try{for(const k of Object.keys(syncPend)){const v=syncPend[k];
-    const r=await fetch("api/set",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({k,v})});if(!r.ok)throw new Error(r.status);
-    const s=await r.json();if(syncPend[k]===v)delete syncPend[k];if(s.rev===syncRev+1)syncRev=s.rev;syncOk=true;syncAt=Date.now()}}
-  catch(e){syncOk=false}
-  syncBusy=false;syncInfo()}
-async function syncPoll(){if(!NAS)return;await syncFlush();
-  try{const r=await fetch("api/state?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(r.status);const st=await r.json();
-    if(st.rev!==syncRev&&syncApply(st)&&typeof unlocked==="function"&&unlocked()){drawStart();if(tab==="koll")drawKoll();if(tab==="verw")drawTodo();if(tab==="apps")drawApps()}
-    syncOk=true;syncAt=Date.now();if(Object.keys(syncPend).length)syncFlush()}
-  catch(e){syncOk=false}
-  syncInfo()}
-function syncInfo(){const el=document.getElementById("syncInfo");if(!el||!NAS)return;el.hidden=false;
-  el.textContent=syncOk?"✓ Daten liegen auf dem NAS und gelten für PC und Handy · zuletzt abgeglichen "+new Date(syncAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})
+   Wird die Seite vom NAS geladen, hängt das NAS das Skript nas.js ein (window.NASSYNC). Es legt alles,
+   was die Apps im Browser speichern, zusätzlich auf dem NAS ab – PC und Handy sehen denselben Stand.
+   Im Internet (GitHub Pages) bleibt alles wie bisher nur im Browser des Geräts. */
+const NAS=!!window.NASSYNC;
+const appUrl=a=>(NAS&&a.id==="wetter"?BASE:"../")+a.path;   /* Wetter braucht https (Standort) und bleibt im Internet */
+function syncInfo(){const el=document.getElementById("syncInfo");if(!el||!NAS)return;const st=NASSYNC.status();el.hidden=false;
+  el.textContent=st.ok?"✓ Daten liegen auf dem NAS und gelten für PC und Handy · zuletzt abgeglichen "+new Date(st.zeit).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})
     :"⚠ NAS gerade nicht erreichbar – Änderungen werden nachgetragen, sobald es wieder geht."}
-syncFirst();
-if(NAS){setInterval(syncPoll,20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncPoll()});window.addEventListener("focus",syncPoll);
-  /* Verweise anpassen: Internet-Apps absolut, NAS-Apps über die Adresse, unter der das Dashboard gerade läuft */
-  document.querySelectorAll('a[href^="../"]').forEach(a=>a.setAttribute("href",BASE+a.getAttribute("href").slice(3)));
+if(NAS){window.addEventListener("nas-status",syncInfo);
+  NASSYNC.beiAenderung(()=>{if(typeof unlocked==="function"&&unlocked()){drawStart();if(tab==="koll")drawKoll();if(tab==="verw")drawTodo();if(tab==="apps")drawApps()}});
+  /* NAS-Apps über die Adresse öffnen, unter der das Dashboard gerade läuft (zu Hause oder Tailscale) */
   document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[href^="http://100.124.80.87:"]');if(a)a.href=a.getAttribute("href").replace("100.124.80.87",location.hostname)},true);
-  document.addEventListener("DOMContentLoaded",()=>{const d=document.getElementById("nasDash");if(d)d.hidden=true;const h=document.getElementById("bkHint");if(h)h.textContent="Die Codes liegen auf dem NAS und gelten für alle Geräte. Eine Sicherungsdatei auf dem PC schadet trotzdem nicht. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.";syncInfo();syncFlush()})}
+  document.addEventListener("DOMContentLoaded",()=>{const d=document.getElementById("nasDash");if(d)d.hidden=true;
+    const h=document.getElementById("bkHint");if(h)h.textContent="Die Codes liegen auf dem NAS und gelten für alle Geräte. Eine Sicherungsdatei auf dem PC schadet trotzdem nicht. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.";
+    const a=document.getElementById("allHint");if(a)a.textContent="Gesamtsicherung aller App-Daten (auch Stammbaum mit Bildern). Einspielen ersetzt gleichnamige Einträge auf dem NAS und gilt dann für alle Geräte – so kommen die Daten vom Handy einmalig aufs NAS.";
+    syncInfo()})}
 
 /* Apps: Schlüssel und Geheimnisse wie in den Apps selbst */
 const APPS=[
@@ -295,7 +280,7 @@ async function up(u){try{const r=await fetch(u+"?t="+Date.now(),{cache:"no-store
 const S={};
 const MON=["januar","februar","märz","april","mai","juni","juli","august","september","oktober","november","dezember"];
 async function gather(){
-  const [ups,k,g,t,cfg]=await Promise.all([Promise.all(APPS.map(a=>up(ROOT+a.path+"index.html"))),j(ROOT+"kennzahlen.json").catch(()=>null),j(ROOT+"br/texte/index.json").catch(()=>null),j(ROOT+"br/tarif.json").catch(()=>null),j(ROOT+"stats.json").catch(()=>({}))]);
+  const [ups,k,g,t,cfg]=await Promise.all([Promise.all(APPS.map(a=>up("../"+a.path+"index.html"))),j("../kennzahlen.json").catch(()=>null),j("../br/texte/index.json").catch(()=>null),j("../br/tarif.json").catch(()=>null),j("../stats.json").catch(()=>({}))]);
   S.ups=ups;S.k=k;S.g=g;S.t=t;S.cfg=cfg||{};
   if(k&&k.stand){const m=String(k.stand).toLowerCase().match(/([a-zäöü]+)\s+(\d{4})/);if(m){const mi=MON.indexOf(m[1]),age=(new Date().getFullYear()-+m[2])*12+new Date().getMonth()-mi;S.kOk=mi>=0&&age<=1}}
   if(g&&g.stand){S.gAge=(Date.now()-new Date(g.stand).getTime())/864e5}
@@ -323,7 +308,7 @@ function drawStart(){
   $("cockpit").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
   $("bkBanner").innerHTML=bkOld?`<div class="banner"><span>${bk?"Codeliste zuletzt gesichert am "+new Date(bk).toLocaleDateString("de-DE"):"Deine Codeliste ist noch nicht gesichert"} – sie steht nur in diesem Browser.</span><button class="btn sm" type="button" id="bkNow">Sichern</button></div>`:"";
   if($("bkNow"))$("bkNow").onclick=()=>backup(false);
-  $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="${ROOT}${a.path}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
+  $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="${appUrl(a)}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
    `<a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">NAS · Tailscale an</span></a>`;
   drawTermine();
   $("tabBadge").innerHTML=open?`<span class="badge">${open}</span>`:""}
@@ -335,7 +320,7 @@ function appStatus(a){if(a.id==="rentenrechner")return S.k?`<span class="dot ${S
   return `<span class="dot ok"></span>Daten nur auf den Handys`}
 function drawApps(){$("appCards").innerHTML=APPS.map((a,i)=>`<div class="card app"><span class="ic">${a.icon}</span><h3>${a.name}</h3>
   <div class="s">${S.ups&&!S.ups[i]?'<span class="dot wa"></span>nicht erreichbar':appStatus(a)} · ${nC(list(a.id).length)}</div>
-  <div class="acts"><a class="btn sm" href="${ROOT}${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
+  <div class="acts"><a class="btn sm" href="${appUrl(a)}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
   document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>shareApp(b.dataset.share,b));
   document.querySelectorAll("[data-qr]").forEach(b=>b.onclick=()=>showQR(b.dataset.qr));
   document.querySelectorAll("[data-code]").forEach(b=>b.onclick=()=>{show("koll");$("kApp").value=b.dataset.code;$("kDev").focus();upd()})}
@@ -383,6 +368,39 @@ $("bkSave").onclick=()=>backup(false);$("bkShare").onclick=()=>backup(true);
 $("bkLoad").onclick=()=>{const f=$("fileIn");f.value="";f.onchange=async()=>{try{const d=JSON.parse(await f.files[0].text());if(d.app!=="admin-codes"||!d.listen)throw new Error("Das ist keine Codelisten-Sicherung.");
   let n=0;APPS.forEach(a=>{const l=list(a.id);(d.listen[a.id]||[]).forEach(e=>{if(e&&e.dev&&!l.some(x=>x.dev===e.dev)){l.push(e);n++}});setList(a.id,l)});
   $("bkMsg").textContent=`${n} Einträge übernommen.`;drawKoll();drawStart()}catch(e){$("bkMsg").textContent=e.message}};f.click()};
+
+/* ---------- Alle Daten dieses Geräts (Umzug aufs NAS, Gesamtsicherung) ---------- */
+const GERAET=/(\.zugang$|\.geraet$|\.tab$|^wx_(cache|aemet|aemet_err|aemet_muni|warn|layer|view|range)$|^bl\.(data|rest|prev2|draw|aus)$|^ahnen\.(hint|mode|upd)$|^nas\.)/;
+function idbA(){return new Promise(res=>{try{const r=indexedDB.open("ahnenspur",1);
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains("kv"))d.createObjectStore("kv");if(!d.objectStoreNames.contains("media"))d.createObjectStore("media")};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}})}
+const idbOp=(db,store,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(store,mode),rq=fn(t.objectStore(store));t.oncomplete=()=>res(rq&&"result"in rq?rq.result:undefined);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)});
+const b64=blob=>new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(blob)});
+async function allExport(){const m=$("allMsg");m.textContent="Sammle Daten …";
+  try{const data={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!GERAET.test(k))data[k]=localStorage.getItem(k)}
+    let ahnen=null;const db=await idbA();
+    if(db){const tree=await idbOp(db,"kv","readonly",s=>s.get("tree")).catch(()=>null);
+      if(tree&&!tree.demo&&Object.keys(tree.persons||{}).length){const keys=await idbOp(db,"media","readonly",s=>s.getAllKeys()),media={};
+        for(const id of keys){const b=await idbOp(db,"media","readonly",s=>s.get(id));if(b)media[id]=await b64(b)}ahnen={tree,media}}
+      db.close()}
+    const blob=new Blob([JSON.stringify({app:"meine-apps-daten",v:1,datum:new Date().toISOString(),ls:data,ahnen})],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`Meine_Apps_Daten_${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
+    m.textContent=`Gesichert: ${Object.keys(data).length} Einträge`+(ahnen?`, Stammbaum mit ${Object.keys(ahnen.tree.persons).length} Personen und ${Object.keys(ahnen.media).length} Bildern/Dokumenten`:"")+` (${(blob.size/1048576).toFixed(1)} MB). Die Datei liegt im Ordner Downloads.`}
+  catch(e){m.textContent="Sichern fehlgeschlagen: "+e.message}}
+async function allImport(file){const m=$("allMsg");m.textContent="Spiele ein …";
+  try{const d=JSON.parse(await file.text());if(d.app!=="meine-apps-daten"||!d.ls)throw new Error("Das ist keine Gesamtsicherung aus dem Dashboard.");
+    let n=0,p=0,b=0;for(const [k,v] of Object.entries(d.ls)){if(GERAET.test(k)||typeof v!=="string")continue;localStorage.setItem(k,v);n++}
+    if(d.ahnen&&d.ahnen.tree&&!d.ahnen.tree.demo){const db=await idbA();if(!db)throw new Error("Der Speicher für den Stammbaum ist nicht verfügbar.");
+      for(const [id,u] of Object.entries(d.ahnen.media||{})){const bl=await (await fetch(u)).blob();await idbOp(db,"media","readwrite",s=>s.put(bl,id));if(NAS)await NASSYNC.blobPut("ahnen.media."+id,bl);b++;m.textContent=`Spiele ein … Bild ${b}`}
+      const tr=d.ahnen.tree;tr.changed=Date.now();await idbOp(db,"kv","readwrite",s=>s.put(tr,"tree"));
+      if(NAS)await NASSYNC.blobPut("ahnen.tree.json",new Blob([JSON.stringify(tr)],{type:"application/json"}));
+      localStorage.setItem("ahnen.demoSeen","1");p=Object.keys(tr.persons||{}).length;db.close()}
+    if(NAS)await NASSYNC.senden();
+    m.textContent=`Übernommen: ${n} Einträge`+(p?`, Stammbaum mit ${p} Personen und ${b} Bildern/Dokumenten`:"")+(NAS?". Die Daten liegen jetzt auf dem NAS.":".");
+    drawStart();drawTodo();if(tab==="koll")drawKoll()}
+  catch(e){m.textContent="Einspielen fehlgeschlagen: "+e.message}}
+$("allSave").onclick=allExport;
+$("allLoad").onclick=()=>{const f=$("fileIn");f.value="";f.onchange=()=>{if(f.files[0])allImport(f.files[0])};f.click()};
 
 /* ---------- Verwaltung ---------- */
 const TODO=["Handy: Passwort-Tresor automatisch mit dem NAS abgleichen (WebDAV)","Neue Kennwörter mit KeePass: NAS, GitHub, Google (FRITZ!Box ist erledigt)","Google-Konto: Bestätigung in zwei Schritten (schützt auch Tailscale)","Backup der NAS-Daten und der Tresor-Datei auf externe Platte (sobald die Platte da ist)","Sicherung_Webseite_2026-11-14.zip auf PC und NAS ablegen, Rentenrechner_2026.xlsm dazulegen","Excel-Mappe Bundesliga_Prognose in D:\\Jörg löschen","Codelisten der Kollegen sichern (Reiter Kollegen)","FRITZ!Box: FRITZ!OS-Update prüfen, ShieldsUP-Test wiederholen (Exposed Host der Quest ist entfernt)","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Tailscale: alten Anmeldeschlüssel in der Konsole prüfen oder widerrufen","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","NAS-Apps auf https umstellen (Tailscale), damit sie ohne Adressleiste als App laufen"];

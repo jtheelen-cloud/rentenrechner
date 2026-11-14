@@ -295,11 +295,34 @@ function op(store,mode,fn){return new Promise((res,rej)=>{const t=db.transaction
 const emptyTree=()=>({v:1,persons:{},fams:{},proband:null,changed:0,backup:0});
 async function loadTree(){T=(await op("kv","readonly",s=>s.get("tree")))||emptyTree();T.persons=T.persons||{};T.fams=T.fams||{}}
 let saveTimer=null;
-function save(){T.changed=Date.now();clearTimeout(saveTimer);saveTimer=setTimeout(()=>op("kv","readwrite",s=>s.put(T,"tree")).catch(e=>alertMsg("Speichern fehlgeschlagen: "+e)),150)}
-function saveNow(){clearTimeout(saveTimer);return op("kv","readwrite",s=>s.put(T,"tree"))}
-const putMedia=(id,blob)=>op("media","readwrite",s=>s.put(blob,id));
-const getMedia=id=>op("media","readonly",s=>s.get(id));
-const delMedia=id=>op("media","readwrite",s=>s.delete(id));
+function save(){T.changed=Date.now();clearTimeout(saveTimer);saveTimer=setTimeout(()=>op("kv","readwrite",s=>s.put(T,"tree")).catch(e=>alertMsg("Speichern fehlgeschlagen: "+e)),150);nasPush()}
+function saveNow(){clearTimeout(saveTimer);nasPush();return op("kv","readwrite",s=>s.put(T,"tree"))}
+const putMedia=(id,blob)=>op("media","readwrite",s=>s.put(blob,id)).then(r=>{if(NS)NS.blobPut("ahnen.media."+id,blob).catch(()=>{});return r});
+const getMedia=async id=>{let b=await op("media","readonly",s=>s.get(id));
+  if(!b&&NS){try{b=await NS.blobGet("ahnen.media."+id);if(b)await op("media","readwrite",s=>s.put(b,id))}catch(e){b=null}}return b};
+const delMedia=id=>op("media","readwrite",s=>s.delete(id)).then(r=>{if(NS)NS.blobDel("ahnen.media."+id).catch(()=>{});return r});
+
+/* ---------- Abgleich über das NAS (nur wenn die App vom NAS geladen wurde) ----------
+   Der Stammbaum und die Bilder liegen dann zusätzlich auf dem NAS; PC und Handy zeigen denselben Stand.
+   Im Internet (für Kollegen) bleibt alles wie bisher nur auf dem eigenen Gerät. */
+const NS=window.NASSYNC||null;let nasM=0,nasT=null,nasOffen=false;
+function nasPush(){if(!NS||!T||T.demo)return;nasOffen=true;clearTimeout(nasT);
+  nasT=setTimeout(async()=>{try{const r=await NS.blobPut("ahnen.tree.json",new Blob([JSON.stringify(T)],{type:"application/json"}));nasM=r.mtime||nasM;nasOffen=false}catch(e){}},1200)}
+async function nasPull(){if(!NS)return;
+  try{const b=await NS.blobGet("ahnen.tree.json");const leer=!Object.keys(T.persons).length;
+    if(b){nasM=b.mtime||0;const R=JSON.parse(await b.text());
+      if(R&&R.persons&&!R.demo&&((R.changed||0)>(T.changed||0)||T.demo||leer)){T=R;T.persons=T.persons||{};T.fams=T.fams||{};await op("kv","readwrite",s=>s.put(T,"tree"))}
+      else if(!T.demo&&!leer&&(T.changed||0)>(R.changed||0))nasPush()}
+    else if(!T.demo&&!leer)nasPush();
+    nasMedien()}catch(e){}}
+async function nasMedien(){ /* Bilder, die nur dieses Gerät hat, einmal aufs NAS legen */
+  try{if(T.demo)return;const da=new Set((await NS.blobList()).map(x=>x.name)),keys=await op("media","readonly",s=>s.getAllKeys());
+    for(const id of keys){if(!da.has("ahnen.media."+id)){const b=await op("media","readonly",s=>s.get(id));if(b)await NS.blobPut("ahnen.media."+id,b)}}}catch(e){}}
+async function nasSchau(){if(!NS||nasOffen||document.hidden)return;
+  try{const e=(await NS.blobList()).find(x=>x.name==="ahnen.tree.json");if(!e||e.mtime<=nasM)return;
+    const a=document.activeElement,tippt=(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))||document.querySelector("dialog[open]");
+    if(!tippt)location.reload()}catch(e){}}
+if(NS){setInterval(nasSchau,20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)nasSchau()})}
 const URLS={};
 async function mediaURL(id){if(!id)return null;if(URLS[id])return URLS[id];const b=await getMedia(id).catch(()=>null);if(!b)return null;return URLS[id]=URL.createObjectURL(b)}
 function alertMsg(t){const b=$("bBanner");if(b)b.innerHTML=`<div class="banner">${esc(t)}</div>`}
@@ -980,7 +1003,7 @@ window.clearDemo=async function(){if(!confirm("Beispiel-Familie löschen? Danach
 $("startDemo").onclick=loadDemo;
 
 async function start(){if(started)return;started=true;
-  try{db=await idbOpen();await loadTree()}catch(e){document.querySelector("#app .wrap").innerHTML=`<div class="card" style="margin-top:30px"><h2>Speicher nicht verfügbar</h2><p>Dieser Browser erlaubt keine Datenspeicherung (z. B. privater Modus). Bitte im normalen Chrome-Fenster öffnen.</p></div>`;return}
+  try{db=await idbOpen();await loadTree();await nasPull()}catch(e){document.querySelector("#app .wrap").innerHTML=`<div class="card" style="margin-top:30px"><h2>Speicher nicht verfügbar</h2><p>Dieser Browser erlaubt keine Datenspeicherung (z. B. privater Modus). Bitte im normalen Chrome-Fenster öffnen.</p></div>`;return}
   try{if(navigator.storage&&navigator.storage.persist)persisted=await navigator.storage.persisted()||await navigator.storage.persist()}catch(e){}
   if(!T.proband&&!Object.keys(T.persons).length&&!ls.get("ahnen.demoSeen",0)){loadDemo();return}
   calcKek();focus=T.proband;route()}
