@@ -457,6 +457,6 @@ function drawNotfall(){$("notfall").innerHTML=NOTFALL.map(x=>`<details class="nf
 /* ---------- Start ---------- */
 async function start(){$("today").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
   drawStart();show(tab);await gather();drawStart();drawAuto();if(tab==="apps")drawApps();if(tab==="verw")loadUse();if(tab==="koll")drawKoll()}
-$("reload").onclick=async()=>{$("reload").textContent="…";await gather();drawStart();drawAuto();show(tab);$("reload").textContent="⟳"};
+$("reload").onclick=()=>{$("reload").textContent="…";location.reload()};
 if(unlocked())openAdm();
 </script></body></html>
