@@ -1,58 +1,36 @@
-  Kandidaten betrvg []
-PORTAL-FEHLER betrvg – letzte gespeicherte Fassung bleibt
-  Kandidaten kschg []
-PORTAL-FEHLER kschg – letzte gespeicherte Fassung bleibt
-  Kandidaten arbzg []
-PORTAL-FEHLER arbzg – letzte gespeicherte Fassung bleibt
-  Kandidaten bgb [["BKAG", null, "Gesetz über das Bundeskriminalamt und die Zusammenarbeit des Bundes un"]]
-  Kandidaten tzbfg []
-PORTAL-FEHLER tzbfg – letzte gespeicherte Fassung bleibt
-  Kandidaten burlg []
-PORTAL-FEHLER burlg – letzte gespeicherte Fassung bleibt
-  Kandidaten entgfg []
-PORTAL-FEHLER entgfg – letzte gespeicherte Fassung bleibt
-  Kandidaten agg []
-PORTAL-FEHLER agg – letzte gespeicherte Fassung bleibt
-  Kandidaten arbschg []
-PORTAL-FEHLER arbschg – letzte gespeicherte Fassung bleibt
-  Kandidaten sgb_9_2018 [["AWV", null, "Außenwirtschaftsverordnung"]]
-  Kandidaten muschg_2018 [["LwAusbStEignV", null, "Verordnung über die Eignung der Ausbildungsstätte für die Berufsausbil"]]
-PORTAL-FEHLER muschg_2018 – letzte gespeicherte Fassung bleibt
-  Kandidaten beeg []
-PORTAL-FEHLER beeg – letzte gespeicherte Fassung bleibt
-  Kandidaten pflegezg []
-PORTAL-FEHLER pflegezg – letzte gespeicherte Fassung bleibt
-  Kandidaten nachwg []
-PORTAL-FEHLER nachwg – letzte gespeicherte Fassung bleibt
-  Kandidaten tvg []
-  Kandidaten arbgg []
-  Kandidaten milog []
-PORTAL-FEHLER milog – letzte gespeicherte Fassung bleibt
-  Kandidaten a_g [["AWV", null, "Außenwirtschaftsverordnung"]]
-  Kandidaten asig []
-PORTAL-FEHLER asig – letzte gespeicherte Fassung bleibt
-  Kandidaten jarbschg [["LwAusbStEignV", null, "Verordnung über die Eignung der Ausbildungsstätte für die Berufsausbil"]]
-PORTAL-FEHLER jarbschg – letzte gespeicherte Fassung bleibt
-  Kandidaten fpfzg []
-PORTAL-FEHLER fpfzg – letzte gespeicherte Fassung bleibt
-  Kandidaten bdsg_2018 [["BKAG", null, "Gesetz über das Bundeskriminalamt und die Zusammenarbeit des Bundes un"]]
-PORTAL-FEHLER bdsg_2018 – letzte gespeicherte Fassung bleibt
-  Kandidaten gewo []
-  Kandidaten betravg []
-PORTAL-FEHLER betravg – letzte gespeicherte Fassung bleibt
-  Kandidaten mitbestg []
-  Kandidaten drittelbg []
-PORTAL-FEHLER drittelbg – letzte gespeicherte Fassung bleibt
-  Kandidaten entgtranspg []
-PORTAL-FEHLER entgtranspg – letzte gespeicherte Fassung bleibt
-  Kandidaten hinschg []
+OK betrvg BetrVG | Betriebsverfassungsgesetz | Paragrafen: 148 | Stand 2026-07-13 | Rechtsinformationsportal des Bundes | Bytes 175988
+OK kschg KSchG | Kündigungsschutzgesetz | Paragrafen: 28 | Stand 2025-05-21 | Rechtsinformationsportal des Bundes | Bytes 34670
+OK arbzg ArbZG | Arbeitszeitgesetz | Paragrafen: 27 | Stand 2026-01-26 | Rechtsinformationsportal des Bundes | Bytes 39942
+  Kandidaten bgb [["BewachV", null, "Verordnung über das Bewachungsgewerbe"], ["JAktAV", null, "Verordnung über die Aufbewahrung und Speicherung von Justizakten"], ["GNotKG", null, "Gesetz über Kosten der freiwilligen Gerichtsbarkeit für Gerichte und N"], ["SokaSiG", null, "Gesetz zur Sicherung der Sozialkassenverfahren im Baugewerbe"], ["THWAbrV", null, "Verordnung über die Abrechnung von Unterstützungsleistungen des Techni"], ["BefBedV", null, "Verordnung über die Allgemeinen Beförderungsbedingungen für den Straße"], ["BtRegV", null, "Verordnung über die Registrierung von beruflichen Betreuern"], ["GVV", null, "Verordnung über die Vorgaben für das EETS-Gebiet Bundesfernstraßenmaut"], ["FahrlAusbV", null, "Fahrlehrer-Ausbildungsverordnung"], ["GvKostG", null, "Gesetz über Kosten der Gerichtsvollzieher"], ["BGBABest 1898", null, "Bekanntmachung betreffend Ausführungsbestimmungen zu den §§ 980, 981, "], ["MinUhV", null, "Verordnung zur Festlegung des Mindestunterhalts minderjähriger Kinder "], ["GleichberG", null, "Gesetz über die Gleichberechtigung von Mann und Frau auf dem Gebiet de"], ["SiV", null, "Verordnung über die Anforderungen an Sicherheiten und die Anlage besti"], ["VBVG", null, "Gesetz über die Vergütung von Vormündern und Betreuern"], ["WärmeLV", null, "Verordnung über die Umstellung auf gewerbliche Wärmelieferung für Miet"], ["BetrInASG", null, "Gesetz zur Regelung einer Inflationsausgleichs-Sonderzahlung für beruf"], ["LPartG", null, "Gesetz über die Eingetragene Lebenspartnerschaft"], ["NEhelG", null, "Gesetz über die rechtliche Stellung der nichtehelichen Kinder"], ["ZVGEG", null, "Einführungsgesetz zu dem Gesetz über die Zwangsversteigerung und die Z"]]
+OK tzbfg TzBfG | Gesetz über Teilzeitarbeit und befristete Arbeitsverträge | Paragrafen: 24 | Stand 2022-09-14 | Rechtsinformationsportal des Bundes | Bytes 27281
+OK burlg BUrlG | Mindesturlaubsgesetz für Arbeitnehmer | Paragrafen: 17 | Stand 2020-10-06 | Rechtsinformationsportal des Bundes | Bytes 11817
+OK entgfg EntgFG | Gesetz über die Zahlung des Arbeitsentgelts an Feiertagen un | Paragrafen: 15 | Stand 2026-05-18 | Rechtsinformationsportal des Bundes | Bytes 21416
+OK agg AGG | Allgemeines Gleichbehandlungsgesetz | Paragrafen: 42 | Stand 2023-12-29 | Rechtsinformationsportal des Bundes | Bytes 46279
+OK arbschg ArbSchG | Gesetz über die Durchführung von Maßnahmen des Arbeitsschutz | Paragrafen: 29 | Stand 2026-03-04 | Rechtsinformationsportal des Bundes | Bytes 48949
+  Kandidaten sgb_9_2018 [["SGB9uaÄndG", null, "Sozialgesetzbuch - Neuntes Buch - (SGB IX) Rehabilitation und Teilhabe"], ["BtRegV", null, "Verordnung über die Registrierung von beruflichen Betreuern"], ["BMVgBGebV", null, "Besondere Gebührenverordnung des Bundesministeriums der Verteidigung f"], ["SokaSiG2", null, "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren"], ["SokaSiG", null, "Gesetz zur Sicherung der Sozialkassenverfahren im Baugewerbe"], ["BMGBGebV", null, "Besondere Gebührenverordnung des Bundesministeriums für Gesundheit für"], ["RegG", null, "Gesetz zur Regionalisierung des öffentlichen Personennahverkehrs"], ["VersMedV", null, "Verordnung zur Durchführung des § 1 Abs. 1 und 3, des § 30 Abs. 1 und "], ["AHundV", null, "Assistenzhundeverordnung"], ["GrusiGV", null, "Verordnung zur Berechnung von Einkommen sowie zur Nichtberücksichtigun"], ["USG", null, "Gesetz über die Leistungen zur Sicherung des Unterhalts von Reserviste"], ["SchSG", null, "Schiffssicherheitsgesetz"], ["SVG", null, "Gesetz über die Versorgung der früheren Soldatinnen und früheren Solda"], ["BinSchUO", null, "Verordnung über die Schiffssicherheit in der Binnenschifffahrt"], ["KfzHV", null, "Verordnung über Kraftfahrzeughilfe zur beruflichen Rehabilitation"], ["FrühV", null, "Verordnung zur Früherkennung und Frühförderung behinderter und von Beh"], ["GFABPrV", null, "Verordnung über die Prüfung zum anerkannten Fortbildungsabschluss Gepr"], ["EUTBV", null, "Verordnung zur Weiterführung der Ergänzenden unabhängigen Teilhabebera"], ["SEG", null, "Gesetz über die Entschädigung der Soldatinnen und Soldaten"], ["PflAPrV", null, "Ausbildungs- und Prüfungsverordnung für die Pflegeberufe"], ["SGB 2", null, "Sozialgesetzbuch (SGB) Zweites Buch (II) - Grundsicherung für Arbeitsu"], ["SGB 7", null, "Siebtes Buch Sozialgesetzbuch - Gesetzliche Unfallversicherung - (Arti"], ["WMVO", null, "Werkstätten-Mitwirkungsverordnung"], ["SGB 12", null, "Sozialgesetzbuch (SGB) Zwölftes Buch (XII) - Sozialhilfe - (Artikel 1 "], ["9. RAV", null, "Verordnung zur neunten Anpassung der Renten in dem in Artikel 3 des Ei"]]
+OK muschg_2018 MuSchG | Gesetz zum Schutz von Müttern bei der Arbeit, in der Ausbild | Paragrafen: 34 | Stand 2026-01-20 | Rechtsinformationsportal des Bundes | Bytes 61187
+OK beeg BEEG | Gesetz zum Elterngeld und zur Elternzeit | Paragrafen: 39 | Stand 2026-01-06 | Rechtsinformationsportal des Bundes | Bytes 78885
+OK pflegezg PflegeZG | Gesetz über die Pflegezeit | Paragrafen: 10 | Stand 2026-01-22 | Rechtsinformationsportal des Bundes | Bytes 14125
+OK nachwg NachwG | Gesetz über den Nachweis der für ein Arbeitsverhältnis gelte | Paragrafen: 6 | Stand 2024-12-17 | Rechtsinformationsportal des Bundes | Bytes 13215
+  Kandidaten tvg [["SokaSiG2", null, "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren"], ["TVGDV", null, "Verordnung zur Durchführung des Tarifvertragsgesetzes"], ["BTTG", null, "Gesetz zur Sicherung der Tariftreue bei der Vergabe und Ausführung öff"], ["LohnUGAÜV 7", null, "Siebte Verordnung über eine Lohnuntergrenze in der Arbeitnehmerüberlas"], ["ZVALG", null, "Gesetz über die Errichtung einer Zusatzversorgungskasse für Arbeitnehm"], ["EntgTranspG", null, "Gesetz zur Förderung der Entgelttransparenz zwischen Frauen und Männer"], ["ArbGG", null, "Arbeitsgerichtsgesetz"], ["ArbnErfG", null, "Gesetz über Arbeitnehmererfindungen"], ["FlRG", null, "Gesetz über das Flaggenrecht der Seeschiffe und die Flaggenführung der"], ["BetrAVG", null, "Gesetz zur Verbesserung der betrieblichen Altersversorgung"], ["BeschV", null, "Verordnung über die Beschäftigung von Ausländerinnen und Ausländern"]]
+OK arbgg ArbGG | Arbeitsgerichtsgesetz | Paragrafen: 147 | Stand 2026-11-09 | Rechtsinformationsportal des Bundes | Bytes 151007
+OK milog MiLoG | Gesetz zur Regelung eines allgemeinen Mindestlohns | Paragrafen: 24 | Stand 2026-05-18 | Rechtsinformationsportal des Bundes | Bytes 36507
+  Kandidaten a_g [["AUG", null, "Gesetz zur Geltendmachung von Unterhaltsansprüchen im Verkehr mit ausl"], ["BMASBGebV", null, "Besondere Gebührenverordnung des Bundesministeriums für Arbeit und Soz"], ["GOT", null, "Gebührenordnung für Tierärztinnen und Tierärzte"], ["ORheinLotsOEV", null, "Verordnung zur Einführung der Lotsenordnung für den Oberrhein"], ["SchwPestMonV", null, "Verordnung zur Durchführung eines Monitorings auf das Virus der Klassi"], ["UVSV", null, "Verordnung zum Schutz vor schädlichen Wirkungen künstlicher ultraviole"], ["AugenoptAusbV", null, "Verordnung über die Berufsausbildung zum Augenoptiker und zur Augenopt"], ["OrthoptAPrV", null, "Ausbildungs- und Prüfungsverordnung für Orthoptistinnen und Orthoptist"], ["AMBtAngV", null, "Verordnung über die Angabe von Arzneimittelbestandteilen"], ["AMVV", null, "Verordnung über die Verschreibungspflicht von Arzneimitteln"], ["MiLoMeldV", null, "Verordnung über Meldepflichten nach dem Mindestlohngesetz, dem Arbeitn"], ["AÜGMeldstellV", null, "Verordnung zur Bestimmung der zuständigen Behörde nach § 17b Absatz 4 "], ["KugÖV", null, "Verordnung über die Öffnung des Kurzarbeitergeldbezugs für Leiharbeitn"], ["LohnUGAÜV 7", null, "Siebte Verordnung über eine Lohnuntergrenze in der Arbeitnehmerüberlas"], ["DRKG", null, "Gesetz über das Deutsche Rote Kreuz und andere freiwillige Hilfsgesell"], ["SchwarzArbG", null, "Gesetz zur Bekämpfung der Schwarzarbeit und illegalen Beschäftigung"], ["GSA Fleisch", null, "Gesetz zur Sicherung von Arbeitnehmerrechten in der Fleischwirtschaft"], ["BfAIPG", null, "Gesetz über das Personal der Bundesagentur für Außenwirtschaft"], ["SekG", null, "Gesetz zur Regelung von Sekundierungen im Rahmen von Einsätzen der ziv"], ["MV", null, "Verordnung über Mitteilungen an die Finanzbehörden durch andere Behörd"], ["PersDienstLAusbV", null, "Verordnung über die Berufsausbildung zum Personaldienstleistungskaufma"], ["PMElekPrV", null, "Verordnung über die Prüfung zum anerkannten Fortbildungsabschluss Gepr"], ["BewachV", null, "Verordnung über das Bewachungsgewerbe"], ["ArbSchG", null, "Gesetz über die Durchführung von Maßnahmen des Arbeitsschutzes zur Ver"], ["IndElAusbV 2007", null, "Verordnung über die Berufsausbildung in den industriellen Elektroberuf"]]
+OK asig ASiG | Gesetz über Betriebsärzte, Sicherheitsingenieure und andere  | Paragrafen: 23 | Stand 2020-12-17 | Rechtsinformationsportal des Bundes | Bytes 21244
+OK jarbschg JArbSchG | Gesetz zum Schutze der arbeitenden Jugend | Paragrafen: 69 | Stand 2024-12-17 | Rechtsinformationsportal des Bundes | Bytes 66619
+OK fpfzg FPfZG | Gesetz über die Familienpflegezeit | Paragrafen: 18 | Stand 2024-11-25 | Rechtsinformationsportal des Bundes | Bytes 25329
+OK bdsg_2018 BDSG | Bundesdatenschutzgesetz | Paragrafen: 86 | Stand 2026-07-10 | Rechtsinformationsportal des Bundes | Bytes 160241
+  Kandidaten gewo [["BAFABGebV", null, "Besondere Gebührenverordnung des Bundesministeriums für Wirtschaft und"], ["PTBBGebV", null, "Besondere Gebührenverordnung für individuell zurechenbare öffentliche "], ["VersVermV", null, "Verordnung über die Versicherungsvermittlung und -beratung"], ["WpI-InhKontrollV", null, "Verordnung über Anzeigen nach § 24 des Wertpapierinstitutsgesetzes"], ["AnzV", null, "Verordnung über die Anzeigen und die Vorlage von Unterlagen nach dem K"], ["KAGG/GewOErgG", null, "Gesetz zur Änderung und Ergänzung des Gesetzes über Kapitalanlagegesel"], ["EBV", null, "Verordnung zur Erstellung einer Entgeltbescheinigung nach § 108 Absatz"], ["UnbBeschErtV", null, "Verordnung über das Verfahren bei der Erteilung von Unbedenklichkeitsb"], ["GewAnzV", null, "Verordnung zur Ausgestaltung des Gewerbeanzeigeverfahrens"], ["BewachRV", null, "Verordnung über das Bewacherregister"], ["BewachV", null, "Verordnung über das Bewachungsgewerbe"], ["DarlVermV", null, "Verordnung über Darlehensvermittlung"], ["ImmVermV", null, "Verordnung über Immobiliardarlehensvermittlung"], ["FinVermV", null, "Verordnung über die Finanzanlagenvermittlung"]]
+OK betravg BetrAVG | Gesetz zur Verbesserung der betrieblichen Altersversorgung | Paragrafen: 50 | Stand 2026-09-30 | Rechtsinformationsportal des Bundes | Bytes 97203
+  Kandidaten mitbestg [["3. WOMitbestG", null, "Dritte Wahlordnung zum Mitbestimmungsgesetz"], ["2. WOMitbestG", null, "Zweite Wahlordnung zum Mitbestimmungsgesetz"], ["1. WOMitbestG", null, "Erste Wahlordnung zum Mitbestimmungsgesetz"], ["MontanMitbestGErgG", null, "Gesetz zur Ergänzung des Gesetzes über die Mitbestimmung der Arbeitneh"], ["DGBankSa", null, "Satzung DG BANK AG"], ["TelekAGSa", null, "Satzung der Deutsche Telekom AG (Anhang des Gesetzes zur Umwandlung de"], ["PostAGSa", null, "Satzung der Deutsche Post AG (Anhang des Gesetzes zur Umwandlung der U"], ["PostbAGSa", null, "Satzung der Deutsche Postbank AG (Anhang des Gesetzes zur Umwandlung d"], ["DrittelbG", null, "Gesetz über die Drittelbeteiligung der Arbeitnehmer im Aufsichtsrat"], ["AktG", null, "Aktiengesetz"], ["MgVG", null, "Gesetz über die Mitbestimmung der Arbeitnehmer bei einer grenzüberschr"], ["MgFSG", null, "Gesetz über die Mitbestimmung der Arbeitnehmer bei grenzüberschreitend"], ["SEBG", null, "Gesetz über die Beteiligung der Arbeitnehmer in einer Europäischen Ges"], ["MontanMitbestG", null, "Gesetz über die Mitbestimmung der Arbeitnehmer in den Aufsichtsräten u"], ["MitbestBeiG", null, "Gesetz zur Beibehaltung der Mitbestimmung beim Austausch von Anteilen "], ["SCEBG", null, "Gesetz über die Beteiligung der Arbeitnehmer und Arbeitnehmerinnen in "], ["5. VermBG", null, "Fünftes Gesetz zur Förderung der Vermögensbildung der Arbeitnehmer"], ["SokaSiG2", null, "Gesetz zur Sicherung der tarifvertraglichen Sozialkassenverfahren"], ["ArbGG", null, "Arbeitsgerichtsgesetz"]]
+OK drittelbg DrittelbG | Gesetz über die Drittelbeteiligung der Arbeitnehmer im Aufsi | Paragrafen: 16 | Stand 2022-03-11 | Rechtsinformationsportal des Bundes | Bytes 13919
+OK entgtranspg EntgTranspG | Gesetz zur Förderung der Entgelttransparenz zwischen Frauen  | Paragrafen: 25 | Stand 2021-08-13 | Rechtsinformationsportal des Bundes | Bytes 26514
+  Kandidaten hinschg [["HEMBV", null, "Verordnung über die Organisation der nach dem Hinweisgeberschutzgesetz"], ["HinSchGOWiZustV", null, "Verordnung über die Zuständigkeit des Bundesamtes für Justiz für die V"], ["PolBeauftrG", null, "Gesetz über die Polizeibeauftragte oder den Polizeibeauftragten des Bu"], ["ArbSchG", null, "Gesetz über die Durchführung von Maßnahmen des Arbeitsschutzes zur Ver"], ["BeamtStG", null, "Gesetz zur Regelung des Statusrechts der Beamtinnen und Beamten in den"], ["FinDAG", null, "Gesetz über die Bundesanstalt für Finanzdienstleistungsaufsicht"], ["VAG", null, "Gesetz über die Beaufsichtigung der Versicherungsunternehmen"], ["ZFdG", null, "Gesetz über das Zollkriminalamt und die Zollfahndungsämter"]]
 OK tvg TVG | Tarifvertragsgesetz | Paragrafen: 15 | Stand 2026-04-27 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 16763
 OK hinschg HinSchG | Gesetz für einen besseren Schutz hinweisgebender Personen | Paragrafen: 42 | Stand 2025-12-02 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 61854
 OK a_g AÜG | Gesetz zur Regelung der Arbeitnehmerüberlassung | Paragrafen: 31 | Stand 2025-12-22 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 57627
 OK mitbestg MitbestG | Gesetz über die Mitbestimmung der Arbeitnehmer | Paragrafen: 42 | Stand 2021-08-07 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 42491
-OK arbgg ArbGG | Arbeitsgerichtsgesetz | Paragrafen: 147 | Stand 2025-12-08 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 150129
 OK gewo GewO | Gewerbeordnung | Paragrafen: 6 | Stand 2026-02-04 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 4722
 OK sgb_9_2018 SGB 9 | Sozialgesetzbuch (SGB) Neuntes Buch (IX) - Rehabilitation un | Paragrafen: 9 | Stand 2017-03-29 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 10785
-  OLD: Abruf-Limit erreicht bei bgb, Fortschritt 17/32 – geht beim nächsten Lauf weiter
-BEHALTEN bgb (letzte gespeicherte Fassung)
-FERTIG, Fehler: 21
+OK bgb BGB | Bürgerliches Gesetzbuch | Paragrafen: 32 | Stand 2026-03-29 | Open Legal Data (Daten von gesetze-im-internet.de) | Bytes 27825
+FERTIG, Fehler: 0

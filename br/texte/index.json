@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-13",
+ "stand": "2026-11-14",
  "gesetze": {
   "betrvg": {
    "stand": "2026-07-13",
@@ -177,11 +177,11 @@
    "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
   },
   "arbgg": {
-   "stand": "2025-12-08",
+   "stand": "2026-11-09",
    "n": 147,
    "name": "Arbeitsgerichtsgesetz",
    "kurz": "ArbGG",
-   "quelle": "Open Legal Data (Daten von gesetze-im-internet.de)"
+   "quelle": "Rechtsinformationsportal des Bundes"
   },
   "gewo": {
    "stand": "2026-02-04",
