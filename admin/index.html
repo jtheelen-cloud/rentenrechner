@@ -267,7 +267,7 @@ function people(){const m=new Map();APPS.forEach(a=>list(a.id).forEach((e,i)=>{i
 function lastUse(dev,app){if(!S.use||!S.use.rows)return null;const r=S.use.rows.find(r=>r.dev===dev&&r.app===APP[app].stat);return r||null}
 
 /* ---------- Übersicht ---------- */
-function todoOpen(){const done=lsJ("admin.todo2",{});return TODO.filter((_,i)=>!done[i]).length}
+function todoOpen(){const done=lsJ("admin.todo3",{});return TODO.filter((_,i)=>!done[i]).length}
 function drawStart(){
   const nUp=S.ups?S.ups.filter(Boolean).length:0,ppl=people(),codes=APPS.reduce((n,a)=>n+list(a.id).length,0),open=todoOpen();
   const bk=+ls("admin.bk")||0,bkOld=codes>0&&(!bk||Date.now()-bk>30*864e5);
@@ -344,10 +344,10 @@ $("bkLoad").onclick=()=>{const f=$("fileIn");f.value="";f.onchange=async()=>{try
   $("bkMsg").textContent=`${n} Einträge übernommen.`;drawKoll();drawStart()}catch(e){$("bkMsg").textContent=e.message}};f.click()};
 
 /* ---------- Verwaltung ---------- */
-const TODO=["Handy: Passwort-Tresor automatisch mit dem NAS abgleichen (WebDAV)","Neue Kennwörter mit KeePass: NAS, GitHub, Google (FRITZ!Box ist erledigt)","Google-Konto: Bestätigung in zwei Schritten (schützt auch Tailscale)","Backup der NAS-Daten und der Tresor-Datei auf externe Platte (sobald die Platte da ist)","Sicherung_Webseite_2026-11-14.zip auf PC und NAS ablegen, Rentenrechner_2026.xlsm dazulegen","Excel-Mappe Bundesliga_Prognose in D:\\Jörg löschen","Codelisten der Kollegen sichern (Reiter Kollegen)","FRITZ!Box: FRITZ!OS-Update prüfen, ShieldsUP-Test wiederholen (Exposed Host der Quest ist entfernt)","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Tailscale: alten Anmeldeschlüssel in der Konsole prüfen oder widerrufen","Ordnername der Heizungs-App in die Anleitung","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","Heizungs-App: Text beim Schlafzimmer und Heizstunden-Zählung korrigieren, Urlaubsdaten auswerten","NAS-Apps auf https umstellen (Tailscale), damit sie ohne Adressleiste als App laufen"];
-function drawTodo(){const done=lsJ("admin.todo2",{});const o=todoOpen();$("todoCnt").textContent=`(${o} offen)`;
+const TODO=["Handy: Passwort-Tresor automatisch mit dem NAS abgleichen (WebDAV)","Neue Kennwörter mit KeePass: NAS, GitHub, Google (FRITZ!Box ist erledigt)","Google-Konto: Bestätigung in zwei Schritten (schützt auch Tailscale)","Backup der NAS-Daten und der Tresor-Datei auf externe Platte (sobald die Platte da ist)","Sicherung_Webseite_2026-11-14.zip auf PC und NAS ablegen, Rentenrechner_2026.xlsm dazulegen","Excel-Mappe Bundesliga_Prognose in D:\\Jörg löschen","Codelisten der Kollegen sichern (Reiter Kollegen)","FRITZ!Box: FRITZ!OS-Update prüfen, ShieldsUP-Test wiederholen (Exposed Host der Quest ist entfernt)","FRITZ!Box von unterwegs: Tailscale-Subnetz-Route 192.168.178.0/24 freigeben","Tailscale: alten Anmeldeschlüssel in der Konsole prüfen oder widerrufen","GitHub: Release „widget“ und Branch „ci-log“ löschen","Nutzungszähler: Google-Tabelle mit Skript einrichten","NAS-Apps auf https umstellen (Tailscale), damit sie ohne Adressleiste als App laufen"];
+function drawTodo(){const done=lsJ("admin.todo3",{});const o=todoOpen();$("todoCnt").textContent=`(${o} offen)`;
   $("todo").innerHTML=TODO.map((t,i)=>`<label class="${done[i]?"done":""}"><input type="checkbox" data-i="${i}" ${done[i]?"checked":""}><span>${esc(t)}</span></label>`).join("");
-  $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo2",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked);$("todoCnt").textContent=`(${todoOpen()} offen)`;drawStart()}}
+  $("todo").onchange=e=>{const i=e.target.dataset.i;done[i]=e.target.checked;lsSet("admin.todo3",JSON.stringify(done));e.target.parentNode.classList.toggle("done",e.target.checked);$("todoCnt").textContent=`(${todoOpen()} offen)`;drawStart()}}
 function drawAuto(){const now=new Date(),nx=new Date(now.getFullYear(),now.getMonth()+(now.getDate()>=2?1:0),2);
   $("sNext").innerHTML=(S.k?`<span class="dot ${S.kOk?"ok":"wa"}"></span>Stand ${esc(S.k.stand)} · `:"")+"nächster Lauf "+nx.toLocaleDateString("de-DE");
   $("sGes").innerHTML=S.g?`<span class="dot ${S.gAge<3?"ok":"wa"}"></span>letzter Lauf ${new Date(S.g.stand).toLocaleDateString("de-DE")}${S.gAge>=3?" – länger nicht gelaufen!":""}`:"Stand nicht lesbar"}
