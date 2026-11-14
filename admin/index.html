@@ -137,9 +137,11 @@ details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
     <a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">Port 8093</span></a>
     <a class="card link" href="http://100.124.80.87:8090" target="_blank" rel="noopener"><span class="ic">🧳</span><b>Urlaubskasse</b><span class="s">Port 8090</span></a>
     <a class="card link" href="http://100.124.80.87:8091" target="_blank" rel="noopener"><span class="ic">🍀</span><b>Lottogeld</b><span class="s">Port 8091</span></a>
+    <a class="card link" id="nasDash" href="http://100.124.80.87:8092" target="_blank" rel="noopener"><span class="ic">🗂️</span><b>Dashboard (NAS)</b><span class="s">Port 8092 · gleicher Stand auf PC und Handy</span></a>
     <a class="card link" href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.ugreen.pro;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.ugreen.pro;end"><span class="ic">📱</span><b>NAS (UGREEN-App)</b><span class="s">Dateien, Fotos, Docker</span></a>
   </div>
   <p class="mu" style="margin:8px 0 0">NAS-Adresse unterwegs 100.124.80.87, zu Hause auch 192.168.178.24. Ob die NAS-Apps laufen, kann diese Seite nicht prüfen (der Browser blockt den Zugriff von https auf http).</p>
+  <p class="mu" id="syncInfo" style="margin:8px 0 0" hidden></p>
 </section>
 
 <!-- KOLLEGEN -->
@@ -161,7 +163,7 @@ details.nf ol{margin:8px 0 0;padding-left:20px;font-size:14px}
   <div class="card stack">
     <p class="mu" style="margin:0" id="bkInfo"></p>
     <div class="row"><button class="btn pri" type="button" id="bkSave">Codeliste sichern</button><button class="btn" type="button" id="bkShare" hidden>Teilen</button><button class="btn" type="button" id="bkLoad">Sicherung einspielen</button></div>
-    <p class="mu" style="margin:0">Die Codes stehen nur in diesem Browser. Die Sicherungsdatei am besten auf den PC oder das NAS legen. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.</p>
+    <p class="mu" style="margin:0" id="bkHint">Die Codes stehen nur in diesem Browser. Die Sicherungsdatei am besten auf den PC oder das NAS legen. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.</p>
     <p class="mu" id="bkMsg" style="margin:0" aria-live="polite"></p>
   </div>
 </section>
@@ -213,11 +215,50 @@ let[a,c,d,e,f,g,h,k]=H;for(let i=0;i<64;i++){const S1=r(f,6)^r(f,11)^r(f,25),ch=
 H=H.map((v,i)=>(v+[a,c,d,e,f,g,h,k][i])|0)}return H.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("")}
 const CODE_HASH="f12d8ad9b3af949dee57cc01bae9bbe771f6a8abcfc4f2818abc837c530596e3";
 const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v);syncPush(k,v);return true}catch(e){return false}};
 const lsJ=(k,d)=>{try{const v=JSON.parse(ls(k));return v==null?d:v}catch(e){return d}};
 const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today=()=>new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
 const BASE="https://jtheelen-cloud.github.io/rentenrechner/";
+
+/* ---------- NAS-Betrieb ----------
+   Wird die Seite vom NAS geladen (http), liegen Codelisten, Aufgaben-Häkchen und eigene Termine dort
+   und gelten für alle Geräte (PC, Handy). Im Internet (GitHub Pages) bleibt alles wie bisher im Browser. */
+const NAS=location.protocol==="http:";
+const ROOT=NAS?BASE:"../";
+const SYNCKEY=/^(admin\.(todo\d*|termine|bk|statsKey)|(rentenrechner|br|wetter|ahnen)\.vergeben)$/;
+let syncRev=-1,syncOk=false,syncAt=0;const syncPend={};
+function syncApply(st){ /* Stand vom NAS in den Browser übernehmen; gibt true zurück, wenn sich etwas geändert hat */
+  if(!st||typeof st.rev!=="number"||!st.data)return false;
+  let ch=false;
+  for(const k in st.data){if(!SYNCKEY.test(k)||k in syncPend)continue;const v=String(st.data[k]);if(ls(k)!==v){try{localStorage.setItem(k,v);ch=true}catch(e){}}}
+  /* was nur dieser Browser kennt (erster Start), einmal aufs NAS legen */
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(SYNCKEY.test(k)&&!(k in st.data))syncPend[k]=localStorage.getItem(k)}}catch(e){}
+  syncRev=st.rev;syncOk=true;syncAt=Date.now();return ch}
+function syncFirst(){if(!NAS)return;try{const x=new XMLHttpRequest();x.open("GET","api/state?t="+Date.now(),false);x.send();if(x.status===200)syncApply(JSON.parse(x.responseText))}catch(e){syncOk=false}}
+function syncPush(k,v){if(!NAS||!SYNCKEY.test(k))return;syncPend[k]=String(v);syncFlush()}
+let syncBusy=false;
+async function syncFlush(){if(!NAS||syncBusy)return;syncBusy=true;
+  try{for(const k of Object.keys(syncPend)){const v=syncPend[k];
+    const r=await fetch("api/set",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({k,v})});if(!r.ok)throw new Error(r.status);
+    const s=await r.json();if(syncPend[k]===v)delete syncPend[k];if(s.rev===syncRev+1)syncRev=s.rev;syncOk=true;syncAt=Date.now()}}
+  catch(e){syncOk=false}
+  syncBusy=false;syncInfo()}
+async function syncPoll(){if(!NAS)return;await syncFlush();
+  try{const r=await fetch("api/state?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(r.status);const st=await r.json();
+    if(st.rev!==syncRev&&syncApply(st)&&typeof unlocked==="function"&&unlocked()){drawStart();if(tab==="koll")drawKoll();if(tab==="verw")drawTodo();if(tab==="apps")drawApps()}
+    syncOk=true;syncAt=Date.now();if(Object.keys(syncPend).length)syncFlush()}
+  catch(e){syncOk=false}
+  syncInfo()}
+function syncInfo(){const el=document.getElementById("syncInfo");if(!el||!NAS)return;el.hidden=false;
+  el.textContent=syncOk?"✓ Daten liegen auf dem NAS und gelten für PC und Handy · zuletzt abgeglichen "+new Date(syncAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})
+    :"⚠ NAS gerade nicht erreichbar – Änderungen werden nachgetragen, sobald es wieder geht."}
+syncFirst();
+if(NAS){setInterval(syncPoll,20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncPoll()});window.addEventListener("focus",syncPoll);
+  /* Verweise anpassen: Internet-Apps absolut, NAS-Apps über die Adresse, unter der das Dashboard gerade läuft */
+  document.querySelectorAll('a[href^="../"]').forEach(a=>a.setAttribute("href",BASE+a.getAttribute("href").slice(3)));
+  document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[href^="http://100.124.80.87:"]');if(a)a.href=a.getAttribute("href").replace("100.124.80.87",location.hostname)},true);
+  document.addEventListener("DOMContentLoaded",()=>{const d=document.getElementById("nasDash");if(d)d.hidden=true;const h=document.getElementById("bkHint");if(h)h.textContent="Die Codes liegen auf dem NAS und gelten für alle Geräte. Eine Sicherungsdatei auf dem PC schadet trotzdem nicht. Beim Einspielen werden die Einträge ergänzt, nichts gelöscht.";syncInfo();syncFlush()})}
 
 /* Apps: Schlüssel und Geheimnisse wie in den Apps selbst */
 const APPS=[
@@ -254,7 +295,7 @@ async function up(u){try{const r=await fetch(u+"?t="+Date.now(),{cache:"no-store
 const S={};
 const MON=["januar","februar","märz","april","mai","juni","juli","august","september","oktober","november","dezember"];
 async function gather(){
-  const [ups,k,g,t,cfg]=await Promise.all([Promise.all(APPS.map(a=>up("../"+a.path+"index.html"))),j("../kennzahlen.json").catch(()=>null),j("../br/texte/index.json").catch(()=>null),j("../br/tarif.json").catch(()=>null),j("../stats.json").catch(()=>({}))]);
+  const [ups,k,g,t,cfg]=await Promise.all([Promise.all(APPS.map(a=>up(ROOT+a.path+"index.html"))),j(ROOT+"kennzahlen.json").catch(()=>null),j(ROOT+"br/texte/index.json").catch(()=>null),j(ROOT+"br/tarif.json").catch(()=>null),j(ROOT+"stats.json").catch(()=>({}))]);
   S.ups=ups;S.k=k;S.g=g;S.t=t;S.cfg=cfg||{};
   if(k&&k.stand){const m=String(k.stand).toLowerCase().match(/([a-zäöü]+)\s+(\d{4})/);if(m){const mi=MON.indexOf(m[1]),age=(new Date().getFullYear()-+m[2])*12+new Date().getMonth()-mi;S.kOk=mi>=0&&age<=1}}
   if(g&&g.stand){S.gAge=(Date.now()-new Date(g.stand).getTime())/864e5}
@@ -282,7 +323,7 @@ function drawStart(){
   $("cockpit").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
   $("bkBanner").innerHTML=bkOld?`<div class="banner"><span>${bk?"Codeliste zuletzt gesichert am "+new Date(bk).toLocaleDateString("de-DE"):"Deine Codeliste ist noch nicht gesichert"} – sie steht nur in diesem Browser.</span><button class="btn sm" type="button" id="bkNow">Sichern</button></div>`:"";
   if($("bkNow"))$("bkNow").onclick=()=>backup(false);
-  $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="../${a.path}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
+  $("quick").innerHTML=APPS.map(a=>`<a class="card link" href="${ROOT}${a.path}"><span class="ic">${a.icon}</span><b>${a.name}</b><span class="s">${nC(list(a.id).length)} vergeben</span></a>`).join("")+
    `<a class="card link" href="http://100.124.80.87:8093" target="_blank" rel="noopener"><span class="ic">🔥</span><b>Heizung</b><span class="s">NAS · Tailscale an</span></a>`;
   drawTermine();
   $("tabBadge").innerHTML=open?`<span class="badge">${open}</span>`:""}
@@ -294,7 +335,7 @@ function appStatus(a){if(a.id==="rentenrechner")return S.k?`<span class="dot ${S
   return `<span class="dot ok"></span>Daten nur auf den Handys`}
 function drawApps(){$("appCards").innerHTML=APPS.map((a,i)=>`<div class="card app"><span class="ic">${a.icon}</span><h3>${a.name}</h3>
   <div class="s">${S.ups&&!S.ups[i]?'<span class="dot wa"></span>nicht erreichbar':appStatus(a)} · ${nC(list(a.id).length)}</div>
-  <div class="acts"><a class="btn sm" href="../${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
+  <div class="acts"><a class="btn sm" href="${ROOT}${a.path}">Öffnen</a><button class="btn sm" type="button" data-share="${a.id}">Teilen</button><button class="btn sm" type="button" data-qr="${a.id}">QR-Code</button><button class="btn sm" type="button" data-code="${a.id}">Code vergeben</button></div></div>`).join("");
   document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>shareApp(b.dataset.share,b));
   document.querySelectorAll("[data-qr]").forEach(b=>b.onclick=()=>showQR(b.dataset.qr));
   document.querySelectorAll("[data-code]").forEach(b=>b.onclick=()=>{show("koll");$("kApp").value=b.dataset.code;$("kDev").focus();upd()})}
@@ -356,7 +397,7 @@ async function loadUse(){const box=$("use");
   const key=ls("admin.statsKey")||"";
   if(!key){box.innerHTML='<div class="mu">Kennwort für die Nutzungsstatistik (steht im Skript der Google-Tabelle):</div><div class="row" style="margin-top:6px"><input id="uKey" style="flex:1"><button class="btn" id="uOk" type="button">OK</button></div>';
     $("uOk").onclick=async()=>{lsSet("admin.statsKey",$("uKey").value.trim());await gather();loadUse();drawStart()};return}
-  if(!S.use){box.innerHTML='<div class="mu">Kennwort falsch oder Statistik nicht erreichbar.</div><button class="btn sm" type="button" id="uRe" style="margin-top:6px">Kennwort neu eingeben</button>';$("uRe").onclick=()=>{localStorage.removeItem("admin.statsKey");loadUse()};return}
+  if(!S.use){box.innerHTML='<div class="mu">Kennwort falsch oder Statistik nicht erreichbar.</div><button class="btn sm" type="button" id="uRe" style="margin-top:6px">Kennwort neu eingeben</button>';$("uRe").onclick=()=>{lsSet("admin.statsKey","");loadUse()};return}
   const nm={};APPS.forEach(a=>list(a.id).forEach(e=>{if(e.dev)nm[e.dev]=e.name}));const sn=Object.fromEntries(APPS.map(a=>[a.stat,a]));
   const rows=(S.use.rows||[]).sort((a,b)=>b.last-a.last);const f=t=>new Date(t).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
   box.innerHTML=rows.length?`<div class="mu">${S.use.total} Aufrufe insgesamt · deine eigenen zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table><tr><th>Wer</th><th>App</th><th style="text-align:right">Aufrufe</th><th>zuletzt</th></tr>`+
