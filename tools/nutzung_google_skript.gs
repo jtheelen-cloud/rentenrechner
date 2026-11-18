@@ -16,7 +16,11 @@ function doGet(e) {
       const a = sum[k] || (sum[k] = { app: r[1], dev: r[2], n: 0, last: 0 });
       a.n++; if (t > a.last) a.last = t;
     });
-    return json({ rows: Object.keys(sum).map(function (k) { return sum[k]; }), total: werte.length });
+    const antwort = { rows: Object.keys(sum).map(function (k) { return sum[k]; }), total: werte.length,
+      url: SpreadsheetApp.getActiveSpreadsheet().getUrl() };
+    // all=1: jeden einzelnen Aufruf liefern (für die Excel-Liste im Dashboard), höchstens die letzten 20.000
+    if (p.all) antwort.alle = werte.slice(-20000).map(function (r) { return [new Date(r[0]).getTime(), r[1], r[2]]; });
+    return json(antwort);
   }
   const app = String(p.a || '').toLowerCase().replace(/[^a-z]/g, '').slice(0, 12);
   const dev = String(p.d || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 9);

@@ -422,7 +422,43 @@ async function loadUse(){const box=$("use");
   const rows=(S.use.rows||[]).sort((a,b)=>b.last-a.last);const f=t=>new Date(t).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
   box.innerHTML=rows.length?`<div class="mu">${S.use.total} Aufrufe insgesamt · deine eigenen zählen nicht</div><div style="overflow-x:auto;margin-top:6px"><table><tr><th>Wer</th><th>App</th><th style="text-align:right">Aufrufe</th><th>zuletzt</th></tr>`+
     rows.map(r=>`<tr><td>${esc(nm[r.dev]||r.dev)}</td><td>${sn[r.app]?sn[r.app].icon+" "+sn[r.app].name:esc(r.app)}</td><td style="text-align:right"><b>${r.n}</b></td><td style="white-space:nowrap">${f(r.last)}</td></tr>`).join("")+`</table></div>`
-    :'<div class="mu">Noch keine Aufrufe gezählt. Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.</div>'}
+    :'<div class="mu">Noch keine Aufrufe gezählt. Deine eigenen Aufrufe mit dem Hauptcode zählen nicht.</div>';
+  if(rows.length){box.insertAdjacentHTML("beforeend",`<div class="row" style="margin-top:10px;flex-wrap:wrap;gap:8px"><button class="btn sm" type="button" id="uXls">⬇️ Excel-Liste mit Namen</button>${S.use.url?`<a class="btn sm" href="${esc(S.use.url)}" target="_blank" rel="noopener">Google-Tabelle öffnen (nur Codes)</a>`:""}</div><div class="mu" id="uXlsMsg" style="margin-top:6px" aria-live="polite"></div>`);
+    $("uXls").onclick=()=>useExcel(nm,sn)}}
+
+/* ---------- Nutzung als Excel-Datei (Namen kommen aus den Codelisten und bleiben auf diesem Gerät/NAS) ---------- */
+function xlsxBlob(sheets){ // sheets: [{name, cols:[Breite], rows:[[Zelle]]}], Zelle: Text, Zahl oder Date; erste Zeile = Überschrift
+  const enc=new TextEncoder(),x=t=>String(t??"").replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c])).replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,"");
+  const col=i=>{let n="";i++;while(i>0){n=String.fromCharCode(65+(i-1)%26)+n;i=Math.floor((i-1)/26)}return n};
+  const serial=d=>(d.getTime()-d.getTimezoneOffset()*6e4)/864e5+25569;
+  const sheet=sh=>`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${sh.cols.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${sh.rows.map((r,ri)=>`<row r="${ri+1}">${r.map((v,ci)=>{const a=`r="${col(ci)}${ri+1}"`;
+    if(v instanceof Date)return `<c ${a} s="2"><v>${serial(v)}</v></c>`;
+    if(typeof v==="number")return `<c ${a}><v>${v}</v></c>`;
+    return `<c ${a} t="inlineStr"${ri===0?' s="1"':""}><is><t xml:space="preserve">${x(v)}</t></is></c>`}).join("")}</row>`).join("")}</sheetData>${sh.rows.length>1?`<autoFilter ref="A1:${col(sh.cols.length-1)}${sh.rows.length}"/>`:""}</worksheet>`;
+  const F=[["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
+    ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ["xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((sh,i)=>`<sheet name="${x(sh.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`],
+    ["xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+    ["xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy\\ hh:mm"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs></styleSheet>`],
+    ...sheets.map((sh,i)=>[`xl/worksheets/sheet${i+1}.xml`,sheet(sh)])];
+  // ZIP ohne Kompression
+  const T=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;T[n]=c>>>0}
+  const crc=b=>{let c=-1;for(let i=0;i<b.length;i++)c=T[(c^b[i])&255]^(c>>>8);return(c^-1)>>>0};
+  const teile=[],zentral=[];let off=0;
+  const kopf=(sig,extra,name,c,len)=>{const h=new DataView(new ArrayBuffer(extra?46:30));let o=0;const u32=v=>{h.setUint32(o,v,true);o+=4},u16=v=>{h.setUint16(o,v,true);o+=2};
+    u32(sig);if(extra)u16(20);u16(20);u16(0x0800);u16(0);u16(0);u16(0x21);u32(c);u32(len);u32(len);u16(name.length);u16(0);if(extra){u16(0);u16(0);u16(0);u32(0);u32(extra.off)}return new Uint8Array(h.buffer)};
+  for(const [n,t] of F){const name=enc.encode(n),data=enc.encode(t),c=crc(data);teile.push(kopf(0x04034b50,null,name,c,data.length),name,data);zentral.push(kopf(0x02014b50,{off},name,c,data.length),name);off+=30+name.length+data.length}
+  const zl=zentral.reduce((a,b)=>a+b.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,F.length,true);e.setUint16(10,F.length,true);e.setUint32(12,zl,true);e.setUint32(16,off,true);
+  return new Blob([...teile,...zentral,new Uint8Array(e.buffer)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})}
+async function useExcel(nm,sn){const msg=$("uXlsMsg");msg.textContent="Liste wird geladen …";
+  try{const key=ls("admin.statsKey")||"";let r=null;try{r=await j(S.cfg.url+"?key="+encodeURIComponent(key)+"&all=1")}catch(e){}
+    if(!r||r.error)r=S.use;const app=a=>sn[a]?sn[a].name:a,wer=d=>nm[d]||"(kein Name)";
+    const sheets=[];
+    if(Array.isArray(r.alle))sheets.push({name:"Zugriffe",cols:[18,26,22,16],rows:[["Zeit","Name","App","Gerätenummer"],...r.alle.slice().sort((a,b)=>b[0]-a[0]).map(z=>[new Date(z[0]),wer(z[2]),app(z[1]),z[2]])]});
+    sheets.push({name:"Übersicht",cols:[26,22,10,18,16],rows:[["Name","App","Aufrufe","Zuletzt","Gerätenummer"],...(r.rows||[]).slice().sort((a,b)=>b.last-a.last).map(z=>[wer(z.dev),app(z.app),z.n,new Date(z.last),z.dev])]});
+    const a=document.createElement("a"),d=new Date();a.href=URL.createObjectURL(xlsxBlob(sheets));a.download=`App-Zugriffe_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),6e4);
+    msg.textContent=Array.isArray(r.alle)?`Excel-Datei mit ${r.alle.length} Zugriffen liegt im Ordner Downloads.`:"Excel-Datei mit der Übersicht liegt im Ordner Downloads. Für die Liste jedes einzelnen Zugriffs muss das Skript der Google-Tabelle einmal aktualisiert werden (Anleitung „Nutzungszaehler“)."}
+  catch(e){msg.textContent="Das hat nicht geklappt: "+e.message}}
 
 
 /* ---------- Termine ---------- */
