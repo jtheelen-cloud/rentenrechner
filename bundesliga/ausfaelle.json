@@ -1,0 +1,865 @@
+{
+ "stand": "2026-11-20",
+ "gueltig_ab": "2026-11-20",
+ "gueltig_bis": "2026-11-22",
+ "spieltag": 10,
+ "xg_quelle": "statz.ai (Bundesliga Expected Goals 2026/2027)",
+ "quellen": [
+  "https://www.bundesliga.com/de/bundesliga/spieltag/2026-2027/10",
+  "https://www.bundesliga.com/de/bundesliga/news/voraussichtliche-aufstellungen-10-spieltag-ausfalle-verletzungen-sperren-40039",
+  "https://www.buli-tipphilfe.de/1-bundesliga-verletzte",
+  "https://ligainsider.de/bundesliga/verletzte-und-gesperrte-spieler/",
+  "https://www.bvb.de/de/de/aktuelles/news/news.html/2026/11/19/Personal-Update-Vier-Fragezeichen-vor-dem-Gladbach-Spiel.html",
+  "https://www.vfb.de/en/vfb/latest/news/professionals/2627/pressekonferenz-vor-schalke-04-gegen-vfb-stuttgart-/",
+  "https://schalke04.de/bundesliga/vorschau-s04vfb-26-27",
+  "https://www.hsv.de/news/HSV-splitter",
+  "https://www.sportschau.de/regional/br/br-fcb-nach-der-pause-kompany-vor-rueckkehr-auf-die-bank-102.html",
+  "https://magazin.comunio.de/sv-werder-bremen-hsv-voraussichtliche-aufstellungen/",
+  "https://www.fcaugsburg.de/article/kw-47-die-fca-woche-im-ueberblick-23689",
+  "https://statz.ai/competitions/bundesliga/xg",
+  "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--2026-27-uefa-europa-league-league-phase-fixtures-by-team/",
+  "https://www.flashscore.de/news/fussball-dfb-pokal-2026-27-alle-runden-termine-modus-tv-ubertragungen/lUSYMFGt/"
+ ],
+ "teams": [
+  {
+   "name": "FC Bayern München",
+   "keys": [
+    "bayern"
+   ],
+   "angriff": 0.1,
+   "abwehr": 0.09,
+   "xg": {
+    "xg": 27.2,
+    "xga": 7.9,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Manuel Neuer",
+     "pos": "Tor",
+     "grund": "verletzt (Teilsehnenriss im rechten Fuß)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Luis Díaz",
+     "pos": "Flügel",
+     "grund": "verletzt (Muskelbündelriss im Oberschenkel)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Alphonso Davies",
+     "pos": "AV",
+     "grund": "verletzt (Muskelfaserriss im Oberschenkel)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Serge Gnabry",
+     "pos": "Flügel",
+     "grund": "verletzt (Muskelfaserriss)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Ismael Saibari",
+     "pos": "OM",
+     "grund": "verletzt (Syndesmoseriss, operiert)",
+     "rolle": "Rotationsspieler"
+    }
+   ]
+  },
+  {
+   "name": "Borussia Dortmund",
+   "keys": [
+    "dortmund"
+   ],
+   "angriff": 0.04,
+   "abwehr": 0.02,
+   "xg": {
+    "xg": 13.9,
+    "xga": 11.1,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Serhou Guirassy",
+     "pos": "Sturm",
+     "grund": "fraglich (Oberschenkelprobleme)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Waldemar Anton",
+     "pos": "IV",
+     "grund": "fraglich (Muskelprobleme)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Carney Chukwuemeka",
+     "pos": "ZM",
+     "grund": "fraglich (Muskelverletzung im Oberschenkel)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Samuele Inacio",
+     "pos": "Sturm",
+     "grund": "fraglich (leichte Verletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Emre Can",
+     "pos": "DM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Giannis Konstantelias",
+     "pos": "OM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Justin Lerma",
+     "pos": "DM",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "Bayer 04 Leverkusen",
+   "keys": [
+    "leverkusen"
+   ],
+   "angriff": 0.03,
+   "abwehr": 0.01,
+   "xg": {
+    "xg": 18.0,
+    "xga": 14.5,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Martin Terrier",
+     "pos": "Flügel",
+     "grund": "verletzt (Oberschenkelverletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Kennet Eichhorn",
+     "pos": "DM",
+     "grund": "krank",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Ibrahim Maza",
+     "pos": "OM",
+     "grund": "fraglich (Sprunggelenk)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Guéla Doué",
+     "pos": "AV",
+     "grund": "fraglich (Wadenprobleme)",
+     "rolle": "Rotationsspieler"
+    }
+   ]
+  },
+  {
+   "name": "RB Leipzig",
+   "keys": [
+    "leipzig"
+   ],
+   "angriff": 0.01,
+   "abwehr": 0.01,
+   "xg": {
+    "xg": 21.3,
+    "xga": 12.4,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Marc Guiu",
+     "pos": "Sturm",
+     "grund": "verletzt (Oberschenkelverletzung)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Assan Ouédraogo",
+     "pos": "ZM",
+     "grund": "verletzt (Schulter-OP)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Max Finkgräfe",
+     "pos": "AV",
+     "grund": "fraglich (Oberschenkelprobleme)",
+     "rolle": "Rotationsspieler"
+    }
+   ]
+  },
+  {
+   "name": "VfB Stuttgart",
+   "keys": [
+    "stuttgart"
+   ],
+   "angriff": 0.03,
+   "abwehr": 0.06,
+   "xg": {
+    "xg": 17.4,
+    "xga": 17.9,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Angelo Stiller",
+     "pos": "DM",
+     "grund": "verletzt (Adduktoren-/Leistenverletzung)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Luca Jaquez",
+     "pos": "IV",
+     "grund": "verletzt (Rippenverletzung)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "Eintracht Frankfurt",
+   "keys": [
+    "frankfurt"
+   ],
+   "angriff": 0.03,
+   "abwehr": 0.03,
+   "xg": {
+    "xg": 15.0,
+    "xga": 19.1,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Elias Baum",
+     "pos": "AV",
+     "grund": "gesperrt (Gelb-Rot)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Jessic Ngankam",
+     "pos": "Sturm",
+     "grund": "verletzt (Adduktorenzerrung)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Can Uzun",
+     "pos": "OM",
+     "grund": "fraglich (grippaler Infekt)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Ansgar Knauff",
+     "pos": "Flügel",
+     "grund": "fraglich (Unwohlsein)",
+     "rolle": "Rotationsspieler"
+    }
+   ]
+  },
+  {
+   "name": "SC Freiburg",
+   "keys": [
+    "freiburg"
+   ],
+   "angriff": 0.0,
+   "abwehr": 0.0,
+   "xg": {
+    "xg": 16.9,
+    "xga": 9.6,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Berkay Yilmaz",
+     "pos": "AV",
+     "grund": "gesperrt (Rote Karte)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Florent Muslija",
+     "pos": "OM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "TSG Hoffenheim",
+   "keys": [
+    "hoffenheim"
+   ],
+   "angriff": 0.04,
+   "abwehr": 0.1,
+   "xg": {
+    "xg": 17.4,
+    "xga": 13.7,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Albian Hajdari",
+     "pos": "IV",
+     "grund": "verletzt (Fußverletzung)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Valentin Gendrey",
+     "pos": "AV",
+     "grund": "verletzt (Wadenbeinbruch)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Robin Hranáč",
+     "pos": "IV",
+     "grund": "verletzt (Knie-OP)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Nathan De Cat",
+     "pos": "DM",
+     "grund": "verletzt (Außenmeniskus)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Patrick Wimmer",
+     "pos": "Flügel",
+     "grund": "fraglich (Oberschenkelprobleme)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Alexander Prass",
+     "pos": "Flügel",
+     "grund": "fraglich (Oberschenkelprobleme)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Bambasé Conté",
+     "pos": "OM",
+     "grund": "fraglich (Adduktorenprobleme)",
+     "rolle": "Rotationsspieler"
+    }
+   ]
+  },
+  {
+   "name": "SV Werder Bremen",
+   "keys": [
+    "bremen"
+   ],
+   "angriff": 0.05,
+   "abwehr": 0.04,
+   "xg": {
+    "xg": 14.7,
+    "xga": 13.5,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Marco Grüll",
+     "pos": "Flügel",
+     "grund": "fraglich (Wadenprobleme)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Mitchell Weiser",
+     "pos": "AV",
+     "grund": "fraglich (Oberschenkelprobleme)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Senne Lynen",
+     "pos": "DM",
+     "grund": "fraglich (krank)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Jens Stage",
+     "pos": "ZM",
+     "grund": "verletzt (Oberschenkelverletzung)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Felix Agu",
+     "pos": "AV",
+     "grund": "verletzt (Wadenprobleme)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Keke Topp",
+     "pos": "Sturm",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Salim Musah",
+     "pos": "Flügel",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Skelly Alvero",
+     "pos": "ZM",
+     "grund": "verletzt (Wadenverletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Moussa N'Diaye",
+     "pos": "AV",
+     "grund": "verletzt (Leisten-/Beckenprobleme)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Niklas Stark",
+     "pos": "IV",
+     "grund": "fraglich (muskuläre Probleme)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Markus Kolke",
+     "pos": "Tor",
+     "grund": "fraglich",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "FC Augsburg",
+   "keys": [
+    "augsburg"
+   ],
+   "angriff": 0.01,
+   "abwehr": 0.06,
+   "xg": {
+    "xg": 18.1,
+    "xga": 24.3,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Chrislain Matsima",
+     "pos": "IV",
+     "grund": "verletzt (Muskelfaserriss Adduktoren)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Noahkai Banks",
+     "pos": "IV",
+     "grund": "verletzt (Knieprobleme)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Steve Mounié",
+     "pos": "Sturm",
+     "grund": "verletzt (Reha)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Jeffrey Gouweleeuw",
+     "pos": "IV",
+     "grund": "fraglich (muskuläre Probleme)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Han-Noah Massengo",
+     "pos": "DM",
+     "grund": "fraglich (muskuläre Probleme)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "1. FSV Mainz 05",
+   "keys": [
+    "mainz"
+   ],
+   "angriff": 0.0,
+   "abwehr": 0.0,
+   "xg": {
+    "xg": 17.0,
+    "xga": 15.8,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Dominik Kohr",
+     "pos": "DM",
+     "grund": "verletzt (Syndesmoseverletzung)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Silas Katompa Mvumpa",
+     "pos": "Sturm",
+     "grund": "verletzt (Schienbeinbruch)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Otto Ruoppi",
+     "pos": "ZM",
+     "grund": "verletzt (Knie)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Lars Schwolow",
+     "pos": "Tor",
+     "grund": "fraglich (Magen-Darm)",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "Borussia Mönchengladbach",
+   "keys": [
+    "gladbach"
+   ],
+   "angriff": 0.03,
+   "abwehr": 0.08,
+   "xg": {
+    "xg": 14.9,
+    "xga": 21.1,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Ko Itakura",
+     "pos": "IV",
+     "grund": "gesperrt (Gelb-Rot)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Tim Kleindienst",
+     "pos": "Sturm",
+     "grund": "verletzt (Muskelverletzung, langfristig)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Enzo Leopold",
+     "pos": "ZM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Lukas Ullrich",
+     "pos": "AV",
+     "grund": "verletzt",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Franck Honorat",
+     "pos": "Flügel",
+     "grund": "fraglich (Muskelverletzung)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Daiki Hashioka",
+     "pos": "AV",
+     "grund": "fraglich (angeschlagen)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Jan Leszczyński",
+     "pos": "IV",
+     "grund": "fraglich (Knie)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Hugo Bolin",
+     "pos": "Flügel",
+     "grund": "fraglich (muskuläre Probleme)",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "1. FC Union Berlin",
+   "keys": [
+    "union"
+   ],
+   "angriff": 0.01,
+   "abwehr": 0.09,
+   "xg": {
+    "xg": 10.1,
+    "xga": 17.4,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Felix Uduokhai",
+     "pos": "IV",
+     "grund": "verletzt (Oberschenkel)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Stanley Nsoki",
+     "pos": "IV",
+     "grund": "verletzt (Wadenverletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Robert Skov",
+     "pos": "Flügel",
+     "grund": "verletzt",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Andrik Markgraf",
+     "pos": "IV",
+     "grund": "verletzt (Kreuzband- und Meniskusriss)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Josip Juranović",
+     "pos": "AV",
+     "grund": "krank",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Livan Burcu",
+     "pos": "Sturm",
+     "grund": "fraglich",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Janik Haberer",
+     "pos": "AV",
+     "grund": "fraglich (krank)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "1. FC Köln",
+   "keys": [
+    "koeln"
+   ],
+   "angriff": 0.1,
+   "abwehr": 0.06,
+   "xg": {
+    "xg": 13.9,
+    "xga": 14.2,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Ellyes Skhiri",
+     "pos": "DM",
+     "grund": "verletzt (Syndesmoseriss)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Thijs Dallinga",
+     "pos": "Sturm",
+     "grund": "verletzt (Knieverletzung)",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Rav van den Berg",
+     "pos": "IV",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Imad Rondić",
+     "pos": "Sturm",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Timo Hübers",
+     "pos": "IV",
+     "grund": "verletzt (Knieverletzung)",
+     "rolle": "Ersatz"
+    }
+   ]
+  },
+  {
+   "name": "FC Schalke 04",
+   "keys": [
+    "schalke"
+   ],
+   "angriff": 0.01,
+   "abwehr": 0.06,
+   "xg": {
+    "xg": 10.1,
+    "xga": 17.2,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Timo Becker",
+     "pos": "IV",
+     "grund": "verletzt (Fußverletzung)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Maximilian Wöber",
+     "pos": "IV",
+     "grund": "verletzt",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Ron Schallenberg",
+     "pos": "DM",
+     "grund": "verletzt",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Robin Gosens",
+     "pos": "AV",
+     "grund": "fraglich (Knieprellung)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "SC Paderborn 07",
+   "keys": [
+    "paderborn"
+   ],
+   "angriff": 0.02,
+   "abwehr": 0.04,
+   "xg": {
+    "xg": 11.3,
+    "xga": 13.9,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Timur Gayret",
+     "pos": "ZM",
+     "grund": "verletzt (Reha)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Tom Baack",
+     "pos": "DM",
+     "grund": "fraglich (Trainingsverletzung)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Tjark Scheller",
+     "pos": "IV",
+     "grund": "fraglich",
+     "rolle": "Leistungsträger"
+    },
+    {
+     "name": "Gabriel Vidović",
+     "pos": "OM",
+     "grund": "fraglich (Schlag auf den Fuß)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "SV Elversberg",
+   "keys": [
+    "elversberg"
+   ],
+   "angriff": 0.0,
+   "abwehr": 0.01,
+   "xg": {
+    "xg": 14.3,
+    "xga": 20.0,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Luis Seifert",
+     "pos": "ZM",
+     "grund": "verletzt (Syndesmoseverletzung)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Lukas Pinckert",
+     "pos": "AV",
+     "grund": "fraglich (Sprunggelenksprobleme)",
+     "rolle": "Stammspieler"
+    }
+   ]
+  },
+  {
+   "name": "Hamburger SV",
+   "keys": [
+    "hamburg"
+   ],
+   "angriff": 0.05,
+   "abwehr": 0.05,
+   "xg": {
+    "xg": 9.6,
+    "xga": 17.5,
+    "spiele": 9
+   },
+   "extra": [],
+   "spieler": [
+    {
+     "name": "Albert Sambi Lokonga",
+     "pos": "DM",
+     "grund": "verletzt (Faszienverletzung in der Wade)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Yussuf Poulsen",
+     "pos": "Sturm",
+     "grund": "verletzt (Faszienriss in der Wade)",
+     "rolle": "Stammspieler"
+    },
+    {
+     "name": "Nicolai Remberg",
+     "pos": "ZM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Bilal Nadir",
+     "pos": "OM",
+     "grund": "verletzt (Sehnenverletzung im Oberschenkel)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Jordan Torunarigha",
+     "pos": "IV",
+     "grund": "fraglich (Hüftprobleme)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Mario Vušković",
+     "pos": "IV",
+     "grund": "fraglich (Rückenprobleme)",
+     "rolle": "Ersatz"
+    },
+    {
+     "name": "Fabio Vieira",
+     "pos": "OM",
+     "grund": "fraglich (Muskelfaserriss)",
+     "rolle": "Rotationsspieler"
+    },
+    {
+     "name": "Miro Muheim",
+     "pos": "AV",
+     "grund": "fraglich (Muskelprobleme)",
+     "rolle": "Leistungsträger"
+    }
+   ]
+  }
+ ]
+}
