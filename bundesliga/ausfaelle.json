@@ -26,7 +26,7 @@
    "keys": [
     "bayern"
    ],
-   "angriff": 0.1,
+   "angriff": 0.14,
    "abwehr": 0.09,
    "xg": {
     "xg": 27.2,
@@ -45,7 +45,8 @@
      "name": "Luis Díaz",
      "pos": "Flügel",
      "grund": "verletzt (Muskelbündelriss im Oberschenkel)",
-     "rolle": "Leistungsträger"
+     "rolle": "Topspieler",
+     "marktwert": 70
     },
     {
      "name": "Alphonso Davies",

@@ -251,7 +251,7 @@ function restFac(r,sc){sc=sc==null?REST:sc;if(!r||r.w==="Bundesliga"||!sc)return
   let a=g<=2?.93:g===3?.95:g===4?.97:g===5?.99:1, d=g<=2?1.05:g===3?1.04:g===4?1.02:g===5?1.01:1;
   if(r.aw&&g<=4){a*=.985;d*=1.01}return{a:1-(1-a)*sc,d:1+(d-1)*sc}}
 function facs(m,j,auto){const ah=auto?ausFor(m.h,m.t):null,aa=auto?ausFor(m.a,m.t):null;
-  const f=(sel,arr,au,sign)=>sel?arr[sel]:(au?1+sign*Math.min(.3,Math.max(0,+au||0)):1);
+  const f=(sel,arr,au,sign)=>sel?arr[sel]:(au?1+sign*Math.min(.4,Math.max(0,+au||0)):1);
   const rh=auto?restInfo(m.h,m.t):null,ra=auto?restInfo(m.a,m.t):null,fh=restFac(rh),fa=restFac(ra);
   return{ho:f(j.ho|0,ADJ.a,ah&&ah.angriff,-1)*fh.a,hd:f(j.hd|0,ADJ.d,ah&&ah.abwehr,1)*fh.d,ao:f(j.ao|0,ADJ.a,aa&&aa.angriff,-1)*fa.a,ad:f(j.ad|0,ADJ.d,aa&&aa.abwehr,1)*fa.d,ah,aa,rh,ra,tired:fh.a<1||fa.a<1}}
 function lambdas(F,m,adj,auto){
@@ -338,7 +338,7 @@ function sel(id,k,v,opts){return `<select data-m="${id}" data-k="${k}">${opts.ma
 const pctm=v=>v?"−"+Math.round(v*100)+" %":"0 %";
 function ausList(au){if(!au)return `<div class="mu" style="margin-top:4px">keine Liste</div>`;const L=au.spieler||[];
   return (au.xg&&au.xg.spiele?`<div class="mu" style="margin-top:4px">xG ${(au.xg.xg/au.xg.spiele).toFixed(2).replace(".",",")} · xGA ${(au.xg.xga/au.xg.spiele).toFixed(2).replace(".",",")} je Spiel</div>`:"")+`<div class="mu" style="margin-top:4px">Fehlende Qualität: Angriff <b>${pctm(au.angriff)}</b>, Abwehr <b>${pctm(au.abwehr)}</b></div>`+
-  (L.length?`<ul class="al">${L.map(p=>`<li><b>${esc(p.name)}</b> ${esc(p.pos||"")} · ${esc(p.grund||"")}${p.rolle?" · "+esc(p.rolle):""}</li>`).join("")}</ul>`:`<div class="mu">Niemand fehlt.</div>`)}
+  (L.length?`<ul class="al">${L.map(p=>`<li><b>${esc(p.name)}</b> ${esc(p.pos||"")} · ${esc(p.grund||"")}${p.rolle?" · "+esc(p.rolle):""}${p.marktwert?" · "+esc(String(p.marktwert).replace(".",","))+" Mio €":""}</li>`).join("")}</ul>`:`<div class="mu">Niemand fehlt.</div>`)}
 function adjForm(m,a){const H=team(m.h),A=team(m.a),fx=facs(m,a,true),man=Object.keys(a).some(k=>a[k]);
   const auto=!!((fx.ah&&(fx.ah.spieler||[]).length)||(fx.aa&&(fx.aa.spieler||[]).length));
   const oa=["automatisch (Liste)","komplett, niemand fehlt","wichtiger Spieler fehlt","mehrere Stammspieler fehlen"];
