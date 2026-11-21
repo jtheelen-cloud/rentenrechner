@@ -185,6 +185,18 @@ function ausFor(id,t){if(!AUS||!AUS.teams)return null;const st=Date.parse(AUS.gu
   if(isFinite(st)&&t<st-864e5)return null;if(isFinite(bis)&&t>bis+864e5)return null;if(!isFinite(bis)&&isFinite(st)&&t>st+9*864e5)return null;
   const tm=TEAMS[id];if(!tm)return null;const n=norm(tm.n)+"|"+norm(tm.s);
   return AUS.teams.find(x=>(x.keys||[]).some(k=>k&&n.includes(norm(k))))||null}
+/* Aktualität der Ausfallliste (seit 21.11.2026) */
+function ausZeit(){if(!AUS)return null;const t=Date.parse(AUS.aktualisiert||AUS.stand||"");return isFinite(t)?t:null}
+function vorTxt(t){const d=Math.max(0,Math.round((Date.now()-t)/6e4));if(d<60)return"vor "+d+" Min.";if(d<48*60)return"vor "+Math.round(d/60)+" Std.";return"vor "+Math.round(d/1440)+" Tagen"}
+function startelf(id,m){const a=ausFor(id,m.t);if(!a||!a.aufstellung||!a.aufstellung.zeit)return null;const z=Date.parse(a.aufstellung.zeit);
+  return isFinite(z)&&z>m.t-3*36e5&&z<=m.t+15*6e4?z:null}
+function frischLine(m){const t=ausZeit();const now=Date.now();
+  const zt=t?new Date(t).toLocaleString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})+" Uhr":"unbekannt";
+  const sh=startelf(m.h,m),sa=startelf(m.a,m),bald=m.t-now<2*36e5;
+  const se=sh&&sa?`<span style="color:var(--ok)"> · ✓ Startelf berücksichtigt (${new Date(Math.min(sh,sa)).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})} Uhr)</span>`
+    :(sh||sa)?` · Startelf erst bei einem Team`:bald?` · Startelf noch nicht abgerufen (kommt ca. 40 Min. vor Anpfiff)`:"";
+  const alt=t&&now-t>3*864e5?";color:var(--red)":"";
+  return `<div class="mu" style="font-size:12px;margin-top:4px${alt}">Ausfälle: Stand ${esc(zt)}${t?" ("+vorTxt(t)+")":""}${se}</div>`}
 async function loadPrev2(){if(PREV2&&PREV2.season===SEASON-2)return;try{const teams={};const r=await getJSON(`${API}/getmatchdata/bl1/${SEASON-2}`);
   const g=slim(r,teams).filter(x=>x.fin);Object.keys(teams).forEach(k=>{if(!TEAMS[k])TEAMS[k]=teams[k]});PREV2={season:SEASON-2,m:g,teams};SJ("bl.prev2",PREV2)}catch(e){}}
 async function loadHist(){if(HIST)return;try{const r=await fetch(`europa_${SEASON-1}.json`,{cache:"no-store"});if(r.ok)HIST=await r.json()}catch(e){}}
@@ -324,6 +336,7 @@ function renderMD(){
       ${restLine(m,started)}
       <div class="bar"><div class="b1" style="width:${w(pr.p1)}%">${pct(pr.p1)}</div><div class="bx" style="width:${w(pr.px)}%">${pct(pr.px)}</div><div class="b2" style="width:${w(pr.p2)}%">${pct(pr.p2)}</div></div>
       <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj||pr.auto||(started&&pr.adj)?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}${!started&&xgIndex()?'<span class="mark">mit xG</span>':""}${pr.tired?'<span class="mark">Europapokal-Belastung</span>':""}</span>${hit}</div>
+      ${started?"":frischLine(m)}
       ${started?"":adjForm(m,adj)}
     </div>`}).join("");
   if(changed)savePred();
@@ -343,7 +356,7 @@ function adjForm(m,a){const H=team(m.h),A=team(m.a),fx=facs(m,a,true),man=Object
   const auto=!!((fx.ah&&(fx.ah.spieler||[]).length)||(fx.aa&&(fx.aa.spieler||[]).length));
   const oa=["automatisch (Liste)","komplett, niemand fehlt","wichtiger Spieler fehlt","mehrere Stammspieler fehlen"];
   const box=(t,o,d,c,au)=>`<div><b style="font-size:13px">${esc(t.s)}</b>${ausList(au)}<label>Angriff</label>${sel(m.id,o,a[o],oa)}<label>Abwehr / Torwart</label>${sel(m.id,d,a[d],oa)}<label class="ck"><input type="checkbox" data-m="${m.id}" data-k="${c}"${a[c]?" checked":""}> neuer Trainer</label></div>`;
-  const st=AUS&&AUS.stand?` <span class="mu">(Liste vom ${new Date(AUS.stand).toLocaleDateString("de-DE")})</span>`:"";
+  const st=ausZeit()?` <span class="mu">(Stand ${new Date(ausZeit()).toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})} Uhr)</span>`:"";
   return `<details class="adj"${man?" open":""}><summary>Ausfälle${auto?" ("+((fx.ah&&fx.ah.spieler||[]).length+(fx.aa&&fx.aa.spieler||[]).length)+")":""} / Trainerwechsel${st}</summary><div class="adjg">${box(H,"ho","hd","ht",fx.ah)}${box(A,"ao","ad","at",fx.aa)}</div><p class="mu" style="margin:6px 0 0">„automatisch“ nimmt die Ausfall-Liste. Wählst du selbst etwas, gilt deine Angabe.</p></details>`}
 function bindAdj(){document.querySelectorAll("#matches [data-m]").forEach(el=>el.onchange=()=>{
   const id=el.dataset.m,k=el.dataset.k,a=ADJS[id]||(ADJS[id]={});a[k]=el.type==="checkbox"?(el.checked?1:0):+el.value;
@@ -462,6 +475,9 @@ async function start(){
   MD=currentMD();render();
   if(Date.now()-loadedAt>5*60e3){await loadData(true);FITCACHE={};render()}
   setInterval(async()=>{if(document.hidden)return;if(M.some(m=>!m.fin&&m.t<Date.now()&&m.t>Date.now()-3*36e5)){await loadData(true);FITCACHE={};render()}},120e3);
+  const ausNeu=async()=>{const vor=ausZeit();await loadAus();if(ausZeit()!==vor)render()};
+  setInterval(()=>{if(!document.hidden&&M.some(m=>!m.fin&&m.t>Date.now()&&m.t<Date.now()+4*36e5))ausNeu()},5*60e3);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)ausNeu()});
 }
 if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){navigator.serviceWorker.register("../sw.js",{scope:"../"}).catch(()=>{})}
 </script>
