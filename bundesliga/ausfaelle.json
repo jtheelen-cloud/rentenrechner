@@ -131,7 +131,7 @@
    "keys": [
     "leverkusen"
    ],
-   "angriff": 0.03,
+   "angriff": 0.06,
    "abwehr": 0.01,
    "xg": {
     "xg": 18.0,
@@ -156,7 +156,8 @@
      "name": "Ibrahim Maza",
      "pos": "OM",
      "grund": "fraglich (Sprunggelenk)",
-     "rolle": "Stammspieler"
+     "rolle": "Topspieler",
+     "marktwert": 50
     },
     {
      "name": "Guéla Doué",
