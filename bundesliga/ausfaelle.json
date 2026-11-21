@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-20",
- "aktualisiert": "2026-11-21T12:13:00+01:00",
+ "aktualisiert": "2026-11-21T14:39:00+01:00",
  "gueltig_ab": "2026-11-20",
  "gueltig_bis": "2026-11-22",
  "spieltag": 10,
@@ -20,7 +20,11 @@
   "https://statz.ai/competitions/bundesliga/xg",
   "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--2026-27-uefa-europa-league-league-phase-fixtures-by-team/",
   "https://www.flashscore.de/news/fussball-dfb-pokal-2026-27-alle-runden-termine-modus-tv-ubertragungen/lUSYMFGt/",
-  "https://www.sportschau.de/live-und-ergebnisse/fussball/deutschland-bundesliga/statistik-torjaeger"
+  "https://www.sportschau.de/live-und-ergebnisse/fussball/deutschland-bundesliga/statistik-torjaeger",
+  "https://bulinews.com/confirmed-lineups-bayer-leverkusen-paderborn",
+  "https://bulinews.com/confirmed-lineups-elversberg-freiburg",
+  "https://bulinews.com/confirmed-lineups-1-union-berlin-leipzig",
+  "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html"
  ],
  "teams": [
   {
@@ -158,15 +162,20 @@
      "abzug": 0.0
     }
    ],
-   "tore": 16
+   "tore": 16,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "Borussia Mönchengladbach"
+   }
   },
   {
    "name": "Bayer 04 Leverkusen",
    "keys": [
     "leverkusen"
    ],
-   "angriff": 0.06,
-   "abwehr": 0.01,
+   "angriff": 0.08,
+   "abwehr": 0.02,
    "xg": {
     "xg": 18.0,
     "xga": 14.5,
@@ -208,9 +217,28 @@
      "grund": "fraglich (Wadenprobleme)",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
+    },
+    {
+     "name": "Facundo Medina",
+     "pos": "IV",
+     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
+     "rolle": "Stammspieler",
+     "abzug": 0.01
+    },
+    {
+     "name": "Moussa Diaby",
+     "pos": "Flügel",
+     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     }
    ],
-   "tore": 20
+   "tore": 20,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "SC Paderborn 07"
+   }
   },
   {
    "name": "RB Leipzig",
@@ -252,7 +280,12 @@
      "abzug": 0.01
     }
    ],
-   "tore": 27
+   "tore": 27,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "1. FC Union Berlin"
+   }
   },
   {
    "name": "VfB Stuttgart",
@@ -343,7 +376,7 @@
    "keys": [
     "freiburg"
    ],
-   "angriff": 0.0,
+   "angriff": 0.01,
    "abwehr": 0.0,
    "xg": {
     "xg": 16.9,
@@ -367,9 +400,21 @@
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0
+    },
+    {
+     "name": "Yuito Suzuki",
+     "pos": "OM",
+     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     }
    ],
-   "tore": 20
+   "tore": 20,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "SV Elversberg"
+   }
   },
   {
    "name": "TSG Hoffenheim",
@@ -663,7 +708,7 @@
    "keys": [
     "gladbach"
    ],
-   "angriff": 0.04,
+   "angriff": 0.03,
    "abwehr": 0.08,
    "xg": {
     "xg": 14.9,
@@ -737,7 +782,12 @@
      "abzug": 0.0
     }
    ],
-   "tore": 12
+   "tore": 12,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "Borussia Dortmund"
+   }
   },
   {
    "name": "1. FC Union Berlin",
@@ -745,7 +795,7 @@
     "union"
    ],
    "angriff": 0.05,
-   "abwehr": 0.09,
+   "abwehr": 0.07,
    "xg": {
     "xg": 10.1,
     "xga": 17.4,
@@ -798,16 +848,14 @@
      "tore": 1,
      "vorlagen": 0,
      "abzug": 0.04
-    },
-    {
-     "name": "Janik Haberer",
-     "pos": "AV",
-     "grund": "fraglich (krank)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
     }
    ],
-   "tore": 7
+   "tore": 7,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "RB Leipzig"
+   }
   },
   {
    "name": "1. FC Köln",
@@ -919,8 +967,8 @@
    "keys": [
     "paderborn"
    ],
-   "angriff": 0.02,
-   "abwehr": 0.04,
+   "angriff": 0.01,
+   "abwehr": 0.0,
    "xg": {
     "xg": 11.3,
     "xga": 13.9,
@@ -938,32 +986,19 @@
      "abzug": 0.0
     },
     {
-     "name": "Tom Baack",
-     "pos": "DM",
-     "grund": "fraglich (Trainingsverletzung)",
+     "name": "Marvin Pieringer",
+     "pos": "Sturm",
+     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
      "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
-     "name": "Tjark Scheller",
-     "pos": "IV",
-     "grund": "fraglich",
-     "rolle": "Leistungsträger",
-     "abzug": 0.03
-    },
-    {
-     "name": "Gabriel Vidović",
-     "pos": "OM",
-     "grund": "fraglich (Schlag auf den Fuß)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
      "abzug": 0.01
     }
    ],
-   "tore": 8
+   "tore": 8,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "Bayer 04 Leverkusen"
+   }
   },
   {
    "name": "SV Elversberg",
@@ -971,7 +1006,7 @@
     "elversberg"
    ],
    "angriff": 0.0,
-   "abwehr": 0.02,
+   "abwehr": 0.01,
    "xg": {
     "xg": 14.3,
     "xga": 20.0,
@@ -989,14 +1024,19 @@
      "abzug": 0.0
     },
     {
-     "name": "Lukas Pinckert",
-     "pos": "AV",
-     "grund": "fraglich (Sprunggelenksprobleme)",
+     "name": "Florian Le Joncour",
+     "pos": "IV",
+     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
      "rolle": "Stammspieler",
      "abzug": 0.01
     }
    ],
-   "tore": 17
+   "tore": 17,
+   "aufstellung": {
+    "zeit": "2026-11-21T14:39:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "SC Freiburg"
+   }
   },
   {
    "name": "Hamburger SV",
