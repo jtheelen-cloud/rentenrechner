@@ -116,6 +116,9 @@ ul.i{padding-left:18px;margin:6px 0}ul.i li{margin:4px 0;font-size:14.5px}
     <div class="card"><h2>Europapokal, Pokal und Pausen</h2>
       <p class="lead" style="margin:0">Claude trägt mit jeder Liste ein, wer unter der Woche in Champions League, Europa League, Conference League oder DFB-Pokal gespielt hat (Datum, heim oder auswärts). Die App zählt die Tage Pause bis zum Bundesligaspiel. Bei 2–3 Tagen Pause sinkt der Angriff um 5–7 % und die Abwehr lässt 4–5 % mehr zu, bei 4 Tagen etwa die Hälfte davon, nach einem Auswärtsspiel mit Reise noch etwas mehr. Ab 6 Tagen Pause gibt es keinen Abzug. Beim Spiel steht dann „Europapokal-Belastung“. Das sind die Werte bei „voll“. Wie stark der Abzug wirklich wirkt, stellst du unter „Treffer“ beim Saison-Rückblick ein. Nach dem Durchrechnen wählt die App automatisch die Stufe, die in der letzten Saison am besten lag.</p>
     </div>
+    <div class="card"><h2>Nach Länderspielpausen</h2>
+      <p class="lead" style="margin:0">Nach einer Länderspielpause trägt Claude ein, welche wichtigen Spieler für ihr Land weit gereist sind und wann. Bei einer Fernreise mit großer Zeitverschiebung, z. B. Südamerika oder Asien, zählen 40 % des Gewichts des Spielers als Abzug. Bei einer weiten Reise ohne große Zeitverschiebung, z. B. Golfstaaten oder Afrika, sind es 15 %. Beim Spiel steht dann „nach Länderspielreise“ mit den Namen. Unter „Treffer“ siehst du, ob die App in diesen Spielen besser oder schlechter liegt, und kannst den Abzug ändern.</p>
+    </div>
     <div class="card"><h2>xG (erwartete Tore)</h2>
       <p class="lead" style="margin:0">Mit jeder Ausfall-Liste liest Claude auch die xG- und xGA-Werte aller Vereine dieser Saison ab (erspielte und zugelassene Torchancen). Für kommende Spiele mischt die App dann echte Tore und xG je zur Hälfte – Glückstore und Pech schlagen so weniger durch. Der Rückblick-Test rechnet ohne xG, weil es keine alten xG-Stände gibt; ob xG hilft, zeigt der Kasten „Deine Prognosen“ nach ein paar Wochen.</p>
     </div>
@@ -263,10 +266,21 @@ const SCALES=[0,.25,.5,1],SCN={0:"aus",0.25:"¼",0.5:"½",1:"voll"};
 function restFac(r,sc){sc=sc==null?REST:sc;if(!r||r.w==="Bundesliga"||!sc)return{a:1,d:1};const g=r.tage;
   let a=g<=2?.93:g===3?.95:g===4?.97:g===5?.99:1, d=g<=2?1.05:g===3?1.04:g===4?1.02:g===5?1.01:1;
   if(r.aw&&g<=4){a*=.985;d*=1.01}return{a:1-(1-a)*sc,d:1+(d-1)*sc}}
+/* Länderspielreisen: Fernreise/weite Reise in der Pause vor dem Spiel (seit 21.11.2026) */
+let LSP=+LSg("bl.lsp","1");if(!isFinite(LSP))LSP=1;
+const LSPF={fern:.4,weit:.15};
+function lspInfo(id,t,sc){sc=sc==null?LSP:sc;const a=ausFor(id,t);const L=a&&a.laenderspiele;if(!sc||!L||!L.spieler||!L.spieler.length)return null;
+  const bis=Date.parse(L.pause_bis);if(!isFinite(bis)||t<bis||t-bis>9*DAY)return null;
+  if(M.some(x=>(x.h===id||x.a===id)&&x.t>bis&&x.t<t-36e5))return null;
+  const out=new Set((a.spieler||[]).map(p=>norm(p.name)));
+  const P=L.spieler.filter(p=>!out.has(norm(p.name))&&LSPF[p.reise]).map(p=>({...p,fa:(+p.angriff||0)*LSPF[p.reise]*sc,fd:(+p.abwehr||0)*LSPF[p.reise]*sc}));
+  if(!P.length)return null;
+  return{a:Math.min(.12,P.reduce((s,p)=>s+p.fa,0)),d:Math.min(.12,P.reduce((s,p)=>s+p.fd,0)),P}}
 function facs(m,j,auto){const ah=auto?ausFor(m.h,m.t):null,aa=auto?ausFor(m.a,m.t):null;
   const f=(sel,arr,au,sign)=>sel?arr[sel]:(au?1+sign*Math.min(.4,Math.max(0,+au||0)):1);
   const rh=auto?restInfo(m.h,m.t):null,ra=auto?restInfo(m.a,m.t):null,fh=restFac(rh),fa=restFac(ra);
-  return{ho:f(j.ho|0,ADJ.a,ah&&ah.angriff,-1)*fh.a,hd:f(j.hd|0,ADJ.d,ah&&ah.abwehr,1)*fh.d,ao:f(j.ao|0,ADJ.a,aa&&aa.angriff,-1)*fa.a,ad:f(j.ad|0,ADJ.d,aa&&aa.abwehr,1)*fa.d,ah,aa,rh,ra,tired:fh.a<1||fa.a<1}}
+  const lh=auto?lspInfo(m.h,m.t):null,la=auto?lspInfo(m.a,m.t):null,lha=lh?1-lh.a:1,lhd=lh?1+lh.d:1,laa=la?1-la.a:1,lad=la?1+la.d:1;
+  return{ho:f(j.ho|0,ADJ.a,ah&&ah.angriff,-1)*fh.a*lha,hd:f(j.hd|0,ADJ.d,ah&&ah.abwehr,1)*fh.d*lhd,ao:f(j.ao|0,ADJ.a,aa&&aa.angriff,-1)*fa.a*laa,ad:f(j.ad|0,ADJ.d,aa&&aa.abwehr,1)*fa.d*lad,ah,aa,rh,ra,tired:fh.a<1||fa.a<1,lh,la,lsp:!!((lh&&(lh.a||lh.d))||(la&&(la.a||la.d)))}}
 function lambdas(F,m,adj,auto){
   const H=strength(F,m.h,auto),A=strength(F,m.a,auto),j=adj||{},x=facs(m,j,auto);
   let lh=F.muH*H.att*A.def, la=F.muA*A.att*H.def;
@@ -323,8 +337,8 @@ function renderMD(){
     let pr;
     if(started&&PRED[m.id])pr=PRED[m.id];
     else{const F=fitFor(Math.min(m.t,now));const[lh,la]=lambdas(F,m,adj,!started);pr=predict(lh,la);
-      const fx=facs(m,adj,true);pr.tired=!started&&fx.tired;pr.auto=!started&&!!((fx.ah&&(fx.ah.angriff||fx.ah.abwehr))||(fx.aa&&(fx.aa.angriff||fx.aa.abwehr)));
-      if(!started){PRED[m.id]={h:pr.h,a:pr.a,p1:pr.p1,px:pr.px,p2:pr.p2,ten:pr.ten,lh:pr.lh,la:pr.la,at:now,adj:(Object.keys(adj).length||pr.auto)?1:0};changed=true}
+      const fx=facs(m,adj,true);pr.tired=!started&&fx.tired;pr.lsp=!started&&fx.lsp;pr.auto=!started&&!!((fx.ah&&(fx.ah.angriff||fx.ah.abwehr))||(fx.aa&&(fx.aa.angriff||fx.aa.abwehr)));
+      if(!started){PRED[m.id]={h:pr.h,a:pr.a,p1:pr.p1,px:pr.px,p2:pr.p2,ten:pr.ten,lh:pr.lh,la:pr.la,at:now,adj:(Object.keys(adj).length||pr.auto)?1:0,lsp:pr.lsp?1:0};changed=true}
       else pr.back=true}
     let chg="";
     if(!started){const sv=SEEN[m.id];
@@ -340,9 +354,9 @@ function renderMD(){
       ${chg?`<div style="font-size:13.5px;margin-bottom:6px"><b>🔔 Tipp geändert:</b> vorher <b>${chg.h}:${chg.a}</b> → jetzt <b>${pr.h}:${pr.a}</b>${chg.ten!==pr.ten?' <span class="mark" style="background:var(--red);color:#fff">andere Tendenz</span>':""}<button class="ok2" data-seen="${m.id}">✓ übernommen</button><div class="mu" style="font-size:12px">„vorher“ = Tipp, als du ihn zuletzt bestätigt bzw. zuerst gesehen hast (${new Date(chg.at).toLocaleString("de-DE",{weekday:"short",hour:"2-digit",minute:"2-digit"})} Uhr)</div></div>`:""}
       <div class="mt"><div class="tm">${icon(H)}<span>${esc(H.s)}</span></div><div class="sc">${res}<small>${st}</small></div><div class="tm r"><span>${esc(A.s)}</span>${icon(A)}</div></div>
       <div class="mt mu" style="margin-top:3px"><div>${formOf(m.h,m.t)}</div><div></div><div style="text-align:right">${formOf(m.a,m.t)}</div></div>
-      ${restLine(m,started)}
+      ${restLine(m,started)}${lspLine(m,started)}
       <div class="bar"><div class="b1" style="width:${w(pr.p1)}%">${pct(pr.p1)}</div><div class="bx" style="width:${w(pr.px)}%">${pct(pr.px)}</div><div class="b2" style="width:${w(pr.p2)}%">${pct(pr.p2)}</div></div>
-      <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj||pr.auto||(started&&pr.adj)?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}${!started&&xgIndex()?'<span class="mark">mit xG</span>':""}${pr.tired?'<span class="mark">Europapokal-Belastung</span>':""}</span>${hit}</div>
+      <div class="tip"><span>Tipp <b>${pr.h}:${pr.a}</b> · erwartete Tore <b>${pr.lh.toFixed(1)} : ${pr.la.toFixed(1)}</b>${hasAdj||pr.auto||(started&&pr.adj)?'<span class="mark">mit Ausfällen</span>':""}${pr.back?'<span class="mark">nachgerechnet</span>':""}${!started&&xgIndex()?'<span class="mark">mit xG</span>':""}${pr.tired?'<span class="mark">Europapokal-Belastung</span>':""}${pr.lsp?'<span class="mark">nach Länderspielreise</span>':""}</span>${hit}</div>
       ${started?"":frischLine(m)}
       ${started?"":adjForm(m,adj)}
     </div>`}).join("");
@@ -360,6 +374,15 @@ function restLine(m,started){if(started)return"";const a=restInfo(m.h,m.t),b=res
   if(!(a&&a.w!=="Bundesliga")&&!(b&&b.w!=="Bundesliga"))return"";
   const c=r=>r&&r.w!=="Bundesliga"&&r.tage<=5?"color:var(--red)":"";
   return `<div class="mt mu" style="margin-top:2px;font-size:12px"><div style="${c(a)}">${restTxt(a)}</div><div></div><div style="text-align:right;${c(b)}">${restTxt(b)}</div></div>`}
+function lspTxt(r){if(!r)return"";const pc=Math.round((r.a+r.d)*100);
+  return `Länderspielreise: ${r.P.map(p=>`${esc(p.name)} (${esc(p.land||"")}${p.ort?", "+esc(p.ort):""})`).join(", ")}${pc?` · −${pc} %`:" · kaum Einfluss"}`}
+function lspLine(m,started){if(started)return"";const a=lspInfo(m.h,m.t),b=lspInfo(m.a,m.t);if(!a&&!b)return"";
+  return `<div class="mt mu" style="margin-top:2px;font-size:12px"><div>${lspTxt(a)}</div><div></div><div style="text-align:right">${lspTxt(b)}</div></div>`}
+function lspBox(){const fin=M.filter(m=>m.fin&&m.hg!=null&&PRED[m.id]&&PRED[m.id].at<m.t);
+  const L=fin.filter(m=>PRED[m.id].lsp),O=fin.filter(m=>!PRED[m.id].lsp),mk=a=>stats(a.map(m=>({ph:PRED[m.id].h,pa:PRED[m.id].a,h:m.hg,a:m.ag}))),sl=mk(L),so=mk(O);
+  const sel=`<div class="md" style="margin-top:10px"><span class="mu" style="flex:none">Abzug für kommende Spiele:</span><select id="lspSel">${SCALES.map(sc=>`<option value="${sc}"${sc===LSP?" selected":""}>Länderspielreise ${SCN[sc]}</option>`).join("")}</select></div>`;
+  return `<div class="card"><h2>Nach Länderspielpausen</h2><p class="lead">Nach jeder Länderspielpause trägt Claude ein, welche wichtigen Spieler weit gereist sind. „Fernreise“ heißt Südamerika, Nordamerika, Asien oder Australien mit mindestens 4 Stunden Zeitverschiebung, dafür zählt 40 % ihres Gewichts. „Weite Reise“ heißt Golfstaaten oder Afrika mit langem Flug, aber wenig Zeitverschiebung, dafür zählen 15 %. Spieler, die ohnehin auf der Ausfall-Liste stehen, zählen nicht doppelt. Höchstens 12 % je Team für Angriff und Abwehr. Das gilt nur für das erste Bundesligaspiel nach der Pause. Für die letzte Saison gibt es dazu keine Daten, deshalb sammelt die App ab jetzt selbst, ob sich das lohnt.</p>
+   ${sl?`<div class="kp"><div><b>${pct(sl.ten)}</b><span>richtige Tendenz in Spielen mit Länderspielreise (${sl.n})</span></div><div><b>${sl.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel dort</span></div>${so?`<div><b>${pct(so.ten)}</b><span>richtige Tendenz in den anderen Spielen (${so.n})</span></div><div><b>${so.ppg.toFixed(2).replace(".",",")}</b><span>Punkte je Spiel dort</span></div>`:""}</div>${sl.n<30?'<div class="verdict">Noch zu wenige Spiele für ein Urteil. Nach 3–4 Länderspielpausen wird es aussagekräftig.</div>':""}`:'<p class="mu">Noch keine beendeten Spiele mit diesem Abzug.</p>'}${sel}</div>`}
 function sel(id,k,v,opts){return `<select data-m="${id}" data-k="${k}">${opts.map((o,i)=>`<option value="${i}"${(v|0)===i?" selected":""}>${o}</option>`).join("")}</select>`}
 const pctm=v=>v?"−"+Math.round(v*100)+" %":"0 %";
 function ausList(au){if(!au)return `<div class="mu" style="margin-top:4px">keine Liste</div>`;const L=au.spieler||[];
@@ -461,11 +484,12 @@ function renderAcc(){
       <div class="verdict">${v}${s.home>=.48?` Achtung: Bisher haben die Heimteams ${pct(s.home)} der Spiele gewonnen – normal sind in der Bundesliga etwa 42 bis 45 %. Wenn das so ungewöhnlich oft passiert, ist „immer Heimsieg“ kaum zu schlagen; das gleicht sich meist im Lauf der Saison aus.`:""}${s.n<40?" Bei weniger als 40 Spielen ist das noch Zufall – abwarten.":""}</div></div>`};
   setTimeout(()=>{const b=$("runPrev");if(b)b.onclick=async()=>{b.disabled=true;b.textContent="Lade Daten …";await Promise.all([loadPrev2(),loadHist()]);b.textContent="Rechne …";setTimeout(()=>{FITCACHE={};PREVBT=backtestPrev();const S=PREVBT.O.map(stats);if(S[0]){let best=0;S.forEach((x,i)=>{if(x.ppg+x.ten/100>S[best].ppg+S[best].ten/100+1e-9)best=i});REST=SCALES[best];LSs("bl.rest",String(REST));const D=PREVBT.D.map(stats);let bd=0;D.forEach((x,i)=>{if(x.ppg+x.ten/100>D[bd].ppg+D[bd].ten/100+1e-9)bd=i});DRAW=DRAWS[bd];LSs("bl.draw",String(DRAW));FITCACHE={};renderMD()}renderAcc()},30)};
     const dsel=$("drawSel");if(dsel)dsel.onchange=()=>{DRAW=+dsel.value;LSs("bl.draw",String(DRAW));renderMD()};
+    const ls=$("lspSel");if(ls)ls.onchange=()=>{LSP=+ls.value;LSs("bl.lsp",String(LSP));FITCACHE={};renderMD()};
     const r=$("restSel");if(r)r.onchange=()=>{REST=+r.value;LSs("bl.rest",String(REST));FITCACHE={};renderMD()}},0);
   $("acc").innerHTML=kicktippBox(bt)+
     box("Deine Prognosen","Nur Spiele, deren Prognose vor dem Anpfiff in der App gespeichert war (mit deinen Ausfällen).",stats(mine))+
     box("Rückblick-Test dieser Saison","Für jeden Spieltag nachgerechnet, nur mit den Daten, die vor dem Spieltag bekannt waren (ohne Ausfälle). Zeigt sofort, ob sich das Modell lohnt.",stats(bt))+
-    prevBox()+
+    prevBox()+lspBox()+
     `<div class="card"><h2>Zum Vergleich</h2><p class="lead" style="margin:0">Gute Tipper und Buchmacher treffen in der Bundesliga die Tendenz meist in 50 bis 55 % der Spiele. „Immer Heimsieg“ liegt oft bei 42 bis 46 %. Unter 45 % lohnt sich ein Modell kaum.</p></div>`;
 }
 

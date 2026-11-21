@@ -24,7 +24,8 @@
   "https://bulinews.com/confirmed-lineups-bayer-leverkusen-paderborn",
   "https://bulinews.com/confirmed-lineups-elversberg-freiburg",
   "https://bulinews.com/confirmed-lineups-1-union-berlin-leipzig",
-  "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html"
+  "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html",
+  "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/"
  ],
  "teams": [
   {
@@ -84,7 +85,36 @@
      "abzug": 0.01
     }
    ],
-   "tore": 30
+   "tore": 30,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Minjae Kim",
+      "pos": "IV",
+      "land": "Südkorea",
+      "ort": "Doha",
+      "reise": "weit",
+      "rolle": "Leistungsträger",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.06
+     },
+     {
+      "name": "Hiroki Ito",
+      "pos": "IV",
+      "land": "Japan",
+      "ort": "Singapur",
+      "reise": "fern",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.01
+     }
+    ]
+   }
   },
   {
    "name": "Borussia Dortmund",
@@ -318,7 +348,24 @@
      "abzug": 0.03
     }
    ],
-   "tore": 15
+   "tore": 15,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Bilal El Khannouss",
+      "pos": "OM",
+      "land": "Marokko",
+      "ort": "Marokko/Niger",
+      "reise": "weit",
+      "rolle": "Leistungsträger",
+      "tore": 2,
+      "vorlagen": 0,
+      "angriff": 0.067,
+      "abwehr": 0
+     }
+    ]
+   }
   },
   {
    "name": "Eintracht Frankfurt",
@@ -650,7 +697,36 @@
      "abzug": 0.02
     }
    ],
-   "tore": 20
+   "tore": 20,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Youngwoo Seol",
+      "pos": "AV",
+      "land": "Südkorea",
+      "ort": "Doha",
+      "reise": "weit",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 1,
+      "angriff": 0,
+      "abwehr": 0.01
+     },
+     {
+      "name": "Juma Bah",
+      "pos": "IV",
+      "land": "Sierra Leone",
+      "ort": "DR Kongo/Sierra Leone",
+      "reise": "weit",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.01
+     }
+    ]
+   }
   },
   {
    "name": "1. FSV Mainz 05",
@@ -701,7 +777,48 @@
      "abzug": 0.0
     }
    ],
-   "tore": 18
+   "tore": 18,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Kaishu Sano",
+      "pos": "DM",
+      "land": "Japan",
+      "ort": "Singapur",
+      "reise": "fern",
+      "rolle": "Leistungsträger",
+      "tore": 0,
+      "vorlagen": 2,
+      "angriff": 0.03,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Fabio Gruber",
+      "pos": "IV",
+      "land": "Peru",
+      "ort": "Lima",
+      "reise": "fern",
+      "rolle": "Stammspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Jaesung Lee",
+      "pos": "OM",
+      "land": "Südkorea",
+      "ort": "Doha",
+      "reise": "weit",
+      "rolle": "Stammspieler",
+      "tore": 1,
+      "vorlagen": 1,
+      "angriff": 0.042,
+      "abwehr": 0
+     }
+    ]
+   }
   },
   {
    "name": "Borussia Mönchengladbach",
@@ -913,7 +1030,36 @@
      "abzug": 0
     }
    ],
-   "tore": 11
+   "tore": 11,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Paul Okon-Engstler",
+      "pos": "ZM",
+      "land": "Australien",
+      "ort": "Katar/Jordanien",
+      "reise": "weit",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0.005,
+      "abwehr": 0.005
+     },
+     {
+      "name": "Gideon Mensah",
+      "pos": "AV",
+      "land": "Ghana",
+      "ort": "Ghana/Somalia",
+      "reise": "weit",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.01
+     }
+    ]
+   }
   },
   {
    "name": "FC Schalke 04",
@@ -960,7 +1106,24 @@
      "abzug": 0.01
     }
    ],
-   "tore": 5
+   "tore": 5,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Heechan Hwang",
+      "pos": "Sturm",
+      "land": "Südkorea",
+      "ort": "Doha",
+      "reise": "weit",
+      "rolle": "Rotationsspieler",
+      "tore": 0,
+      "vorlagen": 1,
+      "angriff": 0.05,
+      "abwehr": 0
+     }
+    ]
+   }
   },
   {
    "name": "SC Paderborn 07",
@@ -1119,7 +1282,24 @@
      "abzug": 0.03
     }
    ],
-   "tore": 10
+   "tore": 10,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Warmed Omari",
+      "pos": "IV",
+      "land": "Komoren",
+      "ort": "Komoren/Kongo",
+      "reise": "weit",
+      "rolle": "Stammspieler",
+      "tore": 0,
+      "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.03
+     }
+    ]
+   }
   }
  ]
 }
