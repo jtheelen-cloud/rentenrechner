@@ -112,6 +112,76 @@
       "vorlagen": 0,
       "angriff": 0,
       "abwehr": 0.01
+     },
+     {
+      "name": "Harry Kane",
+      "pos": "Sturm",
+      "land": "England",
+      "reise": "europa",
+      "minuten": 168,
+      "rolle": "Topspieler",
+      "angriff": 0.1,
+      "abwehr": 0
+     },
+     {
+      "name": "Michael Olise",
+      "pos": "Flügel",
+      "land": "Frankreich",
+      "reise": "europa",
+      "minuten": 175,
+      "rolle": "Weltklasse",
+      "angriff": 0.15,
+      "abwehr": 0
+     },
+     {
+      "name": "Joshua Kimmich",
+      "pos": "DM",
+      "land": "Deutschland",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Leistungsträger",
+      "angriff": 0.03,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Aleksandar Pavlović",
+      "pos": "DM",
+      "land": "Deutschland",
+      "reise": "europa",
+      "minuten": 164,
+      "rolle": "Leistungsträger",
+      "angriff": 0.03,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Jonathan Tah",
+      "pos": "IV",
+      "land": "Deutschland",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Leistungsträger",
+      "angriff": 0,
+      "abwehr": 0.06
+     },
+     {
+      "name": "Josip Stanišić",
+      "pos": "AV",
+      "land": "Kroatien",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Konrad Laimer",
+      "pos": "AV",
+      "land": "Österreich",
+      "reise": "europa",
+      "minuten": 177,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
      }
     ]
    }
@@ -362,6 +432,16 @@
       "tore": 2,
       "vorlagen": 0,
       "angriff": 0.067,
+      "abwehr": 0
+     },
+     {
+      "name": "Ermedin Demirović",
+      "pos": "Sturm",
+      "land": "Bosnien-Herzegowina",
+      "reise": "europa",
+      "minuten": 135,
+      "rolle": "Leistungsträger",
+      "angriff": 0.06,
       "abwehr": 0
      }
     ]
@@ -641,7 +721,32 @@
      "abzug": 0.0
     }
    ],
-   "tore": 17
+   "tore": 17,
+   "laenderspiele": {
+    "pause_bis": "2026-11-18",
+    "spieler": [
+     {
+      "name": "Ludovit Reis",
+      "pos": "ZM",
+      "land": "Slowakei",
+      "reise": "europa",
+      "minuten": 129,
+      "rolle": "Stammspieler",
+      "angriff": 0.015,
+      "abwehr": 0.015
+     },
+     {
+      "name": "Karl Hein",
+      "pos": "Tor",
+      "land": "Estland",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
+     }
+    ]
+   }
   },
   {
    "name": "FC Augsburg",
@@ -724,6 +829,16 @@
       "vorlagen": 0,
       "angriff": 0,
       "abwehr": 0.01
+     },
+     {
+      "name": "Michael Gregoritsch",
+      "pos": "Sturm",
+      "land": "Österreich",
+      "reise": "europa",
+      "minuten": 135,
+      "rolle": "Stammspieler",
+      "angriff": 0.03,
+      "abwehr": 0
      }
     ]
    }
@@ -816,6 +931,36 @@
       "vorlagen": 1,
       "angriff": 0.042,
       "abwehr": 0
+     },
+     {
+      "name": "Phillipp Mwene",
+      "pos": "AV",
+      "land": "Österreich",
+      "reise": "europa",
+      "minuten": 135,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Stefan Posch",
+      "pos": "IV",
+      "land": "Österreich",
+      "reise": "europa",
+      "minuten": 121,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
+     },
+     {
+      "name": "Kacper Potulski",
+      "pos": "IV",
+      "land": "Polen",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
      }
     ]
    }
@@ -1057,6 +1202,26 @@
       "vorlagen": 0,
       "angriff": 0,
       "abwehr": 0.01
+     },
+     {
+      "name": "Isak Jóhannesson",
+      "pos": "ZM",
+      "land": "Island",
+      "reise": "europa",
+      "minuten": 161,
+      "rolle": "Stammspieler",
+      "angriff": 0.015,
+      "abwehr": 0.015
+     },
+     {
+      "name": "Luka Lochoshvili",
+      "pos": "IV",
+      "land": "Georgien",
+      "reise": "europa",
+      "minuten": 180,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
      }
     ]
    }
@@ -1121,6 +1286,16 @@
       "vorlagen": 1,
       "angriff": 0.05,
       "abwehr": 0
+     },
+     {
+      "name": "Nikola Katić",
+      "pos": "IV",
+      "land": "Bosnien-Herzegowina",
+      "reise": "europa",
+      "minuten": 135,
+      "rolle": "Stammspieler",
+      "angriff": 0,
+      "abwehr": 0.03
      }
     ]
    }
@@ -1295,6 +1470,16 @@
       "rolle": "Stammspieler",
       "tore": 0,
       "vorlagen": 0,
+      "angriff": 0,
+      "abwehr": 0.03
+     },
+     {
+      "name": "David Møller Wolfe",
+      "pos": "AV",
+      "land": "Norwegen",
+      "reise": "europa",
+      "minuten": 120,
+      "rolle": "Stammspieler",
       "angriff": 0,
       "abwehr": 0.03
      }
