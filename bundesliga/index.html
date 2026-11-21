@@ -55,6 +55,7 @@ main{max-width:860px;margin:0 auto;padding:14px 16px;display:grid;grid-template-
 .adjg select{width:100%;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-size:13.5px}
 ul.al{margin:4px 0 0;padding-left:16px;font-size:12.5px}ul.al li{margin:1px 0}
 .adjg .ck{display:flex;gap:6px;align-items:center;color:var(--ink);font-size:13px;margin-top:6px}
+.chg{border:2px solid var(--red);border-radius:12px;padding:10px;margin:6px 0}.chgb{background:var(--yel);border-radius:10px;padding:8px 10px;margin:6px 0 10px;font-size:14px}.chgb a{color:inherit;font-weight:700}.ok2{font-size:12px;padding:3px 9px;margin-left:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
 .mark{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--yel);margin-left:4px}
 .scroll{overflow-x:auto;margin:0 -16px;padding:0 16px}
 table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
@@ -291,7 +292,8 @@ const tendOf=(h,a)=>h>a?"1":h===a?"X":"2";
 function points(ph,pa,h,a){if(ph===h&&pa===a)return 4;if(ph-pa===h-a&&h!==a)return 3;if(tendOf(ph,pa)===tendOf(h,a))return 2;return 0}
 
 /* ---------- Gespeicherte Prognosen & Ausfälle ---------- */
-let PRED=LJ("bl.pred",{}), ADJS=LJ("bl.adj",{});
+let PRED=LJ("bl.pred",{}), ADJS=LJ("bl.adj",{}), SEEN=LJ("bl.seen",{});
+function saveSeen(){SJ("bl.seen",SEEN)}
 function savePred(){SJ("bl.pred",PRED)}function saveAdj(){SJ("bl.adj",ADJS)}
 
 /* ---------- Ansicht ---------- */
@@ -315,8 +317,8 @@ function renderMD(){
   const ms=M.filter(m=>m.g===MD).sort((a,b)=>a.t-b.t||a.id-b.id);
   const fin=ms.filter(m=>m.fin).length;
   $("mdInfo").textContent=ms.length?`${fmtT(ms[0].t)} bis ${fmtT(ms[ms.length-1].t)} · ${fin} von ${ms.length} Spielen beendet`:"";
-  const now=Date.now();let changed=false;
-  $("matches").innerHTML=ms.map(m=>{
+  const now=Date.now();let changed=false,seenCh=false;const nChg=[];
+  const html=ms.map(m=>{
     const H=team(m.h),A=team(m.a),adj=ADJS[m.id]||{},started=m.t<=now;
     let pr;
     if(started&&PRED[m.id])pr=PRED[m.id];
@@ -324,13 +326,18 @@ function renderMD(){
       const fx=facs(m,adj,true);pr.tired=!started&&fx.tired;pr.auto=!started&&!!((fx.ah&&(fx.ah.angriff||fx.ah.abwehr))||(fx.aa&&(fx.aa.angriff||fx.aa.abwehr)));
       if(!started){PRED[m.id]={h:pr.h,a:pr.a,p1:pr.p1,px:pr.px,p2:pr.p2,ten:pr.ten,lh:pr.lh,la:pr.la,at:now,adj:(Object.keys(adj).length||pr.auto)?1:0};changed=true}
       else pr.back=true}
+    let chg="";
+    if(!started){const sv=SEEN[m.id];
+      if(!sv){SEEN[m.id]={h:pr.h,a:pr.a,ten:pr.ten,at:now};seenCh=true}
+      else if(sv.h!==pr.h||sv.a!==pr.a){chg=sv;nChg.push({id:m.id,t:`${H.s} – ${A.s}`,alt:`${sv.h}:${sv.a}`,neu:`${pr.h}:${pr.a}`,ten:sv.ten!==pr.ten})}}
     const res=m.hg!=null?`${m.hg}:${m.ag}`:"–:–";
     const st=m.fin?"Ende":started?`<span class="live">läuft</span>`:new Date(m.t).toLocaleString("de-DE",{weekday:"short",hour:"2-digit",minute:"2-digit"});
     let hit="";
     if(m.fin&&m.hg!=null){const p=points(pr.h,pr.a,m.hg,m.ag);hit=`<span class="hit h${p}">${p===4?"Volltreffer":p===3?"Tordifferenz":p===2?"Tendenz":"daneben"} · ${p} P.</span>`}
     const w=x=>Math.max(0,Math.round(x*100));
     const hasAdj=Object.keys(adj).some(k=>adj[k]);
-    return `<div class="m">
+    return `<div class="m${chg?" chg":""}" id="m${m.id}">
+      ${chg?`<div style="font-size:13.5px;margin-bottom:6px"><b>🔔 Tipp geändert:</b> vorher <b>${chg.h}:${chg.a}</b> → jetzt <b>${pr.h}:${pr.a}</b>${chg.ten!==pr.ten?' <span class="mark" style="background:var(--red);color:#fff">andere Tendenz</span>':""}<button class="ok2" data-seen="${m.id}">✓ übernommen</button><div class="mu" style="font-size:12px">„vorher“ = Tipp, als du ihn zuletzt bestätigt bzw. zuerst gesehen hast (${new Date(chg.at).toLocaleString("de-DE",{weekday:"short",hour:"2-digit",minute:"2-digit"})} Uhr)</div></div>`:""}
       <div class="mt"><div class="tm">${icon(H)}<span>${esc(H.s)}</span></div><div class="sc">${res}<small>${st}</small></div><div class="tm r"><span>${esc(A.s)}</span>${icon(A)}</div></div>
       <div class="mt mu" style="margin-top:3px"><div>${formOf(m.h,m.t)}</div><div></div><div style="text-align:right">${formOf(m.a,m.t)}</div></div>
       ${restLine(m,started)}
@@ -339,6 +346,12 @@ function renderMD(){
       ${started?"":frischLine(m)}
       ${started?"":adjForm(m,adj)}
     </div>`}).join("");
+  const banner=nChg.length?`<div class="chgb">🔔 <b>${nChg.length===1?"1 Tipp hat":nChg.length+" Tipps haben"} sich geändert</b> – bei Kicktipp prüfen:<br>${nChg.map(c=>`<a href="#m${c.id}">${esc(c.t)}</a>: ${c.alt} → <b>${c.neu}</b>${c.ten?" (andere Tendenz)":""}`).join("<br>")}${nChg.length>1?`<br><button class="ok2" data-seen="alle" style="margin:6px 0 0">✓ alle übernommen</button>`:""}</div>`
+    :ms.some(m=>m.t>now&&m.t-now<3*36e5)?`<div class="mu" style="font-size:13px;margin-bottom:6px">✓ Keine Tipp-Änderungen seit dem letzten Bestätigen.</div>`:"";
+  $("matches").innerHTML=banner+html;
+  if(seenCh)saveSeen();
+  document.querySelectorAll("#matches [data-seen]").forEach(b=>b.onclick=()=>{const ids=b.dataset.seen==="alle"?nChg.map(c=>c.id):[b.dataset.seen];
+    ids.forEach(id=>{const p=PRED[id];if(p)SEEN[id]={h:p.h,a:p.a,ten:p.ten,at:Date.now()}});saveSeen();renderMD()});
   if(changed)savePred();
   bindAdj();
 }
