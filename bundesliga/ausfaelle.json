@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-20",
- "aktualisiert": "2026-11-21T14:39:00+01:00",
+ "aktualisiert": "2026-11-21T17:45:00+01:00",
  "gueltig_ab": "2026-11-20",
  "gueltig_bis": "2026-11-22",
  "spieltag": 10,
@@ -25,7 +25,8 @@
   "https://bulinews.com/confirmed-lineups-elversberg-freiburg",
   "https://bulinews.com/confirmed-lineups-1-union-berlin-leipzig",
   "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html",
-  "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/"
+  "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/",
+  "https://bulinews.com/confirmed-lineups-schalke-04-vfb-stuttgart"
  ],
  "teams": [
   {
@@ -392,8 +393,8 @@
    "keys": [
     "stuttgart"
    ],
-   "angriff": 0.03,
-   "abwehr": 0.06,
+   "angriff": 0.04,
+   "abwehr": 0.14,
    "xg": {
     "xg": 17.4,
     "xga": 17.9,
@@ -404,7 +405,7 @@
     {
      "name": "Angelo Stiller",
      "pos": "DM",
-     "grund": "verletzt (Adduktoren-/Leistenverletzung)",
+     "grund": "verletzt (Muskelverletzung im Adduktorenbereich)",
      "rolle": "Leistungsträger",
      "tore": 0,
      "vorlagen": 0,
@@ -413,8 +414,26 @@
     {
      "name": "Luca Jaquez",
      "pos": "IV",
-     "grund": "verletzt (Rippenverletzung)",
+     "grund": "verletzt (Rippenanbruch)",
      "rolle": "Stammspieler",
+     "abzug": 0.03
+    },
+    {
+     "name": "Alexander Nübel",
+     "pos": "Tor",
+     "grund": "nicht in der Startelf",
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
+    },
+    {
+     "name": "Atakan Karazor",
+     "pos": "DM",
+     "grund": "nicht in der Startelf",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
      "abzug": 0.03
     }
    ],
@@ -445,6 +464,11 @@
       "abwehr": 0
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-21T17:45:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups) / bundesliga.com",
+    "gegner": "FC Schalke 04"
    }
   },
   {
@@ -1232,7 +1256,7 @@
     "schalke"
    ],
    "angriff": 0.01,
-   "abwehr": 0.06,
+   "abwehr": 0.07,
    "xg": {
     "xg": 10.1,
     "xga": 17.2,
@@ -1250,14 +1274,14 @@
     {
      "name": "Maximilian Wöber",
      "pos": "IV",
-     "grund": "verletzt",
+     "grund": "verletzt (Oberschenkelverletzung)",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
     },
     {
      "name": "Ron Schallenberg",
      "pos": "DM",
-     "grund": "verletzt",
+     "grund": "verletzt (Beinverletzung)",
      "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
@@ -1266,9 +1290,9 @@
     {
      "name": "Robin Gosens",
      "pos": "AV",
-     "grund": "fraglich (Knieprellung)",
+     "grund": "nicht in der Startelf (Knieprellung)",
      "rolle": "Stammspieler",
-     "abzug": 0.01
+     "abzug": 0.03
     }
    ],
    "tore": 5,
@@ -1298,6 +1322,11 @@
       "abwehr": 0.03
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-21T17:45:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups) / bundesliga.com",
+    "gegner": "VfB Stuttgart"
    }
   },
   {
