@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-20",
- "aktualisiert": "2026-11-21T11:54:00+01:00",
+ "aktualisiert": "2026-11-21T12:13:00+01:00",
  "gueltig_ab": "2026-11-20",
  "gueltig_bis": "2026-11-22",
  "spieltag": 10,
@@ -19,7 +19,8 @@
   "https://www.fcaugsburg.de/article/kw-47-die-fca-woche-im-ueberblick-23689",
   "https://statz.ai/competitions/bundesliga/xg",
   "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--2026-27-uefa-europa-league-league-phase-fixtures-by-team/",
-  "https://www.flashscore.de/news/fussball-dfb-pokal-2026-27-alle-runden-termine-modus-tv-ubertragungen/lUSYMFGt/"
+  "https://www.flashscore.de/news/fussball-dfb-pokal-2026-27-alle-runden-termine-modus-tv-ubertragungen/lUSYMFGt/",
+  "https://www.sportschau.de/live-und-ergebnisse/fussball/deutschland-bundesliga/statistik-torjaeger"
  ],
  "teams": [
   {
@@ -40,41 +41,53 @@
      "name": "Manuel Neuer",
      "pos": "Tor",
      "grund": "verletzt (Teilsehnenriss im rechten Fuß)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "abzug": 0.06
     },
     {
      "name": "Luis Díaz",
      "pos": "Flügel",
      "grund": "verletzt (Muskelbündelriss im Oberschenkel)",
      "rolle": "Topspieler",
-     "marktwert": 70
+     "marktwert": 70,
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.1
     },
     {
      "name": "Alphonso Davies",
      "pos": "AV",
      "grund": "verletzt (Muskelfaserriss im Oberschenkel)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Serge Gnabry",
      "pos": "Flügel",
      "grund": "verletzt (Muskelfaserriss)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Ismael Saibari",
      "pos": "OM",
      "grund": "verletzt (Syndesmoseriss, operiert)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 30
   },
   {
    "name": "Borussia Dortmund",
    "keys": [
     "dortmund"
    ],
-   "angriff": 0.04,
+   "angriff": 0.06,
    "abwehr": 0.02,
    "xg": {
     "xg": 13.9,
@@ -87,45 +100,65 @@
      "name": "Serhou Guirassy",
      "pos": "Sturm",
      "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 3,
+     "vorlagen": 0,
+     "abzug": 0.05
     },
     {
      "name": "Waldemar Anton",
      "pos": "IV",
      "grund": "fraglich (Muskelprobleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     },
     {
      "name": "Carney Chukwuemeka",
      "pos": "ZM",
      "grund": "fraglich (Muskelverletzung im Oberschenkel)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Samuele Inacio",
      "pos": "Sturm",
      "grund": "fraglich (leichte Verletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Emre Can",
      "pos": "DM",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Giannis Konstantelias",
      "pos": "OM",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Justin Lerma",
      "pos": "DM",
      "grund": "verletzt (Muskelverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     }
-   ]
+   ],
+   "tore": 16
   },
   {
    "name": "Bayer 04 Leverkusen",
@@ -145,28 +178,39 @@
      "name": "Martin Terrier",
      "pos": "Flügel",
      "grund": "verletzt (Oberschenkelverletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Kennet Eichhorn",
      "pos": "DM",
      "grund": "krank",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Ibrahim Maza",
      "pos": "OM",
      "grund": "fraglich (Sprunggelenk)",
      "rolle": "Topspieler",
-     "marktwert": 50
+     "marktwert": 50,
+     "tore": 3,
+     "vorlagen": 0,
+     "abzug": 0.05
     },
     {
      "name": "Guéla Doué",
      "pos": "AV",
      "grund": "fraglich (Wadenprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 20
   },
   {
    "name": "RB Leipzig",
@@ -186,21 +230,29 @@
      "name": "Marc Guiu",
      "pos": "Sturm",
      "grund": "verletzt (Oberschenkelverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Assan Ouédraogo",
      "pos": "ZM",
      "grund": "verletzt (Schulter-OP)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Max Finkgräfe",
      "pos": "AV",
      "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 27
   },
   {
    "name": "VfB Stuttgart",
@@ -220,22 +272,27 @@
      "name": "Angelo Stiller",
      "pos": "DM",
      "grund": "verletzt (Adduktoren-/Leistenverletzung)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
     },
     {
      "name": "Luca Jaquez",
      "pos": "IV",
      "grund": "verletzt (Rippenverletzung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     }
-   ]
+   ],
+   "tore": 15
   },
   {
    "name": "Eintracht Frankfurt",
    "keys": [
     "frankfurt"
    ],
-   "angriff": 0.03,
+   "angriff": 0.04,
    "abwehr": 0.03,
    "xg": {
     "xg": 15.0,
@@ -248,27 +305,38 @@
      "name": "Elias Baum",
      "pos": "AV",
      "grund": "gesperrt (Gelb-Rot)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Jessic Ngankam",
      "pos": "Sturm",
      "grund": "verletzt (Adduktorenzerrung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Can Uzun",
      "pos": "OM",
      "grund": "fraglich (grippaler Infekt)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Ansgar Knauff",
      "pos": "Flügel",
      "grund": "fraglich (Unwohlsein)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 15
   },
   {
    "name": "SC Freiburg",
@@ -288,23 +356,28 @@
      "name": "Berkay Yilmaz",
      "pos": "AV",
      "grund": "gesperrt (Rote Karte)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0
     },
     {
      "name": "Florent Muslija",
      "pos": "OM",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     }
-   ]
+   ],
+   "tore": 20
   },
   {
    "name": "TSG Hoffenheim",
    "keys": [
     "hoffenheim"
    ],
-   "angriff": 0.04,
-   "abwehr": 0.1,
+   "angriff": 0.08,
+   "abwehr": 0.11,
    "xg": {
     "xg": 17.4,
     "xga": 13.7,
@@ -316,52 +389,68 @@
      "name": "Albian Hajdari",
      "pos": "IV",
      "grund": "verletzt (Fußverletzung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Valentin Gendrey",
      "pos": "AV",
      "grund": "verletzt (Wadenbeinbruch)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Robin Hranáč",
      "pos": "IV",
      "grund": "verletzt (Knie-OP)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Nathan De Cat",
      "pos": "DM",
      "grund": "verletzt (Außenmeniskus)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Patrick Wimmer",
      "pos": "Flügel",
      "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Alexander Prass",
      "pos": "Flügel",
      "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Bambasé Conté",
      "pos": "OM",
      "grund": "fraglich (Adduktorenprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.03
     }
-   ]
+   ],
+   "tore": 16
   },
   {
    "name": "SV Werder Bremen",
    "keys": [
     "bremen"
    ],
-   "angriff": 0.05,
+   "angriff": 0.1,
    "abwehr": 0.04,
    "xg": {
     "xg": 14.7,
@@ -374,69 +463,93 @@
      "name": "Marco Grüll",
      "pos": "Flügel",
      "grund": "fraglich (Wadenprobleme)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 2,
+     "vorlagen": 6,
+     "abzug": 0.07
     },
     {
      "name": "Mitchell Weiser",
      "pos": "AV",
      "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     },
     {
      "name": "Senne Lynen",
      "pos": "DM",
      "grund": "fraglich (krank)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Jens Stage",
      "pos": "ZM",
      "grund": "verletzt (Oberschenkelverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Felix Agu",
      "pos": "AV",
      "grund": "verletzt (Wadenprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Keke Topp",
      "pos": "Sturm",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Salim Musah",
      "pos": "Flügel",
      "grund": "verletzt (Muskelverletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Skelly Alvero",
      "pos": "ZM",
      "grund": "verletzt (Wadenverletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Moussa N'Diaye",
      "pos": "AV",
      "grund": "verletzt (Leisten-/Beckenprobleme)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0
     },
     {
      "name": "Niklas Stark",
      "pos": "IV",
      "grund": "fraglich (muskuläre Probleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Markus Kolke",
      "pos": "Tor",
      "grund": "fraglich",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0.0
     }
-   ]
+   ],
+   "tore": 17
   },
   {
    "name": "FC Augsburg",
@@ -456,33 +569,43 @@
      "name": "Chrislain Matsima",
      "pos": "IV",
      "grund": "verletzt (Muskelfaserriss Adduktoren)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Noahkai Banks",
      "pos": "IV",
      "grund": "verletzt (Knieprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Steve Mounié",
      "pos": "Sturm",
      "grund": "verletzt (Reha)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Jeffrey Gouweleeuw",
      "pos": "IV",
      "grund": "fraglich (muskuläre Probleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     },
     {
      "name": "Han-Noah Massengo",
      "pos": "DM",
      "grund": "fraglich (muskuläre Probleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 1,
+     "vorlagen": 0,
+     "abzug": 0.02
     }
-   ]
+   ],
+   "tore": 20
   },
   {
    "name": "1. FSV Mainz 05",
@@ -502,34 +625,45 @@
      "name": "Dominik Kohr",
      "pos": "DM",
      "grund": "verletzt (Syndesmoseverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Silas Katompa Mvumpa",
      "pos": "Sturm",
      "grund": "verletzt (Schienbeinbruch)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Otto Ruoppi",
      "pos": "ZM",
      "grund": "verletzt (Knie)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Lars Schwolow",
      "pos": "Tor",
      "grund": "fraglich (Magen-Darm)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0.0
     }
-   ]
+   ],
+   "tore": 18
   },
   {
    "name": "Borussia Mönchengladbach",
    "keys": [
     "gladbach"
    ],
-   "angriff": 0.03,
+   "angriff": 0.04,
    "abwehr": 0.08,
    "xg": {
     "xg": 14.9,
@@ -542,58 +676,75 @@
      "name": "Ko Itakura",
      "pos": "IV",
      "grund": "gesperrt (Gelb-Rot)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "abzug": 0.06
     },
     {
      "name": "Tim Kleindienst",
      "pos": "Sturm",
      "grund": "verletzt (Muskelverletzung, langfristig)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Enzo Leopold",
      "pos": "ZM",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Lukas Ullrich",
      "pos": "AV",
      "grund": "verletzt",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Franck Honorat",
      "pos": "Flügel",
      "grund": "fraglich (Muskelverletzung)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Daiki Hashioka",
      "pos": "AV",
      "grund": "fraglich (angeschlagen)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0.0
     },
     {
      "name": "Jan Leszczyński",
      "pos": "IV",
      "grund": "fraglich (Knie)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Hugo Bolin",
      "pos": "Flügel",
      "grund": "fraglich (muskuläre Probleme)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     }
-   ]
+   ],
+   "tore": 12
   },
   {
    "name": "1. FC Union Berlin",
    "keys": [
     "union"
    ],
-   "angriff": 0.01,
+   "angriff": 0.05,
    "abwehr": 0.09,
    "xg": {
     "xg": 10.1,
@@ -606,45 +757,57 @@
      "name": "Felix Uduokhai",
      "pos": "IV",
      "grund": "verletzt (Oberschenkel)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Stanley Nsoki",
      "pos": "IV",
      "grund": "verletzt (Wadenverletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Robert Skov",
      "pos": "Flügel",
      "grund": "verletzt",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Andrik Markgraf",
      "pos": "IV",
      "grund": "verletzt (Kreuzband- und Meniskusriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0
     },
     {
      "name": "Josip Juranović",
      "pos": "AV",
      "grund": "krank",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Livan Burcu",
      "pos": "Sturm",
      "grund": "fraglich",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 1,
+     "vorlagen": 0,
+     "abzug": 0.04
     },
     {
      "name": "Janik Haberer",
      "pos": "AV",
      "grund": "fraglich (krank)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 7
   },
   {
    "name": "1. FC Köln",
@@ -664,33 +827,45 @@
      "name": "Ellyes Skhiri",
      "pos": "DM",
      "grund": "verletzt (Syndesmoseriss)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
     },
     {
      "name": "Thijs Dallinga",
      "pos": "Sturm",
      "grund": "verletzt (Knieverletzung)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
     },
     {
      "name": "Rav van den Berg",
      "pos": "IV",
      "grund": "verletzt (Muskelverletzung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Imad Rondić",
      "pos": "Sturm",
      "grund": "verletzt (Muskelverletzung)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Timo Hübers",
      "pos": "IV",
      "grund": "verletzt (Knieverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0
     }
-   ]
+   ],
+   "tore": 11
   },
   {
    "name": "FC Schalke 04",
@@ -710,27 +885,34 @@
      "name": "Timo Becker",
      "pos": "IV",
      "grund": "verletzt (Fußverletzung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.03
     },
     {
      "name": "Maximilian Wöber",
      "pos": "IV",
      "grund": "verletzt",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Ron Schallenberg",
      "pos": "DM",
      "grund": "verletzt",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Robin Gosens",
      "pos": "AV",
      "grund": "fraglich (Knieprellung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 5
   },
   {
    "name": "SC Paderborn 07",
@@ -750,27 +932,38 @@
      "name": "Timur Gayret",
      "pos": "ZM",
      "grund": "verletzt (Reha)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Tom Baack",
      "pos": "DM",
      "grund": "fraglich (Trainingsverletzung)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Tjark Scheller",
      "pos": "IV",
      "grund": "fraglich",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "abzug": 0.03
     },
     {
      "name": "Gabriel Vidović",
      "pos": "OM",
      "grund": "fraglich (Schlag auf den Fuß)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 8
   },
   {
    "name": "SV Elversberg",
@@ -778,7 +971,7 @@
     "elversberg"
    ],
    "angriff": 0.0,
-   "abwehr": 0.01,
+   "abwehr": 0.02,
    "xg": {
     "xg": 14.3,
     "xga": 20.0,
@@ -790,22 +983,27 @@
      "name": "Luis Seifert",
      "pos": "ZM",
      "grund": "verletzt (Syndesmoseverletzung)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Lukas Pinckert",
      "pos": "AV",
      "grund": "fraglich (Sprunggelenksprobleme)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "abzug": 0.01
     }
-   ]
+   ],
+   "tore": 17
   },
   {
    "name": "Hamburger SV",
    "keys": [
     "hamburg"
    ],
-   "angriff": 0.05,
+   "angriff": 0.12,
    "abwehr": 0.05,
    "xg": {
     "xg": 9.6,
@@ -818,51 +1016,70 @@
      "name": "Albert Sambi Lokonga",
      "pos": "DM",
      "grund": "verletzt (Faszienverletzung in der Wade)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.03
     },
     {
      "name": "Yussuf Poulsen",
      "pos": "Sturm",
      "grund": "verletzt (Faszienriss in der Wade)",
-     "rolle": "Stammspieler"
+     "rolle": "Stammspieler",
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.1
     },
     {
      "name": "Nicolai Remberg",
      "pos": "ZM",
      "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     },
     {
      "name": "Bilal Nadir",
      "pos": "OM",
      "grund": "verletzt (Sehnenverletzung im Oberschenkel)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0
     },
     {
      "name": "Jordan Torunarigha",
      "pos": "IV",
      "grund": "fraglich (Hüftprobleme)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Mario Vušković",
      "pos": "IV",
      "grund": "fraglich (Rückenprobleme)",
-     "rolle": "Ersatz"
+     "rolle": "Ersatz",
+     "abzug": 0.0
     },
     {
      "name": "Fabio Vieira",
      "pos": "OM",
      "grund": "fraglich (Muskelfaserriss)",
-     "rolle": "Rotationsspieler"
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     },
     {
      "name": "Miro Muheim",
      "pos": "AV",
      "grund": "fraglich (Muskelprobleme)",
-     "rolle": "Leistungsträger"
+     "rolle": "Leistungsträger",
+     "abzug": 0.03
     }
-   ]
+   ],
+   "tore": 10
   }
  ]
 }
