@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-20",
- "aktualisiert": "2026-11-21T17:37:00+01:00",
+ "aktualisiert": "2026-11-22T14:45:00+01:00",
  "gueltig_ab": "2026-11-20",
  "gueltig_bis": "2026-11-22",
  "spieltag": 10,
@@ -26,7 +26,8 @@
   "https://bulinews.com/confirmed-lineups-1-union-berlin-leipzig",
   "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html",
   "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/",
-  "https://bulinews.com/confirmed-lineups-schalke-04-vfb-stuttgart"
+  "https://bulinews.com/confirmed-lineups-schalke-04-vfb-stuttgart",
+  "https://bulinews.com/confirmed-lineups-augsburg-mainz-05-1"
  ],
  "teams": [
   {
@@ -777,8 +778,8 @@
    "keys": [
     "augsburg"
    ],
-   "angriff": 0.01,
-   "abwehr": 0.06,
+   "angriff": 0.04,
+   "abwehr": 0.07,
    "xg": {
     "xg": 18.1,
     "xga": 24.3,
@@ -812,18 +813,27 @@
     {
      "name": "Jeffrey Gouweleeuw",
      "pos": "IV",
-     "grund": "fraglich (muskuläre Probleme)",
+     "grund": "fraglich (muskuläre Probleme), nicht in der Startelf",
      "rolle": "Stammspieler",
      "abzug": 0.01
     },
     {
      "name": "Han-Noah Massengo",
      "pos": "DM",
-     "grund": "fraglich (muskuläre Probleme)",
+     "grund": "verletzt (muskuläre Probleme)",
      "rolle": "Stammspieler",
      "tore": 1,
      "vorlagen": 0,
-     "abzug": 0.02
+     "abzug": 0.04
+    },
+    {
+     "name": "Arijon Ibrahimović",
+     "pos": "OM",
+     "grund": "nicht in der Startelf (Bank n. bekannt)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
    ],
    "tore": 20,
@@ -865,6 +875,11 @@
       "abwehr": 0
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-22T14:45:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "1. FSV Mainz 05"
    }
   },
   {
@@ -872,8 +887,8 @@
    "keys": [
     "mainz"
    ],
-   "angriff": 0.0,
-   "abwehr": 0.0,
+   "angriff": 0.04,
+   "abwehr": 0.03,
    "xg": {
     "xg": 17.0,
     "xga": 15.8,
@@ -914,6 +929,42 @@
      "grund": "fraglich (Magen-Darm)",
      "rolle": "Ersatz",
      "abzug": 0.0
+    },
+    {
+     "name": "Fabio Gruber",
+     "pos": "IV",
+     "grund": "nicht in der Startelf (Bank n. bekannt)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Jaesung Lee",
+     "pos": "OM",
+     "grund": "nicht in der Startelf (Bank n. bekannt)",
+     "rolle": "Stammspieler",
+     "tore": 1,
+     "vorlagen": 1,
+     "abzug": 0.02
+    },
+    {
+     "name": "Silvan Widmer",
+     "pos": "AV",
+     "grund": "nicht in der Startelf (Bank n. bekannt)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Ransford Königsdörffer",
+     "pos": "Sturm",
+     "grund": "nicht in der Startelf (Bank n. bekannt)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
    ],
    "tore": 18,
@@ -987,6 +1038,11 @@
       "abwehr": 0.03
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-22T14:45:00+01:00",
+    "quelle": "Bulinews (Confirmed lineups)",
+    "gegner": "FC Augsburg"
    }
   },
   {
