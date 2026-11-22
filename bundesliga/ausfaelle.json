@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-20",
- "aktualisiert": "2026-11-22T14:45:00+01:00",
+ "aktualisiert": "2026-11-22T16:46:00+01:00",
  "gueltig_ab": "2026-11-20",
  "gueltig_bis": "2026-11-22",
  "spieltag": 10,
@@ -27,7 +27,8 @@
   "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html",
   "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/",
   "https://bulinews.com/confirmed-lineups-schalke-04-vfb-stuttgart",
-  "https://bulinews.com/confirmed-lineups-augsburg-mainz-05-1"
+  "https://bulinews.com/confirmed-lineups-augsburg-mainz-05-1",
+  "https://nurdieraute.de/2026/11/22/zurueck-nach-vier-jahren-hsv-beruft-vuskovic-in-derby-kader/"
  ],
  "teams": [
   {
@@ -659,7 +660,7 @@
     {
      "name": "Marco Grüll",
      "pos": "Flügel",
-     "grund": "fraglich (Wadenprobleme)",
+     "grund": "fraglich (Wadenprobleme), nicht in der Startelf",
      "rolle": "Leistungsträger",
      "tore": 2,
      "vorlagen": 6,
@@ -668,14 +669,14 @@
     {
      "name": "Mitchell Weiser",
      "pos": "AV",
-     "grund": "fraglich (Oberschenkelprobleme)",
+     "grund": "fraglich (Oberschenkelprobleme), nicht in der Startelf",
      "rolle": "Stammspieler",
      "abzug": 0.01
     },
     {
      "name": "Senne Lynen",
      "pos": "DM",
-     "grund": "fraglich (krank)",
+     "grund": "fraglich (krank), nicht in der Startelf",
      "rolle": "Stammspieler",
      "tore": 0,
      "vorlagen": 0,
@@ -734,7 +735,7 @@
     {
      "name": "Niklas Stark",
      "pos": "IV",
-     "grund": "fraglich (muskuläre Probleme)",
+     "grund": "fraglich (muskuläre Probleme), nicht in der Startelf",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
     },
@@ -771,6 +772,11 @@
       "abwehr": 0.03
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-22T16:46:00+01:00",
+    "quelle": "Nur die Raute (Aufstellungen Werder – HSV)",
+    "gegner": "Hamburger SV"
    }
   },
   {
@@ -1467,7 +1473,7 @@
     "hamburg"
    ],
    "angriff": 0.12,
-   "abwehr": 0.05,
+   "abwehr": 0.02,
    "xg": {
     "xg": 9.6,
     "xga": 17.5,
@@ -1514,32 +1520,25 @@
     {
      "name": "Jordan Torunarigha",
      "pos": "IV",
-     "grund": "fraglich (Hüftprobleme)",
+     "grund": "fraglich (Hüftprobleme), nicht in der Startelf",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
     },
     {
      "name": "Mario Vušković",
      "pos": "IV",
-     "grund": "fraglich (Rückenprobleme)",
+     "grund": "auf der Bank",
      "rolle": "Ersatz",
      "abzug": 0.0
     },
     {
      "name": "Fabio Vieira",
      "pos": "OM",
-     "grund": "fraglich (Muskelfaserriss)",
+     "grund": "fraglich (Muskelfaserriss), nicht in der Startelf",
      "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.01
-    },
-    {
-     "name": "Miro Muheim",
-     "pos": "AV",
-     "grund": "fraglich (Muskelprobleme)",
-     "rolle": "Leistungsträger",
-     "abzug": 0.03
     }
    ],
    "tore": 10,
@@ -1569,6 +1568,11 @@
       "abwehr": 0.03
      }
     ]
+   },
+   "aufstellung": {
+    "zeit": "2026-11-22T16:46:00+01:00",
+    "quelle": "Nur die Raute (Aufstellungen Werder – HSV)",
+    "gegner": "SV Werder Bremen"
    }
   }
  ]
