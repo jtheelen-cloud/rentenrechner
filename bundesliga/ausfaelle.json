@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-27",
- "aktualisiert": "2026-11-27T07:02:00+01:00",
+ "aktualisiert": "2026-11-27T19:40:00+01:00",
  "gueltig_ab": "2026-11-27",
  "gueltig_bis": "2026-11-29",
  "spieltag": 11,
@@ -31,7 +31,8 @@
   "https://de.uefa.com/uefachampionsleague/news/02a8-2177165c666b-41c247887a33-1000--champions-league-die-spiele-und-ergebnisse-aller-mannsch/",
   "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--europa-league-league-phase-fixtures-and-results-by-team/",
   "https://www.uefa.com/uefaconferenceleague/clubs/59880--freiburg/matches/",
-  "https://www.bundesliga.com/de/bundesliga/news/dfb-pokal-achtelfinale-2026-27-ansetzungen-bayern-dortmund-39874"
+  "https://www.bundesliga.com/de/bundesliga/news/dfb-pokal-achtelfinale-2026-27-ansetzungen-bayern-dortmund-39874",
+  "https://sports.yahoo.com/soccer/articles/confirmed-lineups-werder-bremen-vs-182800171.html"
  ],
  "teams": [
   {
@@ -425,8 +426,8 @@
     "bremen"
    ],
    "tore": 21,
-   "angriff": 0.16,
-   "abwehr": 0.02,
+   "angriff": 0.17,
+   "abwehr": 0.04,
    "xg": {
     "xg": 16.3,
     "xga": 15.4,
@@ -468,7 +469,7 @@
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0.0
+     "abzug": 0
     },
     {
      "name": "Salim Musah",
@@ -484,7 +485,7 @@
      "pos": "AV",
      "grund": "verletzt (Leistenprobleme)",
      "rolle": "Ersatz",
-     "abzug": 0.0
+     "abzug": 0
     },
     {
      "name": "Felix Agu",
@@ -501,8 +502,33 @@
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.01
+    },
+    {
+     "name": "Senne Lynen",
+     "pos": "DM",
+     "grund": "auf der Bank",
+     "rolle": "Stammspieler",
+     "marktwert": 8,
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Mitchell Weiser",
+     "pos": "AV",
+     "grund": "auf der Bank",
+     "rolle": "Stammspieler",
+     "marktwert": 6,
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
     }
-   ]
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-27T19:40:00+01:00",
+    "quelle": "Bulinews/Yahoo Sports (Confirmed Lineups)",
+    "gegner": "Borussia Mönchengladbach"
+   }
   },
   {
    "name": "FC Augsburg",
@@ -620,7 +646,7 @@
    ],
    "tore": 12,
    "angriff": 0.11,
-   "abwehr": 0.05,
+   "abwehr": 0.04,
    "xg": {
     "xg": 15.3,
     "xga": 23.0,
@@ -666,7 +692,7 @@
      "pos": "AV",
      "grund": "verletzt (muskuläre Probleme)",
      "rolle": "Ersatz",
-     "abzug": 0.0
+     "abzug": 0
     },
     {
      "name": "Tim Kleindienst",
@@ -685,7 +711,12 @@
      "vorlagen": 0,
      "abzug": 0.04
     }
-   ]
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-27T19:40:00+01:00",
+    "quelle": "Bulinews/Yahoo Sports (Confirmed Lineups)",
+    "gegner": "SV Werder Bremen"
+   }
   },
   {
    "name": "1. FC Union Berlin",
