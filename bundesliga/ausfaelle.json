@@ -1,34 +1,37 @@
 {
- "stand": "2026-11-20",
- "aktualisiert": "2026-11-22T16:46:00+01:00",
- "gueltig_ab": "2026-11-20",
- "gueltig_bis": "2026-11-22",
- "spieltag": 10,
- "xg_quelle": "statz.ai (Bundesliga Expected Goals 2026/2027)",
+ "stand": "2026-11-27",
+ "aktualisiert": "2026-11-27T07:02:00+01:00",
+ "gueltig_ab": "2026-11-27",
+ "gueltig_bis": "2026-11-29",
+ "spieltag": 11,
+ "xg_quelle": "statz.ai (Bundesliga xG-Tabelle 2026/2027, Stand 22.11.2026)",
  "quellen": [
-  "https://www.bundesliga.com/de/bundesliga/spieltag/2026-2027/10",
-  "https://www.bundesliga.com/de/bundesliga/news/voraussichtliche-aufstellungen-10-spieltag-ausfalle-verletzungen-sperren-40039",
-  "https://www.buli-tipphilfe.de/1-bundesliga-verletzte",
-  "https://ligainsider.de/bundesliga/verletzte-und-gesperrte-spieler/",
-  "https://www.bvb.de/de/de/aktuelles/news/news.html/2026/11/19/Personal-Update-Vier-Fragezeichen-vor-dem-Gladbach-Spiel.html",
-  "https://www.vfb.de/en/vfb/latest/news/professionals/2627/pressekonferenz-vor-schalke-04-gegen-vfb-stuttgart-/",
-  "https://schalke04.de/bundesliga/vorschau-s04vfb-26-27",
-  "https://www.hsv.de/news/HSV-splitter",
-  "https://www.sportschau.de/regional/br/br-fcb-nach-der-pause-kompany-vor-rueckkehr-auf-die-bank-102.html",
-  "https://magazin.comunio.de/sv-werder-bremen-hsv-voraussichtliche-aufstellungen/",
-  "https://www.fcaugsburg.de/article/kw-47-die-fca-woche-im-ueberblick-23689",
+  "https://www.bundesliga.com/de/bundesliga/spieltag/2026-2027/11",
   "https://statz.ai/competitions/bundesliga/xg",
-  "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--2026-27-uefa-europa-league-league-phase-fixtures-by-team/",
-  "https://www.flashscore.de/news/fussball-dfb-pokal-2026-27-alle-runden-termine-modus-tv-ubertragungen/lUSYMFGt/",
-  "https://www.sportschau.de/live-und-ergebnisse/fussball/deutschland-bundesliga/statistik-torjaeger",
-  "https://bulinews.com/confirmed-lineups-bayer-leverkusen-paderborn",
-  "https://bulinews.com/confirmed-lineups-elversberg-freiburg",
-  "https://bulinews.com/confirmed-lineups-1-union-berlin-leipzig",
-  "https://sports.yahoo.com/articles/confirmed-lineups-borussia-m-nchengladbach-132700855.html",
-  "https://www.ligainsider.de/ligainsider_1381/laenderspiel-bilanz-so-lief-es-fuer-die-bundesliga-profis-420693/",
-  "https://bulinews.com/confirmed-lineups-schalke-04-vfb-stuttgart",
-  "https://bulinews.com/confirmed-lineups-augsburg-mainz-05-1",
-  "https://nurdieraute.de/2026/11/22/zurueck-nach-vier-jahren-hsv-beruft-vuskovic-in-derby-kader/"
+  "https://www.buli-tipphilfe.de/1-bundesliga-verletzte",
+  "https://www.buli-tipphilfe.de/torschuetzenliste-bundesliga",
+  "https://www.flashscore.de/news/fussball-bundesliga-11-spieltag-aufstellungen-verletzungen-und-sperren/ngjPe6Gj/",
+  "https://magazin.comunio.de/hsv-fc-bayern-muenchen-voraussichtliche-aufstellungen/",
+  "https://magazin.comunio.de/bvb-bayer-04-leverkusen-voraussichtliche-aufstellungen-3/",
+  "https://magazin.comunio.de/sc-freiburg-rb-leipzig-voraussichtliche-aufstellungen-5/",
+  "https://magazin.comunio.de/vfb-stuttgart-eintracht-frankfurt-voraussichtliche-aufstellungen-4",
+  "https://magazin.comunio.de/tsg-hoffenheim-fc-augsburg-voraussichtliche-aufstellungen-4",
+  "https://magazin.comunio.de/1-fc-koeln-sv-elversberg-voraussichtliche-aufstellungen/",
+  "https://magazin.comunio.de/sc-paderborn-fc-schalke-04-voraussichtliche-aufstellungen/",
+  "https://www.sportschau.de/fussball/bundesliga/fc-bayern-muenchen-mehrere-monate-ohne-harry-kane,kane-verletzung-100.html",
+  "https://ran.joyn.de/sports/fussball/bundesliga/bundesliga-marktwert-update-michael-olise-stellt-neue-bestmarke-auf-jamal-musiala-faellt-ab-195630",
+  "https://www.butenunbinnen.de/sport/werder-bremen-borussia-moenchengladbach-bundesliga-vorschau-100.html",
+  "https://www.gladbachtotal.de/vor-werder-bremen-blessin-gibt-personal-update-zu-hack-kleindienst-und-bolin/",
+  "https://sport.sky.de/fussball/artikel/ozan-kabak-vier-spiele-gesperrt-hoffenheim-verteidiger-fehlt-der-tsg-hoffenheim-bis-januar/13615987/34130",
+  "https://www.berliner-kurier.de/article/union-berlin-mainz-lustrinelli-endspiel-ausfaelle-khedira-ilic-10639127",
+  "https://come-on-fc.com/profis/marvin-schwaebe-1-fc-koeln-ruecken-elversberg/",
+  "https://www.tipico.de/wett-tipps/sportwetten-news/hsv-muheim-diagnose-da-schlaegt-jetzt-die-stunde-von-vuskovic",
+  "https://nurdieraute.de/2026/11/26/startet-vuskovic-gegen-bayern-das-sagt-hsv-coach-polzin/",
+  "https://fcbayern.com/de/spiele/profis/bundesliga/2026-2027/fc-bayern-muenchen-1-fc-koeln-21-11-2026/tabelle",
+  "https://de.uefa.com/uefachampionsleague/news/02a8-2177165c666b-41c247887a33-1000--champions-league-die-spiele-und-ergebnisse-aller-mannsch/",
+  "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--europa-league-league-phase-fixtures-and-results-by-team/",
+  "https://www.uefa.com/uefaconferenceleague/clubs/59880--freiburg/matches/",
+  "https://www.bundesliga.com/de/bundesliga/news/dfb-pokal-achtelfinale-2026-27-ansetzungen-bayern-dortmund-39874"
  ],
  "teams": [
   {
@@ -36,15 +39,36 @@
    "keys": [
     "bayern"
    ],
-   "angriff": 0.14,
-   "abwehr": 0.09,
+   "tore": 30,
+   "angriff": 0.32,
+   "abwehr": 0.07,
    "xg": {
-    "xg": 27.2,
-    "xga": 7.9,
-    "spiele": 9
+    "xg": 28.7,
+    "xga": 9.6,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
+    {
+     "name": "Harry Kane",
+     "pos": "Sturm",
+     "grund": "verletzt (Syndesmoseriss, operiert)",
+     "rolle": "Topspieler",
+     "marktwert": 60,
+     "tore": 4,
+     "vorlagen": 8,
+     "abzug": 0.13
+    },
+    {
+     "name": "Michael Olise",
+     "pos": "Flügel",
+     "grund": "fraglich (Prellung am Vorfuß)",
+     "rolle": "Weltklasse",
+     "marktwert": 180,
+     "tore": 6,
+     "vorlagen": 3,
+     "abzug": 0.08
+    },
     {
      "name": "Manuel Neuer",
      "pos": "Tor",
@@ -53,190 +77,52 @@
      "abzug": 0.06
     },
     {
-     "name": "Luis Díaz",
-     "pos": "Flügel",
-     "grund": "verletzt (Muskelbündelriss im Oberschenkel)",
-     "rolle": "Topspieler",
-     "marktwert": 70,
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.1
-    },
-    {
      "name": "Alphonso Davies",
      "pos": "AV",
      "grund": "verletzt (Muskelfaserriss im Oberschenkel)",
-     "rolle": "Stammspieler",
-     "abzug": 0.03
+     "rolle": "Rotationsspieler",
+     "marktwert": 45,
+     "abzug": 0.01
     },
     {
      "name": "Serge Gnabry",
      "pos": "Flügel",
      "grund": "verletzt (Muskelfaserriss)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.03
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
      "name": "Ismael Saibari",
      "pos": "OM",
-     "grund": "verletzt (Syndesmoseriss, operiert)",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
+     "grund": "verletzt (Syndesmosebandriss)",
+     "rolle": "Topspieler",
+     "marktwert": 55,
+     "abzug": 0.1
     }
-   ],
-   "tore": 30,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Minjae Kim",
-      "pos": "IV",
-      "land": "Südkorea",
-      "ort": "Doha",
-      "reise": "weit",
-      "rolle": "Leistungsträger",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.06
-     },
-     {
-      "name": "Hiroki Ito",
-      "pos": "IV",
-      "land": "Japan",
-      "ort": "Singapur",
-      "reise": "fern",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.01
-     },
-     {
-      "name": "Harry Kane",
-      "pos": "Sturm",
-      "land": "England",
-      "reise": "europa",
-      "minuten": 168,
-      "rolle": "Topspieler",
-      "angriff": 0.1,
-      "abwehr": 0
-     },
-     {
-      "name": "Michael Olise",
-      "pos": "Flügel",
-      "land": "Frankreich",
-      "reise": "europa",
-      "minuten": 175,
-      "rolle": "Weltklasse",
-      "angriff": 0.15,
-      "abwehr": 0
-     },
-     {
-      "name": "Joshua Kimmich",
-      "pos": "DM",
-      "land": "Deutschland",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Leistungsträger",
-      "angriff": 0.03,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Aleksandar Pavlović",
-      "pos": "DM",
-      "land": "Deutschland",
-      "reise": "europa",
-      "minuten": 164,
-      "rolle": "Leistungsträger",
-      "angriff": 0.03,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Jonathan Tah",
-      "pos": "IV",
-      "land": "Deutschland",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Leistungsträger",
-      "angriff": 0,
-      "abwehr": 0.06
-     },
-     {
-      "name": "Josip Stanišić",
-      "pos": "AV",
-      "land": "Kroatien",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Konrad Laimer",
-      "pos": "AV",
-      "land": "Österreich",
-      "reise": "europa",
-      "minuten": 177,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   }
+   ]
   },
   {
    "name": "Borussia Dortmund",
    "keys": [
     "dortmund"
    ],
-   "angriff": 0.06,
-   "abwehr": 0.02,
+   "tore": 17,
+   "angriff": 0.01,
+   "abwehr": 0.0,
    "xg": {
-    "xg": 13.9,
-    "xga": 11.1,
-    "spiele": 9
+    "xg": 15.9,
+    "xga": 11.5,
+    "spiele": 10
    },
-   "extra": [],
+   "extra": [
+    {
+     "datum": "2026-11-24",
+     "wettbewerb": "Champions League",
+     "auswaerts": true,
+     "gegner": "FC Arsenal"
+    }
+   ],
    "spieler": [
-    {
-     "name": "Serhou Guirassy",
-     "pos": "Sturm",
-     "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Leistungsträger",
-     "tore": 3,
-     "vorlagen": 0,
-     "abzug": 0.05
-    },
-    {
-     "name": "Waldemar Anton",
-     "pos": "IV",
-     "grund": "fraglich (Muskelprobleme)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Carney Chukwuemeka",
-     "pos": "ZM",
-     "grund": "fraglich (Muskelverletzung im Oberschenkel)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
-     "name": "Samuele Inacio",
-     "pos": "Sturm",
-     "grund": "fraglich (leichte Verletzung)",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
     {
      "name": "Emre Can",
      "pos": "DM",
@@ -253,7 +139,7 @@
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
+     "abzug": 0.0
     },
     {
      "name": "Justin Lerma",
@@ -263,37 +149,57 @@
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.0
+    },
+    {
+     "name": "Samuele Inácio",
+     "pos": "Sturm",
+     "grund": "verletzt (Meniskus)",
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Kaba",
+     "pos": "ZM",
+     "grund": "verletzt (Schulter)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     }
-   ],
-   "tore": 16,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "Borussia Mönchengladbach"
-   }
+   ]
   },
   {
    "name": "Bayer 04 Leverkusen",
    "keys": [
     "leverkusen"
    ],
-   "angriff": 0.08,
-   "abwehr": 0.02,
+   "tore": 24,
+   "angriff": 0.0,
+   "abwehr": 0.01,
    "xg": {
-    "xg": 18.0,
-    "xga": 14.5,
-    "spiele": 9
+    "xg": 21.0,
+    "xga": 15.2,
+    "spiele": 10
    },
-   "extra": [],
+   "extra": [
+    {
+     "datum": "2026-11-26",
+     "wettbewerb": "Europa League",
+     "auswaerts": true,
+     "gegner": "Dinamo Zagreb"
+    }
+   ],
    "spieler": [
     {
      "name": "Martin Terrier",
      "pos": "Flügel",
-     "grund": "verletzt (Oberschenkelverletzung)",
-     "rolle": "Rotationsspieler",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0.01
+     "abzug": 0.0
     },
     {
      "name": "Kennet Eichhorn",
@@ -305,57 +211,35 @@
      "abzug": 0.0
     },
     {
-     "name": "Ibrahim Maza",
-     "pos": "OM",
-     "grund": "fraglich (Sprunggelenk)",
-     "rolle": "Topspieler",
-     "marktwert": 50,
-     "tore": 3,
-     "vorlagen": 0,
-     "abzug": 0.05
-    },
-    {
-     "name": "Guéla Doué",
+     "name": "Lucas Vázquez",
      "pos": "AV",
-     "grund": "fraglich (Wadenprobleme)",
+     "grund": "fraglich (Schlag)",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
-    },
-    {
-     "name": "Facundo Medina",
-     "pos": "IV",
-     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Moussa Diaby",
-     "pos": "Flügel",
-     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
     }
-   ],
-   "tore": 20,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "SC Paderborn 07"
-   }
+   ]
   },
   {
    "name": "RB Leipzig",
    "keys": [
     "leipzig"
    ],
+   "tore": 32,
    "angriff": 0.01,
-   "abwehr": 0.01,
+   "abwehr": 0.03,
    "xg": {
-    "xg": 21.3,
-    "xga": 12.4,
-    "spiele": 9
+    "xg": 26.5,
+    "xga": 13.3,
+    "spiele": 10
    },
-   "extra": [],
+   "extra": [
+    {
+     "datum": "2026-11-24",
+     "wettbewerb": "Champions League",
+     "auswaerts": false,
+     "gegner": "RC Lens"
+    }
+   ],
    "spieler": [
     {
      "name": "Marc Guiu",
@@ -364,187 +248,105 @@
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
+     "abzug": 0.0
     },
     {
      "name": "Assan Ouédraogo",
      "pos": "ZM",
      "grund": "verletzt (Schulter-OP)",
      "rolle": "Rotationsspieler",
+     "marktwert": 22,
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.01
     },
     {
-     "name": "Max Finkgräfe",
-     "pos": "AV",
-     "grund": "fraglich (Oberschenkelprobleme)",
+     "name": "Castello Lukeba",
+     "pos": "IV",
+     "grund": "fraglich (Knieprellung)",
+     "rolle": "Stammspieler",
+     "abzug": 0.02
+    },
+    {
+     "name": "Samba Konaté",
+     "pos": "IV",
+     "grund": "fraglich (Adduktorenprobleme)",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
     }
-   ],
-   "tore": 27,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "1. FC Union Berlin"
-   }
+   ]
   },
   {
    "name": "VfB Stuttgart",
    "keys": [
     "stuttgart"
    ],
-   "angriff": 0.04,
-   "abwehr": 0.14,
+   "tore": 15,
+   "angriff": 0.0,
+   "abwehr": 0.0,
    "xg": {
-    "xg": 17.4,
-    "xga": 17.9,
-    "spiele": 9
+    "xg": 19.7,
+    "xga": 19.8,
+    "spiele": 10
    },
-   "extra": [],
-   "spieler": [
+   "extra": [
     {
-     "name": "Angelo Stiller",
-     "pos": "DM",
-     "grund": "verletzt (Muskelverletzung im Adduktorenbereich)",
-     "rolle": "Leistungsträger",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.06
-    },
-    {
-     "name": "Luca Jaquez",
-     "pos": "IV",
-     "grund": "verletzt (Rippenanbruch)",
-     "rolle": "Stammspieler",
-     "abzug": 0.03
-    },
-    {
-     "name": "Alexander Nübel",
-     "pos": "Tor",
-     "grund": "nicht in der Startelf",
-     "rolle": "Leistungsträger",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.06
-    },
-    {
-     "name": "Atakan Karazor",
-     "pos": "DM",
-     "grund": "nicht in der Startelf",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.03
+     "datum": "2026-11-25",
+     "wettbewerb": "Champions League",
+     "auswaerts": true,
+     "gegner": "Inter Mailand"
     }
    ],
-   "tore": 15,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Bilal El Khannouss",
-      "pos": "OM",
-      "land": "Marokko",
-      "ort": "Marokko/Niger",
-      "reise": "weit",
-      "rolle": "Leistungsträger",
-      "tore": 2,
-      "vorlagen": 0,
-      "angriff": 0.067,
-      "abwehr": 0
-     },
-     {
-      "name": "Ermedin Demirović",
-      "pos": "Sturm",
-      "land": "Bosnien-Herzegowina",
-      "reise": "europa",
-      "minuten": 135,
-      "rolle": "Leistungsträger",
-      "angriff": 0.06,
-      "abwehr": 0
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-21T17:37:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups) / bundesliga.com",
-    "gegner": "FC Schalke 04"
-   }
+   "spieler": []
   },
   {
    "name": "Eintracht Frankfurt",
    "keys": [
     "frankfurt"
    ],
-   "angriff": 0.04,
-   "abwehr": 0.03,
+   "tore": 16,
+   "angriff": 0.0,
+   "abwehr": 0.0,
    "xg": {
-    "xg": 15.0,
-    "xga": 19.1,
-    "spiele": 9
+    "xg": 17.3,
+    "xga": 21.1,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
-     "name": "Elias Baum",
-     "pos": "AV",
-     "grund": "gesperrt (Gelb-Rot)",
-     "rolle": "Stammspieler",
-     "abzug": 0.03
-    },
-    {
      "name": "Jessic Ngankam",
      "pos": "Sturm",
-     "grund": "verletzt (Adduktorenzerrung)",
+     "grund": "verletzt (Oberschenkel/Leiste)",
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
-    },
-    {
-     "name": "Can Uzun",
-     "pos": "OM",
-     "grund": "fraglich (grippaler Infekt)",
-     "rolle": "Leistungsträger",
-     "tore": 2,
-     "vorlagen": 0,
-     "abzug": 0.03
-    },
-    {
-     "name": "Ansgar Knauff",
-     "pos": "Flügel",
-     "grund": "fraglich (Unwohlsein)",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
+     "abzug": 0.0
     }
-   ],
-   "tore": 15
+   ]
   },
   {
    "name": "SC Freiburg",
    "keys": [
     "freiburg"
    ],
-   "angriff": 0.01,
+   "tore": 21,
+   "angriff": 0.0,
    "abwehr": 0.0,
    "xg": {
-    "xg": 16.9,
-    "xga": 9.6,
-    "spiele": 9
+    "xg": 17.8,
+    "xga": 11.0,
+    "spiele": 10
    },
-   "extra": [],
-   "spieler": [
+   "extra": [
     {
-     "name": "Berkay Yilmaz",
-     "pos": "AV",
-     "grund": "gesperrt (Rote Karte)",
-     "rolle": "Ersatz",
-     "abzug": 0
-    },
+     "datum": "2026-11-26",
+     "wettbewerb": "Conference League",
+     "auswaerts": false,
+     "gegner": "FC Twente"
+    }
+   ],
+   "spieler": [
     {
      "name": "Florent Muslija",
      "pos": "OM",
@@ -552,41 +354,43 @@
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
-    },
-    {
-     "name": "Yuito Suzuki",
-     "pos": "OM",
-     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
+     "abzug": 0.0
     }
-   ],
-   "tore": 20,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "SV Elversberg"
-   }
+   ]
   },
   {
    "name": "TSG Hoffenheim",
    "keys": [
     "hoffenheim"
    ],
-   "angriff": 0.08,
-   "abwehr": 0.11,
+   "tore": 16,
+   "angriff": 0.01,
+   "abwehr": 0.13,
    "xg": {
-    "xg": 17.4,
-    "xga": 13.7,
-    "spiele": 9
+    "xg": 19.4,
+    "xga": 16.0,
+    "spiele": 10
    },
-   "extra": [],
+   "extra": [
+    {
+     "datum": "2026-11-26",
+     "wettbewerb": "Europa League",
+     "auswaerts": false,
+     "gegner": "Sturm Graz"
+    }
+   ],
    "spieler": [
+    {
+     "name": "Ozan Kabak",
+     "pos": "IV",
+     "grund": "gesperrt (Rote Karte, 4 Spiele)",
+     "rolle": "Stammspieler",
+     "abzug": 0.03
+    },
     {
      "name": "Albian Hajdari",
      "pos": "IV",
-     "grund": "verletzt (Fußverletzung)",
+     "grund": "verletzt (Meniskus/Plantarfaszie)",
      "rolle": "Stammspieler",
      "abzug": 0.03
     },
@@ -607,88 +411,79 @@
     {
      "name": "Nathan De Cat",
      "pos": "DM",
-     "grund": "verletzt (Außenmeniskus)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.03
-    },
-    {
-     "name": "Patrick Wimmer",
-     "pos": "Flügel",
-     "grund": "fraglich (Oberschenkelprobleme)",
+     "grund": "verletzt (Außenmeniskus, operiert)",
      "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.01
-    },
-    {
-     "name": "Alexander Prass",
-     "pos": "Flügel",
-     "grund": "fraglich (Oberschenkelprobleme)",
-     "rolle": "Stammspieler",
-     "tore": 2,
-     "vorlagen": 0,
-     "abzug": 0.03
-    },
-    {
-     "name": "Bambasé Conté",
-     "pos": "OM",
-     "grund": "fraglich (Adduktorenprobleme)",
-     "rolle": "Rotationsspieler",
-     "tore": 2,
-     "vorlagen": 0,
-     "abzug": 0.03
     }
-   ],
-   "tore": 16
+   ]
   },
   {
    "name": "SV Werder Bremen",
    "keys": [
     "bremen"
    ],
-   "angriff": 0.1,
-   "abwehr": 0.04,
+   "tore": 21,
+   "angriff": 0.16,
+   "abwehr": 0.02,
    "xg": {
-    "xg": 14.7,
-    "xga": 13.5,
-    "spiele": 9
+    "xg": 16.3,
+    "xga": 15.4,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
      "name": "Marco Grüll",
      "pos": "Flügel",
-     "grund": "fraglich (Wadenprobleme), nicht in der Startelf",
+     "grund": "verletzt (Wadenprobleme)",
      "rolle": "Leistungsträger",
      "tore": 2,
      "vorlagen": 6,
-     "abzug": 0.07
+     "abzug": 0.12
     },
     {
-     "name": "Mitchell Weiser",
-     "pos": "AV",
-     "grund": "fraglich (Oberschenkelprobleme), nicht in der Startelf",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Senne Lynen",
-     "pos": "DM",
-     "grund": "fraglich (krank), nicht in der Startelf",
-     "rolle": "Stammspieler",
-     "tore": 0,
+     "name": "Justin Njinmah",
+     "pos": "Flügel",
+     "grund": "fraglich (muskuläre Probleme)",
+     "rolle": "Rotationsspieler",
+     "tore": 2,
      "vorlagen": 0,
-     "abzug": 0.01
+     "abzug": 0.02
     },
     {
      "name": "Jens Stage",
      "pos": "ZM",
-     "grund": "verletzt (Oberschenkelverletzung)",
+     "grund": "verletzt (Oberschenkel, operiert)",
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
+     "name": "Keke Topp",
+     "pos": "Sturm",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
+     "name": "Salim Musah",
+     "pos": "Flügel",
+     "grund": "verletzt (Oberschenkel)",
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Moussa N'Diaye",
+     "pos": "AV",
+     "grund": "verletzt (Leistenprobleme)",
+     "rolle": "Ersatz",
      "abzug": 0.0
     },
     {
@@ -699,100 +494,38 @@
      "abzug": 0.01
     },
     {
-     "name": "Keke Topp",
-     "pos": "Sturm",
-     "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0
-    },
-    {
-     "name": "Salim Musah",
-     "pos": "Flügel",
-     "grund": "verletzt (Muskelverletzung)",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
      "name": "Skelly Alvero",
-     "pos": "ZM",
+     "pos": "DM",
      "grund": "verletzt (Wadenverletzung)",
      "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.01
-    },
-    {
-     "name": "Moussa N'Diaye",
-     "pos": "AV",
-     "grund": "verletzt (Leisten-/Beckenprobleme)",
-     "rolle": "Ersatz",
-     "abzug": 0
-    },
-    {
-     "name": "Niklas Stark",
-     "pos": "IV",
-     "grund": "fraglich (muskuläre Probleme), nicht in der Startelf",
-     "rolle": "Rotationsspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Markus Kolke",
-     "pos": "Tor",
-     "grund": "fraglich",
-     "rolle": "Ersatz",
-     "abzug": 0.0
     }
-   ],
-   "tore": 17,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Ludovit Reis",
-      "pos": "ZM",
-      "land": "Slowakei",
-      "reise": "europa",
-      "minuten": 129,
-      "rolle": "Stammspieler",
-      "angriff": 0.015,
-      "abwehr": 0.015
-     },
-     {
-      "name": "Karl Hein",
-      "pos": "Tor",
-      "land": "Estland",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-22T16:46:00+01:00",
-    "quelle": "Nur die Raute (Aufstellungen Werder – HSV)",
-    "gegner": "Hamburger SV"
-   }
+   ]
   },
   {
    "name": "FC Augsburg",
    "keys": [
     "augsburg"
    ],
-   "angriff": 0.04,
-   "abwehr": 0.07,
+   "tore": 23,
+   "angriff": 0.03,
+   "abwehr": 0.11,
    "xg": {
-    "xg": 18.1,
-    "xga": 24.3,
-    "spiele": 9
+    "xg": 21.7,
+    "xga": 25.0,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
+    {
+     "name": "Noahkai Banks",
+     "pos": "IV",
+     "grund": "verletzt (Außenband im Knie)",
+     "rolle": "Stammspieler",
+     "abzug": 0.03
+    },
     {
      "name": "Chrislain Matsima",
      "pos": "IV",
@@ -801,27 +534,11 @@
      "abzug": 0.03
     },
     {
-     "name": "Noahkai Banks",
-     "pos": "IV",
-     "grund": "verletzt (Knieprobleme)",
-     "rolle": "Rotationsspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Steve Mounié",
-     "pos": "Sturm",
-     "grund": "verletzt (Reha)",
-     "rolle": "Ersatz",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0
-    },
-    {
      "name": "Jeffrey Gouweleeuw",
      "pos": "IV",
-     "grund": "fraglich (muskuläre Probleme), nicht in der Startelf",
+     "grund": "verletzt (Oberschenkelprobleme)",
      "rolle": "Stammspieler",
-     "abzug": 0.01
+     "abzug": 0.03
     },
     {
      "name": "Han-Noah Massengo",
@@ -829,83 +546,48 @@
      "grund": "verletzt (muskuläre Probleme)",
      "rolle": "Stammspieler",
      "tore": 1,
-     "vorlagen": 0,
-     "abzug": 0.04
+     "vorlagen": 1,
+     "abzug": 0.05
     },
     {
-     "name": "Arijon Ibrahimović",
-     "pos": "OM",
-     "grund": "nicht in der Startelf (Bank n. bekannt)",
-     "rolle": "Stammspieler",
+     "name": "Steve Mounié",
+     "pos": "Sturm",
+     "grund": "verletzt (Aufbautraining)",
+     "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0.01
+     "abzug": 0.0
+    },
+    {
+     "name": "Faik Sakar",
+     "pos": "Flügel",
+     "grund": "verletzt (Sprunggelenk)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
     }
-   ],
-   "tore": 20,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Youngwoo Seol",
-      "pos": "AV",
-      "land": "Südkorea",
-      "ort": "Doha",
-      "reise": "weit",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 1,
-      "angriff": 0,
-      "abwehr": 0.01
-     },
-     {
-      "name": "Juma Bah",
-      "pos": "IV",
-      "land": "Sierra Leone",
-      "ort": "DR Kongo/Sierra Leone",
-      "reise": "weit",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.01
-     },
-     {
-      "name": "Michael Gregoritsch",
-      "pos": "Sturm",
-      "land": "Österreich",
-      "reise": "europa",
-      "minuten": 135,
-      "rolle": "Stammspieler",
-      "angriff": 0.03,
-      "abwehr": 0
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-22T14:45:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "1. FSV Mainz 05"
-   }
+   ]
   },
   {
    "name": "1. FSV Mainz 05",
    "keys": [
     "mainz"
    ],
-   "angriff": 0.04,
-   "abwehr": 0.03,
+   "tore": 19,
+   "angriff": 0.01,
+   "abwehr": 0.0,
    "xg": {
-    "xg": 17.0,
-    "xga": 15.8,
-    "spiele": 9
+    "xg": 17.8,
+    "xga": 19.5,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
      "name": "Dominik Kohr",
      "pos": "DM",
-     "grund": "verletzt (Syndesmoseverletzung)",
+     "grund": "verletzt (Syndesmoseverletzung, operiert)",
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
@@ -913,12 +595,12 @@
     },
     {
      "name": "Silas Katompa Mvumpa",
-     "pos": "Sturm",
-     "grund": "verletzt (Schienbeinbruch)",
+     "pos": "Flügel",
+     "grund": "fraglich (Trainingsrückstand nach Schienbeinbruch)",
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
+     "abzug": 0.0
     },
     {
      "name": "Otto Ruoppi",
@@ -926,160 +608,42 @@
      "grund": "verletzt (Knie)",
      "rolle": "Ersatz",
      "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.0
-    },
-    {
-     "name": "Lars Schwolow",
-     "pos": "Tor",
-     "grund": "fraglich (Magen-Darm)",
-     "rolle": "Ersatz",
-     "abzug": 0.0
-    },
-    {
-     "name": "Fabio Gruber",
-     "pos": "IV",
-     "grund": "nicht in der Startelf (Bank n. bekannt)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
-     "name": "Jaesung Lee",
-     "pos": "OM",
-     "grund": "nicht in der Startelf (Bank n. bekannt)",
-     "rolle": "Stammspieler",
-     "tore": 1,
      "vorlagen": 1,
-     "abzug": 0.02
-    },
-    {
-     "name": "Silvan Widmer",
-     "pos": "AV",
-     "grund": "nicht in der Startelf (Bank n. bekannt)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
-     "name": "Ransford Königsdörffer",
-     "pos": "Sturm",
-     "grund": "nicht in der Startelf (Bank n. bekannt)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
      "abzug": 0.01
     }
-   ],
-   "tore": 18,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Kaishu Sano",
-      "pos": "DM",
-      "land": "Japan",
-      "ort": "Singapur",
-      "reise": "fern",
-      "rolle": "Leistungsträger",
-      "tore": 0,
-      "vorlagen": 2,
-      "angriff": 0.03,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Fabio Gruber",
-      "pos": "IV",
-      "land": "Peru",
-      "ort": "Lima",
-      "reise": "fern",
-      "rolle": "Stammspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Jaesung Lee",
-      "pos": "OM",
-      "land": "Südkorea",
-      "ort": "Doha",
-      "reise": "weit",
-      "rolle": "Stammspieler",
-      "tore": 1,
-      "vorlagen": 1,
-      "angriff": 0.042,
-      "abwehr": 0
-     },
-     {
-      "name": "Phillipp Mwene",
-      "pos": "AV",
-      "land": "Österreich",
-      "reise": "europa",
-      "minuten": 135,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Stefan Posch",
-      "pos": "IV",
-      "land": "Österreich",
-      "reise": "europa",
-      "minuten": 121,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     },
-     {
-      "name": "Kacper Potulski",
-      "pos": "IV",
-      "land": "Polen",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-22T14:45:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "FC Augsburg"
-   }
+   ]
   },
   {
    "name": "Borussia Mönchengladbach",
    "keys": [
     "gladbach"
    ],
-   "angriff": 0.03,
-   "abwehr": 0.08,
+   "tore": 12,
+   "angriff": 0.11,
+   "abwehr": 0.05,
    "xg": {
-    "xg": 14.9,
-    "xga": 21.1,
-    "spiele": 9
+    "xg": 15.3,
+    "xga": 23.0,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
-     "name": "Ko Itakura",
-     "pos": "IV",
-     "grund": "gesperrt (Gelb-Rot)",
-     "rolle": "Leistungsträger",
-     "abzug": 0.06
+     "name": "Robin Hack",
+     "pos": "Flügel",
+     "grund": "verletzt (muskuläre Probleme)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "abzug": 0.03
     },
     {
-     "name": "Tim Kleindienst",
-     "pos": "Sturm",
-     "grund": "verletzt (Muskelverletzung, langfristig)",
-     "rolle": "Ersatz",
+     "name": "Lukas Ullrich",
+     "pos": "AV",
+     "grund": "verletzt (Schlüsselbeinbruch)",
+     "rolle": "Stammspieler",
      "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0
+     "vorlagen": 2,
+     "abzug": 0.03
     },
     {
      "name": "Enzo Leopold",
@@ -1091,66 +655,69 @@
      "abzug": 0.01
     },
     {
-     "name": "Lukas Ullrich",
-     "pos": "AV",
-     "grund": "verletzt",
+     "name": "Jan Leszczyński",
+     "pos": "IV",
+     "grund": "verletzt (Meniskusriss)",
      "rolle": "Rotationsspieler",
      "abzug": 0.01
-    },
-    {
-     "name": "Franck Honorat",
-     "pos": "Flügel",
-     "grund": "fraglich (Muskelverletzung)",
-     "rolle": "Leistungsträger",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.03
     },
     {
      "name": "Daiki Hashioka",
      "pos": "AV",
-     "grund": "fraglich (angeschlagen)",
+     "grund": "verletzt (muskuläre Probleme)",
      "rolle": "Ersatz",
      "abzug": 0.0
     },
     {
-     "name": "Jan Leszczyński",
-     "pos": "IV",
-     "grund": "fraglich (Knie)",
-     "rolle": "Rotationsspieler",
-     "abzug": 0.01
+     "name": "Tim Kleindienst",
+     "pos": "Sturm",
+     "grund": "fraglich (nach Muskelfaserriss, höchstens Kurzeinsatz)",
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "abzug": 0.03
     },
     {
      "name": "Hugo Bolin",
      "pos": "Flügel",
-     "grund": "fraglich (muskuläre Probleme)",
-     "rolle": "Ersatz",
-     "tore": 0,
+     "grund": "fraglich (nach Zerrung)",
+     "rolle": "Stammspieler",
+     "tore": 2,
      "vorlagen": 0,
-     "abzug": 0.0
+     "abzug": 0.04
     }
-   ],
-   "tore": 12,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "Borussia Dortmund"
-   }
+   ]
   },
   {
    "name": "1. FC Union Berlin",
    "keys": [
     "union"
    ],
-   "angriff": 0.05,
-   "abwehr": 0.07,
+   "tore": 8,
+   "angriff": 0.06,
+   "abwehr": 0.12,
    "xg": {
-    "xg": 10.1,
-    "xga": 17.4,
-    "spiele": 9
+    "xg": 11.1,
+    "xga": 22.6,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
+    {
+     "name": "Rani Khedira",
+     "pos": "DM",
+     "grund": "verletzt",
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
+    },
+    {
+     "name": "Zeno van den Bosch",
+     "pos": "IV",
+     "grund": "gesperrt (5. Gelbe Karte)",
+     "rolle": "Stammspieler",
+     "abzug": 0.03
+    },
     {
      "name": "Felix Uduokhai",
      "pos": "IV",
@@ -1159,63 +726,60 @@
      "abzug": 0.03
     },
     {
-     "name": "Stanley Nsoki",
-     "pos": "IV",
-     "grund": "verletzt (Wadenverletzung)",
-     "rolle": "Rotationsspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Robert Skov",
-     "pos": "Flügel",
-     "grund": "verletzt",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.01
-    },
-    {
-     "name": "Andrik Markgraf",
-     "pos": "IV",
-     "grund": "verletzt (Kreuzband- und Meniskusriss)",
-     "rolle": "Ersatz",
-     "abzug": 0
-    },
-    {
      "name": "Josip Juranović",
      "pos": "AV",
      "grund": "krank",
      "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 2,
      "abzug": 0.03
     },
     {
+     "name": "Stanley Nsoki",
+     "pos": "IV",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
+    },
+    {
+     "name": "Andrik Markgraf",
+     "pos": "AV",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
+    },
+    {
+     "name": "Robert Skov",
+     "pos": "Flügel",
+     "grund": "verletzt (Reha)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
      "name": "Livan Burcu",
-     "pos": "Sturm",
-     "grund": "fraglich",
-     "rolle": "Rotationsspieler",
+     "pos": "Flügel",
+     "grund": "fraglich (angeschlagen)",
+     "rolle": "Stammspieler",
      "tore": 1,
      "vorlagen": 0,
-     "abzug": 0.04
+     "abzug": 0.03
     }
-   ],
-   "tore": 7,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "RB Leipzig"
-   }
+   ]
   },
   {
    "name": "1. FC Köln",
    "keys": [
     "koeln"
    ],
-   "angriff": 0.1,
-   "abwehr": 0.06,
+   "tore": 11,
+   "angriff": 0.15,
+   "abwehr": 0.11,
    "xg": {
-    "xg": 13.9,
-    "xga": 14.2,
-    "spiele": 9
+    "xg": 15.6,
+    "xga": 15.7,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
@@ -1225,24 +789,40 @@
      "grund": "verletzt (Syndesmoseriss)",
      "rolle": "Leistungsträger",
      "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.06
+     "vorlagen": 2,
+     "abzug": 0.08
     },
     {
      "name": "Thijs Dallinga",
      "pos": "Sturm",
      "grund": "verletzt (Knieverletzung)",
-     "rolle": "Leistungsträger",
-     "tore": 0,
+     "rolle": "Stammspieler",
+     "tore": 2,
      "vorlagen": 0,
-     "abzug": 0.06
+     "abzug": 0.09
     },
     {
-     "name": "Rav van den Berg",
-     "pos": "IV",
-     "grund": "verletzt (Muskelverletzung)",
+     "name": "Alessio Castro-Montes",
+     "pos": "AV",
+     "grund": "verletzt (Wade)",
      "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 1,
      "abzug": 0.03
+    },
+    {
+     "name": "Marvin Schwäbe",
+     "pos": "Tor",
+     "grund": "fraglich (Rückenprobleme)",
+     "rolle": "Leistungsträger",
+     "abzug": 0.03
+    },
+    {
+     "name": "Luka Lochoshvili",
+     "pos": "IV",
+     "grund": "fraglich (Kopfverletzung)",
+     "rolle": "Stammspieler",
+     "abzug": 0.02
     },
     {
      "name": "Imad Rondić",
@@ -1254,91 +834,49 @@
      "abzug": 0.01
     },
     {
+     "name": "Rav van den Berg",
+     "pos": "IV",
+     "grund": "verletzt (Muskelverletzung)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
+    },
+    {
      "name": "Timo Hübers",
      "pos": "IV",
      "grund": "verletzt (Knieverletzung)",
      "rolle": "Ersatz",
-     "abzug": 0
+     "abzug": 0.0
     }
-   ],
-   "tore": 11,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Paul Okon-Engstler",
-      "pos": "ZM",
-      "land": "Australien",
-      "ort": "Katar/Jordanien",
-      "reise": "weit",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0.005,
-      "abwehr": 0.005
-     },
-     {
-      "name": "Gideon Mensah",
-      "pos": "AV",
-      "land": "Ghana",
-      "ort": "Ghana/Somalia",
-      "reise": "weit",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.01
-     },
-     {
-      "name": "Isak Jóhannesson",
-      "pos": "ZM",
-      "land": "Island",
-      "reise": "europa",
-      "minuten": 161,
-      "rolle": "Stammspieler",
-      "angriff": 0.015,
-      "abwehr": 0.015
-     },
-     {
-      "name": "Luka Lochoshvili",
-      "pos": "IV",
-      "land": "Georgien",
-      "reise": "europa",
-      "minuten": 180,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   }
+   ]
   },
   {
    "name": "FC Schalke 04",
    "keys": [
     "schalke"
    ],
+   "tore": 5,
    "angriff": 0.01,
-   "abwehr": 0.07,
+   "abwehr": 0.05,
    "xg": {
-    "xg": 10.1,
-    "xga": 17.2,
-    "spiele": 9
+    "xg": 12.0,
+    "xga": 19.5,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
-     "name": "Timo Becker",
+     "name": "Maximilian Wöber",
      "pos": "IV",
-     "grund": "verletzt (Fußverletzung)",
+     "grund": "verletzt (Oberschenkel)",
      "rolle": "Stammspieler",
      "abzug": 0.03
     },
     {
-     "name": "Maximilian Wöber",
+     "name": "Timo Becker",
      "pos": "IV",
-     "grund": "verletzt (Oberschenkelverletzung)",
-     "rolle": "Rotationsspieler",
-     "abzug": 0.01
+     "grund": "fraglich (Fußverletzung)",
+     "rolle": "Stammspieler",
+     "abzug": 0.02
     },
     {
      "name": "Ron Schallenberg",
@@ -1350,145 +888,180 @@
      "abzug": 0.01
     },
     {
-     "name": "Robin Gosens",
-     "pos": "AV",
-     "grund": "nicht in der Startelf (Knieprellung)",
-     "rolle": "Stammspieler",
-     "abzug": 0.03
+     "name": "Luca Vozar",
+     "pos": "DM",
+     "grund": "verletzt (Oberschenkel)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
+     "name": "Bryan Lasme",
+     "pos": "Sturm",
+     "grund": "verletzt (Oberschenkel)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
+     "name": "Emil Højlund",
+     "pos": "Sturm",
+     "grund": "verletzt (Achillessehne)",
+     "rolle": "Ersatz",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.0
+    },
+    {
+     "name": "Johannes Siebeking",
+     "pos": "Tor",
+     "grund": "verletzt (Bauchmuskel)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
     }
-   ],
-   "tore": 5,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Heechan Hwang",
-      "pos": "Sturm",
-      "land": "Südkorea",
-      "ort": "Doha",
-      "reise": "weit",
-      "rolle": "Rotationsspieler",
-      "tore": 0,
-      "vorlagen": 1,
-      "angriff": 0.05,
-      "abwehr": 0
-     },
-     {
-      "name": "Nikola Katić",
-      "pos": "IV",
-      "land": "Bosnien-Herzegowina",
-      "reise": "europa",
-      "minuten": 135,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-21T17:37:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups) / bundesliga.com",
-    "gegner": "VfB Stuttgart"
-   }
+   ]
   },
   {
    "name": "SC Paderborn 07",
    "keys": [
     "paderborn"
    ],
+   "tore": 8,
    "angriff": 0.01,
-   "abwehr": 0.0,
+   "abwehr": 0.02,
    "xg": {
-    "xg": 11.3,
-    "xga": 13.9,
-    "spiele": 9
+    "xg": 12.0,
+    "xga": 16.9,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
+     "name": "Tom Baack",
+     "pos": "DM",
+     "grund": "fraglich (grippaler Infekt)",
+     "rolle": "Stammspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.02
+    },
+    {
+     "name": "Laurin Ulrich",
+     "pos": "ZM",
+     "grund": "fraglich (Magen-Darm)",
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.01
+    },
+    {
+     "name": "Marcel Hoffmeier",
+     "pos": "IV",
+     "grund": "verletzt (muskuläre Probleme)",
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
+    },
+    {
+     "name": "Nyamekye Awortwie-Grant",
+     "pos": "IV",
+     "grund": "verletzt (Knie/Sprunggelenk)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
+    },
+    {
      "name": "Timur Gayret",
      "pos": "ZM",
-     "grund": "verletzt (Reha)",
+     "grund": "verletzt (Knie, Reha)",
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
      "abzug": 0.0
-    },
-    {
-     "name": "Marvin Pieringer",
-     "pos": "Sturm",
-     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
-     "rolle": "Stammspieler",
-     "abzug": 0.01
     }
-   ],
-   "tore": 8,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "Bayer 04 Leverkusen"
-   }
+   ]
   },
   {
    "name": "SV Elversberg",
    "keys": [
     "elversberg"
    ],
-   "angriff": 0.0,
+   "tore": 17,
+   "angriff": 0.01,
    "abwehr": 0.01,
    "xg": {
-    "xg": 14.3,
-    "xga": 20.0,
-    "spiele": 9
+    "xg": 15.7,
+    "xga": 21.0,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
-     "name": "Luis Seifert",
-     "pos": "ZM",
-     "grund": "verletzt (Syndesmoseverletzung)",
-     "rolle": "Ersatz",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.0
+     "name": "Nicholas Mickelson",
+     "pos": "AV",
+     "grund": "verletzt (Innenbandverletzung)",
+     "rolle": "Rotationsspieler",
+     "abzug": 0.01
     },
     {
-     "name": "Florian Le Joncour",
-     "pos": "IV",
-     "grund": "nicht in der Startelf (Bank nicht veröffentlicht)",
-     "rolle": "Stammspieler",
+     "name": "Noah Darvich",
+     "pos": "OM",
+     "grund": "fraglich (Oberschenkel)",
+     "rolle": "Rotationsspieler",
+     "tore": 0,
+     "vorlagen": 1,
      "abzug": 0.01
+    },
+    {
+     "name": "Luis Seifert",
+     "pos": "IV",
+     "grund": "verletzt (Syndesmoseverletzung)",
+     "rolle": "Ersatz",
+     "abzug": 0.0
     }
-   ],
-   "tore": 17,
-   "aufstellung": {
-    "zeit": "2026-11-21T14:39:00+01:00",
-    "quelle": "Bulinews (Confirmed lineups)",
-    "gegner": "SC Freiburg"
-   }
+   ]
   },
   {
    "name": "Hamburger SV",
    "keys": [
     "hamburg"
    ],
-   "angriff": 0.12,
-   "abwehr": 0.02,
+   "tore": 10,
+   "angriff": 0.21,
+   "abwehr": 0.12,
    "xg": {
-    "xg": 9.6,
-    "xga": 17.5,
-    "spiele": 9
+    "xg": 11.4,
+    "xga": 19.1,
+    "spiele": 10
    },
    "extra": [],
    "spieler": [
     {
-     "name": "Albert Sambi Lokonga",
+     "name": "Miro Muheim",
+     "pos": "AV",
+     "grund": "verletzt (Muskelfaserriss in der Wade)",
+     "rolle": "Leistungsträger",
+     "tore": 3,
+     "vorlagen": 1,
+     "abzug": 0.06
+    },
+    {
+     "name": "Nicolai Remberg",
      "pos": "DM",
+     "grund": "verletzt (Kreuzbandriss)",
+     "rolle": "Leistungsträger",
+     "tore": 0,
+     "vorlagen": 0,
+     "abzug": 0.06
+    },
+    {
+     "name": "Albert Sambi Lokonga",
+     "pos": "ZM",
      "grund": "verletzt (Faszienverletzung in der Wade)",
      "rolle": "Stammspieler",
      "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.03
+     "vorlagen": 1,
+     "abzug": 0.04
     },
     {
      "name": "Yussuf Poulsen",
@@ -1500,80 +1073,31 @@
      "abzug": 0.1
     },
     {
-     "name": "Nicolai Remberg",
-     "pos": "ZM",
-     "grund": "verletzt (Kreuzbandriss)",
-     "rolle": "Ersatz",
-     "tore": 0,
+     "name": "Terem Moffi",
+     "pos": "Sturm",
+     "grund": "fraglich (Knieprobleme)",
+     "rolle": "Stammspieler",
+     "tore": 2,
      "vorlagen": 0,
-     "abzug": 0.0
+     "abzug": 0.05
     },
     {
      "name": "Bilal Nadir",
-     "pos": "OM",
-     "grund": "verletzt (Sehnenverletzung im Oberschenkel)",
-     "rolle": "Ersatz",
+     "pos": "ZM",
+     "grund": "verletzt (Muskel-/Sehnenverletzung)",
+     "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0
+     "abzug": 0.01
     },
     {
      "name": "Jordan Torunarigha",
      "pos": "IV",
-     "grund": "fraglich (Hüftprobleme), nicht in der Startelf",
+     "grund": "fraglich (Hüftprobleme)",
      "rolle": "Rotationsspieler",
-     "abzug": 0.01
-    },
-    {
-     "name": "Mario Vušković",
-     "pos": "IV",
-     "grund": "auf der Bank",
-     "rolle": "Ersatz",
-     "abzug": 0.0
-    },
-    {
-     "name": "Fabio Vieira",
-     "pos": "OM",
-     "grund": "fraglich (Muskelfaserriss), nicht in der Startelf",
-     "rolle": "Rotationsspieler",
-     "tore": 0,
-     "vorlagen": 0,
      "abzug": 0.01
     }
-   ],
-   "tore": 10,
-   "laenderspiele": {
-    "pause_bis": "2026-11-18",
-    "spieler": [
-     {
-      "name": "Warmed Omari",
-      "pos": "IV",
-      "land": "Komoren",
-      "ort": "Komoren/Kongo",
-      "reise": "weit",
-      "rolle": "Stammspieler",
-      "tore": 0,
-      "vorlagen": 0,
-      "angriff": 0,
-      "abwehr": 0.03
-     },
-     {
-      "name": "David Møller Wolfe",
-      "pos": "AV",
-      "land": "Norwegen",
-      "reise": "europa",
-      "minuten": 120,
-      "rolle": "Stammspieler",
-      "angriff": 0,
-      "abwehr": 0.03
-     }
-    ]
-   },
-   "aufstellung": {
-    "zeit": "2026-11-22T16:46:00+01:00",
-    "quelle": "Nur die Raute (Aufstellungen Werder – HSV)",
-    "gegner": "SV Werder Bremen"
-   }
+   ]
   }
  ]
 }
