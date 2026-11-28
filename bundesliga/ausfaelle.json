@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-27",
- "aktualisiert": "2026-11-27T19:40:00+01:00",
+ "aktualisiert": "2026-11-28T14:46:00+01:00",
  "gueltig_ab": "2026-11-27",
  "gueltig_bis": "2026-11-29",
  "spieltag": 11,
@@ -32,7 +32,8 @@
   "https://www.uefa.com/uefaeuropaleague/news/02a8-2177782493b9-69ba3288701d-1000--europa-league-league-phase-fixtures-and-results-by-team/",
   "https://www.uefa.com/uefaconferenceleague/clubs/59880--freiburg/matches/",
   "https://www.bundesliga.com/de/bundesliga/news/dfb-pokal-achtelfinale-2026-27-ansetzungen-bayern-dortmund-39874",
-  "https://sports.yahoo.com/soccer/articles/confirmed-lineups-werder-bremen-vs-182800171.html"
+  "https://sports.yahoo.com/soccer/articles/confirmed-lineups-werder-bremen-vs-182800171.html",
+  "https://www.ysscores.com/en/lineup/5881239/SC-Paderborn-07-vs-FC-Schalke-04"
  ],
  "teams": [
   {
@@ -887,7 +888,7 @@
    ],
    "tore": 5,
    "angriff": 0.01,
-   "abwehr": 0.05,
+   "abwehr": 0.03,
    "xg": {
     "xg": 12.0,
     "xga": 19.5,
@@ -901,13 +902,6 @@
      "grund": "verletzt (Oberschenkel)",
      "rolle": "Stammspieler",
      "abzug": 0.03
-    },
-    {
-     "name": "Timo Becker",
-     "pos": "IV",
-     "grund": "fraglich (Fußverletzung)",
-     "rolle": "Stammspieler",
-     "abzug": 0.02
     },
     {
      "name": "Ron Schallenberg",
@@ -952,7 +946,12 @@
      "rolle": "Ersatz",
      "abzug": 0.0
     }
-   ]
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-28T14:46:00+01:00",
+    "quelle": "YSscores / SchalkeTOTAL",
+    "gegner": "SC Paderborn 07"
+   }
   },
   {
    "name": "SC Paderborn 07",
@@ -961,7 +960,7 @@
    ],
    "tore": 8,
    "angriff": 0.01,
-   "abwehr": 0.02,
+   "abwehr": 0.01,
    "xg": {
     "xg": 12.0,
     "xga": 16.9,
@@ -970,18 +969,9 @@
    "extra": [],
    "spieler": [
     {
-     "name": "Tom Baack",
-     "pos": "DM",
-     "grund": "fraglich (grippaler Infekt)",
-     "rolle": "Stammspieler",
-     "tore": 0,
-     "vorlagen": 0,
-     "abzug": 0.02
-    },
-    {
      "name": "Laurin Ulrich",
      "pos": "ZM",
-     "grund": "fraglich (Magen-Darm)",
+     "grund": "nicht im Kader (Magen-Darm)",
      "rolle": "Rotationsspieler",
      "tore": 0,
      "vorlagen": 0,
@@ -1010,7 +1000,12 @@
      "vorlagen": 0,
      "abzug": 0.0
     }
-   ]
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-28T14:46:00+01:00",
+    "quelle": "YSscores / SchalkeTOTAL",
+    "gegner": "FC Schalke 04"
+   }
   },
   {
    "name": "SV Elversberg",
