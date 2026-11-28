@@ -1,6 +1,6 @@
 {
  "stand": "2026-11-27",
- "aktualisiert": "2026-11-28T14:46:00+01:00",
+ "aktualisiert": "2026-11-28T17:48:00+01:00",
  "gueltig_ab": "2026-11-27",
  "gueltig_bis": "2026-11-29",
  "spieltag": 11,
@@ -33,7 +33,9 @@
   "https://www.uefa.com/uefaconferenceleague/clubs/59880--freiburg/matches/",
   "https://www.bundesliga.com/de/bundesliga/news/dfb-pokal-achtelfinale-2026-27-ansetzungen-bayern-dortmund-39874",
   "https://sports.yahoo.com/soccer/articles/confirmed-lineups-werder-bremen-vs-182800171.html",
-  "https://www.ysscores.com/en/lineup/5881239/SC-Paderborn-07-vs-FC-Schalke-04"
+  "https://www.ysscores.com/en/lineup/5881239/SC-Paderborn-07-vs-FC-Schalke-04",
+  "https://sports.yahoo.com/soccer/articles/confirmed-lineups-vfb-stuttgart-vs-163400832.html",
+  "https://www.ysscores.com/en/lineup/5881240/VfB-Stuttgart-vs-Eintracht-Frankfurt"
  ],
  "teams": [
   {
@@ -284,8 +286,8 @@
     "stuttgart"
    ],
    "tore": 15,
-   "angriff": 0.0,
-   "abwehr": 0.0,
+   "angriff": 0.08,
+   "abwehr": 0.06,
    "xg": {
     "xg": 19.7,
     "xga": 19.8,
@@ -299,7 +301,63 @@
      "gegner": "Inter Mailand"
     }
    ],
-   "spieler": []
+   "spieler": [
+    {
+     "name": "Angelo Stiller",
+     "pos": "DM",
+     "grund": "auf der Bank",
+     "rolle": "Leistungsträger",
+     "marktwert": 42,
+     "tore": 0,
+     "vorlagen": 2,
+     "abzug": 0.03
+    },
+    {
+     "name": "Finn Jeltsch",
+     "pos": "IV",
+     "grund": "auf der Bank",
+     "rolle": "Leistungsträger",
+     "marktwert": 35,
+     "tore": 0,
+     "vorlagen": 1,
+     "abzug": 0.03
+    },
+    {
+     "name": "Bilal El Khannouss",
+     "pos": "OM",
+     "grund": "auf der Bank",
+     "rolle": "Leistungsträger",
+     "marktwert": 35,
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.03
+    },
+    {
+     "name": "Josha Vagnoman",
+     "pos": "AV",
+     "grund": "auf der Bank",
+     "rolle": "Stammspieler",
+     "marktwert": 12,
+     "tore": 2,
+     "vorlagen": 1,
+     "abzug": 0.01
+    },
+    {
+     "name": "Chris Führich",
+     "pos": "Flügel",
+     "grund": "auf der Bank",
+     "rolle": "Stammspieler",
+     "marktwert": 10,
+     "tore": 1,
+     "vorlagen": 1,
+     "abzug": 0.03
+    }
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-28T17:48:00+01:00",
+    "quelle": "Bulinews/Yahoo Sports + YSscores (Confirmed Lineups)",
+    "gegner": "Eintracht Frankfurt"
+   }
   },
   {
    "name": "Eintracht Frankfurt",
@@ -307,8 +365,8 @@
     "frankfurt"
    ],
    "tore": 16,
-   "angriff": 0.0,
-   "abwehr": 0.0,
+   "angriff": 0.07,
+   "abwehr": 0.01,
    "xg": {
     "xg": 17.3,
     "xga": 21.1,
@@ -323,9 +381,34 @@
      "rolle": "Ersatz",
      "tore": 0,
      "vorlagen": 0,
-     "abzug": 0.0
+     "abzug": 0
+    },
+    {
+     "name": "Can Uzun",
+     "pos": "OM",
+     "grund": "nicht im Kader (krank)",
+     "rolle": "Leistungsträger",
+     "marktwert": 45,
+     "tore": 2,
+     "vorlagen": 0,
+     "abzug": 0.06
+    },
+    {
+     "name": "Noël Aséko",
+     "pos": "DM",
+     "grund": "auf der Bank",
+     "rolle": "Stammspieler",
+     "marktwert": 15,
+     "tore": 0,
+     "vorlagen": 1,
+     "abzug": 0.02
     }
-   ]
+   ],
+   "aufstellung": {
+    "zeit": "2026-11-28T17:48:00+01:00",
+    "quelle": "Bulinews/Yahoo Sports + YSscores (Confirmed Lineups)",
+    "gegner": "VfB Stuttgart"
+   }
   },
   {
    "name": "SC Freiburg",
